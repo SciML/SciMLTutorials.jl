@@ -20,10 +20,6 @@ notebook(dir=Pkg.dir("DiffEqTutorials"))
 
 The notebooks can be viewed remotely on Github or via [nbviewer](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/tree/master/)
 
-- Introductions
-  - [Introduction to Solving ODEs](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Introductions/Introduction%20to%20Solving%20ODEs.ipynb)
-  - [Introduction to Solving SDEs](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Introductions/Introduction%20to%20Solving%20SDEs.ipynb)
-  - [Finite Element Solutions to the Poisson Equation](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Introductions/Finite%20Element%20Solutions%20to%20Poisson%20Equation.ipynb)
 - Plotting
   - [Formatting the Plots](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Plotting/Formatting%20the%20Plots.ipynb)
   - [Animating the Solution to the Stochastic Heat Equation](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Plotting/Animating%20the%20Solution%20to%20the%20Stochastic%20Heat%20Equation.ipynb)
