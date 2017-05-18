@@ -22,7 +22,6 @@ The notebooks can be viewed remotely on Github or via [nbviewer](http://nbviewer
 
 - Plotting
   - [Formatting the Plots](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Plotting/Formatting%20the%20Plots.ipynb)
-  - [Animating the Solution to the Stochastic Heat Equation](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Plotting/Animating%20the%20Solution%20to%20the%20Stochastic%20Heat%20Equation.ipynb)
 - Extra ODE Features
   - [Faster Calculations via In-Place Operations](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraODEFeatures/Faster%20Calculations%20via%20In-Place%20Operations.ipynb)
   - [Defining ODEs using ParameterizedFunctions.jl]
