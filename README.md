@@ -3,7 +3,10 @@
 [![Join the chat at https://gitter.im/JuliaDiffEq/Lobby](https://badges.gitter.im/JuliaDiffEq/Lobby.svg)](https://gitter.im/JuliaDiffEq/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 DiffEqTutorials.jl holds Jupyter notebooks showing how to utilize the software in
-the JuliaDiffEq ecosystem.
+the JuliaDiffEq ecosystem. This set of tutorials was made to complement the 
+[documentation](http://docs.juliadiffeq.org/latest/) and the [devdocs](http://devdocs.juliadiffeq.org/latest/)
+by providing practical examples of the concepts in an interactive form. For more details, please
+consult the docs.
 
 ## Viewing the Notebooks Locally
 
