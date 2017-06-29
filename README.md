@@ -26,6 +26,7 @@ The notebooks can be viewed remotely on Github or via [nbviewer](http://nbviewer
 - Plotting
   - [Formatting the Plots](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Plotting/Formatting%20the%20Plots.ipynb)
 - Extra ODE Features
+  - [Conditional Dosing Example](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraODEFeatures/ConditionalDosing.ipynb)
   - [Faster Calculations via In-Place Operations](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraODEFeatures/Faster%20Calculations%20via%20In-Place%20Operations.ipynb)
   - [Solving Equations with Julia-Defined Types](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraODEFeatures/Solving%20Equations%20in%20With%20Julia-Defined%20Types.ipynb)
   - [Unit Check Arithmetic via Unitful.jl](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraODEFeatures/Unit%20Checked%20Arithmetic%20via%20Unitful.ipynb)
