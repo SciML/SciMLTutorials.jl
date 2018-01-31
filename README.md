@@ -23,7 +23,7 @@ notebook(dir=Pkg.dir("DiffEqTutorials"))
 
 The notebooks can be viewed remotely on Github or via [nbviewer](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/tree/master/)
 
-- Interative Introduction
+- Interactive Introduction
   - [Introduction to DifferentialEquations.jl through ODEs](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Intrudction/ODEIntroduction.ipynb)
   - [Detecting Stiffness and Choosing an ODE Algorithm](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Intrudction/ChoosingODEAlgorithm.ipynb)
   - [Callbacks and Event Handling](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Intrudction/CallbacksAndEvents.ipynb)
