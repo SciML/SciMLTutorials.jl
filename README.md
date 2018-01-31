@@ -24,10 +24,10 @@ notebook(dir=Pkg.dir("DiffEqTutorials"))
 The notebooks can be viewed remotely on Github or via [nbviewer](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/tree/master/)
 
 - Interactive Introduction
-  - [Introduction to DifferentialEquations.jl through ODEs](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Intrudction/ODEIntroduction.ipynb)
-  - [Detecting Stiffness and Choosing an ODE Algorithm](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Intrudction/ChoosingODEAlgorithm.ipynb)
-  - [Callbacks and Event Handling](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Intrudction/CallbacksAndEvents.ipynb)
-  - [Formatting the Plots](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Intrudction/FormattingPlots.ipynb)
+  - [Introduction to DifferentialEquations.jl through ODEs](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Introduction/ODEIntroduction.ipynb)
+  - [Detecting Stiffness and Choosing an ODE Algorithm](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Introduction/ChoosingODEAlgorithm.ipynb)
+  - [Callbacks and Event Handling](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Introduction/CallbacksAndEvents.ipynb)
+  - [Formatting the Plots](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Introduction/FormattingPlots.ipynb)
 - Modeling Examples
   - [Classical Physics Models](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/PhysicalModels/ClassicalPhysics.ipynb)
   - [Conditional Dosing Example](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraODEFeatures/ConditionalDosing.ipynb)
