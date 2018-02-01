@@ -26,6 +26,7 @@ The notebooks can be viewed remotely on Github or via [nbviewer](http://nbviewer
 - Interactive Introduction
   - [Introduction to DifferentialEquations.jl through ODEs](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Introduction/ODEIntroduction.ipynb)
   - [Detecting Stiffness and Choosing an ODE Algorithm](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Introduction/ChoosingODEAlgorithm.ipynb)
+  - [Optimizing your DiffEq Code](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Introduction/OptimizingDiffEqCode.ipynb)
   - [Callbacks and Event Handling](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Introduction/CallbacksAndEvents.ipynb)
   - [Formatting the Plots](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Introduction/FormattingPlots.ipynb)
 - Modeling Examples
