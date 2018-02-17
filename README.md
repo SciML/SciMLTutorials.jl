@@ -19,6 +19,10 @@ using IJulia
 notebook(dir=Pkg.dir("DiffEqTutorials"))
 ```
 
+## Video Tutorial
+
+[![Video Tutorial](https://user-images.githubusercontent.com/1814174/36342812-bdfd0606-13b8-11e8-9eff-ff219de909e5.PNG)](https://youtu.be/KPEqYtEd-zY)
+
 ## Table of Contents
 
 The notebooks can be viewed remotely on Github or via [nbviewer](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/tree/master/)
