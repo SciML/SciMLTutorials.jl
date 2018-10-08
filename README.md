@@ -39,7 +39,7 @@ The notebooks can be viewed remotely on Github or via [nbviewer](http://nbviewer
   - [Solving the Gierer-Meinhardt  Equations](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraFEMFeatures/Solving%20the%20Gierer-Meinhardt%20Equations.ipynb)
   - [Outer Solar System Planetary Orbits](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/PhysicalModels/Outer-Solar-System.ipynb)
   - [Kepler Problem Orbit](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/PhysicalModels/KeplerProblem.ipynb)
-  - [A 2D Cardiac Electrophysiology Model (A CUDA-accelerated PDE solver)](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/PhysicalModels/KeplerProblem.ipynb)
+  - [A 2D Cardiac Electrophysiology Model (A CUDA-accelerated PDE solver)](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/PhysicalModels/BeelerReuter2D_IMEX_CUDA.ipynb)
 - Extra ODE Features
   - [Faster Calculations via In-Place Operations](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraODEFeatures/Faster%20Calculations%20via%20In-Place%20Operations.ipynb)
   - [Solving Equations with Julia-Defined Types](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraODEFeatures/Solving%20Equations%20in%20With%20Julia-Defined%20Types.ipynb)
