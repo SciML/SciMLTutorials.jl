@@ -38,7 +38,6 @@ The notebooks can be viewed remotely on Github or via [nbviewer](http://nbviewer
 - Modeling Examples
   - [Classical Physics Models](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/PhysicalModels/ClassicalPhysics.ipynb)
   - [Conditional Dosing Example](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraODEFeatures/ConditionalDosing.ipynb)
-  - [Solving the Gierer-Meinhardt  Equations](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraFEMFeatures/Solving%20the%20Gierer-Meinhardt%20Equations.ipynb)
   - [Outer Solar System Planetary Orbits](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/PhysicalModels/Outer-Solar-System.ipynb)
   - [Kepler Problem Orbit](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/PhysicalModels/KeplerProblem.ipynb)
   - [A 2D Cardiac Electrophysiology Model (CUDA-accelerated PDE solver)](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/PhysicalModels/BeelerReuter2D_IMEX_CUDA.ipynb)
@@ -51,5 +50,3 @@ The notebooks can be viewed remotely on Github or via [nbviewer](http://nbviewer
   - [Feagin's Order 10, 12, and 14 Methods](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraODEFeatures/Feagin%27s%20Order%2010%2C%2012%2C%20and%2014%20methods.ipynb)
   - [Finding Maxima and Minima of DiffEq Solutions](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraODEFeatures/ODEMaxMin.ipynb)
   - [Monte Carlo Parameter Estimation from Data](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraODEFeatures/Monte%20Carlo%20Parameter%20Estimation%20From%20Data.ipynb)
-- Extra FEM Features
-  - [Heat Equation System Differing Diffusion Constants](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraFEMFeatures/Heat%20Equation%20System%20Differing%20Diffusion%20Constants.ipynb)
