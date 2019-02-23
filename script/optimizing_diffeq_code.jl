@@ -127,8 +127,8 @@ function basic_version!(dr,r,p,t)
   v = r[:,:,2]
   Du = D1*(Ay*u + u*Ax)
   Dv = D2*(Ay*v + v*Ax)
-  dr[:,:,1] = Du + a.*u.*u./v + ubar - α*u
-  dr[:,:,2] = Dv + a.*u.*u - β*v
+  dr[:,:,1] = Du .+ a.*u.*u./v .+ ubar .- α*u
+  dr[:,:,2] = Dv .+ a.*u.*u .- β*v
 end
 
 a,α,ubar,β,D1,D2 = p
@@ -301,11 +301,13 @@ prob = ODEProblem(fast_gm!,r0,(0.0,10.0),p)
 @benchmark solve(prob,Tsit5())
 
 
+using Sundials
 @benchmark solve(prob,CVODE_BDF(linear_solver=:GMRES))
 
 
 prob = ODEProblem(fast_gm!,r0,(0.0,100.0),p)
-@benchmark solve(prob,Tsit5())
+# Will go out of memory if we don't turn off `save_everystep`!
+@benchmark solve(prob,Tsit5(),save_everystep=false)
 
 
 @benchmark solve(prob,CVODE_BDF(linear_solver=:GMRES))
