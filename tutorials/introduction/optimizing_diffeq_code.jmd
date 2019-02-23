@@ -441,7 +441,7 @@ prob = ODEProblem(fast_gm!,r0,(0.0,0.1),p)
 
 Lastly, we can do other things like multithread the main loops, but these optimizations get the last 2x-3x out. The main optimizations which apply everywhere are the ones we just performed (though the last one only works if your matrix is a stencil. This is known as a matrix-free implementation of the PDE discretization).
 
-This gets us to about 80x faster than our original MATLAB/SciPy/R vectorized style code!
+This gets us to about 8x faster than our original MATLAB/SciPy/R vectorized style code!
 
 The last thing to do is then ***optimize our algorithm choice***. We have been using `Tsit5()` as our test algorithm, but in reality this problem is a stiff PDE discretization and thus one recommendation is to use `CVODE_BDF()`. However, instead of using the default dense Jacobian, we should make use of the sparse Jacobian afforded by the problem. The Jacobian is the matrix $\frac{df_i}{dr_j}$, where $r$ is read by the linear index (i.e. down columns). But since the $u$ variables depend on the $v$, the band size here is large, and thus this will not do well with a Banded Jacobian solver. Instead, we utilize sparse Jacobian algorithms. `CVODE_BDF` allows us to use a sparse Newton-Krylov solver by setting `linear_solver = :GMRES` (see [the solver documentation](http://docs.juliadiffeq.org/latest/solvers/ode_solve.html#Sundials.jl-1), and thus we can solve this problem efficiently. Let's see how this scales as we increase the integration time.
 
