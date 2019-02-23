@@ -1,12 +1,12 @@
 module DiffEqTutorials
 
-using Weave, Pkg
+using Weave, Pkg, InteractiveUtils
 
 repo_directory = joinpath(@__DIR__,"..")
 
 function weave_file(folder,file,build_list=(:script,:html,:pdf))
   println("File: $file")
-  tmp = joinpath(repo_directory,"benchmarks",folder,file)
+  tmp = joinpath(repo_directory,"tutorials",folder,file)
   args = Dict{Symbol,String}(:folder=>folder,:file=>file)
   if :script ∈ build_list
     println("Building Script")
@@ -55,7 +55,7 @@ function tutorial_footer(folder,file)
 
   """)
   println("Computer Information:\n")
-  Main.versioninfo()
+  InteractiveUtils.versioninfo()
   println()
   println("Package Information:\n")
   DiffEqTutorials.Pkg.status()
