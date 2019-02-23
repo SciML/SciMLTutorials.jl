@@ -28,6 +28,9 @@ end
 
 #Pass to solvers
 poincare = ODEProblem(double_pendulum_hamiltonian, initial, tspan)
+```
+
+```julia
 sol = solve(poincare, Tsit5())
 ```
 

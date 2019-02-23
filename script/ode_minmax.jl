@@ -19,6 +19,8 @@ end
 
 #Pass to solvers
 poincare = ODEProblem(double_pendulum_hamiltonian, initial, tspan)
+
+
 sol = solve(poincare, Tsit5())
 
 
