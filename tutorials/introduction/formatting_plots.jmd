@@ -93,3 +93,10 @@ title!("I added a title")
 ```
 
 You can do all sorts of things. Have fun!
+
+## Appendix
+
+```julia{echo=false}
+using DiffEqTutorials
+DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+```

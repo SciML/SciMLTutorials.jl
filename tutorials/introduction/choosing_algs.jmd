@@ -73,6 +73,7 @@ prob = ODEProblem(lorenz!,u0,tspan,p)
 And now, let's use the `@btime` macro from benchmark tools to compare the use of non-stiff and stiff solvers on this problem.
 
 ```julia
+using BenchmarkTools
 @btime solve(prob);
 ```
 
@@ -104,13 +105,22 @@ While there are always exceptions to the rule, those are good guiding principles
 
 If you are familiar with MATLAB, SciPy, or R's DESolve, here's a quick translation start to have transfer your knowledge over.
 
-- ode23 –> BS3()
-- ode45/dopri5 –> DP5(), though in most cases Tsit5() is more efficient
-- ode23s –> Rosenbrock23(), though in most cases Rodas4() is more efficient
-- ode113 –> CVODE_Adams(), though in many cases Vern7() is more efficient
-- dop853 –> DP8(), though in most cases Vern7() is more efficient
-- ode15s/vode –> CVODE_BDF(), though in many cases Rodas4() or radau() are more efficient
-- ode23t –> Trapezoid() for efficiency and GenericTrapezoid() for robustness
-- ode23tb –> TRBDF2
-- lsoda –> lsoda() (requires Pkg.add("LSODA"); using LSODA)
-- ode15i –> IDA(), though in many cases Rodas4() can handle the DAE and is significantly more efficient
+- `ode23` -> `BS3()`
+- `ode45`/`dopri5` -> `DP5()`, though in most cases `Tsit5()` is more efficient
+- `ode23s` -> `Rosenbrock23()`, though in most cases `Rodas4()` is more efficient
+- `ode113` -> `VCABM()`, though in many cases `Vern7()` is more efficient
+- `dop853` -> `DP8()`, though in most cases `Vern7()` is more efficient
+- `ode15s`/`vode` -> `QNDF()`, though in many cases `CVODE_BDF()`, `Rodas4()`
+  or `radau()` are more efficient
+- `ode23t` -> `Trapezoid()` for efficiency and `GenericTrapezoid()` for robustness
+- `ode23tb` -> `TRBDF2`
+- `lsoda` -> `lsoda()` (requires `]add LSODA; using LSODA`)
+- `ode15i` -> `IDA()`, though in many cases `Rodas4()` can handle the DAE and is
+  significantly more efficient
+  
+## Appendix
+
+```julia{echo=false}
+using DiffEqTutorials
+DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+```
