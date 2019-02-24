@@ -1,6 +1,6 @@
 ---
 title: Numbers with Uncertainties
-author: Chris Rackauckas
+author: Mosè Giordano, Chris Rackauckas
 ---
 
 The result of a measurement should be given as a number with an attached uncertainties, besides the physical unit, and all operations performed involving the result of the measurement should propagate the uncertainty, taking care of correlation between quantities.
