@@ -1,6 +1,6 @@
 module DiffEqTutorials
 
-using Weave, Pkg, InteractiveUtils
+using Weave, Pkg, InteractiveUtils, IJulia
 
 repo_directory = joinpath(@__DIR__,"..")
 
@@ -69,5 +69,10 @@ function tutorial_footer(folder=nothing,file=nothing)
   DiffEqTutorials.Pkg.status()
 end
 
+function open_notebooks()
+  Base.eval(Main, Meta.parse("import IJulia"))
+  path = joinpath(repo_directory,"notebook")
+  IJulia.notebook(;dir=path)
+end
 
 end

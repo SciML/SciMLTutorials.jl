@@ -10,6 +10,17 @@ tutorials was made to complement the
 by providing practical examples of the concepts. For more details, please
 consult the docs.
 
+## Interactive Notebooks
+
+To run the tutorials interactively via Jupyter notebooks, install the package
+and open the tutorials like:
+
+```julia
+]add "https://github.com/JuliaDiffEq/DiffEqTutorials.jl"
+using DiffEqTutorials
+DiffEqTutorials.open_notebooks()
+```
+
 ## Video Tutorial
 
 [![Video Tutorial](https://user-images.githubusercontent.com/1814174/36342812-bdfd0606-13b8-11e8-9eff-ff219de909e5.PNG)](https://youtu.be/KPEqYtEd-zY)
