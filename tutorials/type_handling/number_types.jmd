@@ -51,7 +51,7 @@ sol =solve(prob_ode_biglinear,Tsit5())
 println(sol[end])
 ```
 
-#### DoubleFloat.jl
+#### DoubleFloats.jl
 
 There's are Float128-like types. Higher precision, but fixed and faster than arbitrary precision.
 
