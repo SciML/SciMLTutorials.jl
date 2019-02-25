@@ -43,12 +43,16 @@ end
 function weave_all()
   for folder in readdir(joinpath(repo_directory,"tutorials"))
     folder == "test.jmd" && continue
-    for file in readdir(joinpath(repo_directory,"tutorials",folder))
-      println("Building $(joinpath(folder,file)))")
-      try
-        weave_file(folder,file)
-      catch
-      end
+    weave_folder(folder)
+  end
+end
+
+function weave_folder(folder)
+  for file in readdir(joinpath(repo_directory,"tutorials",folder))
+    println("Building $(joinpath(folder,file)))")
+    try
+      weave_file(folder,file)
+    catch
     end
   end
 end
