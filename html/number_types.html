@@ -666,7 +666,7 @@ pre.hljl > span.hljl-gt { }
           </div>
 
           <p>One of the nice things about DifferentialEquations.jl is that it is designed with Julia&#39;s type system in mind. What this means is, if you have properly defined a Number type, you can use this number type in DifferentialEquations.jl&#39;s algorithms&#33; &#91;Note that this is restricted to the native algorithms of OrdinaryDiffEq.jl. The other solvers such as ODE.jl, Sundials.jl, and ODEInterface.jl are not compatible with some number systems.&#93;</p>
-<p>DifferentialEquations.jl determines the numbers to use in its solvers via the types that are designated by <code>tspan</code> and the initial condition of the problem. It will keep the time values in the same type as Δt, and the solution values in the same type as the initial condition. &#91;Note that adaptive timestepping requires that the time type is compaible with <code>sqrt</code> and <code>^</code> functions. Thus dt cannot be Integer or numbers like that if adaptive timestepping is chosen&#93;.</p>
+<p>DifferentialEquations.jl determines the numbers to use in its solvers via the types that are designated by <code>tspan</code> and the initial condition of the problem. It will keep the time values in the same type as tspan, and the solution values in the same type as the initial condition. &#91;Note that adaptive timestepping requires that the time type is compaible with <code>sqrt</code> and <code>^</code> functions. Thus dt cannot be Integer or numbers like that if adaptive timestepping is chosen&#93;.</p>
 <p>Let&#39;s solve the linear ODE first define an easy way to get ODEProblems for the linear ODE:</p>
 
 
@@ -805,7 +805,6 @@ u: &#91;0.5, 0.507953, 0.516033, 0.524241, 0.53258, 0.541051, 0.549658, 0.55840
 </pre>
 
 
-<h2>Incompatible Number Systems</h2>
 <h4>ArbFloats</h4>
 <p>These high precision numbers which are much faster than Bigs for less than 500-800 bits of accuracy. Having already installed Nemo and ArbFloats, I can use them in DifferentialEquations.jl via:</p>
 
@@ -813,31 +812,17 @@ u: &#91;0.5, 0.507953, 0.516033, 0.524241, 0.53258, 0.541051, 0.549658, 0.55840
 <pre class='hljl'>
 <span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>ArbNumerics</span><span class='hljl-t'>
 </span><span class='hljl-n'>prob_ode_arbfloatlinear</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>ODEProblem</span><span class='hljl-p'>(</span><span class='hljl-n'>f</span><span class='hljl-p'>,</span><span class='hljl-nf'>ArbFloat</span><span class='hljl-p'>(</span><span class='hljl-ni'>1</span><span class='hljl-p'>)</span><span class='hljl-oB'>/</span><span class='hljl-nf'>ArbFloat</span><span class='hljl-p'>(</span><span class='hljl-ni'>2</span><span class='hljl-p'>),(</span><span class='hljl-nf'>ArbFloat</span><span class='hljl-p'>(</span><span class='hljl-nfB'>0.0</span><span class='hljl-p'>),</span><span class='hljl-nf'>ArbFloat</span><span class='hljl-p'>(</span><span class='hljl-nfB'>1.0</span><span class='hljl-p'>)),</span><span class='hljl-nf'>ArbFloat</span><span class='hljl-p'>(</span><span class='hljl-nfB'>1.01</span><span class='hljl-p'>))</span><span class='hljl-t'>
-</span><span class='hljl-n'>sol</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-nf'>solve</span><span class='hljl-p'>(</span><span class='hljl-n'>prob_ode_arbfloatlinear</span><span class='hljl-p'>,</span><span class='hljl-nf'>Tsit5</span><span class='hljl-p'>())</span>
-</pre>
-
-
-<pre class="julia-error">
-ERROR: MethodError: no method matching decompose&#40;::ArbNumerics.ArbFloat&#123;128&#125;&#41;
-Closest candidates are:
-  decompose&#40;&#33;Matched::BigFloat&#41; at hashing2.jl:133
-  decompose&#40;&#33;Matched::Float64&#41; at hashing2.jl:122
-  decompose&#40;&#33;Matched::Float32&#41; at hashing2.jl:111
-  ...
-</pre>
-
-
-
-<pre class='hljl'>
-<span class='hljl-nf'>println</span><span class='hljl-p'>(</span><span class='hljl-n'>sol</span><span class='hljl-p'>[</span><span class='hljl-k'>end</span><span class='hljl-p'>])</span>
+</span><span class='hljl-n'>sol</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-nf'>solve</span><span class='hljl-p'>(</span><span class='hljl-n'>prob_ode_arbfloatlinear</span><span class='hljl-p'>,</span><span class='hljl-nf'>Tsit5</span><span class='hljl-p'>())</span><span class='hljl-t'>
+</span><span class='hljl-nf'>println</span><span class='hljl-p'>(</span><span class='hljl-n'>sol</span><span class='hljl-p'>[</span><span class='hljl-k'>end</span><span class='hljl-p'>])</span>
 </pre>
 
 
 <pre class="hljl">
-1.3728004409038075
+1.372800440903808727789283182314
 </pre>
 
 
+<h2>Incompatible Number Systems</h2>
 <h4>DecFP.jl</h4>
 <p>Next let&#39;s try DecFP. DecFP is a fixed-precision decimals library which is made to give both performance but known decimals of accuracy. Having already installed DecFP with <code>&#93;add DecFP</code>, I can run the following:</p>
 
@@ -861,8 +846,8 @@ ERROR: StackOverflowError:
 
 
 <pre class="hljl">
-1.3728004409038075
-DoubleFloats.DoubleFloat&#123;Float64&#125;
+1.372800440903808727789283182314
+ArbNumerics.ArbFloat&#123;128&#125;
 </pre>
 
 
@@ -893,8 +878,8 @@ Possible fix, define
 
 
 <pre class="hljl">
-1.3728004409038075
-DoubleFloats.DoubleFloat&#123;Float64&#125;
+1.372800440903808727789283182314
+ArbNumerics.ArbFloat&#123;128&#125;
 </pre>
 
 
@@ -937,10 +922,11 @@ Environment:
 Package Information:
 
     Status &#96;C:\Users\accou\.julia\environments\v1.1\Project.toml&#96;
-  &#91;7e558dbc&#93; ArbNumerics v0.3.5
+  &#91;7e558dbc&#93; ArbNumerics v0.3.6
   &#91;c52e3926&#93; Atom v0.7.14
   &#91;6e4b80f9&#93; BenchmarkTools v0.4.2
   &#91;336ed68f&#93; CSV v0.4.3
+  &#91;3895d2a7&#93; CUDAapi v0.5.4
   &#91;be33ccc6&#93; CUDAnative v1.0.1
   &#91;3a865a2d&#93; CuArrays v0.9.1
   &#91;a93c6f00&#93; DataFrames v0.17.1
@@ -960,17 +946,18 @@ Tutorials.jl&#96;&#93;
   &#91;497a8b3b&#93; DoubleFloats v0.7.5
   &#91;587475ba&#93; Flux v0.7.3
   &#91;f6369f11&#93; ForwardDiff v0.10.3&#43; &#91;&#96;C:\Users\accou\.julia\dev\ForwardDiff&#96;&#93;
+  &#91;28b8d3ca&#93; GR v0.38.1
   &#91;7073ff75&#93; IJulia v1.17.0
   &#91;c601a237&#93; Interact v0.9.1
   &#91;b6b21f68&#93; Ipopt v0.5.4
-  &#91;4076af6c&#93; JuMP v0.18.5
+  &#91;4076af6c&#93; JuMP v0.19.0
   &#91;e5e0dc1b&#93; Juno v0.5.4
   &#91;eff96d63&#93; Measurements v2.0.0
   &#91;76087f3c&#93; NLopt v0.5.1
   &#91;429524aa&#93; Optim v0.17.2
   &#91;1dea7af3&#93; OrdinaryDiffEq v5.2.1&#43; &#91;&#96;C:\Users\accou\.julia\dev\OrdinaryDif
 fEq&#96;&#93;
-  &#91;65888b18&#93; ParameterizedFunctions v4.1.0
+  &#91;65888b18&#93; ParameterizedFunctions v4.1.1
   &#91;91a5bcdd&#93; Plots v0.23.0
   &#91;71ad9d73&#93; PuMaS v0.0.0 &#91;&#96;C:\Users\accou\.julia\dev\PuMaS&#96;&#93;
   &#91;d330b81b&#93; PyPlot v2.7.0
