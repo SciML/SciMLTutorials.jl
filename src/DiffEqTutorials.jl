@@ -32,6 +32,12 @@ function weave_file(folder,file,build_list=(:script,:html,:pdf))
     isdir(dir) || mkdir(dir)
     weave(tmp,doctype = "github",out_path=dir,args=args)
   end
+  if :notebook ∈ build_list
+    println("Building Notebook")
+    dir = joinpath(repo_directory,"notebook",folder)
+    isdir(dir) || mkdir(dir)
+    Weave.notebook(tmp,dir)
+  end
 end
 
 #=
@@ -42,18 +48,20 @@ function weave_all()
 end
 =#
 
-function tutorial_footer(folder,file)
+function tutorial_footer(folder=nothing,file=nothing)
   println("""
   These benchmarks are part of the DiffEqTutorials.jl repository, found at:
 
   https://github.com/JuliaDiffEq/DiffEqTutorials.jl
-
-  To locally run this tutorial, do the following commands:
-
-  using DiffEqTutorials
-  DiffEqTutorials.weave_file("$folder","$file")
-
   """)
+  if folder !== nothing && file !== nothing
+    println("""
+    To locally run this tutorial, do the following commands:
+
+    using DiffEqTutorials
+    DiffEqTutorials.weave_file("$folder","$file")
+    """)
+  end
   println("Computer Information:\n")
   InteractiveUtils.versioninfo()
   println()

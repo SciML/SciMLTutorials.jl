@@ -8,7 +8,7 @@ First you want to create a problem which solves multiple problems at the same ti
 So, let's get a Monte Carlo problem setup that solves with 10 different initial conditions.
 
 ```julia
-using DifferentialEquations, Plots, Optim
+using DifferentialEquations, DiffEqParamEstim, Plots, Optim
 
 # Monte Carlo Problem Set Up for solving set of ODEs with different initial conditions
 
@@ -94,11 +94,15 @@ Thus we take this objective function over to any optimization package. I like to
 
 ```julia
 lower = zeros(2)
-upper = fill(3.0,2)
-result = optimize(obj, [1.3,0.9], lower, upper, Fminbox{BFGS}())
+upper = fill(2.0,2)
+result = optimize(obj, lower, upper, [1.3,0.9], Fminbox(BFGS()))
 ```
 
-[1.5,0.99999]... close enough. So Optim found the true parameters.
+```julia
+result
+```
+
+Optim finds one but not the other parameter.
 
 I would run a test on synthetic data for your problem before using it on real data. Maybe play around with different optimization packages, or add regularization. You may also want to decrease the tolerance of the ODE solvers via
 
@@ -106,6 +110,11 @@ I would run a test on synthetic data for your problem before using it on real da
 obj = build_loss_objective(monte_prob,Tsit5(),loss,num_monte=N,
                            abstol=1e-8,reltol=1e-8,
                            saveat=data_times)
+result = optimize(obj, lower, upper, [1.3,0.9], Fminbox(BFGS()))
+```
+
+```julia
+result
 ```
 
 if you suspect error is the problem. However, if you're having problems it's most likely not the ODE solver tolerance and mostly because parameter inference is a very hard optimization problem.

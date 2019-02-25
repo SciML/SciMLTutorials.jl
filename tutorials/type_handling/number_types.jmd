@@ -11,33 +11,31 @@ Let's solve the linear ODE first define an easy way to get ODEProblems for the l
 
 ```julia
 using DifferentialEquations
-f = (u,p,t) -> (1.01*u)
-prob_ode_linear = ODEProblem(f,1/2,(0.0,1.0));
+f = (u,p,t) -> (p*u)
+prob_ode_linear = ODEProblem(f,1/2,(0.0,1.0),1.01);
 ```
 
 First let's solve it using Float64s. To do so, we just need to set u0 to a Float64 (which is done by the default) and dt should be a float as well.
 
 ```julia
 prob = prob_ode_linear
-sol =solve(prob,RK4(),dt=1/2^(6))
+sol =solve(prob,Tsit5())
 println(sol)
 ```
 
-Notice that both the times and the solutions were saved as Float64. Let's change the time to use rational values:
+Notice that both the times and the solutions were saved as Float64. Let's change the time to use rational values. Rationals are not compatible with adaptive time stepping since they do not have an L2 norm (this can be worked around by defining `internalnorm`, but rationals already explode in size!). To account for this, let's turn off adaptivity as well:
 
 ```julia
-prob = ODEProblem(f,1/2,(0//1,1//1));
-sol = solve(prob,RK4(),dt=1//2^(6))
+prob = ODEProblem(f,1/2,(0//1,1//1),101//100);
+sol = solve(prob,RK4(),dt=1//2^(6),adaptive=false)
 println(sol)
 ```
 
 Now let's do something fun. Let's change the solution to use `Rational{BigInt}` and print out the value at the end of the simulation. To do so, simply change the definition of the initial condition.
 
 ```julia
-const rationalα = 101//100
-f = (u,p,t) -> (rationalα*u)
-prob = ODEProblem(f,BigInt(1)//BigInt(2),(0//1,1//1));
-sol =solve(prob,RK4(),dt=1//2^(6))
+prob = ODEProblem(f,BigInt(1)//BigInt(2),(0//1,1//1),101//100);
+sol =solve(prob,RK4(),dt=1//2^(6),adaptive=false)
 println(sol[end])
 ```
 
@@ -45,20 +43,37 @@ That's one huge fraction!
 
 ## Other Compatible Number Types
 
-#### ArbFloats
-
-Let's test a bunch of other number types. First I'm going to test Jeffrey Sarnoff's ArbFloats. These high precision numbers which are much faster than Bigs for less than 500-800 bits of accuracy. Having already installed Nemo and ArbFloats, I can use them in DifferentialEquations.jl via:
+#### BigFloats
 
 ```julia
-using ArbFloats
-const arbalpha = ArbFloat(1.01)
-f = (u,p,t) -> (arbalpha*u)
-prob_ode_arbfloatlinear = ODEProblem(f,ArbFloat(1)/ArbFloat(2),(0//1,1//1))
-sol =solve(prob_ode_arbfloatlinear,RK4(),dt=1//2^(6))
+prob_ode_biglinear = ODEProblem(f,big(1.0)/big(2.0),(big(0.0),big(1.0)),big(1.01))
+sol =solve(prob_ode_biglinear,Tsit5())
 println(sol[end])
 ```
 
-Bingo! ArbFloats work with DifferentialEquations.jl.
+#### DoubleFloat.jl
+
+There's are Float128-like types. Higher precision, but fixed and faster than arbitrary precision.
+
+```julia
+using DoubleFloats
+prob_ode_doublelinear = ODEProblem(f,Double64(1)/Double64(2),(Double64(0),Double64(1)),Double64(1.01))
+sol =solve(prob_ode_doublelinear,Tsit5())
+println(sol[end])
+```
+
+## Incompatible Number Systems
+
+#### ArbFloats
+
+These high precision numbers which are much faster than Bigs for less than 500-800 bits of accuracy. Having already installed Nemo and ArbFloats, I can use them in DifferentialEquations.jl via:
+
+```julia
+using ArbNumerics
+prob_ode_arbfloatlinear = ODEProblem(f,ArbFloat(1)/ArbFloat(2),(ArbFloat(0.0),ArbFloat(1.0)),ArbFloat(1.01))
+sol =solve(prob_ode_arbfloatlinear,Tsit5())
+println(sol[end])
+```
 
 #### DecFP.jl
 
@@ -66,16 +81,10 @@ Next let's try DecFP. DecFP is a fixed-precision decimals library which is made 
 
 ```julia
 using DecFP
-const decalpha = Dec128(1.01) # Set the constant to a Dec128 as well
-f = (u,p,t) -> (decalpha*u)
-prob_ode_decfplinear = ODEProblem(f,Dec128(1)/Dec128(2),(0.0,1.0))
-sol =solve(prob_ode_decfplinear,RK4(),dt=1//2^(6))
+prob_ode_decfplinear = ODEProblem(f,Dec128(1)/Dec128(2),(Dec128(0.0),Dec128(1.0)),Dec128(1.01))
+sol =solve(prob_ode_decfplinear,Tsit5())
 println(sol[end]); println(typeof(sol[end]))
 ```
-
-Bingo! DecFP works with DifferentialEquations.jl
-
-## Incompatible Number Systems
 
 #### Decimals.jl
 
@@ -83,33 +92,16 @@ Install with `]add Decimals`.
 
 ```julia
 using Decimals
-const decalpha2 = decimal(1.01) # Set the constant to a Dec128 as well
-f = (u,p,t) -> (decalpha2*u)
-prob_ode_decimallinear = ODEProblem(f,[decimal("1.0")]./[decimal("2.0")],(0//1,1//1))
+prob_ode_decimallinear = ODEProblem(f,[decimal("1.0")]./[decimal("2.0")],(0//1,1//1),decimal(1.01))
 sol =solve(prob_ode_decimallinear,RK4(),dt=1/2^(6)) #Fails
 println(sol[end]); println(typeof(sol[end]))
 ```
 
 At the time of writing this, Decimals are not compatible. This is not on DifferentialEquations.jl's end, it's on partly on Decimal's end since it is not a subtype of Number. Thus it's not recommended you use Decimals with DifferentialEquations.jl
 
-#### DoubleDouble.jl
-
-Install via `]add DoubleDouble`
-
-```julia
-using DoubleDouble
-const doublealpha = Double(1.01) # Set the constant to a Dec128 as well
-f = (u,p,t) -> (doublealpha*u)
-prob_ode_doublelinear = ODEProblem(f,Double(1.0)/Double(2.0),(0.0,1.0))
-sol =solve(prob_ode_doublelinear,RK4(),dt=1/2^(6))
-println(sol[end]); println(typeof(sol[end]))
-```
-
-DoubleDouble errors for many reason. For one, it cannot convert the default parameters form rationals to Double. But even if you set all of the default parameters to Double, it will still error because DoubleDoubles cannot multiply Ints! [An issue has been filed to the DoubleDouble.jl repo for this case](https://github.com/simonbyrne/DoubleDouble.jl/issues/16). If you checkout the branch from the Issue, you will see that it will still error because DoubleDouble isn't compatible with `exp`. [There's another issue for that.](https://github.com/simonbyrne/DoubleDouble.jl/issues/8).
-
 ## Conclusion
 
-As you can see, DifferentialEquations.jl can use arbitrary Julia-defined number systems in its arithmetic. The only limitations are the limitations inherent in the number systems themselves. ArbFloats and ArbReals are the most feature-complete and give great performance compared to BigFloats, and thus I recommend their use when high-precision (less than ~512-800 bits) is required. DecFP is a great library for high-performance decimal numbers and works well as well. Other number systems could use some modernization.
+As you can see, DifferentialEquations.jl can use arbitrary Julia-defined number systems in its arithmetic. If you need 128-bit floats, i.e. a bit more precision but not arbitrary, DoubleFloats.jl is a very good choice! For arbitrary precision, ArbNumerics are the most feature-complete and give great performance compared to BigFloats, and thus I recommend their use when high-precision (less than 512-800 bits) is required. DecFP is a great library for high-performance decimal numbers and works well as well. Other number systems could use some modernization.
 
 ## Appendix
 
