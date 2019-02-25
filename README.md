@@ -28,25 +28,25 @@ DiffEqTutorials.open_notebooks()
 ## Table of Contents
 
 - Introduction
-  - [Introduction to DifferentialEquations.jl through ODEs](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/introduction/ode_introduction.html)
-  - [Detecting Stiffness and Choosing an ODE Algorithm](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/introduction/choosing_algs.html)
-  - [Optimizing your DiffEq Code](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/introduction/optimizing_diffeq_code.html)
-  - [Callbacks and Event Handling](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/introduction/callbacks_and_events.html)
-  - [Formatting Plots](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/introduction/formatting_plots.html)
+  - [Introduction to DifferentialEquations.jl through ODEs](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/ode_introduction.html)
+  - [Detecting Stiffness and Choosing an ODE Algorithm](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/choosing_algs.html)
+  - [Optimizing your DiffEq Code](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/optimizing_diffeq_code.html)
+  - [Callbacks and Event Handling](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/callbacks_and_events.html)
+  - [Formatting Plots](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/formatting_plots.html)
 - Modeling Examples
-  - [Classical Physics Models](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/models/classical_physics.html)
-  - [Conditional Dosing Example](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/models/conditional_dosing.html)
-  - [Kepler Problem Orbit](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/models/kepler_problem.html)
+  - [Classical Physics Models](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/classical_physics.html)
+  - [Conditional Dosing Example](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/conditional_dosing.html)
+  - [Kepler Problem Orbit](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/kepler_problem.html)
 - Advanced ODE Features
-  - [Feagin's Order 10, 12, and 14 Methods](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/ode_extras/feagin.html)
-  - [Finding Maxima and Minima of DiffEq Solutions](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/ode_extras/ode_minmax.html)
-  - [Monte Carlo Parameter Estimation from Data](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/ode_extras/monte_carlo_parameter_estim.html)
+  - [Feagin's Order 10, 12, and 14 Methods](http://juliadiffeq.org/DiffEqTutorials.jl/html/ode_extras/feagin.html)
+  - [Finding Maxima and Minima of DiffEq Solutions](http://juliadiffeq.org/DiffEqTutorials.jl/html/ode_extras/ode_minmax.html)
+  - [Monte Carlo Parameter Estimation from Data](http://juliadiffeq.org/DiffEqTutorials.jl/html/ode_extras/monte_carlo_parameter_estim.html)
 - Type Handling
-  - [Solving Equations with Julia-Defined Types](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/type_handling/number_types.html)
-  - [Numbers with Uncertainties](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/type_handling/uncertainties.html)
-  - [Unit Check Arithmetic via Unitful.jl](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/type_handling/unitful.html)
+  - [Solving Equations with Julia-Defined Types](http://juliadiffeq.org/DiffEqTutorials.jl/html/type_handling/number_types.html)
+  - [Numbers with Uncertainties](http://juliadiffeq.org/DiffEqTutorials.jl/html/type_handling/uncertainties.html)
+  - [Unit Check Arithmetic via Unitful.jl](http://juliadiffeq.org/DiffEqTutorials.jl/html/type_handling/unitful.html)
 - Advanced
-  - [A 2D Cardiac Electrophysiology Model (CUDA-accelerated PDE solver)](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/advanced/beeler_reuter.html)
+  - [A 2D Cardiac Electrophysiology Model (CUDA-accelerated PDE solver)](http://juliadiffeq.org/DiffEqTutorials.jl/html/advanced/beeler_reuter.html)
 
 ## Contributing
 
