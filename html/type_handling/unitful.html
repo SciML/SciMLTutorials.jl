@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<HTML lang = "en">
+<HEAD>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Unit Checked Arithmetic via Unitful.jl</title>
+  
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+  </script>
+
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+
+  <style type="text/css">
+  @font-face {
+  font-style: normal;
+  font-weight: 300;
+}
+@font-face {
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-style: normal;
+  font-weight: 600;
+}
+html {
+  font-family: sans-serif; /* 1 */
+  -ms-text-size-adjust: 100%; /* 2 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+}
+body {
+  margin: 0;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+  display: block;
+}
+audio,
+canvas,
+progress,
+video {
+  display: inline-block; /* 1 */
+  vertical-align: baseline; /* 2 */
+}
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+[hidden],
+template {
+  display: none;
+}
+a:active,
+a:hover {
+  outline: 0;
+}
+abbr[title] {
+  border-bottom: 1px dotted;
+}
+b,
+strong {
+  font-weight: bold;
+}
+dfn {
+  font-style: italic;
+}
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+mark {
+  background: #ff0;
+  color: #000;
+}
+small {
+  font-size: 80%;
+}
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sup {
+  top: -0.5em;
+}
+sub {
+  bottom: -0.25em;
+}
+img {
+  border: 0;
+}
+svg:not(:root) {
+  overflow: hidden;
+}
+figure {
+  margin: 1em 40px;
+}
+hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+}
+pre {
+  overflow: auto;
+}
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+button,
+input,
+optgroup,
+select,
+textarea {
+  color: inherit; /* 1 */
+  font: inherit; /* 2 */
+  margin: 0; /* 3 */
+}
+button {
+  overflow: visible;
+}
+button,
+select {
+  text-transform: none;
+}
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button; /* 2 */
+  cursor: pointer; /* 3 */
+}
+button[disabled],
+html input[disabled] {
+  cursor: default;
+}
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+input {
+  line-height: normal;
+}
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+input[type="search"] {
+  -webkit-appearance: textfield; /* 1 */
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box; /* 2 */
+  box-sizing: content-box;
+}
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+legend {
+  border: 0; /* 1 */
+  padding: 0; /* 2 */
+}
+textarea {
+  overflow: auto;
+}
+optgroup {
+  font-weight: bold;
+}
+table {
+  font-family: monospace, monospace;
+  font-size : 0.8em;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+td,
+th {
+  padding: 0;
+}
+thead th {
+    border-bottom: 1px solid black;
+    background-color: white;
+}
+tr:nth-child(odd){
+  background-color: rgb(248,248,248);
+}
+
+
+/*
+* Skeleton V2.0.4
+* Copyright 2014, Dave Gamache
+* www.getskeleton.com
+* Free to use under the MIT license.
+* http://www.opensource.org/licenses/mit-license.php
+* 12/29/2014
+*/
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box; }
+.column,
+.columns {
+  width: 100%;
+  float: left;
+  box-sizing: border-box; }
+@media (min-width: 400px) {
+  .container {
+    width: 85%;
+    padding: 0; }
+}
+@media (min-width: 550px) {
+  .container {
+    width: 80%; }
+  .column,
+  .columns {
+    margin-left: 4%; }
+  .column:first-child,
+  .columns:first-child {
+    margin-left: 0; }
+
+  .one.column,
+  .one.columns                    { width: 4.66666666667%; }
+  .two.columns                    { width: 13.3333333333%; }
+  .three.columns                  { width: 22%;            }
+  .four.columns                   { width: 30.6666666667%; }
+  .five.columns                   { width: 39.3333333333%; }
+  .six.columns                    { width: 48%;            }
+  .seven.columns                  { width: 56.6666666667%; }
+  .eight.columns                  { width: 65.3333333333%; }
+  .nine.columns                   { width: 74.0%;          }
+  .ten.columns                    { width: 82.6666666667%; }
+  .eleven.columns                 { width: 91.3333333333%; }
+  .twelve.columns                 { width: 100%; margin-left: 0; }
+
+  .one-third.column               { width: 30.6666666667%; }
+  .two-thirds.column              { width: 65.3333333333%; }
+
+  .one-half.column                { width: 48%; }
+
+  /* Offsets */
+  .offset-by-one.column,
+  .offset-by-one.columns          { margin-left: 8.66666666667%; }
+  .offset-by-two.column,
+  .offset-by-two.columns          { margin-left: 17.3333333333%; }
+  .offset-by-three.column,
+  .offset-by-three.columns        { margin-left: 26%;            }
+  .offset-by-four.column,
+  .offset-by-four.columns         { margin-left: 34.6666666667%; }
+  .offset-by-five.column,
+  .offset-by-five.columns         { margin-left: 43.3333333333%; }
+  .offset-by-six.column,
+  .offset-by-six.columns          { margin-left: 52%;            }
+  .offset-by-seven.column,
+  .offset-by-seven.columns        { margin-left: 60.6666666667%; }
+  .offset-by-eight.column,
+  .offset-by-eight.columns        { margin-left: 69.3333333333%; }
+  .offset-by-nine.column,
+  .offset-by-nine.columns         { margin-left: 78.0%;          }
+  .offset-by-ten.column,
+  .offset-by-ten.columns          { margin-left: 86.6666666667%; }
+  .offset-by-eleven.column,
+  .offset-by-eleven.columns       { margin-left: 95.3333333333%; }
+
+  .offset-by-one-third.column,
+  .offset-by-one-third.columns    { margin-left: 34.6666666667%; }
+  .offset-by-two-thirds.column,
+  .offset-by-two-thirds.columns   { margin-left: 69.3333333333%; }
+
+  .offset-by-one-half.column,
+  .offset-by-one-half.columns     { margin-left: 52%; }
+
+}
+html {
+  font-size: 62.5%; }
+body {
+  font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
+  line-height: 1.6;
+  font-weight: 400;
+  font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #222; }
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-weight: 300; }
+h1 { font-size: 3.6rem; line-height: 1.2;  letter-spacing: -.1rem;}
+h2 { font-size: 3.4rem; line-height: 1.25; letter-spacing: -.1rem; }
+h3 { font-size: 3.2rem; line-height: 1.3;  letter-spacing: -.1rem; }
+h4 { font-size: 2.8rem; line-height: 1.35; letter-spacing: -.08rem; }
+h5 { font-size: 2.4rem; line-height: 1.5;  letter-spacing: -.05rem; }
+h6 { font-size: 1.5rem; line-height: 1.6;  letter-spacing: 0; }
+
+p {
+  margin-top: 0; }
+a {
+  color: #1EAEDB; }
+a:hover {
+  color: #0FA0CE; }
+.button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  display: inline-block;
+  height: 38px;
+  padding: 0 30px;
+  color: #555;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 38px;
+  letter-spacing: .1rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: transparent;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  cursor: pointer;
+  box-sizing: border-box; }
+.button:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover,
+.button:focus,
+button:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus,
+input[type="button"]:focus {
+  color: #333;
+  border-color: #888;
+  outline: 0; }
+.button.button-primary,
+button.button-primary,
+input[type="submit"].button-primary,
+input[type="reset"].button-primary,
+input[type="button"].button-primary {
+  color: #FFF;
+  background-color: #33C3F0;
+  border-color: #33C3F0; }
+.button.button-primary:hover,
+button.button-primary:hover,
+input[type="submit"].button-primary:hover,
+input[type="reset"].button-primary:hover,
+input[type="button"].button-primary:hover,
+.button.button-primary:focus,
+button.button-primary:focus,
+input[type="submit"].button-primary:focus,
+input[type="reset"].button-primary:focus,
+input[type="button"].button-primary:focus {
+  color: #FFF;
+  background-color: #1EAEDB;
+  border-color: #1EAEDB; }
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea,
+select {
+  height: 38px;
+  padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */
+  background-color: #fff;
+  border: 1px solid #D1D1D1;
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box; }
+/* Removes awkward default styles on some inputs for iOS */
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none; }
+textarea {
+  min-height: 65px;
+  padding-top: 6px;
+  padding-bottom: 6px; }
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  border: 1px solid #33C3F0;
+  outline: 0; }
+label,
+legend {
+  display: block;
+  margin-bottom: .5rem;
+  font-weight: 600; }
+fieldset {
+  padding: 0;
+  border-width: 0; }
+input[type="checkbox"],
+input[type="radio"] {
+  display: inline; }
+label > .label-body {
+  display: inline-block;
+  margin-left: .5rem;
+  font-weight: normal; }
+ul {
+  list-style: circle; }
+ol {
+  list-style: decimal; }
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+  margin: 1.5rem 0 1.5rem 3rem;
+  font-size: 90%; }
+li {
+  margin-bottom: 1rem; }
+th,
+td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #E1E1E1; }
+th:first-child,
+td:first-child {
+  padding-left: 0; }
+th:last-child,
+td:last-child {
+  padding-right: 0; }
+button,
+.button {
+  margin-bottom: 1rem; }
+input,
+textarea,
+select,
+fieldset {
+  margin-bottom: 1.5rem; }
+pre,
+blockquote,
+dl,
+figure,
+table,
+p,
+ul,
+ol,
+form {
+  margin-bottom: 2.5rem; }
+.u-full-width {
+  width: 100%;
+  box-sizing: border-box; }
+.u-max-full-width {
+  max-width: 100%;
+  box-sizing: border-box; }
+.u-pull-right {
+  float: right; }
+.u-pull-left {
+  float: left; }
+hr {
+  margin-top: 3rem;
+  margin-bottom: 3.5rem;
+  border-width: 0;
+  border-top: 1px solid #E1E1E1; }
+.container:after,
+.row:after,
+.u-cf {
+  content: "";
+  display: table;
+  clear: both; }
+
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  color: #333;
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+pre.sourceCode.julia {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  color: #333;
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+pre.julia-error {
+  color : red
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+code {
+  padding: 2px 4px;
+  font-size: 90%;
+
+  background-color: #ffffff;
+  border-radius: 4px;
+}
+
+@media (min-width: 400px) {}
+@media (min-width: 550px) {}
+@media (min-width: 750px) {}
+@media (min-width: 1000px) {}
+@media (min-width: 1200px) {}
+
+h1.title {margin-top : 20px}
+img {max-width : 100%}
+div.title {text-align: center;}
+
+  </style>
+
+  
+<style>
+pre.hljl {
+    border: 1px solid #ccc;
+    margin: 5px;
+    padding: 5px;
+    overflow-x: auto;
+    color: rgb(68,68,68); background-color: rgb(251,251,251); }
+pre.hljl > span.hljl-t { }
+pre.hljl > span.hljl-w { }
+pre.hljl > span.hljl-e { }
+pre.hljl > span.hljl-eB { }
+pre.hljl > span.hljl-o { }
+pre.hljl > span.hljl-k { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kc { color: rgb(59,151,46); font-style: italic; }
+pre.hljl > span.hljl-kd { color: rgb(214,102,97); font-style: italic; }
+pre.hljl > span.hljl-kn { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kp { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kr { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kt { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-n { }
+pre.hljl > span.hljl-na { }
+pre.hljl > span.hljl-nb { }
+pre.hljl > span.hljl-nbp { }
+pre.hljl > span.hljl-nc { }
+pre.hljl > span.hljl-ncB { }
+pre.hljl > span.hljl-nd { color: rgb(214,102,97); }
+pre.hljl > span.hljl-ne { }
+pre.hljl > span.hljl-neB { }
+pre.hljl > span.hljl-nf { color: rgb(66,102,213); }
+pre.hljl > span.hljl-nfm { color: rgb(66,102,213); }
+pre.hljl > span.hljl-np { }
+pre.hljl > span.hljl-nl { }
+pre.hljl > span.hljl-nn { }
+pre.hljl > span.hljl-no { }
+pre.hljl > span.hljl-nt { }
+pre.hljl > span.hljl-nv { }
+pre.hljl > span.hljl-nvc { }
+pre.hljl > span.hljl-nvg { }
+pre.hljl > span.hljl-nvi { }
+pre.hljl > span.hljl-nvm { }
+pre.hljl > span.hljl-l { }
+pre.hljl > span.hljl-ld { color: rgb(148,91,176); font-style: italic; }
+pre.hljl > span.hljl-s { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sa { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sb { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sc { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sd { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sdB { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sdC { color: rgb(201,61,57); }
+pre.hljl > span.hljl-se { color: rgb(59,151,46); }
+pre.hljl > span.hljl-sh { color: rgb(201,61,57); }
+pre.hljl > span.hljl-si { }
+pre.hljl > span.hljl-so { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sr { color: rgb(201,61,57); }
+pre.hljl > span.hljl-ss { color: rgb(201,61,57); }
+pre.hljl > span.hljl-ssB { color: rgb(201,61,57); }
+pre.hljl > span.hljl-nB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nbB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nfB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nh { color: rgb(59,151,46); }
+pre.hljl > span.hljl-ni { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nil { color: rgb(59,151,46); }
+pre.hljl > span.hljl-noB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-oB { color: rgb(102,102,102); font-weight: bold; }
+pre.hljl > span.hljl-ow { color: rgb(102,102,102); font-weight: bold; }
+pre.hljl > span.hljl-p { }
+pre.hljl > span.hljl-c { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-ch { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cm { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cp { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cpB { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cs { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-csB { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-g { }
+pre.hljl > span.hljl-gd { }
+pre.hljl > span.hljl-ge { }
+pre.hljl > span.hljl-geB { }
+pre.hljl > span.hljl-gh { }
+pre.hljl > span.hljl-gi { }
+pre.hljl > span.hljl-go { }
+pre.hljl > span.hljl-gp { }
+pre.hljl > span.hljl-gs { }
+pre.hljl > span.hljl-gsB { }
+pre.hljl > span.hljl-gt { }
+</style>
+
+
+
+</HEAD>
+  <BODY>
+    <div class ="container">
+      <div class = "row">
+        <div class = "col-md-12 twelve columns">
+
+          <div class="title">
+            <h1 class="title">Unit Checked Arithmetic via Unitful.jl</h1>
+            <h5>Chris Rackauckas</h5>
+            
+          </div>
+
+          <p>Units and dimensional analysis are standard tools across the sciences for checking the correctness of your equation. However, most ODE solvers only allow for the equation to be in dimensionless form, leaving it up to the user to both convert the equation to a dimensionless form, punch in the equations, and hopefully not make an error along the way.</p>
+<p>DifferentialEquations.jl allows for one to use Unitful.jl to have unit-checked arithmetic natively in the solvers. Given the dispatch implementation of the Unitful, this has little overhead.</p>
+<h2>Using Unitful</h2>
+<p>To use Unitful, you need to have the package installed. Then you can add units to your variables. For example:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>Unitful</span><span class='hljl-t'>
+</span><span class='hljl-n'>t</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nfB'>1.0</span><span class='hljl-so'>u&quot;s&quot;</span>
+</pre>
+
+
+
+<p>Notice that <code>t</code> is a variable with units in seconds. If we make another value with seconds, they can add</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>t2</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nfB'>1.02</span><span class='hljl-so'>u&quot;s&quot;</span><span class='hljl-t'>
+</span><span class='hljl-n'>t</span><span class='hljl-oB'>+</span><span class='hljl-n'>t2</span>
+</pre>
+
+
+<pre class="hljl">
+2.02 s
+</pre>
+
+
+<p>and they can multiply:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>t</span><span class='hljl-oB'>*</span><span class='hljl-n'>t2</span>
+</pre>
+
+
+<pre class="hljl">
+1.02 s^2
+</pre>
+
+
+<p>You can even do rational roots:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>sqrt</span><span class='hljl-p'>(</span><span class='hljl-n'>t</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="hljl">
+1.0 s^1/2
+</pre>
+
+
+<p>Many operations work. These operations will check to make sure units are correct, and will throw an error for incorrect operations:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>t</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-nf'>sqrt</span><span class='hljl-p'>(</span><span class='hljl-n'>t</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: DimensionError: 1.0 s and 1.0 s^1/2 are not dimensionally compatible.
+</pre>
+
+
+<h2>Using Unitful with DifferentialEquations.jl</h2>
+<p>Just like with other number systems, you can choose the units for your numbers by simply specifying the units of the initial condition and the timestep. For example, to solve the linear ODE where the variable has units of Newton&#39;s and <code>t</code> is in Seconds, we would use:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>DifferentialEquations</span><span class='hljl-t'>
+</span><span class='hljl-n'>f</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-n'>y</span><span class='hljl-p'>,</span><span class='hljl-n'>p</span><span class='hljl-p'>,</span><span class='hljl-n'>t</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-nfB'>0.5</span><span class='hljl-oB'>*</span><span class='hljl-n'>y</span><span class='hljl-t'>
+</span><span class='hljl-n'>u0</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nfB'>1.5</span><span class='hljl-so'>u&quot;N&quot;</span><span class='hljl-t'>
+</span><span class='hljl-n'>prob</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>ODEProblem</span><span class='hljl-p'>(</span><span class='hljl-n'>f</span><span class='hljl-p'>,</span><span class='hljl-n'>u0</span><span class='hljl-p'>,(</span><span class='hljl-nfB'>0.0</span><span class='hljl-so'>u&quot;s&quot;</span><span class='hljl-p'>,</span><span class='hljl-nfB'>1.0</span><span class='hljl-so'>u&quot;s&quot;</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-n'>sol</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>solve</span><span class='hljl-p'>(</span><span class='hljl-n'>prob</span><span class='hljl-p'>,</span><span class='hljl-nf'>Tsit5</span><span class='hljl-p'>())</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: DimensionError: N s^-1 and 0.75 N are not dimensionally compatible.
+</pre>
+
+
+<p>Notice that we recieved a unit mismatch error. This is correctly so&#33; Remember that for an ODE:</p>
+<p class="math">\[
+\begin{align}
+\frac{dy}{dt} = f(t,y)
+\end{align}
+\]</p>
+<p>we must have that <code>f</code> is a rate, i.e. <code>f</code> is a change in <code>y</code> per unit time. So we need to fix the units of <code>f</code> in our example to be <code>N/s</code>. Notice that we then do not receive an error if we do the following:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>f</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-n'>y</span><span class='hljl-p'>,</span><span class='hljl-n'>p</span><span class='hljl-p'>,</span><span class='hljl-n'>t</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-nfB'>0.5</span><span class='hljl-oB'>*</span><span class='hljl-n'>y</span><span class='hljl-oB'>/</span><span class='hljl-nfB'>3.0</span><span class='hljl-so'>u&quot;s&quot;</span><span class='hljl-t'>
+</span><span class='hljl-n'>prob</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>ODEProblem</span><span class='hljl-p'>(</span><span class='hljl-n'>f</span><span class='hljl-p'>,</span><span class='hljl-n'>u0</span><span class='hljl-p'>,(</span><span class='hljl-nfB'>0.0</span><span class='hljl-so'>u&quot;s&quot;</span><span class='hljl-p'>,</span><span class='hljl-nfB'>1.0</span><span class='hljl-so'>u&quot;s&quot;</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-n'>sol</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>solve</span><span class='hljl-p'>(</span><span class='hljl-n'>prob</span><span class='hljl-p'>,</span><span class='hljl-nf'>Tsit5</span><span class='hljl-p'>())</span>
+</pre>
+
+
+
+<p>This gives a a normal solution object. Notice that the values are all with the correct units:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>print</span><span class='hljl-p'>(</span><span class='hljl-n'>sol</span><span class='hljl-p'>[</span><span class='hljl-oB'>:</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="hljl">
+Unitful.Quantity&#123;Float64,𝐋*𝐌*𝐓^-2,Unitful.FreeUnits&#123;&#40;N,&#41;,𝐋*𝐌*𝐓^-2,nothing&#125;&#125;&#91;1.5 N, 1.53621 N, 1.77204 N&#93;
+</pre>
+
+
+<p>We can plot the solution using the plot recipe.</p>
+
+
+<pre class='hljl'>
+<span class='hljl-cs'>#Pkg.clone(&quot;https://github.com/ajkeller34/UnitfulPlots.jl&quot;)</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>UnitfulPlots</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>Plots</span><span class='hljl-t'>
+</span><span class='hljl-nf'>gr</span><span class='hljl-p'>()</span><span class='hljl-t'>
+</span><span class='hljl-nf'>plot</span><span class='hljl-p'>(</span><span class='hljl-n'>sol</span><span class='hljl-oB'>.</span><span class='hljl-n'>t</span><span class='hljl-p'>,</span><span class='hljl-n'>sol</span><span class='hljl-p'>[</span><span class='hljl-oB'>:</span><span class='hljl-p'>],</span><span class='hljl-n'>lw</span><span class='hljl-oB'>=</span><span class='hljl-ni'>3</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<img src="data:image/png;base64,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"  />
+
+<p>Notice that here we pulled the units for the label directly from the solution. Thus if the units change, the labels will change automatically.</p>
+<h2>Appendix</h2>
+
+
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>DiffEqTutorials</span><span class='hljl-t'>
+</span><span class='hljl-n'>DiffEqTutorials</span><span class='hljl-oB'>.</span><span class='hljl-nf'>tutorial_footer</span><span class='hljl-p'>(</span><span class='hljl-n'>WEAVE_ARGS</span><span class='hljl-p'>[</span><span class='hljl-sc'>:folder</span><span class='hljl-p'>],</span><span class='hljl-n'>WEAVE_ARGS</span><span class='hljl-p'>[</span><span class='hljl-sc'>:file</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="hljl">
+These benchmarks are part of the DiffEqTutorials.jl repository, found at:
+
+https://github.com/JuliaDiffEq/DiffEqTutorials.jl
+
+To locally run this tutorial, do the following commands:
+
+using DiffEqTutorials
+DiffEqTutorials.weave_file&#40;&quot;type_handling&quot;,&quot;unitful.jmd&quot;&#41;
+
+Computer Information:
+
+Julia Version 1.1.0
+Commit 80516ca202 &#40;2019-01-21 21:24 UTC&#41;
+Platform Info:
+  OS: Windows &#40;x86_64-w64-mingw32&#41;
+  CPU: Intel&#40;R&#41; Core&#40;TM&#41; i7-8700 CPU @ 3.20GHz
+  WORD_SIZE: 64
+  LIBM: libopenlibm
+  LLVM: libLLVM-6.0.1 &#40;ORCJIT, skylake&#41;
+Environment:
+  JULIA_EDITOR &#61; &quot;C:\Users\accou\AppData\Local\atom\app-1.34.0\atom.exe&quot; -a
+  JULIA_NUM_THREADS &#61; 6
+
+Package Information:
+
+    Status &#96;C:\Users\accou\.julia\environments\v1.1\Project.toml&#96;
+  &#91;7e558dbc&#93; ArbNumerics v0.3.6
+  &#91;c52e3926&#93; Atom v0.7.14
+  &#91;6e4b80f9&#93; BenchmarkTools v0.4.2
+  &#91;336ed68f&#93; CSV v0.4.3
+  &#91;3895d2a7&#93; CUDAapi v0.5.4
+  &#91;be33ccc6&#93; CUDAnative v1.0.1
+  &#91;3a865a2d&#93; CuArrays v0.9.1
+  &#91;a93c6f00&#93; DataFrames v0.17.1
+  &#91;55939f99&#93; DecFP v0.4.8
+  &#91;abce61dc&#93; Decimals v0.4.0
+  &#91;39dd38d3&#93; Dierckx v0.4.1
+  &#91;459566f4&#93; DiffEqCallbacks v2.5.2
+  &#91;f3b72e0c&#93; DiffEqDevTools v2.6.1
+  &#91;aae7a2af&#93; DiffEqFlux v0.2.0
+  &#91;c894b116&#93; DiffEqJump v6.1.0&#43; &#91;&#96;C:\Users\accou\.julia\dev\DiffEqJump&#96;&#93;
+  &#91;1130ab10&#93; DiffEqParamEstim v1.6.0&#43; &#91;&#96;C:\Users\accou\.julia\dev\DiffEqPar
+amEstim&#96;&#93;
+  &#91;055956cb&#93; DiffEqPhysics v3.1.0
+  &#91;225cb15b&#93; DiffEqTutorials v0.0.0 &#91;&#96;C:\Users\accou\.julia\external\DiffEq
+Tutorials.jl&#96;&#93;
+  &#91;0c46a032&#93; DifferentialEquations v6.3.0
+  &#91;497a8b3b&#93; DoubleFloats v0.7.5
+  &#91;587475ba&#93; Flux v0.7.3
+  &#91;f6369f11&#93; ForwardDiff v0.10.3&#43; &#91;&#96;C:\Users\accou\.julia\dev\ForwardDiff&#96;&#93;
+  &#91;28b8d3ca&#93; GR v0.38.1
+  &#91;7073ff75&#93; IJulia v1.17.0
+  &#91;c601a237&#93; Interact v0.9.1
+  &#91;b6b21f68&#93; Ipopt v0.5.4
+  &#91;4076af6c&#93; JuMP v0.19.0
+  &#91;e5e0dc1b&#93; Juno v0.5.4
+  &#91;eff96d63&#93; Measurements v2.0.0
+  &#91;76087f3c&#93; NLopt v0.5.1
+  &#91;429524aa&#93; Optim v0.17.2
+  &#91;1dea7af3&#93; OrdinaryDiffEq v5.2.1&#43; &#91;&#96;C:\Users\accou\.julia\dev\OrdinaryDif
+fEq&#96;&#93;
+  &#91;65888b18&#93; ParameterizedFunctions v4.1.1
+  &#91;91a5bcdd&#93; Plots v0.23.0
+  &#91;71ad9d73&#93; PuMaS v0.0.0 &#91;&#96;C:\Users\accou\.julia\dev\PuMaS&#96;&#93;
+  &#91;d330b81b&#93; PyPlot v2.7.0
+  &#91;731186ca&#93; RecursiveArrayTools v0.20.0
+  &#91;90137ffa&#93; StaticArrays v0.10.2
+  &#91;789caeaf&#93; StochasticDiffEq v6.1.1&#43; &#91;&#96;C:\Users\accou\.julia\dev\Stochasti
+cDiffEq&#96;&#93;
+  &#91;c3572dad&#93; Sundials v3.0.0
+  &#91;1986cc42&#93; Unitful v0.14.0
+  &#91;2a06ce6d&#93; UnitfulPlots v0.0.0 #master &#40;https://github.com/ajkeller34/Uni
+tfulPlots.jl&#41;
+  &#91;44d3d7a6&#93; Weave v0.7.1 &#91;&#96;C:\Users\accou\.julia\dev\Weave&#96;&#93;
+</pre>
+
+
+
+
+          <HR/>
+          <div class="footer"><p>
+          Published from <a href="unitful.jmd">unitful.jmd</a> using
+          <a href="http://github.com/mpastell/Weave.jl">Weave.jl</a>
+           on 2019-02-25.
+          <p></div>
+
+
+        </div>
+      </div>
+    </div>
+  </BODY>
+</HTML>

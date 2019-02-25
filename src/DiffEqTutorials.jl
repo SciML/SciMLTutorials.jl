@@ -40,13 +40,18 @@ function weave_file(folder,file,build_list=(:script,:html,:pdf,:notebook))
   end
 end
 
-#=
-# Needs two arg form
 function weave_all()
-  foreach(weave_file,
-          file for file in readdir("tutorials") if endswith(file, ".jmd"))
+  for folder in readdir(joinpath(repo_directory,"tutorials"))
+    folder == "test.jmd" && continue
+    for file in readdir(joinpath(repo_directory,"tutorials",folder))
+      println("Building $(joinpath(folder,file)))")
+      try
+        weave_file(folder,file)
+      catch
+      end
+    end
+  end
 end
-=#
 
 function tutorial_footer(folder=nothing,file=nothing)
   println("""

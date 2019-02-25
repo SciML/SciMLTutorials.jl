@@ -28,25 +28,25 @@ DiffEqTutorials.open_notebooks()
 ## Table of Contents
 
 - Introduction
-  - [Introduction to DifferentialEquations.jl through ODEs](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/ode_introduction.html)
-  - [Detecting Stiffness and Choosing an ODE Algorithm](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/choosing_algs.html)
-  - [Optimizing your DiffEq Code](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/optimizing_diffeq_code.html)
-  - [Callbacks and Event Handling](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/callbacks_and_events.html)
-  - [Formatting Plots](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/formatting_plots.html)
+  - [Introduction to DifferentialEquations.jl through ODEs](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/introduction/ode_introduction.html)
+  - [Detecting Stiffness and Choosing an ODE Algorithm](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/introduction/choosing_algs.html)
+  - [Optimizing your DiffEq Code](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/introduction/optimizing_diffeq_code.html)
+  - [Callbacks and Event Handling](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/introduction/callbacks_and_events.html)
+  - [Formatting Plots](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/introduction/formatting_plots.html)
 - Modeling Examples
-  - [Classical Physics Models](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/classical_physics.html)
-  - [Conditional Dosing Example](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/conditional_dosing.html)
-  - [Kepler Problem Orbit](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/kepler_problem.html)
+  - [Classical Physics Models](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/models/classical_physics.html)
+  - [Conditional Dosing Example](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/models/conditional_dosing.html)
+  - [Kepler Problem Orbit](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/models/kepler_problem.html)
 - Advanced ODE Features
-  - [Feagin's Order 10, 12, and 14 Methods](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/feagin.html)
-  - [Finding Maxima and Minima of DiffEq Solutions](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/ode_minmax.html)
-  - [Monte Carlo Parameter Estimation from Data](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/monte_carlo_parameter_estim.html)
+  - [Feagin's Order 10, 12, and 14 Methods](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/ode_extras/feagin.html)
+  - [Finding Maxima and Minima of DiffEq Solutions](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/ode_extras/ode_minmax.html)
+  - [Monte Carlo Parameter Estimation from Data](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/ode_extras/monte_carlo_parameter_estim.html)
 - Type Handling
-  - [Solving Equations with Julia-Defined Types](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/number_types.html)
-  - [Numbers with Uncertainties](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/uncertainties.html)
-  - [Unit Check Arithmetic via Unitful.jl](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/unitful.html)
+  - [Solving Equations with Julia-Defined Types](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/type_handling/number_types.html)
+  - [Numbers with Uncertainties](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/type_handling/uncertainties.html)
+  - [Unit Check Arithmetic via Unitful.jl](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/type_handling/unitful.html)
 - Advanced
-  - [A 2D Cardiac Electrophysiology Model (CUDA-accelerated PDE solver)](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/beeler_reuter.html)
+  - [A 2D Cardiac Electrophysiology Model (CUDA-accelerated PDE solver)](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/advanced/beeler_reuter.html)
 
 ## Contributing
 
@@ -54,5 +54,11 @@ All of the files are generated from the Weave.jl files in the `tutorials` folder
 
 ```julia
 using DiffEqTutorials
-DiffEqTutorials.weave_file(".","introduction/ode_introduction.jmd")
+DiffEqTutorials.weave_file("introduction","ode_introduction.jmd")
+```
+
+To generate all of the notebooks, do:
+
+```julia
+DiffeqTutorials.weave_all()
 ```
