@@ -2,32 +2,19 @@
 
 [![Join the chat at https://gitter.im/JuliaDiffEq/Lobby](https://badges.gitter.im/JuliaDiffEq/Lobby.svg)](https://gitter.im/JuliaDiffEq/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-DiffEqTutorials.jl holds Jupyter notebooks showing how to utilize the software in
-the JuliaDiffEq ecosystem. This set of tutorials was made to complement the
-[documentation](http://docs.juliadiffeq.org/latest/) and the [devdocs](http://devdocs.juliadiffeq.org/latest/)
-by providing practical examples of the concepts in an interactive form. For more details, please
+DiffEqTutorials.jl holds PDFs, webpages, and interactive Jupyter notebooks
+showing how to utilize the software in the JuliaDiffEq ecosystem. This set of
+tutorials was made to complement the
+[documentation](http://docs.juliadiffeq.org/latest/) and the
+[devdocs](http://devdocs.juliadiffeq.org/latest/)
+by providing practical examples of the concepts. For more details, please
 consult the docs.
-
-## Viewing the Notebooks Locally
-
-To view the notebooks locally and interact with the contents, use the following
-commands (requires [IJulia](https://github.com/JuliaLang/IJulia.jl)):
-
-```julia
-using Pkg
-#Pkg.add("IJulia") # Need to do this the first time to install IJulia!
-pkg"add https://github.com/JuliaDiffEq/DiffEqTutorials.jl"
-using IJulia, DiffEqTutorials
-notebook(dir = joinpath(dirname(pathof(DiffEqTutorials)),".."))
-```
 
 ## Video Tutorial
 
 [![Video Tutorial](https://user-images.githubusercontent.com/1814174/36342812-bdfd0606-13b8-11e8-9eff-ff219de909e5.PNG)](https://youtu.be/KPEqYtEd-zY)
 
 ## Table of Contents
-
-The notebooks can be viewed remotely on Github or via [nbviewer](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/tree/master/)
 
 - Interactive Introduction
   - [Introduction to DifferentialEquations.jl through ODEs](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/Introduction/ODEIntroduction.ipynb)
