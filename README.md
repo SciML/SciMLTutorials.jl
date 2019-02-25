@@ -36,3 +36,12 @@ consult the docs.
   - [Unit Check Arithmetic via Unitful.jl](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraODEFeatures/Unit%20Checked%20Arithmetic%20via%20Unitful.ipynb)
 - Advanced
   - [A 2D Cardiac Electrophysiology Model (CUDA-accelerated PDE solver)](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/beeler_reuter.html)
+
+## Contributing
+
+All of the files are generated from the Weave.jl files in the `tutorials` folder. To run the generation process, do for example:
+
+```julia
+using DiffEqTutorials
+DiffEqTutorials.weave_file(".","introduction/ode_introduction.jmd")
+```
