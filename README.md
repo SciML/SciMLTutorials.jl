@@ -33,7 +33,7 @@ consult the docs.
 - Type Handling
   - [Solving Equations with Julia-Defined Types](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/number_types.html)
   - [Numbers with Uncertainties](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/uncertainties.html)
-  - [Unit Check Arithmetic via Unitful.jl](http://nbviewer.jupyter.org/github/JuliaDiffEq/DiffEqTutorials.jl/blob/master/ExtraODEFeatures/Unit%20Checked%20Arithmetic%20via%20Unitful.ipynb)
+  - [Unit Check Arithmetic via Unitful.jl](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/unitful.html)
 - Advanced
   - [A 2D Cardiac Electrophysiology Model (CUDA-accelerated PDE solver)](https://htmlpreview.github.io/?https://github.com/JuliaDiffEq/DiffEqTutorials.jl/blob/master/html/beeler_reuter.html)
 
