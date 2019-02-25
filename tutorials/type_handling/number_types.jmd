@@ -64,7 +64,7 @@ println(sol[end])
 
 #### ArbFloats
 
-These high precision numbers which are much faster than Bigs for less than 500-800 bits of accuracy. Having already installed Nemo and ArbFloats, I can use them in DifferentialEquations.jl via:
+These high precision numbers which are much faster than Bigs for less than 500-800 bits of accuracy.
 
 ```julia
 using ArbNumerics
