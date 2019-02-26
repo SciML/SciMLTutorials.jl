@@ -534,6 +534,14 @@ pre.sourceCode.julia {
   border-radius: 4px;
 }
 
+pre.output {
+  filter : brightness(90%);
+  border : none;
+  /* matching hard-coded values in Highlights.jl */
+  margin : 5px;  
+  padding : 5px;
+}
+
 pre.julia-error {
   color : red
 }
@@ -880,7 +888,7 @@ f(t,u) = \frac{du}{dt}
 </pre>
 
 
-<pre class="hljl">
+<pre class="output">
 poincare_map &#40;generic function with 1 method&#41;
 </pre>
 
@@ -973,7 +981,7 @@ E = T+V = V(x,y)+\frac{1}{2}(\dot{x}^2+\dot{y}^2).
 </pre>
 
 
-<pre class="hljl">
+<pre class="output">
 sol.retcode &#61; :Success
 </pre>
 
@@ -999,7 +1007,7 @@ sol.retcode &#61; :Success
 </pre>
 
 
-<pre class="hljl">
+<pre class="output">
 ΔE &#61; energy&#91;1&#93; - energy&#91;end&#93; &#61; -3.099845153070602e-5
 </pre>
 
@@ -1062,7 +1070,7 @@ sol.retcode &#61; :Success
 </pre>
 
 
-<pre class="hljl">
+<pre class="output">
 ΔE &#61; energy&#91;1&#93; - energy&#91;end&#93; &#61; 9.020562075079397e-15
 </pre>
 
@@ -1086,7 +1094,7 @@ sol.retcode &#61; :Success
 </pre>
 
 
-<pre class="hljl">
+<pre class="output">
 ΔE &#61; energy&#91;1&#93; - energy&#91;end&#93; &#61; -8.017994408110463e-6
 </pre>
 
@@ -1110,7 +1118,7 @@ sol.retcode &#61; :Success
 </pre>
 
 
-<pre class="hljl">
+<pre class="output">
 These benchmarks are part of the DiffEqTutorials.jl repository, found at:
 
 https://github.com/JuliaDiffEq/DiffEqTutorials.jl
@@ -1148,6 +1156,8 @@ Package Information:
   &#91;55939f99&#93; DecFP v0.4.8
   &#91;abce61dc&#93; Decimals v0.4.0
   &#91;39dd38d3&#93; Dierckx v0.4.1
+  &#91;bb2cbb15&#93; DiffEqBenchmarks v0.0.0 &#91;&#96;C:\Users\accou\.julia\external\DiffE
+qBenchmarks.jl&#96;&#93;
   &#91;459566f4&#93; DiffEqCallbacks v2.5.2
   &#91;f3b72e0c&#93; DiffEqDevTools v2.6.1
   &#91;aae7a2af&#93; DiffEqFlux v0.2.0
@@ -1155,6 +1165,7 @@ Package Information:
   &#91;1130ab10&#93; DiffEqParamEstim v1.6.0&#43; &#91;&#96;C:\Users\accou\.julia\dev\DiffEqPar
 amEstim&#96;&#93;
   &#91;055956cb&#93; DiffEqPhysics v3.1.0
+  &#91;a077e3f3&#93; DiffEqProblemLibrary v4.1.0
   &#91;225cb15b&#93; DiffEqTutorials v0.0.0 &#91;&#96;C:\Users\accou\.julia\external\DiffEq
 Tutorials.jl&#96;&#93;
   &#91;0c46a032&#93; DifferentialEquations v6.3.0
@@ -1167,8 +1178,13 @@ Tutorials.jl&#96;&#93;
   &#91;b6b21f68&#93; Ipopt v0.5.4
   &#91;4076af6c&#93; JuMP v0.19.0
   &#91;e5e0dc1b&#93; Juno v0.5.4
+  &#91;7f56f5a3&#93; LSODA v0.4.0
   &#91;eff96d63&#93; Measurements v2.0.0
   &#91;76087f3c&#93; NLopt v0.5.1
+  &#91;c030b06c&#93; ODE v2.4.0
+  &#91;54ca160b&#93; ODEInterface v0.4.5&#43; &#91;&#96;C:\Users\accou\.julia\dev\ODEInterface&#96;
+&#93;
+  &#91;09606e27&#93; ODEInterfaceDiffEq v3.0.0
   &#91;429524aa&#93; Optim v0.17.2
   &#91;1dea7af3&#93; OrdinaryDiffEq v5.2.1&#43; &#91;&#96;C:\Users\accou\.julia\dev\OrdinaryDif
 fEq&#96;&#93;
@@ -1194,7 +1210,7 @@ tfulPlots.jl&#41;
           <div class="footer"><p>
           Published from <a href="classical_physics.jmd">classical_physics.jmd</a> using
           <a href="http://github.com/mpastell/Weave.jl">Weave.jl</a>
-           on 2019-02-25.
+           on 2019-02-26.
           <p></div>
 
 

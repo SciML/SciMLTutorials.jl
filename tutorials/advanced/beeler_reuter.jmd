@@ -365,8 +365,8 @@ u0[90:102,90:102] .= v1;   # a small square in the middle of the domain
 The initial condition is a small square in the middle of the domain.
 
 ```julia
-using GR
-imshow(u0)
+using Plots
+heatmap(u0)
 ```
 
 Next, the problem is defined:
@@ -385,7 +385,7 @@ For stiff reaction-diffusion equations, CVODE_BDF from Sundial library is an exc
 ```
 
 ```julia
-imshow(sol.u[end])
+heatmap(sol.u[end])
 ```
 
 ## CPU/GPU Beeler-Reuter Solver
@@ -664,7 +664,7 @@ prob = ODEProblem(deriv_gpu, u0, (0.0, 50.0));
 ```
 
 ```julia
-imshow(sol.u[end])
+heatmap(sol.u[end])
 ```
 
 ## Summary

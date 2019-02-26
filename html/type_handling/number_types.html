@@ -534,6 +534,14 @@ pre.sourceCode.julia {
   border-radius: 4px;
 }
 
+pre.output {
+  filter : brightness(90%);
+  border : none;
+  /* matching hard-coded values in Highlights.jl */
+  margin : 5px;  
+  padding : 5px;
+}
+
 pre.julia-error {
   color : red
 }
@@ -688,7 +696,7 @@ pre.hljl > span.hljl-gt { }
 </pre>
 
 
-<pre class="hljl">
+<pre class="output">
 retcode: Success
 Interpolation: specialized 4th order &quot;free&quot; interpolation
 t: &#91;0.0, 0.0996426, 0.345703, 0.677692, 1.0&#93;
@@ -706,7 +714,7 @@ u: &#91;0.5, 0.552939, 0.708938, 0.99136, 1.3728&#93;
 </pre>
 
 
-<pre class="hljl">
+<pre class="output">
 retcode: Success
 Interpolation: 3rd order Hermite
 t: Rational&#123;Int64&#125;&#91;0//1, 1//64, 1//32, 3//64, 1//16, 5//64, 3//32, 7//64, 1
@@ -738,7 +746,7 @@ u: &#91;0.5, 0.507953, 0.516033, 0.524241, 0.53258, 0.541051, 0.549658, 0.55840
 </pre>
 
 
-<pre class="hljl">
+<pre class="output">
 415403291938655888343294424838034348376204408921988582429386196369066828013
 380062427154556444246064110042147806995712770513313913105317131993928991562
 472219540324173687134074558951938783349315387199475055050716642476760417033
@@ -782,7 +790,7 @@ u: &#91;0.5, 0.507953, 0.516033, 0.524241, 0.53258, 0.541051, 0.549658, 0.55840
 </pre>
 
 
-<pre class="hljl">
+<pre class="output">
 1.3728004409038087277892831823141155298533360144614213350145098661946611676
 11229
 </pre>
@@ -800,7 +808,7 @@ u: &#91;0.5, 0.507953, 0.516033, 0.524241, 0.53258, 0.541051, 0.549658, 0.55840
 </pre>
 
 
-<pre class="hljl">
+<pre class="output">
 1.3728004409038075
 </pre>
 
@@ -817,7 +825,7 @@ u: &#91;0.5, 0.507953, 0.516033, 0.524241, 0.53258, 0.541051, 0.549658, 0.55840
 </pre>
 
 
-<pre class="hljl">
+<pre class="output">
 1.372800440903808727789283182314
 </pre>
 
@@ -845,7 +853,7 @@ ERROR: StackOverflowError:
 </pre>
 
 
-<pre class="hljl">
+<pre class="output">
 1.372800440903808727789283182314
 ArbNumerics.ArbFloat&#123;128&#125;
 </pre>
@@ -877,7 +885,7 @@ Possible fix, define
 </pre>
 
 
-<pre class="hljl">
+<pre class="output">
 1.372800440903808727789283182314
 ArbNumerics.ArbFloat&#123;128&#125;
 </pre>
@@ -895,7 +903,7 @@ ArbNumerics.ArbFloat&#123;128&#125;
 </pre>
 
 
-<pre class="hljl">
+<pre class="output">
 These benchmarks are part of the DiffEqTutorials.jl repository, found at:
 
 https://github.com/JuliaDiffEq/DiffEqTutorials.jl
@@ -933,6 +941,8 @@ Package Information:
   &#91;55939f99&#93; DecFP v0.4.8
   &#91;abce61dc&#93; Decimals v0.4.0
   &#91;39dd38d3&#93; Dierckx v0.4.1
+  &#91;bb2cbb15&#93; DiffEqBenchmarks v0.0.0 &#91;&#96;C:\Users\accou\.julia\external\DiffE
+qBenchmarks.jl&#96;&#93;
   &#91;459566f4&#93; DiffEqCallbacks v2.5.2
   &#91;f3b72e0c&#93; DiffEqDevTools v2.6.1
   &#91;aae7a2af&#93; DiffEqFlux v0.2.0
@@ -940,6 +950,7 @@ Package Information:
   &#91;1130ab10&#93; DiffEqParamEstim v1.6.0&#43; &#91;&#96;C:\Users\accou\.julia\dev\DiffEqPar
 amEstim&#96;&#93;
   &#91;055956cb&#93; DiffEqPhysics v3.1.0
+  &#91;a077e3f3&#93; DiffEqProblemLibrary v4.1.0
   &#91;225cb15b&#93; DiffEqTutorials v0.0.0 &#91;&#96;C:\Users\accou\.julia\external\DiffEq
 Tutorials.jl&#96;&#93;
   &#91;0c46a032&#93; DifferentialEquations v6.3.0
@@ -952,8 +963,13 @@ Tutorials.jl&#96;&#93;
   &#91;b6b21f68&#93; Ipopt v0.5.4
   &#91;4076af6c&#93; JuMP v0.19.0
   &#91;e5e0dc1b&#93; Juno v0.5.4
+  &#91;7f56f5a3&#93; LSODA v0.4.0
   &#91;eff96d63&#93; Measurements v2.0.0
   &#91;76087f3c&#93; NLopt v0.5.1
+  &#91;c030b06c&#93; ODE v2.4.0
+  &#91;54ca160b&#93; ODEInterface v0.4.5&#43; &#91;&#96;C:\Users\accou\.julia\dev\ODEInterface&#96;
+&#93;
+  &#91;09606e27&#93; ODEInterfaceDiffEq v3.0.0
   &#91;429524aa&#93; Optim v0.17.2
   &#91;1dea7af3&#93; OrdinaryDiffEq v5.2.1&#43; &#91;&#96;C:\Users\accou\.julia\dev\OrdinaryDif
 fEq&#96;&#93;
@@ -979,7 +995,7 @@ tfulPlots.jl&#41;
           <div class="footer"><p>
           Published from <a href="number_types.jmd">number_types.jmd</a> using
           <a href="http://github.com/mpastell/Weave.jl">Weave.jl</a>
-           on 2019-02-25.
+           on 2019-02-26.
           <p></div>
 
 

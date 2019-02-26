@@ -232,8 +232,8 @@ u0 = fill(v0, (N, N));
 u0[90:102,90:102] .= v1;   # a small square in the middle of the domain
 
 
-using GR
-imshow(u0)
+using Plots
+heatmap(u0)
 
 
 using DifferentialEquations, Sundials
@@ -245,7 +245,7 @@ prob = ODEProblem(deriv_cpu, u0, (0.0, 50.0));
 @time sol = solve(prob, CVODE_BDF(linear_solver=:GMRES), saveat=100.0);
 
 
-imshow(sol.u[end])
+heatmap(sol.u[end])
 
 
 using CUDAnative, CuArrays
@@ -447,7 +447,7 @@ prob = ODEProblem(deriv_gpu, u0, (0.0, 50.0));
 @time sol = solve(prob, CVODE_BDF(linear_solver=:GMRES), saveat=100.0);
 
 
-imshow(sol.u[end])
+heatmap(sol.u[end])
 
 
 using DiffEqTutorials
