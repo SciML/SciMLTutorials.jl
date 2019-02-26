@@ -16,7 +16,8 @@ To run the tutorials interactively via Jupyter notebooks, install the package
 and open the tutorials like:
 
 ```julia
-]add "https://github.com/JuliaDiffEq/DiffEqTutorials.jl"
+using Pkg
+pkg"add https://github.com/JuliaDiffEq/DiffEqTutorials.jl"
 using DiffEqTutorials
 DiffEqTutorials.open_notebooks()
 ```
