@@ -55,9 +55,7 @@ sol = solve(prob,Tsit5())
 
 Notice that we recieved a unit mismatch error. This is correctly so! Remember that for an ODE:
 
-```math
-\frac{dy}{dt} = f(t,y)
-```
+$$\frac{dy}{dt} = f(t,y)$$
 
 we must have that `f` is a rate, i.e. `f` is a change in `y` per unit time. So we need to fix the units of `f` in our example to be `N/s`. Notice that we then do not receive an error if we do the following:
 

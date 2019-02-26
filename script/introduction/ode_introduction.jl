@@ -51,13 +51,13 @@ sol = solve(prob,saveat=0.1)
 sol = solve(prob,saveat=[0.2,0.7,0.9])
 
 
-sol = solve(prob,saveat=[0.2,0.7,0.9],save_start = false, save_end = false)
-
-
 sol = solve(prob,dense=false)
 
 
 sol = solve(prob,save_everystep=false)
+
+
+sol = solve(prob,saveat=[0.2,0.7,0.9],save_start = false)
 
 
 sol = solve(prob,alg_hints=[:stiff])

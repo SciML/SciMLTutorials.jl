@@ -11,15 +11,11 @@ Note that this tutorial does not use the [higher order IMEX methods built into D
 
 There are hundreds of ionic models that describe cardiac electrical activity in various degrees of detail. Most are based on the classic [Hodgkin-Huxley model](https://en.wikipedia.org/wiki/Hodgkin%E2%80%93Huxley_model) and define the time-evolution of different state variables in the form of nonlinear first-order ODEs. The state vector for these models includes the transmembrane potential, gating variables, and ionic concentrations. The coupling between cells is through the transmembrame potential only and is described as a reaction-diffusion equation, which is a parabolic PDE,
 
-```math
-  \partial V / \partial t = \nabla (D  \nabla V) - \frac {I_\text{ion}} {C_m},
-```
+$$\partial V / \partial t = \nabla (D  \nabla V) - \frac {I_\text{ion}} {C_m},$$
 
 where $V$ is the transmembrane potential, $D$ is a diffusion tensor, $I_\text{ion}$ is the sum of the transmembrane currents and is calculated from the ODEs, and $C_m$ is the membrane capacitance and is usually assumed to be constant. Here we model a uniform and isotropic medium. Therefore, the model can be simplified to,
 
-```math
-  \partial V / \partial t = D \Delta{V} - \frac {I_\text{ion}} {C_m},
-```
+$$\partial V / \partial t = D \Delta{V} - \frac {I_\text{ion}} {C_m},$$
 
 where $D$ is now a scalar. By nature, these models have to deal with different time scales and are therefore classified as *stiff*. Commonly, they are solved using the explicit Euler method, usually with a closed form for the integration of the gating variables (the Rush-Larsen method, see below). We can also solve these problems using implicit or semi-implicit PDE solvers (e.g., the [Crank-Nicholson method](https://en.wikipedia.org/wiki/Crank%E2%80%93Nicolson_method) combined with an iterative solver). Higher order explicit methods such as Runge-Kutta and linear multi-step methods cannot overcome the stiffness and are not particularly helpful.
 
@@ -137,39 +133,27 @@ We use an explicit solver for all the state variables except for the transmembra
 
 The [Rush-Larsen](https://ieeexplore.ieee.org/document/4122859/) method replaces the explicit Euler integration for the gating variables with direct integration. The starting point is the general ODE for the gating variables in Hodgkin-Huxley style ODEs,
 
-```math
-\frac{dg}{dt} = \alpha(V) (1 - g) - \beta(V) g
-```
+$$\frac{dg}{dt} = \alpha(V) (1 - g) - \beta(V) g$$
 
 where $g$ is a generic gating variable, ranging from 0 to 1, and $\alpha$ and $\beta$ are reaction rates. This equation can be written as,
 
-```math
-\frac{dg}{dt} = (g_{\infty} - g) / \tau_g,
-```
+$$\frac{dg}{dt} = (g_{\infty} - g) / \tau_g,$$
 
 where $g_\infty$ and $\tau_g$ are
 
-```math
-g_{\infty} = \frac{\alpha}{(\alpha + \beta)},
-```
+$$g_{\infty} = \frac{\alpha}{(\alpha + \beta)},$$
 
 and,
 
-```math
-\tau_g = \frac{1}{(\alpha + \beta)}.
-```
+$$\tau_g = \frac{1}{(\alpha + \beta)}.$$
 
 Assuing that $g_\infty$ and $\tau_g$ are constant for the duration of a single time step ($\Delta{t}$), which is a reasonable assumption for most cardiac models, we can integrate directly to have,
 
-```math
-g(t + \Delta{t}) = g_{\infty} - \left(g_{\infty} - g(\Delta{t})\right)\,e^{-\Delta{t}/\tau_g}.
-```
+$$g(t + \Delta{t}) = g_{\infty} - \left(g_{\infty} - g(\Delta{t})\right)\,e^{-\Delta{t}/\tau_g}.$$
 
 This is the Rush-Larsen technique. Note that as $\Delta{t} \rightarrow 0$, this equations morphs into the explicit Euler formula,
 
-```math
-g(t + \Delta{t}) = g(t) + \Delta{t}\frac{dg}{dt}.
-```
+$$g(t + \Delta{t}) = g(t) + \Delta{t}\frac{dg}{dt}.$$
 
 `rush_larsen` is a helper function that use the Rush-Larsen method to integrate the gating variables.
 

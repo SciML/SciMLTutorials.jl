@@ -48,9 +48,7 @@ x / x
 
 The rate of decay of carbon-14 is governed by a first order linear ordinary differential equation
 
-```math
-\frac{\mathrm{d}u(t)}{\mathrm{d}t} = -\frac{u(t)}{\tau}
-```
+$$\frac{\mathrm{d}u(t)}{\mathrm{d}t} = -\frac{u(t)}{\tau}$$
 
 where $\tau$ is the mean lifetime of carbon-14, which is related to the half-life $t_{1/2} = (5730 \pm 40)$ years by the relation $\tau = t_{1/2}/\ln(2)$.
 
@@ -99,9 +97,7 @@ The next problem we are going to study is the simple pendulum in the approximati
 
 The differential equation we want to solve is
 
-```math
-\ddot{\theta} + \frac{g}{L} \theta = 0
-```
+$$\ddot{\theta} + \frac{g}{L} \theta = 0$$
 
 where $g = (9.79 \pm 0.02)~\mathrm{m}/\mathrm{s}^2$ is the gravitational acceleration measured where the experiment is carried out, and $L = (1.00 \pm 0.01)~\mathrm{m}$ is the length of the pendulum.
 
@@ -148,9 +144,7 @@ plot(sol.t, getindex.(sol.u, 2) .- u, label = "")
 
 Now that we know how to solve differential equations involving numbers with uncertainties we can solve the simple pendulum problem without any approximation.  This time the differential equation to solve is the following:
 
-```math
-\ddot{\theta} + \frac{g}{L} \sin(\theta) = 0
-```
+$$\ddot{\theta} + \frac{g}{L} \sin(\theta) = 0$$
 
 ```julia
 g = 9.79 ± 0.02; # Gravitational constants
