@@ -121,7 +121,7 @@ if you suspect error is the problem. However, if you're having problems it's mos
 
 ## Appendix
 
-```julia{echo=false}
+```julia{echo=false,skip="notebook"}
 using DiffEqTutorials
 DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```

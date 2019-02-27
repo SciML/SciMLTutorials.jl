@@ -323,7 +323,7 @@ Go back to the Harmonic oscillator. Use the `SavingCallback` to save an array fo
 
 ## Appendix
 
-```julia{echo=false}
+```julia{echo=false,skip="notebook"}
 using DiffEqTutorials
 DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```

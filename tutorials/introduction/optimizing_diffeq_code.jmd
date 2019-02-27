@@ -484,7 +484,7 @@ Julia gives you the tools to optimize the solver "all the way", but you need to 
 
 ## Appendix
 
-```julia{echo=false}
+```julia{echo=false,skip="notebook"}
 using DiffEqTutorials
 DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```

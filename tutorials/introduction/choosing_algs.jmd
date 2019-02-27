@@ -117,10 +117,10 @@ If you are familiar with MATLAB, SciPy, or R's DESolve, here's a quick translati
 - `lsoda` -> `lsoda()` (requires `]add LSODA; using LSODA`)
 - `ode15i` -> `IDA()`, though in many cases `Rodas4()` can handle the DAE and is
   significantly more efficient
-  
+
 ## Appendix
 
-```julia{echo=false}
+```julia{echo=false,skip="notebook"}
 using DiffEqTutorials
 DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```

@@ -383,7 +383,7 @@ These are the basic controls in DifferentialEquations.jl. All equations are defi
 
 ## Appendix
 
-```julia{echo=false}
+```julia{echo=false,skip="notebook"}
 using DiffEqTutorials
 DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```

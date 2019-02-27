@@ -105,7 +105,7 @@ As you can see, DifferentialEquations.jl can use arbitrary Julia-defined number 
 
 ## Appendix
 
-```julia{echo=false}
+```julia{echo=false,skip="notebook"}
 using DiffEqTutorials
 DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```

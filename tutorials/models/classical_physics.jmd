@@ -334,7 +334,7 @@ Note that we are using the `DPRKN6` sovler at `reltol=1e-3` (the default), yet i
 
 ## Appendix
 
-```julia{echo=false}
+```julia{echo=false,skip="notebook"}
 using DiffEqTutorials
 DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```
