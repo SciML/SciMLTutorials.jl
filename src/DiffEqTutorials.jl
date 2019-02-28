@@ -57,25 +57,44 @@ function weave_folder(folder)
   end
 end
 
-function tutorial_footer(folder=nothing,file=nothing)
-  println("""
-  These benchmarks are part of the DiffEqTutorials.jl repository, found at:
+function tutorial_footer(folder=nothing, file=nothing)
+    display("text/markdown", """
+    ## Appendix
 
-  https://github.com/JuliaDiffEq/DiffEqTutorials.jl
-  """)
-  if folder !== nothing && file !== nothing
-    println("""
-    To locally run this tutorial, do the following commands:
-
-    using DiffEqTutorials
-    DiffEqTutorials.weave_file("$folder","$file")
+     These benchmarks are part of the DiffEqTutorials.jl repository, found at: <https://github.com/JuliaDiffEq/DiffEqTutorials.jl>
     """)
-  end
-  println("Computer Information:\n")
-  InteractiveUtils.versioninfo()
-  println()
-  println("Package Information:\n")
-  DiffEqTutorials.Pkg.status()
+    if folder !== nothing && file !== nothing
+        display("text/markdown", """
+        To locally run this tutorial, do the following commands:
+        ```
+        using DiffEqTutorials
+        DiffEqTutorials.weave_file("$folder","$file")
+        ```
+        """)
+    end
+    display("text/markdown", "Computer Information:")
+    vinfo = sprint(InteractiveUtils.versioninfo)
+    display("text/markdown",  """
+    ```
+    $(vinfo)
+    ```
+    """)
+
+    ctx = Pkg.API.Context()
+    pkgs = Pkg.Display.status(Pkg.API.Context(), use_as_api=true);
+
+    display("text/markdown", """
+    Package Information:
+    """)
+
+    md = ""
+    md *= "```\nStatus `$(ctx.env.project_file)`\n"
+
+    for pkg in pkgs
+        md *= "[$(pkg.uuid)] $(pkg.name) $(pkg.old.ver)\n"
+    end
+    md *= "```"
+    display("text/markdown", md)
 end
 
 function open_notebooks()
