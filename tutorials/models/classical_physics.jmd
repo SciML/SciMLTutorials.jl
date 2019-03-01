@@ -208,8 +208,12 @@ plot(p,ylims=(-0.01,0.03))
 
 The Hénon-Heiles potential occurs when non-linear motion of a star around a galactic center with the motion restricted to a plane.
 
-$$\frac{d^2x}{dt^2}&=-\frac{\partial V}{\partial x}\\
-\frac{d^2y}{dt^2}&=-\frac{\partial V}{\partial y}$$
+$$
+\begin{align}
+\frac{d^2x}{dt^2}&=-\frac{\partial V}{\partial x}\\
+\frac{d^2y}{dt^2}&=-\frac{\partial V}{\partial y}
+\end{align}
+$$
 
 where
 

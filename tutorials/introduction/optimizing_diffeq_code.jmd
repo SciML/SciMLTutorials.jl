@@ -223,8 +223,12 @@ For repeated calculations this reduced allocation can stop GC cycles and thus le
 
 Let's optimize the solution of a Reaction-Diffusion PDE's discretization. In its discretized form, this is the ODE:
 
-$$du &= D_1 (A_y u + u A_x) + \frac{au^2}{v} + \bar{u} - \alpha u\\
-dv &= D_2 (A_y v + v A_x) + a u^2 + \beta v$$
+$$
+\begin{align}
+du &= D_1 (A_y u + u A_x) + \frac{au^2}{v} + \bar{u} - \alpha u\\
+dv &= D_2 (A_y v + v A_x) + a u^2 + \beta v
+\end{align}
+$$
 
 where $u$, $v$, and $A$ are matrices. Here, we will use the simplified version where $A$ is the tridiagonal stencil $[1,-2,1]$, i.e. it's the 2D discretization of the LaPlacian. The native code would be something along the lines of:
 

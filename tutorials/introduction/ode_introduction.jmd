@@ -181,9 +181,13 @@ sol = solve(prob,Tsit5(),reltol=1e-6)
 
 Now let's move to a system of ODEs. The [Lorenz equation](https://en.wikipedia.org/wiki/Lorenz_system) is the famous "butterfly attractor" that spawned chaos theory. It is defined by the system of ODEs:
 
-$$\frac{dx}{dt} &= \sigma (y - x)\\
+$$
+\begin{align}
+\frac{dx}{dt} &= \sigma (y - x)\\
 \frac{dy}{dt} &= x (\rho - z) -y\\
-\frac{dz}{dt} &= xy - \beta z$$
+\frac{dz}{dt} &= xy - \beta z
+\end{align}
+$$
 
 To define a system of differential equations in DifferentialEquations.jl, we define our `f` as a vector function with a vector initial condition. Thus, for the vector `u = [x,y,z]'`, we have the derivative function:
 
@@ -269,8 +273,12 @@ plot(sol,vars=(0,2))
 
 In many cases you may be defining a lot of functions with parameters. There exists the domain-specific language (DSL) defined by the `@ode_def` macro for helping with this common problem. For example, we can define the Lotka-Volterra equation:
 
-$$\frac{dx}{dt} &= ax - bxy\\
-\frac{dy}{dt} &= -cy + dxy$$
+$$
+\begin{align}
+\frac{dx}{dt} &= ax - bxy\\
+\frac{dy}{dt} &= -cy + dxy
+\end{align}
+$$
 
 as follows:
 
