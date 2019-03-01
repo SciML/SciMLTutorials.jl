@@ -51,9 +51,15 @@ DiffEqTutorials.open_notebooks()
 
 ## Contributing
 
-All of the files are generated from the Weave.jl files in the `tutorials` folder. To run the generation process, do for example:
+First of all, make sure that your current directory is `DiffEqTutorials`. All
+of the files are generated from the Weave.jl files in the `tutorials` folder.
+To run the generation process, do for example:
 
 ```julia
+using Pkg
+Pkg.pkg"activate ."
+Pkg.pkg"instantiate"
+
 using DiffEqTutorials
 DiffEqTutorials.weave_file("introduction","ode_introduction.jmd")
 ```
