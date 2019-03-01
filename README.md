@@ -57,7 +57,7 @@ To run the generation process, do for example:
 
 ```julia
 using Pkg, DiffEqTutorials
-cd(dirname(pathof(DiffEqTutorials)))
+cd(joinpath(dirname(pathof(DiffEqTutorials)), ".."))
 Pkg.pkg"activate ."
 Pkg.pkg"instantiate"
 DiffEqTutorials.weave_file("introduction","ode_introduction.jmd")
