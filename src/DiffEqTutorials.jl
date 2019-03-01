@@ -36,7 +36,7 @@ function weave_file(folder,file,build_list=(:script,:html,:pdf,:notebook))
     println("Building Notebook")
     dir = joinpath(repo_directory,"notebook",folder)
     isdir(dir) || mkdir(dir)
-    Weave.notebook(tmp,dir)
+    Weave.convert_doc(tmp,joinpath(dir,file[1:end-4]*".ipynb"))
   end
 end
 
