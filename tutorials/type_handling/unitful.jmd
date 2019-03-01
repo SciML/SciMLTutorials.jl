@@ -82,8 +82,6 @@ plot(sol.t,sol[:],lw=3)
 
 Notice that here we pulled the units for the label directly from the solution. Thus if the units change, the labels will change automatically.
 
-## Appendix
-
 ```julia{echo=false,skip="notebook"}
 using DiffEqTutorials
 DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])

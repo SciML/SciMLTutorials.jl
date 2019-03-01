@@ -61,8 +61,6 @@ plot(sim)
 This is a clear trend indicating that the convergence is truly Order 14, which
 is the estimated slope.
 
-## Appendix
-
 ```julia{echo=false,skip="notebook"}
 using DiffEqTutorials
 DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
