@@ -22,8 +22,6 @@ x / x
 
 using DifferentialEquations, Measurements, Plots
 
-pyplot()
-
 # Half-life and mean lifetime of radiocarbon, in years
 t_12 = 5730 ± 40
 τ = t_12 / log(2)

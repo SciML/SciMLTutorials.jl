@@ -56,11 +56,10 @@ of the files are generated from the Weave.jl files in the `tutorials` folder.
 To run the generation process, do for example:
 
 ```julia
-using Pkg
+using Pkg, DiffEqTutorials
+cd(dirname(pathof(DiffEqTutorials)))
 Pkg.pkg"activate ."
 Pkg.pkg"instantiate"
-
-using DiffEqTutorials
 DiffEqTutorials.weave_file("introduction","ode_introduction.jmd")
 ```
 
@@ -69,3 +68,7 @@ To generate all of the notebooks, do:
 ```julia
 DiffeqTutorials.weave_all()
 ```
+
+If you add new tutorials which require new packages, simply updating your local
+environment will change the project and manifest files. When this occurs, the
+updated environment files should be included in the PR.
