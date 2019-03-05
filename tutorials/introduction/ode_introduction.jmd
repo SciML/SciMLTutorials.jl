@@ -152,7 +152,7 @@ sol = solve(prob,save_everystep=false)
 If we want to solve and only save the final value, we can even set `save_start=false`.
 
 ```julia
-sol = solve(prob,saveat=[0.2,0.7,0.9],save_start = false)
+sol = solve(prob,save_everystep=false,save_start = false)
 ```
 
 Note that similarly on the other side there is `save_end=false`.

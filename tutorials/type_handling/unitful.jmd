@@ -71,13 +71,12 @@ This gives a a normal solution object. Notice that the values are all with the c
 print(sol[:])
 ```
 
-We can plot the solution using the plot recipe.
+We can plot the solution by removing the units:
 
 ```julia; wrap=false
-#Pkg.clone("https://github.com/ajkeller34/UnitfulPlots.jl")
-using UnitfulPlots, Plots
+using Plots
 gr()
-plot(sol.t,sol[:],lw=3)
+plot(ustrip(sol.t),ustrip(sol[:]),lw=3)
 ```
 
 Notice that here we pulled the units for the label directly from the solution. Thus if the units change, the labels will change automatically.

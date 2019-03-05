@@ -101,9 +101,9 @@ version = "0.1.1"
 
 [[CodecZlib]]
 deps = ["BinaryProvider", "Libdl", "Test", "TranscodingStreams"]
-git-tree-sha1 = "e3df104c84dfc108f0ca203fd7f5bbdc98641ae9"
+git-tree-sha1 = "36bbf5374c661054d41410dc53ff752972583b9b"
 uuid = "944b1d66-785c-5afd-91f1-9de20f533193"
-version = "0.5.1"
+version = "0.5.2"
 
 [[Codecs]]
 deps = ["Test"]
@@ -199,9 +199,9 @@ version = "0.3.2"
 
 [[DiffEqBase]]
 deps = ["Compat", "IteratorInterfaceExtensions", "LinearAlgebra", "RecipesBase", "RecursiveArrayTools", "Requires", "Roots", "SparseArrays", "StaticArrays", "Statistics", "SuiteSparse", "TableTraits", "Test", "TreeViews"]
-git-tree-sha1 = "0ec073be8ad4a704bc9c4ba2f649126308ffb849"
+git-tree-sha1 = "378e03b3a646a26ee08fcafca299b760cef09a11"
 uuid = "2b5f629d-d688-5b77-993f-72d75c75574e"
-version = "5.4.0"
+version = "5.4.1"
 
 [[DiffEqCallbacks]]
 deps = ["DataStructures", "DiffEqBase", "LinearAlgebra", "OrdinaryDiffEq", "RecipesBase", "RecursiveArrayTools", "StaticArrays", "Test"]
@@ -210,10 +210,10 @@ uuid = "459566f4-90b8-5000-8ac3-15dfb0a30def"
 version = "2.5.2"
 
 [[DiffEqDevTools]]
-deps = ["DiffEqBase", "DiffEqMonteCarlo", "DiffEqNoiseProcess", "DiffEqPDEBase", "Distributed", "LinearAlgebra", "NLsolve", "Random", "RecipesBase", "RecursiveArrayTools", "Statistics", "Test"]
-git-tree-sha1 = "fd0570ec1ff052b9aef8e832015092417fb24dae"
+deps = ["BenchmarkTools", "DiffEqBase", "DiffEqMonteCarlo", "DiffEqNoiseProcess", "DiffEqPDEBase", "Distributed", "LinearAlgebra", "NLsolve", "Random", "RecipesBase", "RecursiveArrayTools", "Statistics", "Test"]
+git-tree-sha1 = "6f8255811062976d0450049c190c133b89d32b65"
 uuid = "f3b72e0c-5b89-59e1-b016-84e28bfd966d"
-version = "2.6.1"
+version = "2.7.1"
 
 [[DiffEqDiffTools]]
 deps = ["LinearAlgebra", "Test"]
@@ -780,9 +780,9 @@ uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [[StatsBase]]
 deps = ["DataStructures", "DelimitedFiles", "LinearAlgebra", "Missings", "Printf", "Random", "SortingAlgorithms", "SparseArrays", "Statistics", "Test"]
-git-tree-sha1 = "8f68351fc2600bab59e68406b980b13b2100c472"
+git-tree-sha1 = "435707791dc85a67d98d671c1c3fcf1b20b00f94"
 uuid = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
-version = "0.28.1"
+version = "0.29.0"
 
 [[StatsFuns]]
 deps = ["Rmath", "SpecialFunctions", "Test"]
@@ -836,9 +836,9 @@ uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [[TranscodingStreams]]
 deps = ["Pkg", "Random", "Test"]
-git-tree-sha1 = "a34a2d588e2d2825602bf14a24216d5c8b0921ec"
+git-tree-sha1 = "8a032ceb5cf7a28bf1bdb77746b250b9e9fda565"
 uuid = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
-version = "0.8.1"
+version = "0.9.0"
 
 [[TreeViews]]
 deps = ["Test"]
@@ -861,23 +861,15 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
 [[Unitful]]
 deps = ["LinearAlgebra", "Random", "Test"]
-git-tree-sha1 = "ba654182cad07cd6c1f3ae969475e556db3283ea"
+git-tree-sha1 = "94736a38908c6b43d22e1abffc4f72ab19dabbc1"
 uuid = "1986cc42-f94f-5a68-af5c-568840ba703d"
-version = "0.14.0"
-
-[[UnitfulPlots]]
-deps = ["RecipesBase", "Unitful"]
-git-tree-sha1 = "59cd661858280e1b0cd6cf028ed4096d2fb5360d"
-repo-rev = "master"
-repo-url = "https://github.com/ajkeller34/UnitfulPlots.jl.git"
-uuid = "2a06ce6d-1589-592b-9c33-f37faeaed826"
-version = "0.0.0"
+version = "0.15.0"
 
 [[VectorizedRoutines]]
-deps = ["Distributions"]
-git-tree-sha1 = "3fdeedbc9d462a3d597606ad8183cf5907e04896"
+deps = ["Distributions", "LinearAlgebra", "Statistics", "StatsFuns", "Test"]
+git-tree-sha1 = "39e3690167cd006ad45f6f2ef68f2b83a5130b46"
 uuid = "0e69188a-a5d4-5622-b4e4-a72373136fc5"
-version = "0.0.2"
+version = "0.1.0"
 
 [[VersionParsing]]
 deps = ["Compat"]
@@ -887,9 +879,9 @@ version = "1.1.3"
 
 [[Weave]]
 deps = ["Base64", "Compat", "Dates", "Highlights", "JSON", "Markdown", "Mustache", "Pkg", "Printf", "REPL", "Requires", "Serialization", "Test", "YAML"]
-git-tree-sha1 = "b422db68a433bc02c3f840568fb1680e0a646cc4"
+git-tree-sha1 = "0e3035b0218de2f6d8e3161f0fd54c9824d58afc"
 uuid = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
-version = "0.7.2"
+version = "0.8.0"
 
 [[YAML]]
 deps = ["Codecs", "Compat"]
