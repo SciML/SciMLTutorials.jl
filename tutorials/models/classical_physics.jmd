@@ -336,7 +336,7 @@ plot(sol3.t, energy, title = "Change in Energy over Time", xaxis = "Time in iter
 
 Note that we are using the `DPRKN6` sovler at `reltol=1e-3` (the default), yet it has a smaller energy variation than `Vern9` at `abs_tol=1e-16, rel_tol=1e-16`. Therefore, using specialized solvers to solve its particular problem is very efficient.
 
-```julia{echo=false,skip="notebook"}
+```{julia; echo=false; skip="notebook"}
 using DiffEqTutorials
 DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```

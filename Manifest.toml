@@ -20,9 +20,9 @@ version = "0.4.2"
 
 [[ArbNumerics]]
 deps = ["BinDeps", "GenericLinearAlgebra", "Libdl", "LinearAlgebra", "Random", "SpecialFunctions", "Test"]
-git-tree-sha1 = "30c095612efbc1c73343a6f7bc85ef7992474a82"
+git-tree-sha1 = "121078c5082c0fa8ec38ccc4eb8f5c472e73fc05"
 uuid = "7e558dbc-694d-5a72-987c-6f4ebed21442"
-version = "0.3.6"
+version = "0.3.7"
 
 [[Arpack]]
 deps = ["BinaryProvider", "Libdl", "LinearAlgebra", "Random", "SparseArrays", "Test"]
@@ -131,9 +131,9 @@ version = "0.2.0"
 
 [[Compat]]
 deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Statistics", "Test", "UUIDs", "Unicode"]
-git-tree-sha1 = "49269e311ffe11ac5b334681d212329002a9832a"
+git-tree-sha1 = "195a3ffcb8b0762684b6821de18f83a16455c6ea"
 uuid = "34da2185-b29b-5c13-b0c7-acf172513d20"
-version = "1.5.1"
+version = "2.0.0"
 
 [[Conda]]
 deps = ["Compat", "JSON", "VersionParsing"]
@@ -323,9 +323,9 @@ version = "0.6.0"
 
 [[DoubleFloats]]
 deps = ["GenericLinearAlgebra", "LinearAlgebra", "Polynomials", "Random", "Test"]
-git-tree-sha1 = "3630ee8c22bca30a6d5b3ea5a890172a446bc172"
+git-tree-sha1 = "17534a9d46d2dce41e849a5b3ec902d3b1555c32"
 uuid = "497a8b3b-efae-58df-a0af-a86822472b78"
-version = "0.7.5"
+version = "0.7.8"
 
 [[EllipsisNotation]]
 git-tree-sha1 = "c09a512ff36dd5785ddc04fc102f2ff3b7fe05ae"
@@ -489,10 +489,10 @@ deps = ["Base64"]
 uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
 
 [[MbedTLS]]
-deps = ["BinaryProvider", "Dates", "Libdl", "Random", "Sockets", "Test"]
-git-tree-sha1 = "40b4a9149f0967714991328b8155c9ff5f91e755"
+deps = ["BinaryProvider", "Dates", "Distributed", "Libdl", "Random", "Sockets", "Test"]
+git-tree-sha1 = "2d94286a9c2f52c63a16146bb86fd6cdfbf677c6"
 uuid = "739be429-bea8-5141-9913-cc70e7f3736d"
-version = "0.6.7"
+version = "0.6.8"
 
 [[Measurements]]
 deps = ["Calculus", "LinearAlgebra", "QuadGK", "RecipesBase", "Requires", "SpecialFunctions", "Statistics", "Test"]
@@ -879,9 +879,9 @@ version = "1.1.3"
 
 [[Weave]]
 deps = ["Base64", "Compat", "Dates", "Highlights", "JSON", "Markdown", "Mustache", "Pkg", "Printf", "REPL", "Requires", "Serialization", "Test", "YAML"]
-git-tree-sha1 = "0e3035b0218de2f6d8e3161f0fd54c9824d58afc"
+git-tree-sha1 = "48453e8d50d7dbfecdb99cff0faad9887f3a2f37"
 uuid = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
-version = "0.8.0"
+version = "0.8.1"
 
 [[YAML]]
 deps = ["Codecs", "Compat"]
