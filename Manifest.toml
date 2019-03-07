@@ -323,9 +323,9 @@ version = "0.6.0"
 
 [[DoubleFloats]]
 deps = ["GenericLinearAlgebra", "LinearAlgebra", "Polynomials", "Random", "Test"]
-git-tree-sha1 = "17534a9d46d2dce41e849a5b3ec902d3b1555c32"
+git-tree-sha1 = "33569ca05b4b11a5b6de26631d9fc03a6734ea76"
 uuid = "497a8b3b-efae-58df-a0af-a86822472b78"
-version = "0.7.8"
+version = "0.7.9"
 
 [[EllipsisNotation]]
 git-tree-sha1 = "c09a512ff36dd5785ddc04fc102f2ff3b7fe05ae"
