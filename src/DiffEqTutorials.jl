@@ -83,7 +83,7 @@ function tutorial_footer(folder=nothing, file=nothing)
     ctx = Pkg.API.Context()
     pkgs = Pkg.Display.status(Pkg.API.Context(), use_as_api=true);
 
-    display("text/markdown", """
+    display("text/markdown","""
     Package Information:
     """)
 
@@ -91,7 +91,11 @@ function tutorial_footer(folder=nothing, file=nothing)
     md *= "```\nStatus `$(ctx.env.project_file)`\n"
 
     for pkg in pkgs
-        md *= "[$(pkg.uuid)] $(pkg.name) $(pkg.old.ver)\n"
+        if pkg.old.ver != nothing
+          md *= "[$(string(pkg.uuid))] $(string(pkg.name)) $(string(pkg.old.ver))\n"
+        else
+          md *= "[$(string(pkg.uuid))] $(string(pkg.name))\n"
+        end
     end
     md *= "```"
     display("text/markdown", md)

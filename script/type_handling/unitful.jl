@@ -31,10 +31,9 @@ sol = solve(prob,Tsit5())
 print(sol[:])
 
 
-#Pkg.clone("https://github.com/ajkeller34/UnitfulPlots.jl")
-using UnitfulPlots, Plots
+using Plots
 gr()
-plot(sol.t,sol[:],lw=3)
+plot(ustrip(sol.t),ustrip(sol[:]),lw=3)
 
 
 using DiffEqTutorials

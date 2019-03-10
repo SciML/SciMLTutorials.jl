@@ -66,7 +66,7 @@ DiffEqTutorials.weave_file("introduction","ode_introduction.jmd")
 To generate all of the notebooks, do:
 
 ```julia
-DiffeqTutorials.weave_all()
+DiffEqTutorials.weave_all()
 ```
 
 If you add new tutorials which require new packages, simply updating your local
