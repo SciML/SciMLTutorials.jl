@@ -37,6 +37,7 @@ DiffEqTutorials.open_notebooks()
 - Modeling Examples
   - [Classical Physics Models](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/classical_physics.html)
   - [Conditional Dosing Example](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/conditional_dosing.html)
+  - [DiffEqBiological Tutorial I: Introduction](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/diffeqbio_I_introduction.html)
   - [Kepler Problem Orbit](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/kepler_problem.html)
 - Advanced ODE Features
   - [Feagin's Order 10, 12, and 14 Methods](http://juliadiffeq.org/DiffEqTutorials.jl/html/ode_extras/feagin.html)
