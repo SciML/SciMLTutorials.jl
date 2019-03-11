@@ -57,7 +57,7 @@ function weave_folder(folder)
   end
 end
 
-function tutorial_footer(folder=nothing, file=nothing; remove_homedir=false)
+function tutorial_footer(folder=nothing, file=nothing; remove_homedir=true)
     display("text/markdown", """
     ## Appendix
 
