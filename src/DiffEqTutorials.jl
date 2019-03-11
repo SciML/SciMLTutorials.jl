@@ -57,11 +57,11 @@ function weave_folder(folder)
   end
 end
 
-function tutorial_footer(folder=nothing, file=nothing)
+function tutorial_footer(folder=nothing, file=nothing; remove_homedir=false)
     display("text/markdown", """
     ## Appendix
 
-     These benchmarks are part of the DiffEqTutorials.jl repository, found at: <https://github.com/JuliaDiffEq/DiffEqTutorials.jl>
+     This tutorial is part of the DiffEqTutorials.jl repository, found at: <https://github.com/JuliaDiffEq/DiffEqTutorials.jl>
     """)
     if folder !== nothing && file !== nothing
         display("text/markdown", """
@@ -82,13 +82,15 @@ function tutorial_footer(folder=nothing, file=nothing)
 
     ctx = Pkg.API.Context()
     pkgs = Pkg.Display.status(Pkg.API.Context(), use_as_api=true);
+    projfile = ctx.env.project_file
+    remove_homedir && (projfile = replace(projfile, homedir() => "~"))
 
     display("text/markdown","""
     Package Information:
     """)
 
     md = ""
-    md *= "```\nStatus `$(ctx.env.project_file)`\n"
+    md *= "```\nStatus `$(projfile)`\n"
 
     for pkg in pkgs
         if pkg.old.ver != nothing

@@ -102,3 +102,7 @@ latexify(repressilator.symjac)
 x = latexify(repressilator.symjac, starred=true);
 display("text/latex", "$x");
 
+
+using DiffEqTutorials
+DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file], remove_homedir=true)
+

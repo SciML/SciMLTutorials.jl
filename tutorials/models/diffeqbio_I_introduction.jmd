@@ -140,9 +140,11 @@ tspan = (0.,4.);
 ```
 
 The corresponding Chemical Langevin Equation SDE is then
-```math
-dX_t = \left(c₁ X - c₂ X + c₃ \right) dt + \left( \sqrt{c₁ X} - \sqrt{c₂ X} + \sqrt{c₃} \right)dW_t,
-```
+
+$$
+dX_t = \left(c_1 X - c_2 X + c_3 \right) dt + \left( \sqrt{c_1 X} - \sqrt{c_2 X} + \sqrt{c_3} \right)dW_t,
+$$
+
 where $W_t$ denotes a standard Brownian Motion. We can solve the CLE SDE model by creating an SDEProblem and solving it similar to what we did for ODEs above:
 
 ```julia
@@ -174,3 +176,9 @@ display("text/latex", "$x");
 By default, generated `ODEProblems` will be passed the corresponding Jacobian function, which will then be used within implicit ODE/SDE methods. 
 
 See the [DiffEqBiological documentation](http://docs.juliadiffeq.org/latest/models/biological.html#The-Reaction-Network-Object-1) for a thorough description of the many other fields within the generated network.
+
+---
+```julia; echo=false; skip="notebook"
+using DiffEqTutorials
+DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file], remove_homedir=true)
+```
