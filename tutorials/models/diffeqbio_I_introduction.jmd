@@ -69,7 +69,7 @@ system
 latexify(repressilator)
 ```
 ```julia; echo=false; skip="notebook";
-x = latexify(repressilator, starred=true, mathjax=true);
+x = latexify(repressilator, starred=true);
 display("text/latex", "$x");
 ```
 
@@ -222,7 +222,7 @@ The generated `reaction_network` contains a lot of basic information. For exampl
 latexify(jacobianexprs(repressilator))
 ```
 ```julia; echo=false; skip="notebook";
-x = latexify(jacobianexprs(repressilator), starred=true, mathjax=true);
+x = latexify(jacobianexprs(repressilator), starred=true);
 display("text/latex", "$x");
 ```
 - `pjac = paramjacfun(repressilator)` is a function `pjac(pJ,u,p,t)` that

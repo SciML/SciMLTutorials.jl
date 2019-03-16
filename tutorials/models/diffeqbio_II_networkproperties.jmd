@@ -1,0 +1,130 @@
+---
+title: "DiffEqBiological Tutorial II: Network Properties API"
+author: Samuel Isaacson
+---
+
+The [DiffEqBiological
+API](http://docs.juliadiffeq.org/latest/apis/diffeqbio.html) provides a
+collection of functions for easily accessing network properties, and for
+incrementally building and extending a network. In this tutorial we'll go
+through the API. 
+
+We'll work with a made up toggle-switch like network that illustrates a variety
+of different reaction types:
+
+```julia
+using DiffEqBiological, Latexify
+rn = @reaction_network begin
+    hillr(D₂,α,K,n), ∅ --> m₁
+    hillr(D₁,α,K,n), ∅ --> m₂
+    (δ,γ), m₁ ↔ ∅
+    (δ,γ), m₂ ↔ ∅
+    β, m₁ --> m₁ + P₁
+    β, m₂ --> m₂ + P₂
+    μ, P₁ --> ∅
+    μ, P₂ --> ∅
+    (k₊,k₋), 2P₁ ↔ D₁ 
+    (k₊,k₋), 2P₂ ↔ D₂
+    (k₊,k₋), P₁+P₂ ↔ T
+end α K n δ γ β μ k₊ k₋;
+```
+
+which corresponds to the chemical reaction network given by
+
+```julia; results="hidden"; 
+latexify(rn; env=:chemical)
+```
+```julia; echo=false; skip="notebook";
+x = latexify(rn; env=:chemical, starred=true, mathjax=true);
+display("text/latex", "$x");
+```
+
+## Network Properties
+[Basic
+properties](http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Basic-properties-1)
+of the generated network include the `speciesmap` and `paramsmap` functions we examined
+last time, along with the corresponding `species` and `params` functions:
+
+```julia
+species(rn)
+```
+```julia
+params(rn)
+```
+
+The numbers of species, parameters and reactions can be accessed using
+`numreactions(rn)`, `numspecies(rn)` and `numparams(rn)`.
+
+A number of functions are available to access [properties of
+reactions](http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Reaction-Properties-1)
+within the generated network, including `substrates`, `products`, `dependents`,
+`ismassaction`, `substratestoich`, `productstoich`, and `netstoich`. Each of
+these functions takes two arguments, the reaction network `rn` and the index of
+the reaction to query information about. For example, to find the substrate
+symbols and their corresponding stoichiometries for the 11th reaction, `2P₁ -->
+D₁`, we would use
+
+```julia
+substrates(rn, 11)
+```
+
+Broadcasting works on all these functions, allowing the construction of a vector
+holding the queried information across all reactions, i.e.
+
+```julia
+substrates.(rn, 1:numreactions(rn))
+```
+
+To see the net stoichiometries for all reactions we would use
+
+```julia
+netstoich.(rn, 1:numreactions(rn))
+```
+
+Here the first integer in each pair corresponds to the index of the species
+(with symbol `species(rn)[index]`). The second integer corresponds to the net
+stoichiometric coefficient of the species within the reaction. `substratestoich`
+and `productstoich` are defined similarly. 
+
+Several functions are also provided that calculate different types of
+[dependency
+graphs](http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Dependency-Graphs-1).
+These include `rxtospecies_depgraph`, which provides a mapping from reaction
+index to the indices of species whose population changes when the reaction
+occurs:
+
+```julia
+rxtospecies_depgraph(rn)
+```
+
+Here the last row indicates that the species with indices `[3,4,7]` will change
+values when the reaction `T --> P₁ + P₂` occurs. To confirm these are the
+correct species we can look at
+
+```julia
+species(rn)[[3,4,7]]
+```
+
+The `speciestorx_depgraph` similarly provides a mapping from species to reactions 
+for which their *rate laws* depend on that species. These correspond to all reactions
+for which the given species is in the `dependent` set of the reaction. We can verify this
+for the first species, `m₁`:
+
+```julia
+speciestorx_depgraph(rn)[1]
+```
+```julia
+findall(depset -> in(:m₁, depset), dependents.(rn, 1:numreactions(rn)))
+```
+
+Finally, `rxtorx_depgraph` provides a mapping that shows when a given reaction
+occurs, which other reactions have rate laws that involve species whose value
+would have changed:
+
+```julia
+rxtorx_depgraph(rn)
+```
+
+## Incremental Construction of Networks
+
+## Extending Incrementally Generated Networks to Include ODES/SDEs or Jumps
