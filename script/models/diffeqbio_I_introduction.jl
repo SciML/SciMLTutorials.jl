@@ -25,7 +25,7 @@ end α K n δ γ β μ;
 latexify(repressilator; env=:chemical)
 
 
-x = latexify(repressilator; env=:chemical, starred=true);
+x = latexify(repressilator; env=:chemical, starred=true, mathjax=true);
 display("text/latex", "$x");
 
 
@@ -103,4 +103,7 @@ latexify(jacobianexprs(repressilator))
 x = latexify(jacobianexprs(repressilator), starred=true);
 display("text/latex", "$x");
 
+
+using DiffEqTutorials
+DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file], remove_homedir=true)
 

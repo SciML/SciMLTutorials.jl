@@ -58,7 +58,7 @@ generated rate laws for each reaction
 latexify(repressilator; env=:chemical)
 ```
 ```julia; echo=false; skip="notebook";
-x = latexify(repressilator; env=:chemical, starred=true, mathjax=true);
+x = latexify(repressilator; env=:chemical, starred=true, mathjax=false);
 display("text/latex", "$x");
 ```
 
@@ -240,6 +240,18 @@ documentation](http://docs.juliadiffeq.org/latest/apis/diffeqbio.html) provides
 a thorough description of the many query functions that are provided to access
 network properties and generated functions. In DiffEqBiological Tutorial II
 we'll explore the API.
+
+---
+## Getting Help
+Have a question related to DiffEqBiological or this tutorial? Feel free to ask
+in the DifferentialEquations.jl [Gitter](https://gitter.im/JuliaDiffEq/Lobby).
+If you think you've found a bug in DiffEqBiological, or would like to
+request/discuss new functionality, feel free to open an issue on
+[Github](https://github.com/JuliaDiffEq/DiffEqBiological.jl) (but please check
+there is no related issue already open). If you've found a bug in this tutorial,
+or have a suggestion, feel free to open an issue on the [DiffEqTutorials Github
+site](https://github.com/JuliaDiffEq/DiffEqTutorials.jl). Or, submit a pull
+request to DiffEqTutorials updating the tutorial!
 
 ---
 ```julia; echo=false; skip="notebook"
