@@ -100,3 +100,38 @@ setdiff(products(rn, rxidx), products(rnmin, rxidx))
 
 rateexpr(rn, rxidx) == rateexpr(rnmin, rxidx)
 
+
+addodes!(rnmin)
+
+
+odeexprs(rnmin)
+
+
+latexify(rnmin)
+
+
+x = latexify(rnmin, starred=true);
+display("text/latex", "$x");
+
+
+latexify(jacobianexprs(rnmin))
+
+
+x = latexify(jacobianexprs(rnmin), starred=true);
+display("text/latex", "$x");
+
+
+N = 256
+h = 1 / N
+
+
+rn = @empty_reaction_network
+
+for i = 1:N
+    addspecies!(rn, Symbol(:u, i))
+end
+
+
+using DiffEqTutorials
+DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file], remove_homedir=true)
+

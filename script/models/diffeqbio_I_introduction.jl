@@ -1,6 +1,6 @@
 
 # If not already installed, first hit "]" within a Julia REPL. Then type:
-# add DifferentialEquations DiffEqBiological StochasticDiffEq PyPlot Plots Latexify 
+# add DifferentialEquations DiffEqBiological PyPlot Plots Latexify 
 
 using DifferentialEquations, DiffEqBiological, Plots, Latexify
 pyplot(fmt=:svg);
@@ -89,14 +89,12 @@ u₀ = [5.]
 tspan = (0.,4.);
 
 
-# import StochasticDiffEq so we can pick a specific solver 
-using StochasticDiffEq
-
 # SDEProblem for CLE
 sprob = SDEProblem(bdp, u₀, tspan, p)
 
-# solve with Euler's Method and plot
-sol = solve(sprob, EM(), dt=4e-5, saveat=4e-3)
+# solve and plot, tstops is used to specify enough points 
+# that the plot looks well-resolved
+sol = solve(sprob, tstops=range(0., step=4e-3, length=1001))
 plot(sol, fmt=:svg)
 
 
