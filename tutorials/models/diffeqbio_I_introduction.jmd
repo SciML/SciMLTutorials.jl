@@ -58,7 +58,7 @@ generated rate laws for each reaction
 latexify(repressilator; env=:chemical)
 ```
 ```julia; echo=false; skip="notebook";
-x = latexify(repressilator; env=:chemical, starred=true, mathjax=false);
+x = latexify(repressilator; env=:chemical, starred=true, mathjax=true);
 display("text/latex", "$x");
 ```
 
