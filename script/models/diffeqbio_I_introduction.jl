@@ -73,7 +73,8 @@ sol = solve(jprob, SSAStepper(), saveat=10.)
 plot(sol, fmt=:svg)
 
 
-lprob = JumpProblem(dprob, Direct(), repressilator.regular_jumps)
+rjs = regularjumps(repressilator)
+lprob = JumpProblem(dprob, Direct(), rjs)
 lsol = solve(lprob, SimpleTauLeaping(), dt=.1)
 plot(lsol, plotdensity=1000, fmt=:svg)
 
@@ -96,13 +97,10 @@ sol = solve(sprob, saveat=.004)
 plot(sol, fmt=:svg)
 
 
-latexify(repressilator.symjac)
+latexify(jacobianexprs(repressilator))
 
 
-x = latexify(repressilator.symjac, starred=true);
+x = latexify(jacobianexprs(repressilator), starred=true);
 display("text/latex", "$x");
 
-
-using DiffEqTutorials
-DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file], remove_homedir=true)
 
