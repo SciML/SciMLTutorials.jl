@@ -5,8 +5,6 @@ using Weave, Pkg, InteractiveUtils, IJulia
 repo_directory = joinpath(@__DIR__,"..")
 
 function weave_file(folder,file,build_list=(:script,:html,:pdf,:notebook); kwargs...)
-  println(kwargs)
-  println("File: $file")
   tmp = joinpath(repo_directory,"tutorials",folder,file)
   args = Dict{Symbol,String}(:folder=>folder,:file=>file)
   if :script ∈ build_list
