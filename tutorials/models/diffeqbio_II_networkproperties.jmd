@@ -9,8 +9,8 @@ collection of functions for easily accessing network properties, and for
 incrementally building and extending a network. In this tutorial we'll go
 through the API. 
 
-We'll work with a made up toggle-switch like network that illustrates a variety
-of different reaction types:
+Let's illustrate on a toggle-switch like network that contains a variety of
+different reaction types:
 
 ```julia
 using DiffEqBiological, Latexify
@@ -29,7 +29,7 @@ rn = @reaction_network begin
 end α K n δ γ β μ k₊ k₋;
 ```
 
-which corresponds to the chemical reaction network given by
+This corresponds to the chemical reaction network given by
 
 ```julia; results="hidden"; 
 latexify(rn; env=:chemical)
@@ -42,8 +42,9 @@ display("text/latex", "$x");
 ## Network Properties
 [Basic
 properties](http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Basic-properties-1)
-of the generated network include the `speciesmap` and `paramsmap` functions we examined
-last time, along with the corresponding `species` and `params` functions:
+of the generated network include the `speciesmap` and `paramsmap` functions we
+examined in the last tutorial, along with the corresponding `species` and
+`params` functions:
 
 ```julia
 species(rn)
@@ -53,7 +54,7 @@ params(rn)
 ```
 
 The numbers of species, parameters and reactions can be accessed using
-`numreactions(rn)`, `numspecies(rn)` and `numparams(rn)`.
+`numspecies(rn)`, `numparams(rn)` and `numreactions(rn)`.
 
 A number of functions are available to access [properties of
 reactions](http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Reaction-Properties-1)
@@ -125,8 +126,140 @@ would have changed:
 rxtorx_depgraph(rn)
 ```
 
+#### Note on Using API Network Property Functions
+The basic network query and reaction property functions are simply accessors,
+returning information that is already stored within the generated
+`reaction_network`. In particular, modifying the returned data structures may
+lead to inconsistent internal state within the network. As such, they should be
+used for accessing, but not modifying, network properties. In contrast, the
+dependency graph functions *generate* a new dependency graph each time they are
+called, assuming the user will take ownership of the returned graph.
+
 ## Incremental Construction of Networks
+The `@reaction_network` macro is monolithic, in that it not only constructs and
+stores basic network properties such as the reaction stoichiometries, but also
+generates **everything** needed to immediately solve ODEs, SDE and jump models
+using the network. This includes Jacobian functions, noise functions, and jump
+functions for each reaction. While this allows for a compact interface to the
+DifferentialEquations.jl solvers, it can also be computationally expensive for
+large networks, where a user may only wish to solve one type of problem and/or
+have fine-grained control over what is generated. In addition, some types of
+reaction network structures are more amenable to being constructed
+programmatically, as opposed to writing out all reactions by hand within one
+macro. For these reasons DiffEqBiological provides two additional macros that
+only *initially* setup basic reaction network properties, and which can be
+extended through a programmatic interface: `@min_reaction_network` and
+`@empty_reaction_network`. We now give an introduction to constructing these
+more minimal network representations, and how they can be programmatically
+extended. See also the relevant [API
+section](http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Reaction-Network-Generation-Macros-1).
+
+The `@min_reaction_network` macro works identically to the `@reaction_network`
+macro, but the generated network will only be complete with respect to its
+representation of chemical network properties (i.e. species, parameters and
+reactions). No ODE, SDE or jump models are generated during the macro call. It
+can subsequently be extended with the addition of new species, parameters or
+reactions. The `@empty_reaction_network` allocates an empty network structure
+that can also be extended using the programatic interface. For example, consider
+a partial version of the toggle-switch like network we defined above:
+
+```julia
+rnmin = @min_reaction_network begin
+    (δ,γ), m₁ ↔ ∅
+    (δ,γ), m₂ ↔ ∅
+    β, m₁ --> m₁ + P₁
+    β, m₂ --> m₂ + P₂
+    μ, P₁ --> ∅
+    μ, P₂ --> ∅
+end δ γ β μ;
+```
+
+Here we have left out the first two, and last three, reactions from the original
+`reaction_network`. To expand the network until it is functionally equivalent to
+the original model we add back in the missing species, parameters, and *finally*
+the missing reactions. Note, it is required that species and parameters be
+defined before any reactions using them are added. The necessary network
+extension functions are given by `addspecies!`, `addparam!` and `addreaction!`,
+and described in the
+[API](http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Functions-to-Add-Species,-Parameters-and-Reactions-to-a-Network-1). To complete `rnmin` we first add the relevant
+species:
+
+```julia
+addspecies!(rnmin, :D₁)
+addspecies!(rnmin, :D₂)
+addspecies!(rnmin, :T)
+```
+
+Next we add the needed parameters
+
+```julia
+addparam!(rnmin, :α)
+addparam!(rnmin, :K)
+addparam!(rnmin, :n)
+addparam!(rnmin, :k₊)
+addparam!(rnmin, :k₋)
+```
+
+Note, both `addspecies!` and `addparam!` also accept strings encoding the variable names (which are then converted to `Symbol`s internally).
+
+We are now ready to add the missing reactions. The API provides two forms of the
+`addreaction!` function, one takes expressions analogous to what one would write in
+the macro:
+
+```julia
+addreaction!(rnmin, :(hillr(D₁,α,K,n)), :(∅ --> m₂))
+addreaction!(rnmin, :((k₊,k₋)), :(2P₂ ↔ D₂))
+addreaction!(rnmin, :k₊, :(2P₁ --> D₁))
+addreaction!(rnmin, :k₋, :(D₁ --> 2P₁))
+```
+
+Note ,the rate can be an expression or symbol as above, but could also just be a
+hardcoded numeric value. The second form of `addreaction!` takes tuples of
+`Pair{Symbol,Int}` that encode the stoichiometric coefficients of substrates and
+reactants:
+
+```julia
+addreaction!(rnmin, :(hillr(D₂,α,K,n)), (), (:m₁ => 1,))
+addreaction!(rnmin, :k₊, (:P₁=>1, :P₂=>1), (:T=>1,))
+addreaction!(rnmin, :k₋, (:T=>1,), (:P₁=>1, :P₂=>1))
+```
+
+Let's check that our `rn` and `rnmin` have the same set of species:
+
+```julia
+setdiff(species(rn), species(rnmin))
+```
+
+the same set of params:
+
+```julia
+setdiff(params(rn), params(rnmin))
+```
+
+and the final reaction has the same substrates, reactions, and rate expression:
+
+```julia
+rxidx = numreactions(rn)
+setdiff(substrates(rn, rxidx), substrates(rnmin, rxidx))
+```
+```julia
+setdiff(products(rn, rxidx), products(rnmin, rxidx))
+```
+```julia
+rateexpr(rn, rxidx) == rateexpr(rnmin, rxidx)
+```
 
 ## Extending Incrementally Generated Networks to Include ODES/SDEs or Jumps
 
 ## Large network Support
+
+## Example Showing How to Generate a Network Programmatically
+In general, for a user directly typing in a reaction network it is easier to use
+the `@min_reaction_network` or `@reaction_network` macros to fully specify
+reactions. However, for large networks where there is a lot of structure between
+reactions it can be much easier to generate the network programmatically. For
+very large networks, more than tens of thousands of reactions, the second form
+of `addreaction!` should be preferred as it offers substantially better
+performance. As example, let's generate the network corresponding to a 
+2D continuous time random walk, approximating the diffusion 
+molecules. 

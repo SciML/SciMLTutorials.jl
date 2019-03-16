@@ -666,7 +666,7 @@ div.title {text-align: center;}
           </div>
 
           <p>The <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html">DiffEqBiological API</a> provides a collection of functions for easily accessing network properties, and for incrementally building and extending a network. In this tutorial we&#39;ll go through the API. </p>
-<p>We&#39;ll work with a made up toggle-switch like network that illustrates a variety of different reaction types:</p>
+<p>Let&#39;s illustrate on a toggle-switch like network that contains a variety of different reaction types:</p>
 
 
 <pre class='hljl'>
@@ -688,7 +688,7 @@ div.title {text-align: center;}
 
 
 
-<p>which corresponds to the chemical reaction network given by</p>
+<p>This corresponds to the chemical reaction network given by</p>
 
 
 <pre class='hljl'>
@@ -715,7 +715,7 @@ div.title {text-align: center;}
 
 
 <h2>Network Properties</h2>
-<p><a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Basic-properties-1">Basic properties</a> of the generated network include the <code>speciesmap</code> and <code>paramsmap</code> functions we examined last time, along with the corresponding <code>species</code> and <code>params</code> functions:</p>
+<p><a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Basic-properties-1">Basic properties</a> of the generated network include the <code>speciesmap</code> and <code>paramsmap</code> functions we examined in the last tutorial, along with the corresponding <code>species</code> and <code>params</code> functions:</p>
 
 
 <pre class='hljl'>
@@ -755,7 +755,7 @@ div.title {text-align: center;}
 </pre>
 
 
-<p>The numbers of species, parameters and reactions can be accessed using <code>numreactions&#40;rn&#41;</code>, <code>numspecies&#40;rn&#41;</code> and <code>numparams&#40;rn&#41;</code>.</p>
+<p>The numbers of species, parameters and reactions can be accessed using <code>numspecies&#40;rn&#41;</code>, <code>numparams&#40;rn&#41;</code> and <code>numreactions&#40;rn&#41;</code>.</p>
 <p>A number of functions are available to access <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Reaction-Properties-1">properties of reactions</a> within the generated network, including <code>substrates</code>, <code>products</code>, <code>dependents</code>, <code>ismassaction</code>, <code>substratestoich</code>, <code>productstoich</code>, and <code>netstoich</code>. Each of these functions takes two arguments, the reaction network <code>rn</code> and the index of the reaction to query information about. For example, to find the substrate symbols and their corresponding stoichiometries for the 11th reaction, <code>2P₁ --&gt; D₁</code>, we would use</p>
 
 
@@ -931,8 +931,138 @@ div.title {text-align: center;}
 </pre>
 
 
+<h4>Note on Using API Network Property Functions</h4>
+<p>The basic network query and reaction property functions are simply accessors, returning information that is already stored within the generated <code>reaction_network</code>. In particular, modifying the returned data structures may lead to inconsistent internal state within the network. As such, they should be used for accessing, but not modifying, network properties. In contrast, the dependency graph functions <em>generate</em> a new dependency graph each time they are called, assuming the user will take ownership of the returned graph.</p>
 <h2>Incremental Construction of Networks</h2>
+<p>The <code>@reaction_network</code> macro is monolithic, in that it not only constructs and stores basic network properties such as the reaction stoichiometries, but also generates <strong>everything</strong> needed to immediately solve ODEs, SDE and jump models using the network. This includes Jacobian functions, noise functions, and jump functions for each reaction. While this allows for a compact interface to the DifferentialEquations.jl solvers, it can also be computationally expensive for large networks, where a user may only wish to solve one type of problem and/or have fine-grained control over what is generated. In addition, some types of reaction network structures are more amenable to being constructed programmatically, as opposed to writing out all reactions by hand within one macro. For these reasons DiffEqBiological provides two additional macros that only <em>initially</em> setup basic reaction network properties, and which can be extended through a programmatic interface: <code>@min_reaction_network</code> and <code>@empty_reaction_network</code>. We now give an introduction to constructing these more minimal network representations, and how they can be programmatically extended. See also the relevant <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Reaction-Network-Generation-Macros-1">API section</a>.</p>
+<p>The <code>@min_reaction_network</code> macro works identically to the <code>@reaction_network</code> macro, but the generated network will only be complete with respect to its representation of chemical network properties &#40;i.e. species, parameters and reactions&#41;. No ODE, SDE or jump models are generated during the macro call. It can subsequently be extended with the addition of new species, parameters or reactions. The <code>@empty_reaction_network</code> allocates an empty network structure that can also be extended using the programatic interface. For example, consider a partial version of the toggle-switch like network we defined above:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>rnmin</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nd'>@min_reaction_network</span><span class='hljl-t'> </span><span class='hljl-k'>begin</span><span class='hljl-t'>
+    </span><span class='hljl-p'>(</span><span class='hljl-n'>δ</span><span class='hljl-p'>,</span><span class='hljl-n'>γ</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-n'>m₁</span><span class='hljl-t'> </span><span class='hljl-oB'>↔</span><span class='hljl-t'> </span><span class='hljl-n'>∅</span><span class='hljl-t'>
+    </span><span class='hljl-p'>(</span><span class='hljl-n'>δ</span><span class='hljl-p'>,</span><span class='hljl-n'>γ</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-n'>m₂</span><span class='hljl-t'> </span><span class='hljl-oB'>↔</span><span class='hljl-t'> </span><span class='hljl-n'>∅</span><span class='hljl-t'>
+    </span><span class='hljl-n'>β</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>m₁</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>m₁</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-n'>P₁</span><span class='hljl-t'>
+    </span><span class='hljl-n'>β</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>m₂</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>m₂</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-n'>P₂</span><span class='hljl-t'>
+    </span><span class='hljl-n'>μ</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>P₁</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>∅</span><span class='hljl-t'>
+    </span><span class='hljl-n'>μ</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>P₂</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>∅</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span><span class='hljl-t'> </span><span class='hljl-n'>δ</span><span class='hljl-t'> </span><span class='hljl-n'>γ</span><span class='hljl-t'> </span><span class='hljl-n'>β</span><span class='hljl-t'> </span><span class='hljl-n'>μ</span><span class='hljl-p'>;</span>
+</pre>
+
+
+
+<p>Here we have left out the first two, and last three, reactions from the original <code>reaction_network</code>. To expand the network until it is functionally equivalent to the original model we add back in the missing species, parameters, and <em>finally</em> the missing reactions. Note, it is required that species and parameters be defined before any reactions using them are added. The necessary network extension functions are given by <code>addspecies&#33;</code>, <code>addparam&#33;</code> and <code>addreaction&#33;</code>, and described in the <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Functions-to-Add-Species,-Parameters-and-Reactions-to-a-Network-1">API</a>. To complete <code>rnmin</code> we first add the relevant species:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>addspecies!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:D₁</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addspecies!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:D₂</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addspecies!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:T</span><span class='hljl-p'>)</span>
+</pre>
+
+
+
+<p>Next we add the needed parameters</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>addparam!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:α</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addparam!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:K</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addparam!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:n</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addparam!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:k₊</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addparam!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:k₋</span><span class='hljl-p'>)</span>
+</pre>
+
+
+
+<p>Note, both <code>addspecies&#33;</code> and <code>addparam&#33;</code> also accept strings encoding the variable names &#40;which are then converted to <code>Symbol</code>s internally&#41;.</p>
+<p>We are now ready to add the missing reactions. The API provides two forms of the <code>addreaction&#33;</code> function, one takes expressions analogous to what one would write in the macro:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>addreaction!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>(</span><span class='hljl-nf'>hillr</span><span class='hljl-p'>(</span><span class='hljl-n'>D₁</span><span class='hljl-p'>,</span><span class='hljl-n'>α</span><span class='hljl-p'>,</span><span class='hljl-n'>K</span><span class='hljl-p'>,</span><span class='hljl-n'>n</span><span class='hljl-p'>)),</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>(</span><span class='hljl-n'>∅</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>m₂</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addreaction!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>((</span><span class='hljl-n'>k₊</span><span class='hljl-p'>,</span><span class='hljl-n'>k₋</span><span class='hljl-p'>)),</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>(</span><span class='hljl-ni'>2</span><span class='hljl-n'>P₂</span><span class='hljl-t'> </span><span class='hljl-oB'>↔</span><span class='hljl-t'> </span><span class='hljl-n'>D₂</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addreaction!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:k₊</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>(</span><span class='hljl-ni'>2</span><span class='hljl-n'>P₁</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>D₁</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addreaction!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:k₋</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>(</span><span class='hljl-n'>D₁</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>2</span><span class='hljl-n'>P₁</span><span class='hljl-p'>))</span>
+</pre>
+
+
+
+<p>Note ,the rate can be an expression or symbol as above, but could also just be a hardcoded numeric value. The second form of <code>addreaction&#33;</code> takes tuples of <code>Pair&#123;Symbol,Int&#125;</code> that encode the stoichiometric coefficients of substrates and reactants:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>addreaction!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>(</span><span class='hljl-nf'>hillr</span><span class='hljl-p'>(</span><span class='hljl-n'>D₂</span><span class='hljl-p'>,</span><span class='hljl-n'>α</span><span class='hljl-p'>,</span><span class='hljl-n'>K</span><span class='hljl-p'>,</span><span class='hljl-n'>n</span><span class='hljl-p'>)),</span><span class='hljl-t'> </span><span class='hljl-p'>(),</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-sc'>:m₁</span><span class='hljl-t'> </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>1</span><span class='hljl-p'>,))</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addreaction!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:k₊</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-sc'>:P₁</span><span class='hljl-oB'>=&gt;</span><span class='hljl-ni'>1</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:P₂</span><span class='hljl-oB'>=&gt;</span><span class='hljl-ni'>1</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-sc'>:T</span><span class='hljl-oB'>=&gt;</span><span class='hljl-ni'>1</span><span class='hljl-p'>,))</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addreaction!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:k₋</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-sc'>:T</span><span class='hljl-oB'>=&gt;</span><span class='hljl-ni'>1</span><span class='hljl-p'>,),</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-sc'>:P₁</span><span class='hljl-oB'>=&gt;</span><span class='hljl-ni'>1</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:P₂</span><span class='hljl-oB'>=&gt;</span><span class='hljl-ni'>1</span><span class='hljl-p'>))</span>
+</pre>
+
+
+
+<p>Let&#39;s check that our <code>rn</code> and <code>rnmin</code> have the same set of species:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>setdiff</span><span class='hljl-p'>(</span><span class='hljl-nf'>species</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-nf'>species</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="output">
+0-element Array&#123;Symbol,1&#125;
+</pre>
+
+
+<p>the same set of params</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>setdiff</span><span class='hljl-p'>(</span><span class='hljl-nf'>params</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-nf'>params</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="output">
+0-element Array&#123;Symbol,1&#125;
+</pre>
+
+
+<p>and the final reaction has the same substrates, reactions, and rate expression:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>rxidx</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>numreactions</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>setdiff</span><span class='hljl-p'>(</span><span class='hljl-nf'>substrates</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>rxidx</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-nf'>substrates</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>rxidx</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="output">
+0-element Array&#123;DiffEqBiological.ReactantStruct,1&#125;
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>setdiff</span><span class='hljl-p'>(</span><span class='hljl-nf'>products</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>rxidx</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-nf'>products</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>rxidx</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="output">
+0-element Array&#123;DiffEqBiological.ReactantStruct,1&#125;
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>rateexpr</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>rxidx</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>==</span><span class='hljl-t'> </span><span class='hljl-nf'>rateexpr</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>rxidx</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+true
+</pre>
+
+
 <h2>Extending Incrementally Generated Networks to Include ODES/SDEs or Jumps</h2>
+<h2>Large network Support</h2>
 
 
 
