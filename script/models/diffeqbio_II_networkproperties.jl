@@ -1,5 +1,7 @@
 
-using DiffEqBiological, Latexify
+using DifferentialEquations, DiffEqBiological, Latexify, Plots
+fmt = :svg
+pyplot(fmt=fmt)
 rn = @reaction_network begin
     hillr(D₂,α,K,n), ∅ --> m₁
     hillr(D₁,α,K,n), ∅ --> m₂
@@ -80,6 +82,7 @@ addreaction!(rnmin, :k₊, :(2P₁ --> D₁))
 addreaction!(rnmin, :k₋, :(D₁ --> 2P₁))
 
 
+# signature is addreaction!(rnmin, paramexpr, substratestoich, productstoich)
 addreaction!(rnmin, :(hillr(D₂,α,K,n)), (), (:m₁ => 1,))
 addreaction!(rnmin, :k₊, (:P₁=>1, :P₂=>1), (:T=>1,))
 addreaction!(rnmin, :k₋, (:T=>1,), (:P₁=>1, :P₂=>1))
@@ -121,7 +124,7 @@ x = latexify(jacobianexprs(rnmin), starred=true);
 display("text/latex", "$x");
 
 
-N = 256
+N = 64
 h = 1 / N
 
 
@@ -130,6 +133,56 @@ rn = @empty_reaction_network
 for i = 1:N
     addspecies!(rn, Symbol(:u, i))
 end
+
+
+addparam!(rn, :β)
+
+
+for i = 1:N
+    (i < N) && addreaction!(rn, :β, (Symbol(:u,i)=>1,), (Symbol(:u,i+1)=>1,))
+    (i > 1) && addreaction!(rn, :β, (Symbol(:u,i)=>1,), (Symbol(:u,i-1)=>1,))
+end
+
+
+addodes!(rn)
+
+
+u₀ = zeros(N)
+u₀[div(N,2)] = 10000
+p = [1/(h*h)]
+tspan = (0.,.01)
+oprob = ODEProblem(rn, u₀, tspan, p)
+
+
+sol = solve(oprob, KenCarp4())
+times = [0., .0001, .001, .01]
+plt = plot()
+for time in times
+    plot!(plt, 1:N, sol(time), fmt=fmt, xlabel="i", ylabel="uᵢ", label=string("t = ", time), lw=3)
+end
+plot(plt, ylims=(0.,10000.))
+
+
+addjumps!(rn, build_regular_jumps=false, minimal_jumps=true)
+
+# make the initial condition integer valued 
+u₀ = zeros(Int, N)
+u₀[div(N,2)] = 10000
+
+# setup and solve the problem
+dprob = DiscreteProblem(rn, u₀, tspan, p)
+jprob = JumpProblem(dprob, DirectCR(), rn, save_positions=(false,false))
+jsol = solve(jprob, SSAStepper(), saveat=times)
+
+
+times = [0., .0001, .001, .01]
+plts = []
+for i = 1:4
+    b = bar(1:N, jsol[i], legend=false, fmt=fmt, xlabel="i", ylabel="uᵢ", title=string("t = ", times[i]))
+    plot!(b,sol(times[i]))
+    push!(plts,b)
+end
+plot(plts...)
 
 
 using DiffEqTutorials
