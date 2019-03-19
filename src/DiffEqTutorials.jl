@@ -4,8 +4,7 @@ using Weave, Pkg, InteractiveUtils, IJulia
 
 repo_directory = joinpath(@__DIR__,"..")
 
-function weave_file(folder,file,build_list=(:script,:html,:pdf,:notebook))
-  println("File: $file")
+function weave_file(folder,file,build_list=(:script,:html,:pdf,:notebook); kwargs...)
   tmp = joinpath(repo_directory,"tutorials",folder,file)
   args = Dict{Symbol,String}(:folder=>folder,:file=>file)
   if :script ∈ build_list
@@ -18,19 +17,19 @@ function weave_file(folder,file,build_list=(:script,:html,:pdf,:notebook))
     println("Building HTML")
     dir = joinpath(repo_directory,"html",folder)
     isdir(dir) || mkdir(dir)
-    weave(tmp,doctype = "md2html",out_path=dir,args=args)
+    weave(tmp,doctype = "md2html",out_path=dir,args=args; kwargs...)
   end
   if :pdf ∈ build_list
     println("Building PDF")
     dir = joinpath(repo_directory,"pdf",folder)
     isdir(dir) || mkdir(dir)
-    weave(tmp,doctype="md2pdf",out_path=dir,args=args)
+    weave(tmp,doctype="md2pdf",out_path=dir,args=args; kwargs...)
   end
   if :github ∈ build_list
     println("Building Github Markdown")
     dir = joinpath(repo_directory,"markdown",folder)
     isdir(dir) || mkdir(dir)
-    weave(tmp,doctype = "github",out_path=dir,args=args)
+    weave(tmp,doctype = "github",out_path=dir,args=args; kwargs...)
   end
   if :notebook ∈ build_list
     println("Building Notebook")

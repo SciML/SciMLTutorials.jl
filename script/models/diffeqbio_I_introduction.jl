@@ -25,7 +25,7 @@ end α K n δ γ β μ;
 latexify(repressilator; env=:chemical)
 
 
-x = latexify(repressilator; env=:chemical, starred=true);
+x = latexify(repressilator; env=:chemical, starred=true, mathjax=true);
 display("text/latex", "$x");
 
 
@@ -73,7 +73,8 @@ sol = solve(jprob, SSAStepper(), saveat=10.)
 plot(sol, fmt=:svg)
 
 
-lprob = JumpProblem(dprob, Direct(), repressilator.regular_jumps)
+rjs = regularjumps(repressilator)
+lprob = JumpProblem(dprob, Direct(), rjs)
 lsol = solve(lprob, SimpleTauLeaping(), dt=.1)
 plot(lsol, plotdensity=1000, fmt=:svg)
 
@@ -91,15 +92,16 @@ tspan = (0.,4.);
 # SDEProblem for CLE
 sprob = SDEProblem(bdp, u₀, tspan, p)
 
-# solve and plot
-sol = solve(sprob, saveat=.004)
+# solve and plot, tstops is used to specify enough points 
+# that the plot looks well-resolved
+sol = solve(sprob, tstops=range(0., step=4e-3, length=1001))
 plot(sol, fmt=:svg)
 
 
-latexify(repressilator.symjac)
+latexify(jacobianexprs(repressilator))
 
 
-x = latexify(repressilator.symjac, starred=true);
+x = latexify(jacobianexprs(repressilator), starred=true);
 display("text/latex", "$x");
 
 
