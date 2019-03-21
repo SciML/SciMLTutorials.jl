@@ -3,6 +3,8 @@ module DiffEqTutorials
 using Weave, Pkg, InteractiveUtils, IJulia
 
 repo_directory = joinpath(@__DIR__,"..")
+cssfile = joinpath(@__DIR__, "..", "templates", "skeleton_css.css")
+latexfile = joinpath(@__DIR__, "..", "templates", "julia_tex.tpl")
 
 function weave_file(folder,file,build_list=(:script,:html,:pdf,:notebook); kwargs...)
   tmp = joinpath(repo_directory,"tutorials",folder,file)
@@ -17,13 +19,13 @@ function weave_file(folder,file,build_list=(:script,:html,:pdf,:notebook); kwarg
     println("Building HTML")
     dir = joinpath(repo_directory,"html",folder)
     isdir(dir) || mkdir(dir)
-    weave(tmp,doctype = "md2html",out_path=dir,args=args; kwargs...)
+    weave(tmp,doctype = "md2html",out_path=dir,args=args; css=cssfile, kwargs...)
   end
   if :pdf ∈ build_list
     println("Building PDF")
     dir = joinpath(repo_directory,"pdf",folder)
     isdir(dir) || mkdir(dir)
-    weave(tmp,doctype="md2pdf",out_path=dir,args=args; kwargs...)
+    weave(tmp,doctype="md2pdf",out_path=dir,args=args; template=latexfile, kwargs...)
   end
   if :github ∈ build_list
     println("Building Github Markdown")

@@ -38,7 +38,7 @@ This corresponds to the chemical reaction network given by
 latexify(rn; env=:chemical)
 ```
 ```julia; echo=false; skip="notebook";
-x = latexify(rn; env=:chemical, starred=true, mathjax=true);
+x = latexify(rn; env=:chemical, starred=true, mathjax=false);
 display("text/latex", "$x");
 ```
 
@@ -131,13 +131,14 @@ rxtorx_depgraph(rn)
 ```
 
 #### Note on Using Network Property API Functions
-The basic network query and reaction property functions are simply accessors,
+Many basic network query and reaction property functions are simply accessors,
 returning information that is already stored within the generated
-`reaction_network`. In particular, modifying the returned data structures may
-lead to inconsistent internal state within the network. As such, they should be
-used for accessing, but not modifying, network properties. In contrast, the
-dependency graph functions *generate* a new dependency graph each time they are
-called, assuming the user will take ownership of the returned graph.
+`reaction_network`. For these functions, modifying the returned data structures
+may lead to inconsistent internal state within the network. As such, they should
+be used for accessing, but not modifying, network properties. The [API
+documentation](http://docs.juliadiffeq.org/latest/apis/diffeqbio.html)
+indicates which functions return newly allocated data structures and which
+return data stored within the `reaction_network`.
 
 ---
 ## Incremental Construction of Networks
