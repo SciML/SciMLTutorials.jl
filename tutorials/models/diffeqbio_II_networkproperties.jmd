@@ -63,21 +63,21 @@ The numbers of species, parameters and reactions can be accessed using
 A number of functions are available to access [properties of
 reactions](http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Reaction-Properties-1)
 within the generated network, including `substrates`, `products`, `dependents`,
-`ismassaction`, `substratestoich`, `productstoich`, and `netstoich`. Each of
-these functions takes two arguments, the reaction network `rn` and the index of
-the reaction to query information about. For example, to find the substrate
-symbols and their corresponding stoichiometries for the 11th reaction, `2P₁ -->
-D₁`, we would use
+`ismassaction`, `substratestoich`, `substratesymstoich`, `productstoich`,
+`productsymstoich`, and `netstoich`. Each of these functions takes two
+arguments, the reaction network `rn` and the index of the reaction to query
+information about. For example, to find the substrate symbols and their
+corresponding stoichiometries for the 11th reaction, `2P₁ --> D₁`, we would use
 
 ```julia
-substrates(rn, 11)
+substratesymstoich(rn, 11)
 ```
 
 Broadcasting works on all these functions, allowing the construction of a vector
 holding the queried information across all reactions, i.e.
 
 ```julia
-substrates.(rn, 1:numreactions(rn))
+substratesymstoich.(rn, 1:numreactions(rn))
 ```
 
 To see the net stoichiometries for all reactions we would use
@@ -131,13 +131,14 @@ rxtorx_depgraph(rn)
 ```
 
 #### Note on Using Network Property API Functions
-The basic network query and reaction property functions are simply accessors,
+Many basic network query and reaction property functions are simply accessors,
 returning information that is already stored within the generated
-`reaction_network`. In particular, modifying the returned data structures may
-lead to inconsistent internal state within the network. As such, they should be
-used for accessing, but not modifying, network properties. In contrast, the
-dependency graph functions *generate* a new dependency graph each time they are
-called, assuming the user will take ownership of the returned graph.
+`reaction_network`. For these functions, modifying the returned data structures
+may lead to inconsistent internal state within the network. As such, they should
+be used for accessing, but not modifying, network properties. The [API
+documentation](http://docs.juliadiffeq.org/latest/apis/diffeqbio.html)
+indicates which functions return newly allocated data structures and which
+return data stored within the `reaction_network`.
 
 ---
 ## Incremental Construction of Networks

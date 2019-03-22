@@ -30,10 +30,10 @@ species(rn)
 params(rn)
 
 
-substrates(rn, 11)
+substratesymstoich(rn, 11)
 
 
-substrates.(rn, 1:numreactions(rn))
+substratesymstoich.(rn, 1:numreactions(rn))
 
 
 netstoich.(rn, 1:numreactions(rn))
