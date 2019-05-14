@@ -41,6 +41,7 @@ DiffEqTutorials.open_notebooks()
   - [DiffEqBiological Tutorial II: Network Properties API](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/diffeqbio_II_networkproperties.html)
   - [Kepler Problem Orbit](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/kepler_problem.html)
 - Advanced ODE Features
+  - [ModelingToolkit.jl, An IR and Compiler for Scientific Models](http://juliadiffeq.org/DiffEqTutorials.jl/html/ode_extras/ModelingToolkit.html)
   - [Feagin's Order 10, 12, and 14 Methods](http://juliadiffeq.org/DiffEqTutorials.jl/html/ode_extras/feagin.html)
   - [Finding Maxima and Minima of DiffEq Solutions](http://juliadiffeq.org/DiffEqTutorials.jl/html/ode_extras/ode_minmax.html)
   - [Monte Carlo Parameter Estimation from Data](http://juliadiffeq.org/DiffEqTutorials.jl/html/ode_extras/monte_carlo_parameter_estim.html)
