@@ -1,0 +1,362 @@
+---
+title: ModelingToolkit.jl, An IR and Compiler for Scientific Models
+author: Chris Rackauckas
+---
+
+A lot of people are building modeling languages for their specific domains. However, while the syntax my vary greatly between these domain-specific languages (DSLs), the internals of modeling frameworks are surprisingly similar: building differential equations, calculating Jacobians, etc.
+
+#### ModelingToolkit.jl is metamodeling systemitized
+
+After building our third modeling interface, we realized that this problem can be better approached by having a reusable internal structure which DSLs can target. This internal is ModelingToolkit.jl: an Intermediate Representation (IR) with a well-defined interface for defining system transformations and compiling to Julia functions for use in numerical libraries. Now a DSL can easily be written by simply defining the translation to ModelingToolkit.jl's primatives and querying for the mathematical quantities one needs.
+
+### Basic usage: defining differential equation systems, with performance!
+
+Let's explore the IR itself. ModelingToolkit.jl is friendly to use, and can used as a symbolic DSL in its own right. Let's define and solve the Lorenz differential equation system using ModelingToolkit to generate the functions:
+
+```julia
+using ModelingToolkit
+
+### Define a differential equation system
+
+@parameters t σ ρ β
+@variables x(t) y(t) z(t)
+@derivatives D'~t
+
+eqs = [D(x) ~ σ*(y-x),
+       D(y) ~ x*(ρ-z)-y,
+       D(z) ~ x*y - β*z]
+de = ODESystem(eqs)
+ode_f = ODEFunction(de, [x,y,z], [σ,ρ,β])
+
+### Use in DifferentialEquations.jl
+
+using OrdinaryDiffEq
+u₀ = ones(3)
+tspan = (0.0,100.0)
+p = [10.0,28.0,10/3]
+prob = ODEProblem(ode_f,u₀,tspan,p)
+sol = solve(prob,Tsit5())
+
+using Plots
+plot(sol,vars=(1,2,3))
+```
+
+### ModelingToolkit is a compiler for mathematical systems
+
+At its core, ModelingToolkit is a compiler. It's IR is its type system, and its output are Julia functions (it's a compiler for Julia code to Julia code, written in Julia).
+
+DifferentialEquations.jl wants a function `f(du,u,p,t)` for defining an ODE system, which is what ModelingToolkit.jl is building.
+
+```julia
+generate_function(de, [x,y,z], [σ,ρ,β])
+```
+
+A special syntax in DifferentialEquations.jl for small static ODE systems uses `f(u,p,t)`, which can be generated as well:
+
+```julia
+generate_function(de, [x,y,z], [σ,ρ,β]; version=ModelingToolkit.SArrayFunction)
+```
+
+ModelingToolkit.jl can be used to calculate the Jacobian of the differential equation system:
+
+```julia
+jac = calculate_jacobian(de)
+```
+
+It will automatically generate functions for using this Jacobian within the stiff ODE solvers for faster solving:
+
+```julia
+jac_expr = generate_jacobian(de)
+```
+
+It can even do fancy linear algebra. Stiff ODE solvers need to perform an LU-factorization which is their most expensive part. But ModelingToolkit.jl can skip this operation and instead generate the analytical solution to a matrix factorization, and build a Julia function for directly computing the factorization, which is then optimized in LLVM compiler passes.
+
+```julia
+ModelingToolkit.generate_factorized_W(de)[1]
+```
+
+### Solving Nonlinear systems
+
+ModelingToolkit.jl is not just for differential equations. It can be used for any mathematical target that is representable by its IR. For example, let's solve a rootfinding problem `F(x)=0`. What we do is define a nonlinear system and generate a function for use in NLsolve.jl
+
+```julia
+@variables x y z
+@parameters σ ρ β
+
+# Define a nonlinear system
+eqs = [0 ~ σ*(y-x),
+       0 ~ x*(ρ-z)-y,
+       0 ~ x*y - β*z]
+ns = NonlinearSystem(eqs, [x,y,z])
+nlsys_func = generate_function(ns, [x,y,z], [σ,ρ,β])
+```
+
+We can then tell ModelingToolkit.jl to compile this function for use in NLsolve.jl, and then numerically solve the rootfinding problem:
+
+```julia
+nl_f = @eval eval(nlsys_func)
+# Make a closure over the parameters for for NLsolve.jl
+f2 = (du,u) -> nl_f(du,u,(10.0,26.0,2.33))
+
+using NLsolve
+nlsolve(f2,ones(3))
+```
+
+### Library of transformations on mathematical systems
+
+The reason for using ModelingToolkit is not just for defining performant Julia functions for solving systems, but also for performing mathematical transformations which may be required in order to numerically solve the system. For example, let's solve a third order ODE. The way this is done is by transforming the third order ODE into a first order ODE, and then solving the resulting ODE. This transformation is given by the `ode_order_lowering` function.
+
+```julia
+@derivatives D3'''~t
+@derivatives D2''~t
+@variables u(t), x(t)
+eqs = [D3(u) ~ 2(D2(u)) + D(u) + D(x) + 1
+       D2(x) ~ D(x) + 2]
+de = ODESystem(eqs)
+de1 = ode_order_lowering(de)
+```
+
+```julia
+de1.eqs
+```
+
+This has generated a system of 5 first order ODE systems which can now be used in the ODE solvers.
+
+### Linear Algebra... for free?
+
+Let's take a look at how to extend ModelingToolkit.jl in new directions. Let's define a Jacobian just by using the derivative primatives by hand:
+
+```julia
+@parameters t σ ρ β
+@variables x(t) y(t) z(t)
+@derivatives D'~t Dx'~x Dy'~y Dz'~z
+eqs = [D(x) ~ σ*(y-x),
+       D(y) ~ x*(ρ-z)-y,
+       D(z) ~ x*y - β*z]
+J = [Dx(eqs[1].rhs) Dy(eqs[1].rhs) Dz(eqs[1].rhs)
+ Dx(eqs[2].rhs) Dy(eqs[2].rhs) Dz(eqs[2].rhs)
+ Dx(eqs[3].rhs) Dy(eqs[3].rhs) Dz(eqs[3].rhs)]
+```
+
+Notice that this writes the derivatives in a "lazy" manner. If we want to actually compute the derivatives, we can expand out those expressions:
+
+```julia
+J = expand_derivatives.(J)
+```
+
+Here's the magic of ModelingToolkit.jl: **Julia treats ModelingToolkit expressions like a Number, and so generic numerical functions are directly usable on ModelingToolkit expressions!** Let's compute the LU-factorization of this Jacobian we defined using Julia's Base linear algebra library.
+
+```julia
+using LinearAlgebra
+luJ = lu(J)
+```
+
+```julia
+luJ.L
+```
+
+and the inverse?
+
+```julia
+invJ = inv(J)
+```
+
+#### Thus ModelingToolkit.jl can utilize existing numerical code on symbolic codes
+
+Let's follow this thread a little deeper.
+
+### Automatically convert numerical codes to symbolic
+
+Let's take someone's code written to numerically solve the Lorenz equation:
+
+```julia
+function lorenz(du,u,p,t)
+ du[1] = p[1]*(u[2]-u[1])
+ du[2] = u[1]*(p[2]-u[3]) - u[2]
+ du[3] = u[1]*u[2] - p[3]*u[3]
+end
+```
+
+Since ModelingToolkit can trace generic numerical functions in Julia, let's trace it with Operations. When we do this, it'll spit out a symbolic representation of their numerical code:
+
+```julia
+u = [x,y,z]
+du = similar(u)
+p = [σ,ρ,β]
+lorenz(du,u,p,t)
+du
+```
+
+We can then perform symbolic manipulations on their numerical code, and build a new numerical code that optimizes/fixes their original function!
+
+```julia
+J = [Dx(du[1]) Dy(du[1]) Dz(du[1])
+     Dx(du[2]) Dy(du[2]) Dz(du[2])
+     Dx(du[3]) Dy(du[3]) Dz(du[3])]
+J = expand_derivatives.(J)
+```
+
+### Automated Sparsity Detection
+
+In many cases one has to speed up large modeling frameworks by taking into account sparsity. While ModelingToolkit.jl can be used to compute Jacobians, we can write a standard Julia function in order to get a spase matrix of expressions which automatically detects and utilizes the sparsity of their function.
+
+```julia
+using SparseArrays
+function SparseArrays.SparseMatrixCSC(M::Matrix{T}) where {T<:ModelingToolkit.Expression}
+    idxs = findall(!iszero, M)
+    I = [i[1] for i in idxs]
+    J = [i[2] for i in idxs]
+    V = [M[i] for i in idxs]
+    return SparseArrays.sparse_IJ_sorted!(I, J, V, size(M)...)
+end
+sJ = SparseMatrixCSC(J)
+```
+
+### Dependent Variables, Functions, Chain Rule
+
+"Variables" are overloaded. When you are solving a differential equation, the variable `u(t)` is actually a function of time. In order to handle these kinds of variables in a mathematically correct and extensible manner, the ModelingToolkit IR actually treats variables as functions, and constant variables are simply 0-ary functions (`t()`).
+
+We can utilize this idea to have parameters that are also functions. For example, we can have a parameter σ which acts as a function of 1 argument, and then utilize this function within our differential equations:
+
+```julia
+@parameters σ(..)
+eqs = [D(x) ~ σ(t-1)*(y-x),
+       D(y) ~ x*(σ(t^2)-z)-y,
+       D(z) ~ x*y - β*z]
+```
+
+Notice that when we calculate the derivative with respect to `t`, the chain rule is automatically handled:
+
+```julia
+@derivatives Dₜ'~t
+Dₜ(x*(σ(t^2)-z)-y)
+expand_derivatives(Dₜ(x*(σ(t^2)-z)-y))
+```
+
+### Hackability: Extend directly from the language
+
+ModelingToolkit.jl is written in Julia, and thus it can be directly extended from Julia itself. Let's define a normal Julia function and call it with a variable:
+
+```julia
+_f(x) = 2x + x^2
+_f(x)
+```
+
+Recall that when we do that, it will automatically trace this function and then build a symbolic expression. But what if we wanted our function to be a primative in the symbolic framework? This can be done by registering the function.
+
+```julia
+f(x) = 2x + x^2
+@register f(x)
+```
+
+Now this function is a new primitive:
+
+```julia
+f(x)
+```
+
+and we can now define derivatives of our function:
+
+```julia
+function ModelingToolkit.derivative(::typeof(f), args::NTuple{1,Any}, ::Val{1})
+    2 + 2args[1]
+end
+expand_derivatives(Dx(f(x)))
+```
+
+## Use Case: PuMaS.jl
+
+Let's look at PuMaS.jl, a software for simulating and estimating nonlinear mixed effects models in pharmacometrics. In these models, a user brings in Electronic Health Record (EHR) data to define patient covariates, and then a population model defines fixed effects and random effects. These are collated together to give dynamical parameters which define a differential equation, and then derived variables from the differential equation are observed. For example, let's take a look at a multiple response model:
+
+```julia
+using PuMaS
+
+subject = process_nmtran(example_nmtran_data("event_data/data23"),
+                         [], [:ev1,:cp,:periph,:resp])[1]
+
+
+mrm = @model begin
+    @param   θ ∈ VectorDomain(12)
+    @random  η ~ MvNormal(Matrix{Float64}(I, 11, 11))
+
+    @pre begin
+        Ka1     = θ[1]
+        CL      = θ[2]*exp(η[1])
+        Vc      = θ[3]*exp(η[2])
+        Q       = θ[4]*exp(η[3])
+        Vp      = θ[5]*exp(η[4])
+        Kin     = θ[6]*exp(η[5])
+        Kout    = θ[7]*exp(η[6])
+        IC50    = θ[8]*exp(η[7])
+        IMAX    = θ[9]*exp(η[8])
+        γ       = θ[10]*exp(η[9])
+        Vmax    = θ[11]*exp(η[10])
+        Km      = θ[12]*exp(η[11])
+    end
+
+    @init begin
+        Resp = θ[6]/θ[7]
+    end
+
+    @dynamics begin
+        Ev1'    = -Ka1*Ev1
+        Cent'   =  Ka1*Ev1 - (CL+Vmax/(Km+(Cent/Vc))+Q)*(Cent/Vc)  + Q*(Periph/Vp)
+        Periph' =  Q*(Cent/Vc)  - Q*(Periph/Vp)
+        Resp'   =  Kin*(1-(IMAX*(Cent/Vc)^γ/(IC50^γ+(Cent/Vc)^γ)))  - Kout*Resp
+    end
+
+    @derived begin
+        ev1    = Ev1
+        cp     = Cent / θ[3]
+        periph = Periph
+        resp   = Resp
+    end
+end
+```
+
+Notice that
+
+```{julia;eval=false}
+@dynamics begin
+  Ev1'    = -Ka1*Ev1
+  Cent'   =  Ka1*Ev1 - (CL+Vmax/(Km+(Cent/Vc))+Q)*(Cent/Vc)  + Q*(Periph/Vp)
+  Periph' =  Q*(Cent/Vc)  - Q*(Periph/Vp)
+  Resp'   =  Kin*(1-(IMAX*(Cent/Vc)^γ/(IC50^γ+(Cent/Vc)^γ)))  - Kout*Resp
+end
+```
+
+is implemented by translating this differential equation system into ModelingToolkit IR, and then the functionality shown above is used to get the Julia functions for numerical simulation.
+
+We can now set parameters and simulate the system for a given patient:
+
+```julia
+param = (θ = [
+              1, # Ka1  Absorption rate constant 1 (1/time)
+              1, # CL   Clearance (volume/time)
+              20, # Vc   Central volume (volume)
+              2, # Q    Inter-compartmental clearance (volume/time)
+              10, # Vp   Peripheral volume of distribution (volume)
+              10, # Kin  Response in rate constant (1/time)
+              2, # Kout Response out rate constant (1/time)
+              2, # IC50 Concentration for 50% of max inhibition (mass/volume)
+              1, # IMAX Maximum inhibition
+              1, # γ    Emax model sigmoidicity
+              0, # Vmax Maximum reaction velocity (mass/time)
+              2  # Km   Michaelis constant (mass/volume)
+              ],)
+randeffs = (η = zeros(11),)
+sim = simobs(mrm, subject, param, randeffs)
+```
+
+The solution to this model gives the concentration profile for each subject. For example:
+
+```julia
+plot(sim)
+```
+
+PuMaS's features can then be used to learn the fixed and random effects from data, and from this know how each individual's drug matabolism will react differently. Using these results, we can predict optimal drug doses specific to an individual's biology. This mechanism and the software validation is currently undergoing clinical trials at Johns Hopkins Medical Center.
+
+```{julia; echo=false; skip="notebook"}
+using DiffEqTutorials
+DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+```
