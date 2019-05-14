@@ -13,7 +13,7 @@ After building our third modeling interface, we realized that this problem can b
 
 Let's explore the IR itself. ModelingToolkit.jl is friendly to use, and can used as a symbolic DSL in its own right. Let's define and solve the Lorenz differential equation system using ModelingToolkit to generate the functions:
 
-```julia
+```{julia;line_width = 130}
 using ModelingToolkit
 
 ### Define a differential equation system
@@ -47,31 +47,31 @@ At its core, ModelingToolkit is a compiler. It's IR is its type system, and its 
 
 DifferentialEquations.jl wants a function `f(du,u,p,t)` for defining an ODE system, which is what ModelingToolkit.jl is building.
 
-```julia
+```{julia;line_width = 130}
 generate_function(de, [x,y,z], [σ,ρ,β])
 ```
 
 A special syntax in DifferentialEquations.jl for small static ODE systems uses `f(u,p,t)`, which can be generated as well:
 
-```julia
+```{julia;line_width = 130}
 generate_function(de, [x,y,z], [σ,ρ,β]; version=ModelingToolkit.SArrayFunction)
 ```
 
 ModelingToolkit.jl can be used to calculate the Jacobian of the differential equation system:
 
-```julia
+```{julia;line_width = 130}
 jac = calculate_jacobian(de)
 ```
 
 It will automatically generate functions for using this Jacobian within the stiff ODE solvers for faster solving:
 
-```julia
+```{julia;line_width = 130}
 jac_expr = generate_jacobian(de)
 ```
 
 It can even do fancy linear algebra. Stiff ODE solvers need to perform an LU-factorization which is their most expensive part. But ModelingToolkit.jl can skip this operation and instead generate the analytical solution to a matrix factorization, and build a Julia function for directly computing the factorization, which is then optimized in LLVM compiler passes.
 
-```julia
+```{julia;line_width = 130}
 ModelingToolkit.generate_factorized_W(de)[1]
 ```
 
@@ -79,7 +79,7 @@ ModelingToolkit.generate_factorized_W(de)[1]
 
 ModelingToolkit.jl is not just for differential equations. It can be used for any mathematical target that is representable by its IR. For example, let's solve a rootfinding problem `F(x)=0`. What we do is define a nonlinear system and generate a function for use in NLsolve.jl
 
-```julia
+```{julia;line_width = 130}
 @variables x y z
 @parameters σ ρ β
 
@@ -93,7 +93,7 @@ nlsys_func = generate_function(ns, [x,y,z], [σ,ρ,β])
 
 We can then tell ModelingToolkit.jl to compile this function for use in NLsolve.jl, and then numerically solve the rootfinding problem:
 
-```julia
+```{julia;line_width = 130}
 nl_f = @eval eval(nlsys_func)
 # Make a closure over the parameters for for NLsolve.jl
 f2 = (du,u) -> nl_f(du,u,(10.0,26.0,2.33))
@@ -106,7 +106,7 @@ nlsolve(f2,ones(3))
 
 The reason for using ModelingToolkit is not just for defining performant Julia functions for solving systems, but also for performing mathematical transformations which may be required in order to numerically solve the system. For example, let's solve a third order ODE. The way this is done is by transforming the third order ODE into a first order ODE, and then solving the resulting ODE. This transformation is given by the `ode_order_lowering` function.
 
-```julia
+```{julia;line_width = 130}
 @derivatives D3'''~t
 @derivatives D2''~t
 @variables u(t), x(t)
@@ -116,7 +116,7 @@ de = ODESystem(eqs)
 de1 = ode_order_lowering(de)
 ```
 
-```julia
+```{julia;line_width = 130}
 de1.eqs
 ```
 
@@ -126,7 +126,7 @@ This has generated a system of 5 first order ODE systems which can now be used i
 
 Let's take a look at how to extend ModelingToolkit.jl in new directions. Let's define a Jacobian just by using the derivative primatives by hand:
 
-```julia
+```{julia;line_width = 130}
 @parameters t σ ρ β
 @variables x(t) y(t) z(t)
 @derivatives D'~t Dx'~x Dy'~y Dz'~z
@@ -140,24 +140,24 @@ J = [Dx(eqs[1].rhs) Dy(eqs[1].rhs) Dz(eqs[1].rhs)
 
 Notice that this writes the derivatives in a "lazy" manner. If we want to actually compute the derivatives, we can expand out those expressions:
 
-```julia
+```{julia;line_width = 130}
 J = expand_derivatives.(J)
 ```
 
 Here's the magic of ModelingToolkit.jl: **Julia treats ModelingToolkit expressions like a Number, and so generic numerical functions are directly usable on ModelingToolkit expressions!** Let's compute the LU-factorization of this Jacobian we defined using Julia's Base linear algebra library.
 
-```julia
+```{julia;line_width = 130}
 using LinearAlgebra
 luJ = lu(J)
 ```
 
-```julia
+```{julia;line_width = 130}
 luJ.L
 ```
 
 and the inverse?
 
-```julia
+```{julia;line_width = 130}
 invJ = inv(J)
 ```
 
@@ -169,7 +169,7 @@ Let's follow this thread a little deeper.
 
 Let's take someone's code written to numerically solve the Lorenz equation:
 
-```julia
+```{julia;line_width = 130}
 function lorenz(du,u,p,t)
  du[1] = p[1]*(u[2]-u[1])
  du[2] = u[1]*(p[2]-u[3]) - u[2]
@@ -179,7 +179,7 @@ end
 
 Since ModelingToolkit can trace generic numerical functions in Julia, let's trace it with Operations. When we do this, it'll spit out a symbolic representation of their numerical code:
 
-```julia
+```{julia;line_width = 130}
 u = [x,y,z]
 du = similar(u)
 p = [σ,ρ,β]
@@ -189,7 +189,7 @@ du
 
 We can then perform symbolic manipulations on their numerical code, and build a new numerical code that optimizes/fixes their original function!
 
-```julia
+```{julia;line_width = 130}
 J = [Dx(du[1]) Dy(du[1]) Dz(du[1])
      Dx(du[2]) Dy(du[2]) Dz(du[2])
      Dx(du[3]) Dy(du[3]) Dz(du[3])]
@@ -200,7 +200,7 @@ J = expand_derivatives.(J)
 
 In many cases one has to speed up large modeling frameworks by taking into account sparsity. While ModelingToolkit.jl can be used to compute Jacobians, we can write a standard Julia function in order to get a spase matrix of expressions which automatically detects and utilizes the sparsity of their function.
 
-```julia
+```{julia;line_width = 130}
 using SparseArrays
 function SparseArrays.SparseMatrixCSC(M::Matrix{T}) where {T<:ModelingToolkit.Expression}
     idxs = findall(!iszero, M)
@@ -218,7 +218,7 @@ sJ = SparseMatrixCSC(J)
 
 We can utilize this idea to have parameters that are also functions. For example, we can have a parameter σ which acts as a function of 1 argument, and then utilize this function within our differential equations:
 
-```julia
+```{julia;line_width = 130}
 @parameters σ(..)
 eqs = [D(x) ~ σ(t-1)*(y-x),
        D(y) ~ x*(σ(t^2)-z)-y,
@@ -227,7 +227,7 @@ eqs = [D(x) ~ σ(t-1)*(y-x),
 
 Notice that when we calculate the derivative with respect to `t`, the chain rule is automatically handled:
 
-```julia
+```{julia;line_width = 130}
 @derivatives Dₜ'~t
 Dₜ(x*(σ(t^2)-z)-y)
 expand_derivatives(Dₜ(x*(σ(t^2)-z)-y))
@@ -237,27 +237,27 @@ expand_derivatives(Dₜ(x*(σ(t^2)-z)-y))
 
 ModelingToolkit.jl is written in Julia, and thus it can be directly extended from Julia itself. Let's define a normal Julia function and call it with a variable:
 
-```julia
+```{julia;line_width = 130}
 _f(x) = 2x + x^2
 _f(x)
 ```
 
 Recall that when we do that, it will automatically trace this function and then build a symbolic expression. But what if we wanted our function to be a primative in the symbolic framework? This can be done by registering the function.
 
-```julia
+```{julia;line_width = 130}
 f(x) = 2x + x^2
 @register f(x)
 ```
 
 Now this function is a new primitive:
 
-```julia
+```{julia;line_width = 130}
 f(x)
 ```
 
 and we can now define derivatives of our function:
 
-```julia
+```{julia;line_width = 130}
 function ModelingToolkit.derivative(::typeof(f), args::NTuple{1,Any}, ::Val{1})
     2 + 2args[1]
 end
@@ -268,7 +268,7 @@ expand_derivatives(Dx(f(x)))
 
 Let's look at PuMaS.jl, a software for simulating and estimating nonlinear mixed effects models in pharmacometrics. In these models, a user brings in Electronic Health Record (EHR) data to define patient covariates, and then a population model defines fixed effects and random effects. These are collated together to give dynamical parameters which define a differential equation, and then derived variables from the differential equation are observed. For example, let's take a look at a multiple response model:
 
-```julia
+```{julia;line_width = 130}
 using PuMaS
 
 subject = process_nmtran(example_nmtran_data("event_data/data23"),
@@ -329,7 +329,7 @@ is implemented by translating this differential equation system into ModelingToo
 
 We can now set parameters and simulate the system for a given patient:
 
-```julia
+```{julia;line_width = 130}
 param = (θ = [
               1, # Ka1  Absorption rate constant 1 (1/time)
               1, # CL   Clearance (volume/time)
@@ -350,7 +350,7 @@ sim = simobs(mrm, subject, param, randeffs)
 
 The solution to this model gives the concentration profile for each subject. For example:
 
-```julia
+```{julia;line_width = 130}
 plot(sim)
 ```
 
