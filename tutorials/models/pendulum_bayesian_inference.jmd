@@ -4,13 +4,18 @@ author: Vaibhav Dixit
 ---
 
 ### Set up simple pendulum problem
+
 ```julia
 using DiffEqBayes, OrdinaryDiffEq, RecursiveArrayTools, Distributions, Plots, StatsPlots
 ```
 
 Let's define our simple pendulum problem. Here our pendulum has a drag term `ω`
-and a length `L`. We get first order equations by defining the first term as
-the velocity and the second term as the position, getting:
+and a length `L`.
+
+![pendulum](https://user-images.githubusercontent.com/1814174/59942945-059c1680-942f-11e9-991c-2025e6e4ccd3.jpg)
+
+We get first order equations by defining the first term as the velocity and the
+second term as the position, getting:
 
 ```julia
 function pendulum(du,u,p,t)
