@@ -74,7 +74,8 @@ priors = [Uniform(0.1,3.0), Normal(3.0,1.0)]
 Finally let's run the estimation routine from DiffEqBayes.jl using the Turing.jl backend
 
 ```julia
-bayesian_result = turing_inference(prob1,Tsit5(),t,data,priors;num_samples=10_000)
+bayesian_result = turing_inference(prob1,Tsit5(),t,data,priors;num_samples=10_000,
+                                   syms = [:omega,:L])
 ```
 
 Notice that while our guesses had the wrong means, the learned parameters converged
