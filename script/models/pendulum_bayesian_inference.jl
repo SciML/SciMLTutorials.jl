@@ -5,8 +5,8 @@ using DiffEqBayes, OrdinaryDiffEq, RecursiveArrayTools, Distributions, Plots, St
 function pendulum(du,u,p,t)
     ω,L = p
     x,y = u
-    du[1] = ω*y
-    du[2] = -(9.8/L)*sin(x)
+    du[1] = y
+    du[2] = - ω*y -(9.8/L)*sin(x)
 end
 
 u0 = [1.0,0.1]
