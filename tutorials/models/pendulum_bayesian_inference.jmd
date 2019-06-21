@@ -1,28 +1,33 @@
 ---
-title: Bayesian parameter estimation of Simple Pendulum using Turing
+title: Bayesian Inference on a Pendulum using Turing.jl
 author: Vaibhav Dixit
 ---
 
 ### Set up simple pendulum problem
 ```julia
-using DiffEqBayes, OrdinaryDiffEq, ParameterizedFunctions, RecursiveArrayTools, Distributions, Plots
+using DiffEqBayes, OrdinaryDiffEq, RecursiveArrayTools, Distributions, Plots, StatsPlots
 ```
-Let's define our simple pendulum problem
+
+Let's define our simple pendulum problem. Here our pendulum has a drag term `ω`
+and a length `L`. We get first order equations by defining the first term as
+the velocity and the second term as the position, getting:
 
 ```julia
-f1 = @ode_def begin
-        dx = y
-        dy = -(g/L)*sin(x)
-    end g L
+function pendulum(du,u,p,t)
+    ω,L = p
+    x,y = u
+    du[1] = ω*y
+    du[2] = -(9.8/L)*sin(x)
+end
 
 u0 = [1.0,0.1]
 tspan = (0.0,10.0)
-prob1 = ODEProblem(f1,u0,tspan,[9.79, 1.0])
+prob1 = ODEProblem(pendulum,u0,tspan,[1.0,2.5])
 ```
 
-### Solve the model and plot 
+### Solve the model and plot
 
-Solve the model to generate data and visualize the solution 
+Solve the model to generate data and visualize the solution
 
 ```julia
 sol = solve(prob1,Tsit5())
@@ -30,6 +35,7 @@ plot(sol)
 ```
 
 ### Create some dummy data to use for estimation
+
 We now generate some dummy data to use for estimation
 
 ```julia
@@ -37,23 +43,35 @@ t = collect(range(1,stop=10,length=10))
 randomized = VectorOfArray([(sol(t[i]) + .01randn(2)) for i in 1:length(t)])
 data = convert(Array,randomized)
 ```
-###Visualize our data on top of the solution
 
 Let's see what our data looks like on top of the real solution
+
 ```julia
 scatter!(data')
 ```
-### Define the priors on the parameters
 
-Now we define the priors on our parameters
+### Perform Bayesian Estimation
+
+Now let's fit the pendulum to the data. Since we know our model is correct,
+this should give us back the parameters that we used to generate the data!
+Define priors on our parameters:
+
 ```julia
-priors = [Uniform(9.5,10.0), Uniform(0.9,1.1)]
+priors = [Uniform(0.1,2.0), Normal(3.0,1.0)]
 ```
-
-#Run the bayesian estimation on our model using the above data and priors
 
 Finally let's run the estimation routine from DiffEqBayes.jl using the Turing.jl backend
 
-```julia 
-bayesian_result = turing_inference(prob1,Tsit5(),t,data,priors;num_samples=15000)
+```julia
+bayesian_result = turing_inference(prob1,Tsit5(),t,data,priors;num_samples=100_000)
+```
+
+Now let's examine the chains:
+
+```julia
+plot(bayesian_result)
+```
+
+```julia
+plot(bayesian_result, colordim = :parameter)
 ```
