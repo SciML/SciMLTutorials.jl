@@ -27,12 +27,18 @@ prob1 = ODEProblem(pendulum,u0,tspan,[1.0,2.5])
 
 ### Solve the model and plot
 
-Solve the model to generate data and visualize the solution
+To understand the model and generate data, let's solve and visualize the solution
+with the known parameters:
 
 ```julia
 sol = solve(prob1,Tsit5())
 plot(sol)
 ```
+
+It's the pendulum, so you know what it looks like. It's periodic, but since we
+have not made a small angle assumption it's not exactly `sin` or `cos`. Because
+the true dampening parameter `ω` is 1, the solution does not decay over time,
+nor does it increase. The length `L` determines the period.
 
 ### Create some dummy data to use for estimation
 
@@ -50,11 +56,16 @@ Let's see what our data looks like on top of the real solution
 scatter!(data')
 ```
 
+This data captures the non-dampening effect and the true period, making it
+perfect to attempting a Bayesian inference.
+
 ### Perform Bayesian Estimation
 
 Now let's fit the pendulum to the data. Since we know our model is correct,
 this should give us back the parameters that we used to generate the data!
-Define priors on our parameters:
+Define priors on our parameters. In this case, let's assume we don't have much
+information, but have a prior belief that ω is between 0.1 and 3.0, while the
+length of the pendulum L is probably around 3.0:
 
 ```julia
 priors = [Uniform(0.1,3.0), Normal(3.0,1.0)]
@@ -66,12 +77,24 @@ Finally let's run the estimation routine from DiffEqBayes.jl using the Turing.jl
 bayesian_result = turing_inference(prob1,Tsit5(),t,data,priors;num_samples=10_000)
 ```
 
-Now let's examine the chains:
+Notice that while our guesses had the wrong means, the learned parameters converged
+to the correct means, meaning that it learned good posterior distributions for the
+parameters. To look at these posterior distributions on the parameters, we can
+examine the chains:
 
 ```julia
 plot(bayesian_result)
 ```
 
+As a diagnostic, we will also check the parameter chains. The chain is the MCMC
+sampling process. The chain should explore parameter space and converge reasonably
+well, and we should be taking a lot of samples after it converges (it is these
+samples that form the posterior distribution!)
+
 ```julia
 plot(bayesian_result, colordim = :parameter)
 ```
+
+Notice that after awhile these chains converge to a "fuzzy line", meaning it
+found the area with the most likelihood and then starts to sample around there,
+which builds a posterior distribution around the true mean.
