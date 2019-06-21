@@ -29,7 +29,8 @@ scatter!(data')
 priors = [Uniform(0.1,3.0), Normal(3.0,1.0)]
 
 
-bayesian_result = turing_inference(prob1,Tsit5(),t,data,priors;num_samples=10_000)
+bayesian_result = turing_inference(prob1,Tsit5(),t,data,priors;num_samples=10_000,
+                                   syms = [:omega,:L])
 
 
 plot(bayesian_result)
