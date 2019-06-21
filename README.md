@@ -40,6 +40,7 @@ DiffEqTutorials.open_notebooks()
   - [DiffEqBiological Tutorial I: Introduction](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/diffeqbio_I_introduction.html)
   - [DiffEqBiological Tutorial II: Network Properties API](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/diffeqbio_II_networkproperties.html)
   - [Kepler Problem Orbit](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/kepler_problem.html)
+  - [Bayesian Inference of Pendulum Parameters](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/pendulum_bayesian_inference.html)
 - Advanced ODE Features
   - [ModelingToolkit.jl, An IR and Compiler for Scientific Models](http://juliadiffeq.org/DiffEqTutorials.jl/html/ode_extras/ModelingToolkit.html)
   - [Feagin's Order 10, 12, and 14 Methods](http://juliadiffeq.org/DiffEqTutorials.jl/html/ode_extras/feagin.html)
