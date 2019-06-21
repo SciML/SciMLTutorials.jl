@@ -1,0 +1,59 @@
+---
+title: Bayesian parameter estimation of Simple Pendulum using Turing
+author: Vaibhav Dixit
+---
+
+### Set up simple pendulum problem
+```julia
+using DiffEqBayes, OrdinaryDiffEq, ParameterizedFunctions, RecursiveArrayTools, Distributions, Plots
+```
+Let's define our simple pendulum problem
+
+```julia
+f1 = @ode_def begin
+        dx = y
+        dy = -(g/L)*sin(x)
+    end g L
+
+u0 = [1.0,0.1]
+tspan = (0.0,10.0)
+prob1 = ODEProblem(f1,u0,tspan,[9.79, 1.0])
+```
+
+### Solve the model and plot 
+
+Solve the model to generate data and visualize the solution 
+
+```julia
+sol = solve(prob1,Tsit5())
+plot(sol)
+```
+
+### Create some dummy data to use for estimation
+We now generate some dummy data to use for estimation
+
+```julia
+t = collect(range(1,stop=10,length=10))
+randomized = VectorOfArray([(sol(t[i]) + .01randn(2)) for i in 1:length(t)])
+data = convert(Array,randomized)
+```
+###Visualize our data on top of the solution
+
+Let's see what our data looks like on top of the real solution
+```julia
+scatter!(data')
+```
+### Define the priors on the parameters
+
+Now we define the priors on our parameters
+```julia
+priors = [Uniform(9.5,10.0), Uniform(0.9,1.1)]
+```
+
+#Run the bayesian estimation on our model using the above data and priors
+
+Finally let's run the estimation routine from DiffEqBayes.jl using the Turing.jl backend
+
+```julia 
+bayesian_result = turing_inference(prob1,Tsit5(),t,data,priors;num_samples=15000)
+```
