@@ -196,6 +196,10 @@ sub {
 }
 img {
   border: 0;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 70%;
 }
 svg:not(:root) {
   overflow: hidden;
@@ -797,7 +801,7 @@ u: &#91;0.5, 0.507953, 0.516033, 0.524241, 0.53258, 0.541051, 0.549658, 0.55840
 
 
 <pre class="output">
-1.3728004409038075
+1.3728004409038088
 </pre>
 
 
@@ -861,7 +865,7 @@ ArbNumerics.ArbFloat&#123;128&#125;
 <pre class="julia-error">
 ERROR: MethodError: Decimals.Decimal&#40;::Rational&#123;Int64&#125;&#41; is ambiguous. Candidates:
   &#40;::Type&#123;T&#125;&#41;&#40;x::Rational&#123;S&#125;&#41; where &#123;S, T&lt;:AbstractFloat&#125; in Base at rational.jl:92
-  Decimals.Decimal&#40;num::Real&#41; in Decimals at C:\Users\accou\.julia\packages\Decimals\Qfcas\src\decimal.jl:13
+  Decimals.Decimal&#40;num::Real&#41; in Decimals at /home/alex/.julia/packages/Decimals/Qfcas/src/decimal.jl:13
 Possible fix, define
   Decimals.Decimal&#40;::Rational&#123;S&#125;&#41;
 </pre>
@@ -885,54 +889,63 @@ ArbNumerics.ArbFloat&#123;128&#125;
 
 
 <div class="markdown"><h2>Appendix</h2>
-<p>These benchmarks are part of the DiffEqTutorials.jl repository, found at: <a href="https://github.com/JuliaDiffEq/DiffEqTutorials.jl">https://github.com/JuliaDiffEq/DiffEqTutorials.jl</a></p>
+<p>This tutorial is part of the DiffEqTutorials.jl repository, found at: <a href="https://github.com/JuliaDiffEq/DiffEqTutorials.jl">https://github.com/JuliaDiffEq/DiffEqTutorials.jl</a></p>
 </div>
 <div class="markdown"><p>To locally run this tutorial, do the following commands:</p>
 <pre><code>using DiffEqTutorials
-DiffEqTutorials.weave_file&#40;&quot;type_handling&quot;,&quot;number_types.jmd&quot;&#41;</code></pre>
+DiffEqTutorials.weave_file&#40;&quot;type_handling&quot;,&quot;01-number_types.jmd&quot;&#41;</code></pre>
 </div>
 <div class="markdown"><p>Computer Information:</p>
 </div>
-<div class="markdown"><pre><code>Julia Version 1.1.0
-Commit 80516ca202 &#40;2019-01-21 21:24 UTC&#41;
+<div class="markdown"><pre><code>Julia Version 1.1.1
+Commit 55e36cc308 &#40;2019-05-16 04:10 UTC&#41;
 Platform Info:
-  OS: Windows &#40;x86_64-w64-mingw32&#41;
-  CPU: Intel&#40;R&#41; Core&#40;TM&#41; i7-8700 CPU @ 3.20GHz
+  OS: Linux &#40;x86_64-pc-linux-gnu&#41;
+  CPU: Intel&#40;R&#41; Core&#40;TM&#41; i7-3770 CPU @ 3.40GHz
   WORD_SIZE: 64
   LIBM: libopenlibm
-  LLVM: libLLVM-6.0.1 &#40;ORCJIT, skylake&#41;
-Environment:
-  JULIA_EDITOR &#61; &quot;C:\Users\accou\AppData\Local\atom\app-1.34.0\atom.exe&quot; -a
-  JULIA_NUM_THREADS &#61; 6
+  LLVM: libLLVM-6.0.1 &#40;ORCJIT, ivybridge&#41;
 </code></pre>
 </div>
 <div class="markdown"><p>Package Information:</p>
 </div>
-<div class="markdown"><pre><code>Status &#96;C:\Users\accou\.julia\external\DiffEqTutorials.jl\Project.toml&#96;
-&#91;7e558dbc-694d-5a72-987c-6f4ebed21442&#93; ArbNumerics 0.3.6
+<div class="markdown"><pre><code>Status &#96;~/.julia/environments/v1.1/Project.toml&#96;
+&#91;7e558dbc-694d-5a72-987c-6f4ebed21442&#93; ArbNumerics 0.5.4
 &#91;6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf&#93; BenchmarkTools 0.4.2
-&#91;be33ccc6-a3ff-5ff2-a52e-74243cff1e17&#93; CUDAnative 1.0.1
-&#91;3a865a2d-5b23-5a0f-bc46-62713ec82fae&#93; CuArrays 0.9.1
+&#91;be33ccc6-a3ff-5ff2-a52e-74243cff1e17&#93; CUDAnative 2.2.0
+&#91;3a865a2d-5b23-5a0f-bc46-62713ec82fae&#93; CuArrays 1.0.2
 &#91;55939f99-70c6-5e9b-8bb0-5071ed7d61fd&#93; DecFP 0.4.8
 &#91;abce61dc-4473-55a0-ba07-351d65e31d42&#93; Decimals 0.4.0
+&#91;ebbdde9d-f333-5424-9be2-dbf1e9acfb5e&#93; DiffEqBayes 1.1.0
+&#91;eb300fae-53e8-50a0-950c-e21f52c2b7e0&#93; DiffEqBiological 3.8.2
 &#91;459566f4-90b8-5000-8ac3-15dfb0a30def&#93; DiffEqCallbacks 2.5.2
-&#91;f3b72e0c-5b89-59e1-b016-84e28bfd966d&#93; DiffEqDevTools 2.7.1
+&#91;f3b72e0c-5b89-59e1-b016-84e28bfd966d&#93; DiffEqDevTools 2.9.0
 &#91;1130ab10-4a5a-5621-a13d-e4788d82bd4c&#93; DiffEqParamEstim 1.6.0
 &#91;055956cb-9e8b-5191-98cc-73ae4a59e68a&#93; DiffEqPhysics 3.1.0
-&#91;0c46a032-eb83-5123-abaf-570d42b7fbaa&#93; DifferentialEquations 6.3.0
-&#91;497a8b3b-efae-58df-a0af-a86822472b78&#93; DoubleFloats 0.7.5
+&#91;6d1b261a-3be8-11e9-3f2f-0b112a9a8436&#93; DiffEqTutorials 0.1.0
+&#91;0c46a032-eb83-5123-abaf-570d42b7fbaa&#93; DifferentialEquations 6.4.0
+&#91;31c24e10-a181-5473-b8eb-7969acd0382f&#93; Distributions 0.20.0
+&#91;497a8b3b-efae-58df-a0af-a86822472b78&#93; DoubleFloats 0.9.1
 &#91;f6369f11-7733-5829-9624-2563aa707210&#93; ForwardDiff 0.10.3
-&#91;7073ff75-c697-5162-941a-fcdaad2a7d2a&#93; IJulia 1.17.0
+&#91;c91e804a-d5a3-530f-b6f0-dfbca275c004&#93; Gadfly 1.0.1
+&#91;7073ff75-c697-5162-941a-fcdaad2a7d2a&#93; IJulia 1.18.1
+&#91;4138dd39-2aa7-5051-a626-17a0bb65d9c8&#93; JLD 0.9.1
+&#91;23fbe1c1-3f47-55db-b15f-69d7ec21a316&#93; Latexify 0.8.2
 &#91;eff96d63-e80a-5855-80a2-b1b0885c5ab7&#93; Measurements 2.0.0
-&#91;429524aa-4258-5aef-a3af-852621145aeb&#93; Optim 0.17.2
-&#91;1dea7af3-3e70-54e6-95c3-0bf5283fa5ed&#93; OrdinaryDiffEq 5.3.0
+&#91;961ee093-0014-501f-94e3-6117800e7a78&#93; ModelingToolkit 0.2.0
+&#91;76087f3c-5699-56af-9a33-bf431cd00edd&#93; NLopt 0.5.1
+&#91;2774e3e8-f4cf-5e23-947b-6d7e65073b56&#93; NLsolve 4.0.0
+&#91;429524aa-4258-5aef-a3af-852621145aeb&#93; Optim 0.18.1
+&#91;1dea7af3-3e70-54e6-95c3-0bf5283fa5ed&#93; OrdinaryDiffEq 5.8.1
 &#91;65888b18-ceab-5e60-b2b9-181511a3b968&#93; ParameterizedFunctions 4.1.1
-&#91;91a5bcdd-55d7-5caf-9e0b-520d859cae80&#93; Plots 0.23.1
+&#91;91a5bcdd-55d7-5caf-9e0b-520d859cae80&#93; Plots 0.25.1
+&#91;d330b81b-6aea-500a-939a-2ce795aea3ee&#93; PyPlot 2.8.1
 &#91;731186ca-8d62-57ce-b412-fbd966d074cd&#93; RecursiveArrayTools 0.20.0
-&#91;90137ffa-7385-5640-81b9-e52037218182&#93; StaticArrays 0.10.3
-&#91;c3572dad-4567-51f8-b174-8c6c989267f4&#93; Sundials 3.1.0
+&#91;90137ffa-7385-5640-81b9-e52037218182&#93; StaticArrays 0.11.0
+&#91;f3b207a7-027a-5e70-b257-86293d7955fd&#93; StatsPlots 0.11.0
+&#91;c3572dad-4567-51f8-b174-8c6c989267f4&#93; Sundials 3.6.1
 &#91;1986cc42-f94f-5a68-af5c-568840ba703d&#93; Unitful 0.15.0
-&#91;44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9&#93; Weave 0.8.0
+&#91;44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9&#93; Weave 0.9.0
 &#91;b77e0a4c-d291-57a0-90e8-8db25a27a240&#93; InteractiveUtils
 &#91;37e2e46d-f89d-539d-b4ee-838fcccc9c8e&#93; LinearAlgebra
 &#91;44cfe95a-1eb2-52ea-b672-e2afdf69b78f&#93; Pkg</code></pre>
@@ -942,9 +955,9 @@ Environment:
 
           <HR/>
           <div class="footer"><p>
-          Published from <a href="number_types.jmd">number_types.jmd</a> using
+          Published from <a href="01-number_types.jmd">01-number_types.jmd</a> using
           <a href="http://github.com/mpastell/Weave.jl">Weave.jl</a>
-           on 2019-03-06.
+           on 2019-06-27.
           <p></div>
 
 
