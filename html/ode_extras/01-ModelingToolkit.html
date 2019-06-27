@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<HTML lang = "en">
+<HEAD>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>ModelingToolkit.jl, An IR and Compiler for Scientific Models</title>
+  
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+  </script>
+
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+
+  
+<style>
+pre.hljl {
+    border: 1px solid #ccc;
+    margin: 5px;
+    padding: 5px;
+    overflow-x: auto;
+    color: rgb(68,68,68); background-color: rgb(251,251,251); }
+pre.hljl > span.hljl-t { }
+pre.hljl > span.hljl-w { }
+pre.hljl > span.hljl-e { }
+pre.hljl > span.hljl-eB { }
+pre.hljl > span.hljl-o { }
+pre.hljl > span.hljl-k { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kc { color: rgb(59,151,46); font-style: italic; }
+pre.hljl > span.hljl-kd { color: rgb(214,102,97); font-style: italic; }
+pre.hljl > span.hljl-kn { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kp { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kr { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kt { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-n { }
+pre.hljl > span.hljl-na { }
+pre.hljl > span.hljl-nb { }
+pre.hljl > span.hljl-nbp { }
+pre.hljl > span.hljl-nc { }
+pre.hljl > span.hljl-ncB { }
+pre.hljl > span.hljl-nd { color: rgb(214,102,97); }
+pre.hljl > span.hljl-ne { }
+pre.hljl > span.hljl-neB { }
+pre.hljl > span.hljl-nf { color: rgb(66,102,213); }
+pre.hljl > span.hljl-nfm { color: rgb(66,102,213); }
+pre.hljl > span.hljl-np { }
+pre.hljl > span.hljl-nl { }
+pre.hljl > span.hljl-nn { }
+pre.hljl > span.hljl-no { }
+pre.hljl > span.hljl-nt { }
+pre.hljl > span.hljl-nv { }
+pre.hljl > span.hljl-nvc { }
+pre.hljl > span.hljl-nvg { }
+pre.hljl > span.hljl-nvi { }
+pre.hljl > span.hljl-nvm { }
+pre.hljl > span.hljl-l { }
+pre.hljl > span.hljl-ld { color: rgb(148,91,176); font-style: italic; }
+pre.hljl > span.hljl-s { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sa { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sb { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sc { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sd { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sdB { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sdC { color: rgb(201,61,57); }
+pre.hljl > span.hljl-se { color: rgb(59,151,46); }
+pre.hljl > span.hljl-sh { color: rgb(201,61,57); }
+pre.hljl > span.hljl-si { }
+pre.hljl > span.hljl-so { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sr { color: rgb(201,61,57); }
+pre.hljl > span.hljl-ss { color: rgb(201,61,57); }
+pre.hljl > span.hljl-ssB { color: rgb(201,61,57); }
+pre.hljl > span.hljl-nB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nbB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nfB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nh { color: rgb(59,151,46); }
+pre.hljl > span.hljl-ni { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nil { color: rgb(59,151,46); }
+pre.hljl > span.hljl-noB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-oB { color: rgb(102,102,102); font-weight: bold; }
+pre.hljl > span.hljl-ow { color: rgb(102,102,102); font-weight: bold; }
+pre.hljl > span.hljl-p { }
+pre.hljl > span.hljl-c { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-ch { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cm { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cp { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cpB { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cs { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-csB { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-g { }
+pre.hljl > span.hljl-gd { }
+pre.hljl > span.hljl-ge { }
+pre.hljl > span.hljl-geB { }
+pre.hljl > span.hljl-gh { }
+pre.hljl > span.hljl-gi { }
+pre.hljl > span.hljl-go { }
+pre.hljl > span.hljl-gp { }
+pre.hljl > span.hljl-gs { }
+pre.hljl > span.hljl-gsB { }
+pre.hljl > span.hljl-gt { }
+</style>
+
+
+
+  <style type="text/css">
+  @font-face {
+  font-style: normal;
+  font-weight: 300;
+}
+@font-face {
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-style: normal;
+  font-weight: 600;
+}
+html {
+  font-family: sans-serif; /* 1 */
+  -ms-text-size-adjust: 100%; /* 2 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+}
+body {
+  margin: 0;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+  display: block;
+}
+audio,
+canvas,
+progress,
+video {
+  display: inline-block; /* 1 */
+  vertical-align: baseline; /* 2 */
+}
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+[hidden],
+template {
+  display: none;
+}
+a:active,
+a:hover {
+  outline: 0;
+}
+abbr[title] {
+  border-bottom: 1px dotted;
+}
+b,
+strong {
+  font-weight: bold;
+}
+dfn {
+  font-style: italic;
+}
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+mark {
+  background: #ff0;
+  color: #000;
+}
+small {
+  font-size: 80%;
+}
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sup {
+  top: -0.5em;
+}
+sub {
+  bottom: -0.25em;
+}
+img {
+  border: 0;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 70%;
+}
+svg:not(:root) {
+  overflow: hidden;
+}
+figure {
+  margin: 1em 40px;
+}
+hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+}
+pre {
+  overflow: auto;
+}
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+button,
+input,
+optgroup,
+select,
+textarea {
+  color: inherit; /* 1 */
+  font: inherit; /* 2 */
+  margin: 0; /* 3 */
+}
+button {
+  overflow: visible;
+}
+button,
+select {
+  text-transform: none;
+}
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button; /* 2 */
+  cursor: pointer; /* 3 */
+}
+button[disabled],
+html input[disabled] {
+  cursor: default;
+}
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+input {
+  line-height: normal;
+}
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+input[type="search"] {
+  -webkit-appearance: textfield; /* 1 */
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box; /* 2 */
+  box-sizing: content-box;
+}
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+legend {
+  border: 0; /* 1 */
+  padding: 0; /* 2 */
+}
+textarea {
+  overflow: auto;
+}
+optgroup {
+  font-weight: bold;
+}
+table {
+  font-family: monospace, monospace;
+  font-size : 0.8em;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+td,
+th {
+  padding: 0;
+}
+thead th {
+    border-bottom: 1px solid black;
+    background-color: white;
+}
+tr:nth-child(odd){
+  background-color: rgb(248,248,248);
+}
+
+
+/*
+* Skeleton V2.0.4
+* Copyright 2014, Dave Gamache
+* www.getskeleton.com
+* Free to use under the MIT license.
+* http://www.opensource.org/licenses/mit-license.php
+* 12/29/2014
+*/
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box; }
+.column,
+.columns {
+  width: 100%;
+  float: left;
+  box-sizing: border-box; }
+@media (min-width: 400px) {
+  .container {
+    width: 85%;
+    padding: 0; }
+}
+@media (min-width: 550px) {
+  .container {
+    width: 80%; }
+  .column,
+  .columns {
+    margin-left: 4%; }
+  .column:first-child,
+  .columns:first-child {
+    margin-left: 0; }
+
+  .one.column,
+  .one.columns                    { width: 4.66666666667%; }
+  .two.columns                    { width: 13.3333333333%; }
+  .three.columns                  { width: 22%;            }
+  .four.columns                   { width: 30.6666666667%; }
+  .five.columns                   { width: 39.3333333333%; }
+  .six.columns                    { width: 48%;            }
+  .seven.columns                  { width: 56.6666666667%; }
+  .eight.columns                  { width: 65.3333333333%; }
+  .nine.columns                   { width: 74.0%;          }
+  .ten.columns                    { width: 82.6666666667%; }
+  .eleven.columns                 { width: 91.3333333333%; }
+  .twelve.columns                 { width: 100%; margin-left: 0; }
+
+  .one-third.column               { width: 30.6666666667%; }
+  .two-thirds.column              { width: 65.3333333333%; }
+
+  .one-half.column                { width: 48%; }
+
+  /* Offsets */
+  .offset-by-one.column,
+  .offset-by-one.columns          { margin-left: 8.66666666667%; }
+  .offset-by-two.column,
+  .offset-by-two.columns          { margin-left: 17.3333333333%; }
+  .offset-by-three.column,
+  .offset-by-three.columns        { margin-left: 26%;            }
+  .offset-by-four.column,
+  .offset-by-four.columns         { margin-left: 34.6666666667%; }
+  .offset-by-five.column,
+  .offset-by-five.columns         { margin-left: 43.3333333333%; }
+  .offset-by-six.column,
+  .offset-by-six.columns          { margin-left: 52%;            }
+  .offset-by-seven.column,
+  .offset-by-seven.columns        { margin-left: 60.6666666667%; }
+  .offset-by-eight.column,
+  .offset-by-eight.columns        { margin-left: 69.3333333333%; }
+  .offset-by-nine.column,
+  .offset-by-nine.columns         { margin-left: 78.0%;          }
+  .offset-by-ten.column,
+  .offset-by-ten.columns          { margin-left: 86.6666666667%; }
+  .offset-by-eleven.column,
+  .offset-by-eleven.columns       { margin-left: 95.3333333333%; }
+
+  .offset-by-one-third.column,
+  .offset-by-one-third.columns    { margin-left: 34.6666666667%; }
+  .offset-by-two-thirds.column,
+  .offset-by-two-thirds.columns   { margin-left: 69.3333333333%; }
+
+  .offset-by-one-half.column,
+  .offset-by-one-half.columns     { margin-left: 52%; }
+
+}
+html {
+  font-size: 62.5%; }
+body {
+  font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
+  line-height: 1.6;
+  font-weight: 400;
+  font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #222; }
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-weight: 300; }
+h1 { font-size: 3.6rem; line-height: 1.2;  letter-spacing: -.1rem;}
+h2 { font-size: 3.4rem; line-height: 1.25; letter-spacing: -.1rem; }
+h3 { font-size: 3.2rem; line-height: 1.3;  letter-spacing: -.1rem; }
+h4 { font-size: 2.8rem; line-height: 1.35; letter-spacing: -.08rem; }
+h5 { font-size: 2.4rem; line-height: 1.5;  letter-spacing: -.05rem; }
+h6 { font-size: 1.5rem; line-height: 1.6;  letter-spacing: 0; }
+
+p {
+  margin-top: 0; }
+a {
+  color: #1EAEDB; }
+a:hover {
+  color: #0FA0CE; }
+.button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  display: inline-block;
+  height: 38px;
+  padding: 0 30px;
+  color: #555;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 38px;
+  letter-spacing: .1rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: transparent;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  cursor: pointer;
+  box-sizing: border-box; }
+.button:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover,
+.button:focus,
+button:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus,
+input[type="button"]:focus {
+  color: #333;
+  border-color: #888;
+  outline: 0; }
+.button.button-primary,
+button.button-primary,
+input[type="submit"].button-primary,
+input[type="reset"].button-primary,
+input[type="button"].button-primary {
+  color: #FFF;
+  background-color: #33C3F0;
+  border-color: #33C3F0; }
+.button.button-primary:hover,
+button.button-primary:hover,
+input[type="submit"].button-primary:hover,
+input[type="reset"].button-primary:hover,
+input[type="button"].button-primary:hover,
+.button.button-primary:focus,
+button.button-primary:focus,
+input[type="submit"].button-primary:focus,
+input[type="reset"].button-primary:focus,
+input[type="button"].button-primary:focus {
+  color: #FFF;
+  background-color: #1EAEDB;
+  border-color: #1EAEDB; }
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea,
+select {
+  height: 38px;
+  padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */
+  background-color: #fff;
+  border: 1px solid #D1D1D1;
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box; }
+/* Removes awkward default styles on some inputs for iOS */
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none; }
+textarea {
+  min-height: 65px;
+  padding-top: 6px;
+  padding-bottom: 6px; }
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  border: 1px solid #33C3F0;
+  outline: 0; }
+label,
+legend {
+  display: block;
+  margin-bottom: .5rem;
+  font-weight: 600; }
+fieldset {
+  padding: 0;
+  border-width: 0; }
+input[type="checkbox"],
+input[type="radio"] {
+  display: inline; }
+label > .label-body {
+  display: inline-block;
+  margin-left: .5rem;
+  font-weight: normal; }
+ul {
+  list-style: circle; }
+ol {
+  list-style: decimal; }
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+  margin: 1.5rem 0 1.5rem 3rem;
+  font-size: 90%; }
+li > p {margin : 0;}
+th,
+td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #E1E1E1; }
+th:first-child,
+td:first-child {
+  padding-left: 0; }
+th:last-child,
+td:last-child {
+  padding-right: 0; }
+button,
+.button {
+  margin-bottom: 1rem; }
+input,
+textarea,
+select,
+fieldset {
+  margin-bottom: 1.5rem; }
+pre,
+blockquote,
+dl,
+figure,
+table,
+p,
+ul,
+ol,
+form {
+  margin-bottom: 1.0rem; }
+.u-full-width {
+  width: 100%;
+  box-sizing: border-box; }
+.u-max-full-width {
+  max-width: 100%;
+  box-sizing: border-box; }
+.u-pull-right {
+  float: right; }
+.u-pull-left {
+  float: left; }
+hr {
+  margin-top: 3rem;
+  margin-bottom: 3.5rem;
+  border-width: 0;
+  border-top: 1px solid #E1E1E1; }
+.container:after,
+.row:after,
+.u-cf {
+  content: "";
+  display: table;
+  clear: both; }
+
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  word-break: break-all;
+  word-wrap: break-word;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+pre.hljl {
+  margin: 0 0 10px;
+  display: block;
+  background: #f5f5f5;
+  border-radius: 4px;
+  padding : 5px;
+}
+
+pre.output {
+  background: #ffffff;
+}
+
+pre.code {
+  background: #ffffff;
+}
+
+pre.julia-error {
+  color : red
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 13px;
+}
+
+
+@media (min-width: 400px) {}
+@media (min-width: 550px) {}
+@media (min-width: 750px) {}
+@media (min-width: 1000px) {}
+@media (min-width: 1200px) {}
+
+h1.title {margin-top : 20px}
+img {max-width : 100%}
+div.title {text-align: center;}
+
+  </style>
+
+
+
+</HEAD>
+  <BODY>
+    <div class ="container">
+      <div class = "row">
+        <div class = "col-md-12 twelve columns">
+
+          <div class="title">
+            <h1 class="title">ModelingToolkit.jl, An IR and Compiler for Scientific Models</h1>
+            <h5>Chris Rackauckas</h5>
+            
+          </div>
+
+          <p>A lot of people are building modeling languages for their specific domains. However, while the syntax my vary greatly between these domain-specific languages &#40;DSLs&#41;, the internals of modeling frameworks are surprisingly similar: building differential equations, calculating Jacobians, etc.</p>
+<h4>ModelingToolkit.jl is metamodeling systemitized</h4>
+<p>After building our third modeling interface, we realized that this problem can be better approached by having a reusable internal structure which DSLs can target. This internal is ModelingToolkit.jl: an Intermediate Representation &#40;IR&#41; with a well-defined interface for defining system transformations and compiling to Julia functions for use in numerical libraries. Now a DSL can easily be written by simply defining the translation to ModelingToolkit.jl&#39;s primatives and querying for the mathematical quantities one needs.</p>
+<h3>Basic usage: defining differential equation systems, with performance&#33;</h3>
+<p>Let&#39;s explore the IR itself. ModelingToolkit.jl is friendly to use, and can used as a symbolic DSL in its own right. Let&#39;s define and solve the Lorenz differential equation system using ModelingToolkit to generate the functions:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>ModelingToolkit</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'>### Define a differential equation system</span><span class='hljl-t'>
+
+</span><span class='hljl-nd'>@parameters</span><span class='hljl-t'> </span><span class='hljl-n'>t</span><span class='hljl-t'> </span><span class='hljl-n'>σ</span><span class='hljl-t'> </span><span class='hljl-n'>ρ</span><span class='hljl-t'> </span><span class='hljl-n'>β</span><span class='hljl-t'>
+</span><span class='hljl-nd'>@variables</span><span class='hljl-t'> </span><span class='hljl-nf'>x</span><span class='hljl-p'>(</span><span class='hljl-n'>t</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-nf'>y</span><span class='hljl-p'>(</span><span class='hljl-n'>t</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-nf'>z</span><span class='hljl-p'>(</span><span class='hljl-n'>t</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nd'>@derivatives</span><span class='hljl-t'> </span><span class='hljl-n'>D</span><span class='hljl-oB'>&#39;~</span><span class='hljl-n'>t</span><span class='hljl-t'>
+
+</span><span class='hljl-n'>eqs</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-nf'>D</span><span class='hljl-p'>(</span><span class='hljl-n'>x</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>~</span><span class='hljl-t'> </span><span class='hljl-n'>σ</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>y</span><span class='hljl-oB'>-</span><span class='hljl-n'>x</span><span class='hljl-p'>),</span><span class='hljl-t'>
+       </span><span class='hljl-nf'>D</span><span class='hljl-p'>(</span><span class='hljl-n'>y</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>~</span><span class='hljl-t'> </span><span class='hljl-n'>x</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>ρ</span><span class='hljl-oB'>-</span><span class='hljl-n'>z</span><span class='hljl-p'>)</span><span class='hljl-oB'>-</span><span class='hljl-n'>y</span><span class='hljl-p'>,</span><span class='hljl-t'>
+       </span><span class='hljl-nf'>D</span><span class='hljl-p'>(</span><span class='hljl-n'>z</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>~</span><span class='hljl-t'> </span><span class='hljl-n'>x</span><span class='hljl-oB'>*</span><span class='hljl-n'>y</span><span class='hljl-t'> </span><span class='hljl-oB'>-</span><span class='hljl-t'> </span><span class='hljl-n'>β</span><span class='hljl-oB'>*</span><span class='hljl-n'>z</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-n'>de</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>ODESystem</span><span class='hljl-p'>(</span><span class='hljl-n'>eqs</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>ode_f</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>ODEFunction</span><span class='hljl-p'>(</span><span class='hljl-n'>de</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>x</span><span class='hljl-p'>,</span><span class='hljl-n'>y</span><span class='hljl-p'>,</span><span class='hljl-n'>z</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>σ</span><span class='hljl-p'>,</span><span class='hljl-n'>ρ</span><span class='hljl-p'>,</span><span class='hljl-n'>β</span><span class='hljl-p'>])</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'>### Use in DifferentialEquations.jl</span><span class='hljl-t'>
+
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>OrdinaryDiffEq</span><span class='hljl-t'>
+</span><span class='hljl-n'>u₀</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>ones</span><span class='hljl-p'>(</span><span class='hljl-ni'>3</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>tspan</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-nfB'>0.0</span><span class='hljl-p'>,</span><span class='hljl-nfB'>100.0</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>p</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-nfB'>10.0</span><span class='hljl-p'>,</span><span class='hljl-nfB'>28.0</span><span class='hljl-p'>,</span><span class='hljl-ni'>10</span><span class='hljl-oB'>/</span><span class='hljl-ni'>3</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-n'>prob</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>ODEProblem</span><span class='hljl-p'>(</span><span class='hljl-n'>ode_f</span><span class='hljl-p'>,</span><span class='hljl-n'>u₀</span><span class='hljl-p'>,</span><span class='hljl-n'>tspan</span><span class='hljl-p'>,</span><span class='hljl-n'>p</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>sol</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>solve</span><span class='hljl-p'>(</span><span class='hljl-n'>prob</span><span class='hljl-p'>,</span><span class='hljl-nf'>Tsit5</span><span class='hljl-p'>())</span><span class='hljl-t'>
+
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>Plots</span><span class='hljl-t'>
+</span><span class='hljl-nf'>plot</span><span class='hljl-p'>(</span><span class='hljl-n'>sol</span><span class='hljl-p'>,</span><span class='hljl-n'>vars</span><span class='hljl-oB'>=</span><span class='hljl-p'>(</span><span class='hljl-ni'>1</span><span class='hljl-p'>,</span><span class='hljl-ni'>2</span><span class='hljl-p'>,</span><span class='hljl-ni'>3</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<img src="data:image/png;base64,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"  />
+
+<h3>ModelingToolkit is a compiler for mathematical systems</h3>
+<p>At its core, ModelingToolkit is a compiler. It&#39;s IR is its type system, and its output are Julia functions &#40;it&#39;s a compiler for Julia code to Julia code, written in Julia&#41;.</p>
+<p>DifferentialEquations.jl wants a function <code>f&#40;du,u,p,t&#41;</code> for defining an ODE system, which is what ModelingToolkit.jl is building.</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>generate_function</span><span class='hljl-p'>(</span><span class='hljl-n'>de</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>x</span><span class='hljl-p'>,</span><span class='hljl-n'>y</span><span class='hljl-p'>,</span><span class='hljl-n'>z</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>σ</span><span class='hljl-p'>,</span><span class='hljl-n'>ρ</span><span class='hljl-p'>,</span><span class='hljl-n'>β</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="output">
+:&#40;&#40;##1298, u, p, t&#41;-&gt;begin
+          #&#61; /home/alex/.julia/packages/ModelingToolkit/S0mks/src/utils.jl:44 &#61;#
+          let &#40;x, y, z, σ, ρ, β&#41; &#61; &#40;u&#91;1&#93;, u&#91;2&#93;, u&#91;3&#93;, p&#91;1&#93;, p&#91;2&#93;, p&#91;3&#93;&#41;
+              ##1298&#91;1&#93; &#61; &#40;*&#41;&#40;σ, &#40;-&#41;&#40;y, x&#41;&#41;
+              ##1298&#91;2&#93; &#61; &#40;-&#41;&#40;&#40;*&#41;&#40;x, &#40;-&#41;&#40;ρ, z&#41;&#41;, y&#41;
+              ##1298&#91;3&#93; &#61; &#40;-&#41;&#40;&#40;*&#41;&#40;x, y&#41;, &#40;*&#41;&#40;β, z&#41;&#41;
+          end
+      end&#41;
+</pre>
+
+
+<p>A special syntax in DifferentialEquations.jl for small static ODE systems uses <code>f&#40;u,p,t&#41;</code>, which can be generated as well:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>generate_function</span><span class='hljl-p'>(</span><span class='hljl-n'>de</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>x</span><span class='hljl-p'>,</span><span class='hljl-n'>y</span><span class='hljl-p'>,</span><span class='hljl-n'>z</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>σ</span><span class='hljl-p'>,</span><span class='hljl-n'>ρ</span><span class='hljl-p'>,</span><span class='hljl-n'>β</span><span class='hljl-p'>];</span><span class='hljl-t'> </span><span class='hljl-n'>version</span><span class='hljl-oB'>=</span><span class='hljl-n'>ModelingToolkit</span><span class='hljl-oB'>.</span><span class='hljl-n'>SArrayFunction</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+:&#40;&#40;u, p, t&#41;-&gt;begin
+          #&#61; /home/alex/.julia/packages/ModelingToolkit/S0mks/src/utils.jl:48 &#61;#
+          #&#61; /home/alex/.julia/packages/ModelingToolkit/S0mks/src/utils.jl:49 &#61;#
+          X &#61; let &#40;x, y, z, σ, ρ, β&#41; &#61; &#40;u&#91;1&#93;, u&#91;2&#93;, u&#91;3&#93;, p&#91;1&#93;, p&#91;2&#93;, p&#91;3&#93;&#41;
+                  &#40;&#40;*&#41;&#40;σ, &#40;-&#41;&#40;y, x&#41;&#41;, &#40;-&#41;&#40;&#40;*&#41;&#40;x, &#40;-&#41;&#40;ρ, z&#41;&#41;, y&#41;, &#40;-&#41;&#40;&#40;*&#41;&#40;x, y&#41;, &#40;*&#41;&#40;β, z&#41;&#41;&#41;
+              end
+          #&#61; /home/alex/.julia/packages/ModelingToolkit/S0mks/src/utils.jl:50 &#61;#
+          T &#61; StaticArrays.similar_type&#40;typeof&#40;u&#41;, eltype&#40;X&#41;&#41;
+          #&#61; /home/alex/.julia/packages/ModelingToolkit/S0mks/src/utils.jl:51 &#61;#
+          T&#40;X&#41;
+      end&#41;
+</pre>
+
+
+<p>ModelingToolkit.jl can be used to calculate the Jacobian of the differential equation system:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>jac</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>calculate_jacobian</span><span class='hljl-p'>(</span><span class='hljl-n'>de</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+3×3 Array&#123;ModelingToolkit.Expression,2&#125;:
+     σ&#40;&#41; * -1           σ&#40;&#41;  Constant&#40;0&#41;
+ ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;  Constant&#40;-1&#41;  x&#40;t&#40;&#41;&#41; * -1
+       y&#40;t&#40;&#41;&#41;        x&#40;t&#40;&#41;&#41;     -1 * β&#40;&#41;
+</pre>
+
+
+<p>It will automatically generate functions for using this Jacobian within the stiff ODE solvers for faster solving:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>jac_expr</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>generate_jacobian</span><span class='hljl-p'>(</span><span class='hljl-n'>de</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+:&#40;&#40;##1299, u, p, t&#41;-&gt;begin
+          #&#61; /home/alex/.julia/packages/ModelingToolkit/S0mks/src/utils.jl:44 &#61;#
+          let &#40;x, y, z, ρ, σ, β&#41; &#61; &#40;u&#91;1&#93;, u&#91;2&#93;, u&#91;3&#93;, p&#91;1&#93;, p&#91;2&#93;, p&#91;3&#93;&#41;
+              ##1299&#91;1&#93; &#61; &#40;*&#41;&#40;σ, -1&#41;
+              ##1299&#91;2&#93; &#61; &#40;-&#41;&#40;ρ, z&#41;
+              ##1299&#91;3&#93; &#61; y
+              ##1299&#91;4&#93; &#61; σ
+              ##1299&#91;5&#93; &#61; -1
+              ##1299&#91;6&#93; &#61; x
+              ##1299&#91;7&#93; &#61; 0
+              ##1299&#91;8&#93; &#61; &#40;*&#41;&#40;x, -1&#41;
+              ##1299&#91;9&#93; &#61; &#40;*&#41;&#40;-1, β&#41;
+          end
+      end&#41;
+</pre>
+
+
+<p>It can even do fancy linear algebra. Stiff ODE solvers need to perform an LU-factorization which is their most expensive part. But ModelingToolkit.jl can skip this operation and instead generate the analytical solution to a matrix factorization, and build a Julia function for directly computing the factorization, which is then optimized in LLVM compiler passes.</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>ModelingToolkit</span><span class='hljl-oB'>.</span><span class='hljl-nf'>generate_factorized_W</span><span class='hljl-p'>(</span><span class='hljl-n'>de</span><span class='hljl-p'>)[</span><span class='hljl-ni'>1</span><span class='hljl-p'>]</span>
+</pre>
+
+
+<pre class="output">
+:&#40;&#40;##1300, u, p, gam, t&#41;-&gt;begin
+          #&#61; /home/alex/.julia/packages/ModelingToolkit/S0mks/src/utils.jl:44 &#61;#
+          let &#40;x, y, z, ρ, σ, β&#41; &#61; &#40;u&#91;1&#93;, u&#91;2&#93;, u&#91;3&#93;, p&#91;1&#93;, p&#91;2&#93;, p&#91;3&#93;&#41;
+              ##1300&#91;1&#93; &#61; &#40;&#43;&#41;&#40;&#40;*&#41;&#40;σ, gam&#41;, true&#41;
+              ##1300&#91;2&#93; &#61; &#40;*&#41;&#40;gam, &#40;-&#41;&#40;ρ, z&#41;, -1, &#40;inv&#41;&#40;&#40;&#43;&#41;&#40;&#40;*&#41;&#40;σ, gam&#41;, true&#41;&#41;&#41;
+              ##1300&#91;3&#93; &#61; &#40;*&#41;&#40;gam, y, -1, &#40;inv&#41;&#40;&#40;&#43;&#41;&#40;&#40;*&#41;&#40;σ, gam&#41;, true&#41;&#41;&#41;
+              ##1300&#91;4&#93; &#61; &#40;*&#41;&#40;gam, σ, -1&#41;
+              ##1300&#91;5&#93; &#61; &#40;-&#41;&#40;&#40;&#43;&#41;&#40;gam, true&#41;, &#40;*&#41;&#40;gam, &#40;-&#41;&#40;ρ, z&#41;, gam, σ, &#40;inv&#41;&#40;&#40;&#43;&#41;&#40;&#40;*&#41;&#40;σ, gam&#41;, true&#41;&#41;&#41;&#41;
+              ##1300&#91;6&#93; &#61; &#40;*&#41;&#40;&#40;-&#41;&#40;&#40;*&#41;&#40;gam, x, -1&#41;, &#40;*&#41;&#40;gam, y, gam, σ, &#40;inv&#41;&#40;&#40;&#43;&#41;&#40;&#40;*&#41;&#40;σ, gam&#41;, true&#41;&#41;&#41;&#41;, &#40;inv&#41;&#40;&#40;-&#41;&#40;&#40;&#43;&#41;&#40;gam, true&#41;, 
+&#40;*&#41;&#40;gam, &#40;-&#41;&#40;ρ, z&#41;, gam, σ, &#40;inv&#41;&#40;&#40;&#43;&#41;&#40;&#40;*&#41;&#40;σ, gam&#41;, true&#41;&#41;&#41;&#41;&#41;&#41;
+              ##1300&#91;7&#93; &#61; 0
+              ##1300&#91;8&#93; &#61; &#40;-&#41;&#40;&#40;*&#41;&#40;x, gam&#41;, 0&#41;
+              ##1300&#91;9&#93; &#61; &#40;-&#41;&#40;&#40;-&#41;&#40;&#40;&#43;&#41;&#40;&#40;*&#41;&#40;β, gam&#41;, true&#41;, 0&#41;, &#40;*&#41;&#40;&#40;-&#41;&#40;&#40;*&#41;&#40;gam, x, -1&#41;, &#40;*&#41;&#40;gam, y, gam, σ, &#40;inv&#41;&#40;&#40;&#43;&#41;&#40;&#40;*&#41;&#40;σ, gam&#41;, 
+true&#41;&#41;&#41;&#41;, &#40;inv&#41;&#40;&#40;-&#41;&#40;&#40;&#43;&#41;&#40;gam, true&#41;, &#40;*&#41;&#40;gam, &#40;-&#41;&#40;ρ, z&#41;, gam, σ, &#40;inv&#41;&#40;&#40;&#43;&#41;&#40;&#40;*&#41;&#40;σ, gam&#41;, true&#41;&#41;&#41;&#41;&#41;, &#40;-&#41;&#40;&#40;*&#41;&#40;x, gam&#41;, 0&#41;&#41;&#41;
+          end
+      end&#41;
+</pre>
+
+
+<h3>Solving Nonlinear systems</h3>
+<p>ModelingToolkit.jl is not just for differential equations. It can be used for any mathematical target that is representable by its IR. For example, let&#39;s solve a rootfinding problem <code>F&#40;x&#41;&#61;0</code>. What we do is define a nonlinear system and generate a function for use in NLsolve.jl</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@variables</span><span class='hljl-t'> </span><span class='hljl-n'>x</span><span class='hljl-t'> </span><span class='hljl-n'>y</span><span class='hljl-t'> </span><span class='hljl-n'>z</span><span class='hljl-t'>
+</span><span class='hljl-nd'>@parameters</span><span class='hljl-t'> </span><span class='hljl-n'>σ</span><span class='hljl-t'> </span><span class='hljl-n'>ρ</span><span class='hljl-t'> </span><span class='hljl-n'>β</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'># Define a nonlinear system</span><span class='hljl-t'>
+</span><span class='hljl-n'>eqs</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-ni'>0</span><span class='hljl-t'> </span><span class='hljl-oB'>~</span><span class='hljl-t'> </span><span class='hljl-n'>σ</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>y</span><span class='hljl-oB'>-</span><span class='hljl-n'>x</span><span class='hljl-p'>),</span><span class='hljl-t'>
+       </span><span class='hljl-ni'>0</span><span class='hljl-t'> </span><span class='hljl-oB'>~</span><span class='hljl-t'> </span><span class='hljl-n'>x</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>ρ</span><span class='hljl-oB'>-</span><span class='hljl-n'>z</span><span class='hljl-p'>)</span><span class='hljl-oB'>-</span><span class='hljl-n'>y</span><span class='hljl-p'>,</span><span class='hljl-t'>
+       </span><span class='hljl-ni'>0</span><span class='hljl-t'> </span><span class='hljl-oB'>~</span><span class='hljl-t'> </span><span class='hljl-n'>x</span><span class='hljl-oB'>*</span><span class='hljl-n'>y</span><span class='hljl-t'> </span><span class='hljl-oB'>-</span><span class='hljl-t'> </span><span class='hljl-n'>β</span><span class='hljl-oB'>*</span><span class='hljl-n'>z</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-n'>ns</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>NonlinearSystem</span><span class='hljl-p'>(</span><span class='hljl-n'>eqs</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>x</span><span class='hljl-p'>,</span><span class='hljl-n'>y</span><span class='hljl-p'>,</span><span class='hljl-n'>z</span><span class='hljl-p'>])</span><span class='hljl-t'>
+</span><span class='hljl-n'>nlsys_func</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>generate_function</span><span class='hljl-p'>(</span><span class='hljl-n'>ns</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>x</span><span class='hljl-p'>,</span><span class='hljl-n'>y</span><span class='hljl-p'>,</span><span class='hljl-n'>z</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>σ</span><span class='hljl-p'>,</span><span class='hljl-n'>ρ</span><span class='hljl-p'>,</span><span class='hljl-n'>β</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="output">
+:&#40;&#40;##1302, u, p&#41;-&gt;begin
+          #&#61; /home/alex/.julia/packages/ModelingToolkit/S0mks/src/utils.jl:44 &#61;#
+          let &#40;x, y, z, σ, ρ, β&#41; &#61; &#40;u&#91;1&#93;, u&#91;2&#93;, u&#91;3&#93;, p&#91;1&#93;, p&#91;2&#93;, p&#91;3&#93;&#41;
+              ##1302&#91;1&#93; &#61; &#40;*&#41;&#40;σ, &#40;-&#41;&#40;y, x&#41;&#41;
+              ##1302&#91;2&#93; &#61; &#40;-&#41;&#40;&#40;*&#41;&#40;x, &#40;-&#41;&#40;ρ, z&#41;&#41;, y&#41;
+              ##1302&#91;3&#93; &#61; &#40;-&#41;&#40;&#40;*&#41;&#40;x, y&#41;, &#40;*&#41;&#40;β, z&#41;&#41;
+          end
+      end&#41;
+</pre>
+
+
+<p>We can then tell ModelingToolkit.jl to compile this function for use in NLsolve.jl, and then numerically solve the rootfinding problem:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>nl_f</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nd'>@eval</span><span class='hljl-t'> </span><span class='hljl-nf'>eval</span><span class='hljl-p'>(</span><span class='hljl-n'>nlsys_func</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-cs'># Make a closure over the parameters for for NLsolve.jl</span><span class='hljl-t'>
+</span><span class='hljl-n'>f2</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-n'>du</span><span class='hljl-p'>,</span><span class='hljl-n'>u</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-nf'>nl_f</span><span class='hljl-p'>(</span><span class='hljl-n'>du</span><span class='hljl-p'>,</span><span class='hljl-n'>u</span><span class='hljl-p'>,(</span><span class='hljl-nfB'>10.0</span><span class='hljl-p'>,</span><span class='hljl-nfB'>26.0</span><span class='hljl-p'>,</span><span class='hljl-nfB'>2.33</span><span class='hljl-p'>))</span><span class='hljl-t'>
+
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>NLsolve</span><span class='hljl-t'>
+</span><span class='hljl-nf'>nlsolve</span><span class='hljl-p'>(</span><span class='hljl-n'>f2</span><span class='hljl-p'>,</span><span class='hljl-nf'>ones</span><span class='hljl-p'>(</span><span class='hljl-ni'>3</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="output">
+Results of Nonlinear Solver Algorithm
+ * Algorithm: Trust-region with dogleg and autoscaling
+ * Starting Point: &#91;1.0, 1.0, 1.0&#93;
+ * Zero: &#91;2.2228e-10, 2.2228e-10, -9.99034e-11&#93;
+ * Inf-norm of residuals: 0.000000
+ * Iterations: 3
+ * Convergence: true
+   * |x - x&#39;| &lt; 0.0e&#43;00: false
+   * |f&#40;x&#41;| &lt; 1.0e-08: true
+ * Function Calls &#40;f&#41;: 4
+ * Jacobian Calls &#40;df/dx&#41;: 4
+</pre>
+
+
+<h3>Library of transformations on mathematical systems</h3>
+<p>The reason for using ModelingToolkit is not just for defining performant Julia functions for solving systems, but also for performing mathematical transformations which may be required in order to numerically solve the system. For example, let&#39;s solve a third order ODE. The way this is done is by transforming the third order ODE into a first order ODE, and then solving the resulting ODE. This transformation is given by the <code>ode_order_lowering</code> function.</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@derivatives</span><span class='hljl-t'> </span><span class='hljl-n'>D3</span><span class='hljl-oB'>&#39;&#39;&#39;~</span><span class='hljl-n'>t</span><span class='hljl-t'>
+</span><span class='hljl-nd'>@derivatives</span><span class='hljl-t'> </span><span class='hljl-n'>D2</span><span class='hljl-oB'>&#39;&#39;~</span><span class='hljl-n'>t</span><span class='hljl-t'>
+</span><span class='hljl-nd'>@variables</span><span class='hljl-t'> </span><span class='hljl-nf'>u</span><span class='hljl-p'>(</span><span class='hljl-n'>t</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-nf'>x</span><span class='hljl-p'>(</span><span class='hljl-n'>t</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>eqs</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-nf'>D3</span><span class='hljl-p'>(</span><span class='hljl-n'>u</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>~</span><span class='hljl-t'> </span><span class='hljl-ni'>2</span><span class='hljl-p'>(</span><span class='hljl-nf'>D2</span><span class='hljl-p'>(</span><span class='hljl-n'>u</span><span class='hljl-p'>))</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-nf'>D</span><span class='hljl-p'>(</span><span class='hljl-n'>u</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-nf'>D</span><span class='hljl-p'>(</span><span class='hljl-n'>x</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-ni'>1</span><span class='hljl-t'>
+       </span><span class='hljl-nf'>D2</span><span class='hljl-p'>(</span><span class='hljl-n'>x</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>~</span><span class='hljl-t'> </span><span class='hljl-nf'>D</span><span class='hljl-p'>(</span><span class='hljl-n'>x</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-ni'>2</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-n'>de</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>ODESystem</span><span class='hljl-p'>(</span><span class='hljl-n'>eqs</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>de1</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>ode_order_lowering</span><span class='hljl-p'>(</span><span class='hljl-n'>de</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+ModelingToolkit.ODESystem&#40;ModelingToolkit.DiffEq&#91;DiffEq&#40;u_tt, 1, &#40;&#40;2 * u_tt&#40;t&#40;&#41;&#41; &#43; u_t&#40;t&#40;&#41;&#41;&#41; &#43; x_t&#40;t&#40;&#41;&#41;&#41; &#43; 1&#41;, DiffEq&#40;x_t, 1, x_t&#40;
+t&#40;&#41;&#41; &#43; 2&#41;, DiffEq&#40;u_t, 1, u_tt&#40;t&#40;&#41;&#41;&#41;, DiffEq&#40;u, 1, u_t&#40;t&#40;&#41;&#41;&#41;, DiffEq&#40;x, 1, x_t&#40;t&#40;&#41;&#41;&#41;&#93;, t, ModelingToolkit.Variable&#91;u, x, u_tt, u_t
+, x_t&#93;, ModelingToolkit.Variable&#91;&#93;, Base.RefValue&#123;Array&#123;ModelingToolkit.Expression,2&#125;&#125;&#40;Array&#123;Expression&#125;&#40;0,0&#41;&#41;&#41;
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>de1</span><span class='hljl-oB'>.</span><span class='hljl-n'>eqs</span>
+</pre>
+
+
+<pre class="output">
+5-element Array&#123;ModelingToolkit.DiffEq,1&#125;:
+ ModelingToolkit.DiffEq&#40;u_tt, 1, &#40;&#40;2 * u_tt&#40;t&#40;&#41;&#41; &#43; u_t&#40;t&#40;&#41;&#41;&#41; &#43; x_t&#40;t&#40;&#41;&#41;&#41; &#43; 1&#41;
+ ModelingToolkit.DiffEq&#40;x_t, 1, x_t&#40;t&#40;&#41;&#41; &#43; 2&#41;                                
+ ModelingToolkit.DiffEq&#40;u_t, 1, u_tt&#40;t&#40;&#41;&#41;&#41;                                   
+ ModelingToolkit.DiffEq&#40;u, 1, u_t&#40;t&#40;&#41;&#41;&#41;                                      
+ ModelingToolkit.DiffEq&#40;x, 1, x_t&#40;t&#40;&#41;&#41;&#41;
+</pre>
+
+
+<p>This has generated a system of 5 first order ODE systems which can now be used in the ODE solvers.</p>
+<h3>Linear Algebra... for free?</h3>
+<p>Let&#39;s take a look at how to extend ModelingToolkit.jl in new directions. Let&#39;s define a Jacobian just by using the derivative primatives by hand:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@parameters</span><span class='hljl-t'> </span><span class='hljl-n'>t</span><span class='hljl-t'> </span><span class='hljl-n'>σ</span><span class='hljl-t'> </span><span class='hljl-n'>ρ</span><span class='hljl-t'> </span><span class='hljl-n'>β</span><span class='hljl-t'>
+</span><span class='hljl-nd'>@variables</span><span class='hljl-t'> </span><span class='hljl-nf'>x</span><span class='hljl-p'>(</span><span class='hljl-n'>t</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-nf'>y</span><span class='hljl-p'>(</span><span class='hljl-n'>t</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-nf'>z</span><span class='hljl-p'>(</span><span class='hljl-n'>t</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nd'>@derivatives</span><span class='hljl-t'> </span><span class='hljl-n'>D</span><span class='hljl-oB'>&#39;~</span><span class='hljl-n'>t</span><span class='hljl-t'> </span><span class='hljl-n'>Dx</span><span class='hljl-oB'>&#39;~</span><span class='hljl-n'>x</span><span class='hljl-t'> </span><span class='hljl-n'>Dy</span><span class='hljl-oB'>&#39;~</span><span class='hljl-n'>y</span><span class='hljl-t'> </span><span class='hljl-n'>Dz</span><span class='hljl-oB'>&#39;~</span><span class='hljl-n'>z</span><span class='hljl-t'>
+</span><span class='hljl-n'>eqs</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-nf'>D</span><span class='hljl-p'>(</span><span class='hljl-n'>x</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>~</span><span class='hljl-t'> </span><span class='hljl-n'>σ</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>y</span><span class='hljl-oB'>-</span><span class='hljl-n'>x</span><span class='hljl-p'>),</span><span class='hljl-t'>
+       </span><span class='hljl-nf'>D</span><span class='hljl-p'>(</span><span class='hljl-n'>y</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>~</span><span class='hljl-t'> </span><span class='hljl-n'>x</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>ρ</span><span class='hljl-oB'>-</span><span class='hljl-n'>z</span><span class='hljl-p'>)</span><span class='hljl-oB'>-</span><span class='hljl-n'>y</span><span class='hljl-p'>,</span><span class='hljl-t'>
+       </span><span class='hljl-nf'>D</span><span class='hljl-p'>(</span><span class='hljl-n'>z</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>~</span><span class='hljl-t'> </span><span class='hljl-n'>x</span><span class='hljl-oB'>*</span><span class='hljl-n'>y</span><span class='hljl-t'> </span><span class='hljl-oB'>-</span><span class='hljl-t'> </span><span class='hljl-n'>β</span><span class='hljl-oB'>*</span><span class='hljl-n'>z</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-n'>J</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-nf'>Dx</span><span class='hljl-p'>(</span><span class='hljl-n'>eqs</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>]</span><span class='hljl-oB'>.</span><span class='hljl-n'>rhs</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-nf'>Dy</span><span class='hljl-p'>(</span><span class='hljl-n'>eqs</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>]</span><span class='hljl-oB'>.</span><span class='hljl-n'>rhs</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-nf'>Dz</span><span class='hljl-p'>(</span><span class='hljl-n'>eqs</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>]</span><span class='hljl-oB'>.</span><span class='hljl-n'>rhs</span><span class='hljl-p'>)</span><span class='hljl-t'>
+ </span><span class='hljl-nf'>Dx</span><span class='hljl-p'>(</span><span class='hljl-n'>eqs</span><span class='hljl-p'>[</span><span class='hljl-ni'>2</span><span class='hljl-p'>]</span><span class='hljl-oB'>.</span><span class='hljl-n'>rhs</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-nf'>Dy</span><span class='hljl-p'>(</span><span class='hljl-n'>eqs</span><span class='hljl-p'>[</span><span class='hljl-ni'>2</span><span class='hljl-p'>]</span><span class='hljl-oB'>.</span><span class='hljl-n'>rhs</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-nf'>Dz</span><span class='hljl-p'>(</span><span class='hljl-n'>eqs</span><span class='hljl-p'>[</span><span class='hljl-ni'>2</span><span class='hljl-p'>]</span><span class='hljl-oB'>.</span><span class='hljl-n'>rhs</span><span class='hljl-p'>)</span><span class='hljl-t'>
+ </span><span class='hljl-nf'>Dx</span><span class='hljl-p'>(</span><span class='hljl-n'>eqs</span><span class='hljl-p'>[</span><span class='hljl-ni'>3</span><span class='hljl-p'>]</span><span class='hljl-oB'>.</span><span class='hljl-n'>rhs</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-nf'>Dy</span><span class='hljl-p'>(</span><span class='hljl-n'>eqs</span><span class='hljl-p'>[</span><span class='hljl-ni'>3</span><span class='hljl-p'>]</span><span class='hljl-oB'>.</span><span class='hljl-n'>rhs</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-nf'>Dz</span><span class='hljl-p'>(</span><span class='hljl-n'>eqs</span><span class='hljl-p'>[</span><span class='hljl-ni'>3</span><span class='hljl-p'>]</span><span class='hljl-oB'>.</span><span class='hljl-n'>rhs</span><span class='hljl-p'>)]</span>
+</pre>
+
+
+<pre class="output">
+3×3 Array&#123;ModelingToolkit.Operation,2&#125;:
+          &#40;D&#39;~x&#40;t&#40;&#41;&#41;&#41;&#40;σ&#40;&#41; * &#40;y&#40;t&#40;&#41;&#41; - x&#40;t&#40;&#41;&#41;&#41;&#41;  …           &#40;D&#39;~z&#40;t&#40;&#41;&#41;&#41;&#40;σ&#40;&#41; * &#40;y&#40;t&#40;&#41;&#41; - x&#40;t&#40;&#41;&#41;&#41;&#41;
+ &#40;D&#39;~x&#40;t&#40;&#41;&#41;&#41;&#40;x&#40;t&#40;&#41;&#41; * &#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; - y&#40;t&#40;&#41;&#41;&#41;     &#40;D&#39;~z&#40;t&#40;&#41;&#41;&#41;&#40;x&#40;t&#40;&#41;&#41; * &#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; - y&#40;t&#40;&#41;&#41;&#41;
+   &#40;D&#39;~x&#40;t&#40;&#41;&#41;&#41;&#40;x&#40;t&#40;&#41;&#41; * y&#40;t&#40;&#41;&#41; - β&#40;&#41; * z&#40;t&#40;&#41;&#41;&#41;       &#40;D&#39;~z&#40;t&#40;&#41;&#41;&#41;&#40;x&#40;t&#40;&#41;&#41; * y&#40;t&#40;&#41;&#41; - β&#40;&#41; * z&#40;t&#40;&#41;&#41;&#41;
+</pre>
+
+
+<p>Notice that this writes the derivatives in a &quot;lazy&quot; manner. If we want to actually compute the derivatives, we can expand out those expressions:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>J</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>expand_derivatives</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>J</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+3×3 Array&#123;ModelingToolkit.Expression,2&#125;:
+     σ&#40;&#41; * -1           σ&#40;&#41;  Constant&#40;0&#41;
+ ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;  Constant&#40;-1&#41;  x&#40;t&#40;&#41;&#41; * -1
+       y&#40;t&#40;&#41;&#41;        x&#40;t&#40;&#41;&#41;     -1 * β&#40;&#41;
+</pre>
+
+
+<p>Here&#39;s the magic of ModelingToolkit.jl: <strong>Julia treats ModelingToolkit expressions like a Number, and so generic numerical functions are directly usable on ModelingToolkit expressions&#33;</strong> Let&#39;s compute the LU-factorization of this Jacobian we defined using Julia&#39;s Base linear algebra library.</p>
+
+
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>LinearAlgebra</span><span class='hljl-t'>
+</span><span class='hljl-n'>luJ</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>lu</span><span class='hljl-p'>(</span><span class='hljl-n'>J</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+LinearAlgebra.LU&#123;ModelingToolkit.Expression,Array&#123;ModelingToolkit.Expression,2&#125;&#125;
+L factor:
+3×3 Array&#123;ModelingToolkit.Expression,2&#125;:
+                    Constant&#40;1&#41;  …  Constant&#40;0&#41;
+ &#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;     identity&#40;0&#41;
+         y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;     Constant&#40;1&#41;
+U factor:
+3×3 Array&#123;ModelingToolkit.Expression,2&#125;:
+    σ&#40;&#41; * -1  …                                                                                                                   
+                                                                     Constant&#40;0&#41;
+ identity&#40;0&#41;                                                                                                                      
+                              x&#40;t&#40;&#41;&#41; * -1 - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * 0
+ identity&#40;0&#41;     &#40;-1 * β&#40;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * 0&#41; - &#40;&#40;x&#40;t&#40;&#41;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41; * inv&#40;-1 - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41;
+ * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;x&#40;t&#40;&#41;&#41; * -1 - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * 0&#41;
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>luJ</span><span class='hljl-oB'>.</span><span class='hljl-n'>L</span>
+</pre>
+
+
+<pre class="output">
+3×3 Array&#123;ModelingToolkit.Expression,2&#125;:
+                    Constant&#40;1&#41;  …  Constant&#40;0&#41;
+ &#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;     identity&#40;0&#41;
+         y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;     Constant&#40;1&#41;
+</pre>
+
+
+<p>and the inverse?</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>invJ</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>inv</span><span class='hljl-p'>(</span><span class='hljl-n'>J</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+3×3 Array&#123;ModelingToolkit.Operation,2&#125;:
+ &#40;σ&#40;&#41; * -1&#41; \ &#40;&#40;identity&#40;true&#41; - identity&#40;0&#41; * &#40;&#40;&#40;-1 * β&#40;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41; - &#40;&#40;x&#40;t&#40;&#41;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;
+&#41; * -1&#41;&#41; * σ&#40;&#41;&#41; * inv&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;x&#40;t&#40;&#41;&#41; * -1 - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * 
+identity&#40;0&#41;&#41;&#41; \ &#40;&#40;identity&#40;0&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;true&#41;&#41; - &#40;&#40;x&#40;t&#40;&#41;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41; * inv&#40;iden
+tity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;identity&#40;0&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;true&#41;&#41;&#41;&#41;&#41; - σ&#40;&#41; *
+ &#40;&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41; \ &#40;&#40;identity&#40;0&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;true&#41;&#41; - &#40;
+x&#40;t&#40;&#41;&#41; * -1 - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41; * &#40;&#40;&#40;-1 * β&#40;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41; - &#40;&#40;x&#40;t&#40;&#41;&#41; -
+ &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41; * inv&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;x&#40;t&#40;&#41;&#41; * -1 - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * 
+inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41;&#41; \ &#40;&#40;identity&#40;0&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;true&#41;&#41; - &#40;&#40;x&#40;t&#40;&#41;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; 
+* σ&#40;&#41;&#41; * inv&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;identity&#40;0&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;
+true&#41;&#41;&#41;&#41;&#41;&#41;&#41;  …  &#40;σ&#40;&#41; * -1&#41; \ &#40;&#40;identity&#40;0&#41; - identity&#40;0&#41; * &#40;&#40;&#40;-1 * β&#40;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41; - &#40;&#40;x&#40;t&#40;&#41;&#41; - &#40;y&#40;t
+&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41; * inv&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;x&#40;t&#40;&#41;&#41; * -1 - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ
+&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41;&#41; \ &#40;&#40;identity&#40;true&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41; - &#40;&#40;x&#40;t&#40;&#41;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;
+&#41; * inv&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;identity&#40;0&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41;&#41;&#41;
+&#41; - σ&#40;&#41; * &#40;&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41; \ &#40;&#40;identity&#40;0&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0
+&#41;&#41; - &#40;x&#40;t&#40;&#41;&#41; * -1 - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41; * &#40;&#40;&#40;-1 * β&#40;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41; - &#40;&#40;x&#40;
+t&#40;&#41;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41; * inv&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;x&#40;t&#40;&#41;&#41; * -1 - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;
+&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41;&#41; \ &#40;&#40;identity&#40;true&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41; - &#40;&#40;x&#40;t&#40;&#41;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; *
+ -1&#41;&#41; * σ&#40;&#41;&#41; * inv&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;identity&#40;0&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * ide
+ntity&#40;0&#41;&#41;&#41;&#41;&#41;&#41;&#41;
+                                                                                                                                  
+                                                                                                                                  
+                                                                                                                                  
+                                                                                                                                  
+    &#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41; \ &#40;&#40;identity&#40;0&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;true&#41;&#41; -
+ &#40;x&#40;t&#40;&#41;&#41; * -1 - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41; * &#40;&#40;&#40;-1 * β&#40;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41; - &#40;&#40;x&#40;t&#40;&#41;&#41;
+ - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41; * inv&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;x&#40;t&#40;&#41;&#41; * -1 - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; 
+* inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41;&#41; \ &#40;&#40;identity&#40;0&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;true&#41;&#41; - &#40;&#40;x&#40;t&#40;&#41;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;
+&#41; * σ&#40;&#41;&#41; * inv&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;identity&#40;0&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identit
+y&#40;true&#41;&#41;&#41;&#41;&#41;                                                                                                                       
+                                                                                                                                  
+                                                                                                                                  
+                                                                                                                                  
+             &#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41; \ &#40;&#40;identity&#40;0&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity
+&#40;0&#41;&#41; - &#40;x&#40;t&#40;&#41;&#41; * -1 - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41; * &#40;&#40;&#40;-1 * β&#40;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41; - &#40;&#40;
+x&#40;t&#40;&#41;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41; * inv&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;x&#40;t&#40;&#41;&#41; * -1 - &#40;&#40;ρ&#40;&#41; - z&#40;
+t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41;&#41; \ &#40;&#40;identity&#40;true&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41; - &#40;&#40;x&#40;t&#40;&#41;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41;
+ * -1&#41;&#41; * σ&#40;&#41;&#41; * inv&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;identity&#40;0&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * i
+dentity&#40;0&#41;&#41;&#41;&#41;&#41;
+                                                                                                                                  
+                                                                                                                                  
+                                                                                                                                  
+                                                                                                                                  
+                                                                                                                                  
+                                                                     &#40;&#40;-1 * β&#40;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41; - &#40;&#40;x&#40;t&#40;
+&#41;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41; * inv&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;x&#40;t&#40;&#41;&#41; * -1 - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;
+&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41;&#41; \ &#40;&#40;identity&#40;0&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;true&#41;&#41; - &#40;&#40;x&#40;t&#40;&#41;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -
+1&#41;&#41; * σ&#40;&#41;&#41; * inv&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;identity&#40;0&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * ident
+ity&#40;true&#41;&#41;&#41;                                                                                                                       
+                                                                                                                                  
+                                                                                                                                  
+                                                                                                                                  
+                                                                                                                                  
+                                                                           &#40;&#40;-1 * β&#40;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41; - 
+&#40;&#40;x&#40;t&#40;&#41;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41; * inv&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;x&#40;t&#40;&#41;&#41; * -1 - &#40;&#40;ρ&#40;&#41; - 
+z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41;&#41; \ &#40;&#40;identity&#40;true&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * identity&#40;0&#41;&#41; - &#40;&#40;x&#40;t&#40;&#41;&#41; - &#40;y&#40;t&#40;&#41;&#41; * inv&#40;σ
+&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41; * inv&#40;identity&#40;-1&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; * σ&#40;&#41;&#41;&#41; * &#40;identity&#40;0&#41; - &#40;&#40;ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;&#41; * inv&#40;σ&#40;&#41; * -1&#41;&#41; *
+ identity&#40;0&#41;&#41;&#41;
+</pre>
+
+
+<h4>Thus ModelingToolkit.jl can utilize existing numerical code on symbolic codes</h4>
+<p>Let&#39;s follow this thread a little deeper.</p>
+<h3>Automatically convert numerical codes to symbolic</h3>
+<p>Let&#39;s take someone&#39;s code written to numerically solve the Lorenz equation:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-k'>function</span><span class='hljl-t'> </span><span class='hljl-nf'>lorenz</span><span class='hljl-p'>(</span><span class='hljl-n'>du</span><span class='hljl-p'>,</span><span class='hljl-n'>u</span><span class='hljl-p'>,</span><span class='hljl-n'>p</span><span class='hljl-p'>,</span><span class='hljl-n'>t</span><span class='hljl-p'>)</span><span class='hljl-t'>
+ </span><span class='hljl-n'>du</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>]</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>u</span><span class='hljl-p'>[</span><span class='hljl-ni'>2</span><span class='hljl-p'>]</span><span class='hljl-oB'>-</span><span class='hljl-n'>u</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>])</span><span class='hljl-t'>
+ </span><span class='hljl-n'>du</span><span class='hljl-p'>[</span><span class='hljl-ni'>2</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>u</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>]</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-ni'>2</span><span class='hljl-p'>]</span><span class='hljl-oB'>-</span><span class='hljl-n'>u</span><span class='hljl-p'>[</span><span class='hljl-ni'>3</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-oB'>-</span><span class='hljl-t'> </span><span class='hljl-n'>u</span><span class='hljl-p'>[</span><span class='hljl-ni'>2</span><span class='hljl-p'>]</span><span class='hljl-t'>
+ </span><span class='hljl-n'>du</span><span class='hljl-p'>[</span><span class='hljl-ni'>3</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>u</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>]</span><span class='hljl-oB'>*</span><span class='hljl-n'>u</span><span class='hljl-p'>[</span><span class='hljl-ni'>2</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>-</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-ni'>3</span><span class='hljl-p'>]</span><span class='hljl-oB'>*</span><span class='hljl-n'>u</span><span class='hljl-p'>[</span><span class='hljl-ni'>3</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span>
+</pre>
+
+
+<pre class="output">
+lorenz &#40;generic function with 1 method&#41;
+</pre>
+
+
+<p>Since ModelingToolkit can trace generic numerical functions in Julia, let&#39;s trace it with Operations. When we do this, it&#39;ll spit out a symbolic representation of their numerical code:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>u</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>x</span><span class='hljl-p'>,</span><span class='hljl-n'>y</span><span class='hljl-p'>,</span><span class='hljl-n'>z</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-n'>du</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>similar</span><span class='hljl-p'>(</span><span class='hljl-n'>u</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>p</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>σ</span><span class='hljl-p'>,</span><span class='hljl-n'>ρ</span><span class='hljl-p'>,</span><span class='hljl-n'>β</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-nf'>lorenz</span><span class='hljl-p'>(</span><span class='hljl-n'>du</span><span class='hljl-p'>,</span><span class='hljl-n'>u</span><span class='hljl-p'>,</span><span class='hljl-n'>p</span><span class='hljl-p'>,</span><span class='hljl-n'>t</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+x&#40;t&#40;&#41;&#41; * y&#40;t&#40;&#41;&#41; - β&#40;&#41; * z&#40;t&#40;&#41;&#41;
+</pre>
+
+
+<p>We can then perform symbolic manipulations on their numerical code, and build a new numerical code that optimizes/fixes their original function&#33;</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>J</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-nf'>Dx</span><span class='hljl-p'>(</span><span class='hljl-n'>du</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-nf'>Dy</span><span class='hljl-p'>(</span><span class='hljl-n'>du</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-nf'>Dz</span><span class='hljl-p'>(</span><span class='hljl-n'>du</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>])</span><span class='hljl-t'>
+     </span><span class='hljl-nf'>Dx</span><span class='hljl-p'>(</span><span class='hljl-n'>du</span><span class='hljl-p'>[</span><span class='hljl-ni'>2</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-nf'>Dy</span><span class='hljl-p'>(</span><span class='hljl-n'>du</span><span class='hljl-p'>[</span><span class='hljl-ni'>2</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-nf'>Dz</span><span class='hljl-p'>(</span><span class='hljl-n'>du</span><span class='hljl-p'>[</span><span class='hljl-ni'>2</span><span class='hljl-p'>])</span><span class='hljl-t'>
+     </span><span class='hljl-nf'>Dx</span><span class='hljl-p'>(</span><span class='hljl-n'>du</span><span class='hljl-p'>[</span><span class='hljl-ni'>3</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-nf'>Dy</span><span class='hljl-p'>(</span><span class='hljl-n'>du</span><span class='hljl-p'>[</span><span class='hljl-ni'>3</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-nf'>Dz</span><span class='hljl-p'>(</span><span class='hljl-n'>du</span><span class='hljl-p'>[</span><span class='hljl-ni'>3</span><span class='hljl-p'>])]</span><span class='hljl-t'>
+</span><span class='hljl-n'>J</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>expand_derivatives</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>J</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+3×3 Array&#123;ModelingToolkit.Expression,2&#125;:
+     σ&#40;&#41; * -1           σ&#40;&#41;  Constant&#40;0&#41;
+ ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;  Constant&#40;-1&#41;  x&#40;t&#40;&#41;&#41; * -1
+       y&#40;t&#40;&#41;&#41;        x&#40;t&#40;&#41;&#41;     -1 * β&#40;&#41;
+</pre>
+
+
+<h3>Automated Sparsity Detection</h3>
+<p>In many cases one has to speed up large modeling frameworks by taking into account sparsity. While ModelingToolkit.jl can be used to compute Jacobians, we can write a standard Julia function in order to get a spase matrix of expressions which automatically detects and utilizes the sparsity of their function.</p>
+
+
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>SparseArrays</span><span class='hljl-t'>
+</span><span class='hljl-k'>function</span><span class='hljl-t'> </span><span class='hljl-n'>SparseArrays</span><span class='hljl-oB'>.</span><span class='hljl-nf'>SparseMatrixCSC</span><span class='hljl-p'>(</span><span class='hljl-n'>M</span><span class='hljl-oB'>::</span><span class='hljl-nf'>Matrix</span><span class='hljl-p'>{</span><span class='hljl-n'>T</span><span class='hljl-p'>})</span><span class='hljl-t'> </span><span class='hljl-n'>where</span><span class='hljl-t'> </span><span class='hljl-p'>{</span><span class='hljl-n'>T</span><span class='hljl-oB'>&lt;:</span><span class='hljl-n'>ModelingToolkit</span><span class='hljl-oB'>.</span><span class='hljl-n'>Expression</span><span class='hljl-p'>}</span><span class='hljl-t'>
+    </span><span class='hljl-n'>idxs</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>findall</span><span class='hljl-p'>(</span><span class='hljl-oB'>!</span><span class='hljl-n'>iszero</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>M</span><span class='hljl-p'>)</span><span class='hljl-t'>
+    </span><span class='hljl-n'>I</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>i</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>i</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-n'>idxs</span><span class='hljl-p'>]</span><span class='hljl-t'>
+    </span><span class='hljl-n'>J</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>i</span><span class='hljl-p'>[</span><span class='hljl-ni'>2</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>i</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-n'>idxs</span><span class='hljl-p'>]</span><span class='hljl-t'>
+    </span><span class='hljl-n'>V</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>M</span><span class='hljl-p'>[</span><span class='hljl-n'>i</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>i</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-n'>idxs</span><span class='hljl-p'>]</span><span class='hljl-t'>
+    </span><span class='hljl-k'>return</span><span class='hljl-t'> </span><span class='hljl-n'>SparseArrays</span><span class='hljl-oB'>.</span><span class='hljl-nf'>sparse_IJ_sorted!</span><span class='hljl-p'>(</span><span class='hljl-n'>I</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>J</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>V</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nf'>size</span><span class='hljl-p'>(</span><span class='hljl-n'>M</span><span class='hljl-p'>)</span><span class='hljl-oB'>...</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span><span class='hljl-t'>
+</span><span class='hljl-n'>sJ</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>SparseMatrixCSC</span><span class='hljl-p'>(</span><span class='hljl-n'>J</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+3×3 SparseArrays.SparseMatrixCSC&#123;ModelingToolkit.Expression,Int64&#125; with 8 stored entries:
+  &#91;1, 1&#93;  &#61;  σ&#40;&#41; * -1
+  &#91;2, 1&#93;  &#61;  ρ&#40;&#41; - z&#40;t&#40;&#41;&#41;
+  &#91;3, 1&#93;  &#61;  y&#40;t&#40;&#41;&#41;
+  &#91;1, 2&#93;  &#61;  σ&#40;&#41;
+  &#91;2, 2&#93;  &#61;  Constant&#40;-1&#41;
+  &#91;3, 2&#93;  &#61;  x&#40;t&#40;&#41;&#41;
+  &#91;2, 3&#93;  &#61;  x&#40;t&#40;&#41;&#41; * -1
+  &#91;3, 3&#93;  &#61;  -1 * β&#40;&#41;
+</pre>
+
+
+<h3>Dependent Variables, Functions, Chain Rule</h3>
+<p>&quot;Variables&quot; are overloaded. When you are solving a differential equation, the variable <code>u&#40;t&#41;</code> is actually a function of time. In order to handle these kinds of variables in a mathematically correct and extensible manner, the ModelingToolkit IR actually treats variables as functions, and constant variables are simply 0-ary functions &#40;<code>t&#40;&#41;</code>&#41;.</p>
+<p>We can utilize this idea to have parameters that are also functions. For example, we can have a parameter σ which acts as a function of 1 argument, and then utilize this function within our differential equations:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@parameters</span><span class='hljl-t'> </span><span class='hljl-nf'>σ</span><span class='hljl-p'>(</span><span class='hljl-oB'>..</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>eqs</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-nf'>D</span><span class='hljl-p'>(</span><span class='hljl-n'>x</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>~</span><span class='hljl-t'> </span><span class='hljl-nf'>σ</span><span class='hljl-p'>(</span><span class='hljl-n'>t</span><span class='hljl-oB'>-</span><span class='hljl-ni'>1</span><span class='hljl-p'>)</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>y</span><span class='hljl-oB'>-</span><span class='hljl-n'>x</span><span class='hljl-p'>),</span><span class='hljl-t'>
+       </span><span class='hljl-nf'>D</span><span class='hljl-p'>(</span><span class='hljl-n'>y</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>~</span><span class='hljl-t'> </span><span class='hljl-n'>x</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-nf'>σ</span><span class='hljl-p'>(</span><span class='hljl-n'>t</span><span class='hljl-oB'>^</span><span class='hljl-ni'>2</span><span class='hljl-p'>)</span><span class='hljl-oB'>-</span><span class='hljl-n'>z</span><span class='hljl-p'>)</span><span class='hljl-oB'>-</span><span class='hljl-n'>y</span><span class='hljl-p'>,</span><span class='hljl-t'>
+       </span><span class='hljl-nf'>D</span><span class='hljl-p'>(</span><span class='hljl-n'>z</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>~</span><span class='hljl-t'> </span><span class='hljl-n'>x</span><span class='hljl-oB'>*</span><span class='hljl-n'>y</span><span class='hljl-t'> </span><span class='hljl-oB'>-</span><span class='hljl-t'> </span><span class='hljl-n'>β</span><span class='hljl-oB'>*</span><span class='hljl-n'>z</span><span class='hljl-p'>]</span>
+</pre>
+
+
+<pre class="output">
+3-element Array&#123;ModelingToolkit.Equation,1&#125;:
+ ModelingToolkit.Equation&#40;&#40;D&#39;~t&#40;&#41;&#41;&#40;x&#40;t&#40;&#41;&#41;&#41;, σ&#40;t&#40;&#41; - 1&#41; * &#40;y&#40;t&#40;&#41;&#41; - x&#40;t&#40;&#41;&#41;&#41;&#41;         
+ ModelingToolkit.Equation&#40;&#40;D&#39;~t&#40;&#41;&#41;&#40;y&#40;t&#40;&#41;&#41;&#41;, x&#40;t&#40;&#41;&#41; * &#40;σ&#40;t&#40;&#41; ^ 2&#41; - z&#40;t&#40;&#41;&#41;&#41; - y&#40;t&#40;&#41;&#41;&#41;
+ ModelingToolkit.Equation&#40;&#40;D&#39;~t&#40;&#41;&#41;&#40;z&#40;t&#40;&#41;&#41;&#41;, x&#40;t&#40;&#41;&#41; * y&#40;t&#40;&#41;&#41; - β&#40;&#41; * z&#40;t&#40;&#41;&#41;&#41;
+</pre>
+
+
+<p>Notice that when we calculate the derivative with respect to <code>t</code>, the chain rule is automatically handled:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@derivatives</span><span class='hljl-t'> </span><span class='hljl-n'>Dₜ</span><span class='hljl-oB'>&#39;~</span><span class='hljl-n'>t</span><span class='hljl-t'>
+</span><span class='hljl-nf'>Dₜ</span><span class='hljl-p'>(</span><span class='hljl-n'>x</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-nf'>σ</span><span class='hljl-p'>(</span><span class='hljl-n'>t</span><span class='hljl-oB'>^</span><span class='hljl-ni'>2</span><span class='hljl-p'>)</span><span class='hljl-oB'>-</span><span class='hljl-n'>z</span><span class='hljl-p'>)</span><span class='hljl-oB'>-</span><span class='hljl-n'>y</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>expand_derivatives</span><span class='hljl-p'>(</span><span class='hljl-nf'>Dₜ</span><span class='hljl-p'>(</span><span class='hljl-n'>x</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-nf'>σ</span><span class='hljl-p'>(</span><span class='hljl-n'>t</span><span class='hljl-oB'>^</span><span class='hljl-ni'>2</span><span class='hljl-p'>)</span><span class='hljl-oB'>-</span><span class='hljl-n'>z</span><span class='hljl-p'>)</span><span class='hljl-oB'>-</span><span class='hljl-n'>y</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="output">
+&#40;σ&#40;t&#40;&#41; ^ 2&#41; - z&#40;t&#40;&#41;&#41;&#41; * &#40;D&#39;~t&#40;&#41;&#41;&#40;x&#40;t&#40;&#41;&#41;&#41; &#43; x&#40;t&#40;&#41;&#41; * &#40;&#40;D&#39;~t&#40;&#41;&#41;&#40;σ&#40;t&#40;&#41; ^ 2&#41;&#41; &#43; -1 * &#40;D&#39;~t&#40;&#41;&#41;&#40;z&#40;t&#40;&#41;&#41;&#41;&#41; &#43; -1 * &#40;D&#39;~t&#40;&#41;&#41;&#40;y&#40;t&#40;&#41;&#41;&#41;
+</pre>
+
+
+<h3>Hackability: Extend directly from the language</h3>
+<p>ModelingToolkit.jl is written in Julia, and thus it can be directly extended from Julia itself. Let&#39;s define a normal Julia function and call it with a variable:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>_f</span><span class='hljl-p'>(</span><span class='hljl-n'>x</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>2</span><span class='hljl-n'>x</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-n'>x</span><span class='hljl-oB'>^</span><span class='hljl-ni'>2</span><span class='hljl-t'>
+</span><span class='hljl-nf'>_f</span><span class='hljl-p'>(</span><span class='hljl-n'>x</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+2 * x&#40;t&#40;&#41;&#41; &#43; x&#40;t&#40;&#41;&#41; ^ 2
+</pre>
+
+
+<p>Recall that when we do that, it will automatically trace this function and then build a symbolic expression. But what if we wanted our function to be a primative in the symbolic framework? This can be done by registering the function.</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>f</span><span class='hljl-p'>(</span><span class='hljl-n'>x</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>2</span><span class='hljl-n'>x</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-n'>x</span><span class='hljl-oB'>^</span><span class='hljl-ni'>2</span><span class='hljl-t'>
+</span><span class='hljl-nd'>@register</span><span class='hljl-t'> </span><span class='hljl-nf'>f</span><span class='hljl-p'>(</span><span class='hljl-n'>x</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+f &#40;generic function with 2 methods&#41;
+</pre>
+
+
+<p>Now this function is a new primitive:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>f</span><span class='hljl-p'>(</span><span class='hljl-n'>x</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+Main.WeaveSandBox74.f&#40;x&#40;t&#40;&#41;&#41;&#41;
+</pre>
+
+
+<p>and we can now define derivatives of our function:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-k'>function</span><span class='hljl-t'> </span><span class='hljl-n'>ModelingToolkit</span><span class='hljl-oB'>.</span><span class='hljl-nf'>derivative</span><span class='hljl-p'>(</span><span class='hljl-oB'>::</span><span class='hljl-nf'>typeof</span><span class='hljl-p'>(</span><span class='hljl-n'>f</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-n'>args</span><span class='hljl-oB'>::</span><span class='hljl-nf'>NTuple</span><span class='hljl-p'>{</span><span class='hljl-ni'>1</span><span class='hljl-p'>,</span><span class='hljl-n'>Any</span><span class='hljl-p'>},</span><span class='hljl-t'> </span><span class='hljl-oB'>::</span><span class='hljl-nf'>Val</span><span class='hljl-p'>{</span><span class='hljl-ni'>1</span><span class='hljl-p'>})</span><span class='hljl-t'>
+    </span><span class='hljl-ni'>2</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-ni'>2</span><span class='hljl-n'>args</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span><span class='hljl-t'>
+</span><span class='hljl-nf'>expand_derivatives</span><span class='hljl-p'>(</span><span class='hljl-nf'>Dx</span><span class='hljl-p'>(</span><span class='hljl-nf'>f</span><span class='hljl-p'>(</span><span class='hljl-n'>x</span><span class='hljl-p'>)))</span>
+</pre>
+
+
+<pre class="output">
+2 &#43; 2 * x&#40;t&#40;&#41;&#41;
+</pre>
+
+
+<h2>Use Case: PuMaS.jl</h2>
+<p>Let&#39;s look at PuMaS.jl, a software for simulating and estimating nonlinear mixed effects models in pharmacometrics. In these models, a user brings in Electronic Health Record &#40;EHR&#41; data to define patient covariates, and then a population model defines fixed effects and random effects. These are collated together to give dynamical parameters which define a differential equation, and then derived variables from the differential equation are observed. For example, let&#39;s take a look at a multiple response model:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>PuMaS</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: ArgumentError: Package PuMaS not found in current path:
+- Run &#96;import Pkg; Pkg.add&#40;&quot;PuMaS&quot;&#41;&#96; to install the PuMaS package.
+
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>subject</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>process_nmtran</span><span class='hljl-p'>(</span><span class='hljl-nf'>example_nmtran_data</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;event_data/data23&quot;</span><span class='hljl-p'>),</span><span class='hljl-t'>
+                         </span><span class='hljl-p'>[],</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-sc'>:ev1</span><span class='hljl-p'>,</span><span class='hljl-oB'>:</span><span class='hljl-n'>cp</span><span class='hljl-p'>,</span><span class='hljl-oB'>:</span><span class='hljl-n'>periph</span><span class='hljl-p'>,</span><span class='hljl-oB'>:</span><span class='hljl-n'>resp</span><span class='hljl-p'>])[</span><span class='hljl-ni'>1</span><span class='hljl-p'>]</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: example_nmtran_data not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>mrm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nd'>@model</span><span class='hljl-t'> </span><span class='hljl-k'>begin</span><span class='hljl-t'>
+    </span><span class='hljl-nd'>@param</span><span class='hljl-t'>   </span><span class='hljl-n'>θ</span><span class='hljl-t'> </span><span class='hljl-oB'>∈</span><span class='hljl-t'> </span><span class='hljl-nf'>VectorDomain</span><span class='hljl-p'>(</span><span class='hljl-ni'>12</span><span class='hljl-p'>)</span><span class='hljl-t'>
+    </span><span class='hljl-nd'>@random</span><span class='hljl-t'>  </span><span class='hljl-n'>η</span><span class='hljl-t'> </span><span class='hljl-oB'>~</span><span class='hljl-t'> </span><span class='hljl-nf'>MvNormal</span><span class='hljl-p'>(</span><span class='hljl-nf'>Matrix</span><span class='hljl-p'>{</span><span class='hljl-n'>Float64</span><span class='hljl-p'>}(</span><span class='hljl-n'>I</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-ni'>11</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-ni'>11</span><span class='hljl-p'>))</span><span class='hljl-t'>
+
+    </span><span class='hljl-nd'>@pre</span><span class='hljl-t'> </span><span class='hljl-k'>begin</span><span class='hljl-t'>
+        </span><span class='hljl-n'>Ka1</span><span class='hljl-t'>     </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>θ</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>]</span><span class='hljl-t'>
+        </span><span class='hljl-n'>CL</span><span class='hljl-t'>      </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>θ</span><span class='hljl-p'>[</span><span class='hljl-ni'>2</span><span class='hljl-p'>]</span><span class='hljl-oB'>*</span><span class='hljl-nf'>exp</span><span class='hljl-p'>(</span><span class='hljl-n'>η</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>])</span><span class='hljl-t'>
+        </span><span class='hljl-n'>Vc</span><span class='hljl-t'>      </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>θ</span><span class='hljl-p'>[</span><span class='hljl-ni'>3</span><span class='hljl-p'>]</span><span class='hljl-oB'>*</span><span class='hljl-nf'>exp</span><span class='hljl-p'>(</span><span class='hljl-n'>η</span><span class='hljl-p'>[</span><span class='hljl-ni'>2</span><span class='hljl-p'>])</span><span class='hljl-t'>
+        </span><span class='hljl-n'>Q</span><span class='hljl-t'>       </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>θ</span><span class='hljl-p'>[</span><span class='hljl-ni'>4</span><span class='hljl-p'>]</span><span class='hljl-oB'>*</span><span class='hljl-nf'>exp</span><span class='hljl-p'>(</span><span class='hljl-n'>η</span><span class='hljl-p'>[</span><span class='hljl-ni'>3</span><span class='hljl-p'>])</span><span class='hljl-t'>
+        </span><span class='hljl-n'>Vp</span><span class='hljl-t'>      </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>θ</span><span class='hljl-p'>[</span><span class='hljl-ni'>5</span><span class='hljl-p'>]</span><span class='hljl-oB'>*</span><span class='hljl-nf'>exp</span><span class='hljl-p'>(</span><span class='hljl-n'>η</span><span class='hljl-p'>[</span><span class='hljl-ni'>4</span><span class='hljl-p'>])</span><span class='hljl-t'>
+        </span><span class='hljl-n'>Kin</span><span class='hljl-t'>     </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>θ</span><span class='hljl-p'>[</span><span class='hljl-ni'>6</span><span class='hljl-p'>]</span><span class='hljl-oB'>*</span><span class='hljl-nf'>exp</span><span class='hljl-p'>(</span><span class='hljl-n'>η</span><span class='hljl-p'>[</span><span class='hljl-ni'>5</span><span class='hljl-p'>])</span><span class='hljl-t'>
+        </span><span class='hljl-n'>Kout</span><span class='hljl-t'>    </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>θ</span><span class='hljl-p'>[</span><span class='hljl-ni'>7</span><span class='hljl-p'>]</span><span class='hljl-oB'>*</span><span class='hljl-nf'>exp</span><span class='hljl-p'>(</span><span class='hljl-n'>η</span><span class='hljl-p'>[</span><span class='hljl-ni'>6</span><span class='hljl-p'>])</span><span class='hljl-t'>
+        </span><span class='hljl-n'>IC50</span><span class='hljl-t'>    </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>θ</span><span class='hljl-p'>[</span><span class='hljl-ni'>8</span><span class='hljl-p'>]</span><span class='hljl-oB'>*</span><span class='hljl-nf'>exp</span><span class='hljl-p'>(</span><span class='hljl-n'>η</span><span class='hljl-p'>[</span><span class='hljl-ni'>7</span><span class='hljl-p'>])</span><span class='hljl-t'>
+        </span><span class='hljl-n'>IMAX</span><span class='hljl-t'>    </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>θ</span><span class='hljl-p'>[</span><span class='hljl-ni'>9</span><span class='hljl-p'>]</span><span class='hljl-oB'>*</span><span class='hljl-nf'>exp</span><span class='hljl-p'>(</span><span class='hljl-n'>η</span><span class='hljl-p'>[</span><span class='hljl-ni'>8</span><span class='hljl-p'>])</span><span class='hljl-t'>
+        </span><span class='hljl-n'>γ</span><span class='hljl-t'>       </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>θ</span><span class='hljl-p'>[</span><span class='hljl-ni'>10</span><span class='hljl-p'>]</span><span class='hljl-oB'>*</span><span class='hljl-nf'>exp</span><span class='hljl-p'>(</span><span class='hljl-n'>η</span><span class='hljl-p'>[</span><span class='hljl-ni'>9</span><span class='hljl-p'>])</span><span class='hljl-t'>
+        </span><span class='hljl-n'>Vmax</span><span class='hljl-t'>    </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>θ</span><span class='hljl-p'>[</span><span class='hljl-ni'>11</span><span class='hljl-p'>]</span><span class='hljl-oB'>*</span><span class='hljl-nf'>exp</span><span class='hljl-p'>(</span><span class='hljl-n'>η</span><span class='hljl-p'>[</span><span class='hljl-ni'>10</span><span class='hljl-p'>])</span><span class='hljl-t'>
+        </span><span class='hljl-n'>Km</span><span class='hljl-t'>      </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>θ</span><span class='hljl-p'>[</span><span class='hljl-ni'>12</span><span class='hljl-p'>]</span><span class='hljl-oB'>*</span><span class='hljl-nf'>exp</span><span class='hljl-p'>(</span><span class='hljl-n'>η</span><span class='hljl-p'>[</span><span class='hljl-ni'>11</span><span class='hljl-p'>])</span><span class='hljl-t'>
+    </span><span class='hljl-k'>end</span><span class='hljl-t'>
+
+    </span><span class='hljl-nd'>@init</span><span class='hljl-t'> </span><span class='hljl-k'>begin</span><span class='hljl-t'>
+        </span><span class='hljl-n'>Resp</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>θ</span><span class='hljl-p'>[</span><span class='hljl-ni'>6</span><span class='hljl-p'>]</span><span class='hljl-oB'>/</span><span class='hljl-n'>θ</span><span class='hljl-p'>[</span><span class='hljl-ni'>7</span><span class='hljl-p'>]</span><span class='hljl-t'>
+    </span><span class='hljl-k'>end</span><span class='hljl-t'>
+
+    </span><span class='hljl-nd'>@dynamics</span><span class='hljl-t'> </span><span class='hljl-k'>begin</span><span class='hljl-t'>
+        </span><span class='hljl-n'>Ev1</span><span class='hljl-oB'>&#39;</span><span class='hljl-t'>    </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-oB'>-</span><span class='hljl-n'>Ka1</span><span class='hljl-oB'>*</span><span class='hljl-n'>Ev1</span><span class='hljl-t'>
+        </span><span class='hljl-n'>Cent</span><span class='hljl-oB'>&#39;</span><span class='hljl-t'>   </span><span class='hljl-oB'>=</span><span class='hljl-t'>  </span><span class='hljl-n'>Ka1</span><span class='hljl-oB'>*</span><span class='hljl-n'>Ev1</span><span class='hljl-t'> </span><span class='hljl-oB'>-</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-n'>CL</span><span class='hljl-oB'>+</span><span class='hljl-n'>Vmax</span><span class='hljl-oB'>/</span><span class='hljl-p'>(</span><span class='hljl-n'>Km</span><span class='hljl-oB'>+</span><span class='hljl-p'>(</span><span class='hljl-n'>Cent</span><span class='hljl-oB'>/</span><span class='hljl-n'>Vc</span><span class='hljl-p'>))</span><span class='hljl-oB'>+</span><span class='hljl-n'>Q</span><span class='hljl-p'>)</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>Cent</span><span class='hljl-oB'>/</span><span class='hljl-n'>Vc</span><span class='hljl-p'>)</span><span class='hljl-t'>  </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-n'>Q</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>Periph</span><span class='hljl-oB'>/</span><span class='hljl-n'>Vp</span><span class='hljl-p'>)</span><span class='hljl-t'>
+        </span><span class='hljl-n'>Periph</span><span class='hljl-oB'>&#39;</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'>  </span><span class='hljl-n'>Q</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>Cent</span><span class='hljl-oB'>/</span><span class='hljl-n'>Vc</span><span class='hljl-p'>)</span><span class='hljl-t'>  </span><span class='hljl-oB'>-</span><span class='hljl-t'> </span><span class='hljl-n'>Q</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>Periph</span><span class='hljl-oB'>/</span><span class='hljl-n'>Vp</span><span class='hljl-p'>)</span><span class='hljl-t'>
+        </span><span class='hljl-n'>Resp</span><span class='hljl-oB'>&#39;</span><span class='hljl-t'>   </span><span class='hljl-oB'>=</span><span class='hljl-t'>  </span><span class='hljl-n'>Kin</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-ni'>1</span><span class='hljl-oB'>-</span><span class='hljl-p'>(</span><span class='hljl-n'>IMAX</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>Cent</span><span class='hljl-oB'>/</span><span class='hljl-n'>Vc</span><span class='hljl-p'>)</span><span class='hljl-oB'>^</span><span class='hljl-n'>γ</span><span class='hljl-oB'>/</span><span class='hljl-p'>(</span><span class='hljl-n'>IC50</span><span class='hljl-oB'>^</span><span class='hljl-n'>γ</span><span class='hljl-oB'>+</span><span class='hljl-p'>(</span><span class='hljl-n'>Cent</span><span class='hljl-oB'>/</span><span class='hljl-n'>Vc</span><span class='hljl-p'>)</span><span class='hljl-oB'>^</span><span class='hljl-n'>γ</span><span class='hljl-p'>)))</span><span class='hljl-t'>  </span><span class='hljl-oB'>-</span><span class='hljl-t'> </span><span class='hljl-n'>Kout</span><span class='hljl-oB'>*</span><span class='hljl-n'>Resp</span><span class='hljl-t'>
+    </span><span class='hljl-k'>end</span><span class='hljl-t'>
+
+    </span><span class='hljl-nd'>@derived</span><span class='hljl-t'> </span><span class='hljl-k'>begin</span><span class='hljl-t'>
+        </span><span class='hljl-n'>ev1</span><span class='hljl-t'>    </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>Ev1</span><span class='hljl-t'>
+        </span><span class='hljl-n'>cp</span><span class='hljl-t'>     </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>Cent</span><span class='hljl-t'> </span><span class='hljl-oB'>/</span><span class='hljl-t'> </span><span class='hljl-n'>θ</span><span class='hljl-p'>[</span><span class='hljl-ni'>3</span><span class='hljl-p'>]</span><span class='hljl-t'>
+        </span><span class='hljl-n'>periph</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>Periph</span><span class='hljl-t'>
+        </span><span class='hljl-n'>resp</span><span class='hljl-t'>   </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>Resp</span><span class='hljl-t'>
+    </span><span class='hljl-k'>end</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: LoadError: UndefVarError: @model not defined
+in expression starting at none:3
+</pre>
+
+
+<p>Notice that</p>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@dynamics</span><span class='hljl-t'> </span><span class='hljl-k'>begin</span><span class='hljl-t'>
+  </span><span class='hljl-n'>Ev1</span><span class='hljl-oB'>&#39;</span><span class='hljl-t'>    </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-oB'>-</span><span class='hljl-n'>Ka1</span><span class='hljl-oB'>*</span><span class='hljl-n'>Ev1</span><span class='hljl-t'>
+  </span><span class='hljl-n'>Cent</span><span class='hljl-oB'>&#39;</span><span class='hljl-t'>   </span><span class='hljl-oB'>=</span><span class='hljl-t'>  </span><span class='hljl-n'>Ka1</span><span class='hljl-oB'>*</span><span class='hljl-n'>Ev1</span><span class='hljl-t'> </span><span class='hljl-oB'>-</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-n'>CL</span><span class='hljl-oB'>+</span><span class='hljl-n'>Vmax</span><span class='hljl-oB'>/</span><span class='hljl-p'>(</span><span class='hljl-n'>Km</span><span class='hljl-oB'>+</span><span class='hljl-p'>(</span><span class='hljl-n'>Cent</span><span class='hljl-oB'>/</span><span class='hljl-n'>Vc</span><span class='hljl-p'>))</span><span class='hljl-oB'>+</span><span class='hljl-n'>Q</span><span class='hljl-p'>)</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>Cent</span><span class='hljl-oB'>/</span><span class='hljl-n'>Vc</span><span class='hljl-p'>)</span><span class='hljl-t'>  </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-n'>Q</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>Periph</span><span class='hljl-oB'>/</span><span class='hljl-n'>Vp</span><span class='hljl-p'>)</span><span class='hljl-t'>
+  </span><span class='hljl-n'>Periph</span><span class='hljl-oB'>&#39;</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'>  </span><span class='hljl-n'>Q</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>Cent</span><span class='hljl-oB'>/</span><span class='hljl-n'>Vc</span><span class='hljl-p'>)</span><span class='hljl-t'>  </span><span class='hljl-oB'>-</span><span class='hljl-t'> </span><span class='hljl-n'>Q</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>Periph</span><span class='hljl-oB'>/</span><span class='hljl-n'>Vp</span><span class='hljl-p'>)</span><span class='hljl-t'>
+  </span><span class='hljl-n'>Resp</span><span class='hljl-oB'>&#39;</span><span class='hljl-t'>   </span><span class='hljl-oB'>=</span><span class='hljl-t'>  </span><span class='hljl-n'>Kin</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-ni'>1</span><span class='hljl-oB'>-</span><span class='hljl-p'>(</span><span class='hljl-n'>IMAX</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>Cent</span><span class='hljl-oB'>/</span><span class='hljl-n'>Vc</span><span class='hljl-p'>)</span><span class='hljl-oB'>^</span><span class='hljl-n'>γ</span><span class='hljl-oB'>/</span><span class='hljl-p'>(</span><span class='hljl-n'>IC50</span><span class='hljl-oB'>^</span><span class='hljl-n'>γ</span><span class='hljl-oB'>+</span><span class='hljl-p'>(</span><span class='hljl-n'>Cent</span><span class='hljl-oB'>/</span><span class='hljl-n'>Vc</span><span class='hljl-p'>)</span><span class='hljl-oB'>^</span><span class='hljl-n'>γ</span><span class='hljl-p'>)))</span><span class='hljl-t'>  </span><span class='hljl-oB'>-</span><span class='hljl-t'> </span><span class='hljl-n'>Kout</span><span class='hljl-oB'>*</span><span class='hljl-n'>Resp</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span>
+</pre>
+
+
+<p>is implemented by translating this differential equation system into ModelingToolkit IR, and then the functionality shown above is used to get the Julia functions for numerical simulation.</p>
+<p>We can now set parameters and simulate the system for a given patient:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>param</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-n'>θ</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-t'>
+              </span><span class='hljl-ni'>1</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-cs'># Ka1  Absorption rate constant 1 (1/time)</span><span class='hljl-t'>
+              </span><span class='hljl-ni'>1</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-cs'># CL   Clearance (volume/time)</span><span class='hljl-t'>
+              </span><span class='hljl-ni'>20</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-cs'># Vc   Central volume (volume)</span><span class='hljl-t'>
+              </span><span class='hljl-ni'>2</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-cs'># Q    Inter-compartmental clearance (volume/time)</span><span class='hljl-t'>
+              </span><span class='hljl-ni'>10</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-cs'># Vp   Peripheral volume of distribution (volume)</span><span class='hljl-t'>
+              </span><span class='hljl-ni'>10</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-cs'># Kin  Response in rate constant (1/time)</span><span class='hljl-t'>
+              </span><span class='hljl-ni'>2</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-cs'># Kout Response out rate constant (1/time)</span><span class='hljl-t'>
+              </span><span class='hljl-ni'>2</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-cs'># IC50 Concentration for 50% of max inhibition (mass/volume)</span><span class='hljl-t'>
+              </span><span class='hljl-ni'>1</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-cs'># IMAX Maximum inhibition</span><span class='hljl-t'>
+              </span><span class='hljl-ni'>1</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-cs'># γ    Emax model sigmoidicity</span><span class='hljl-t'>
+              </span><span class='hljl-ni'>0</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-cs'># Vmax Maximum reaction velocity (mass/time)</span><span class='hljl-t'>
+              </span><span class='hljl-ni'>2</span><span class='hljl-t'>  </span><span class='hljl-cs'># Km   Michaelis constant (mass/volume)</span><span class='hljl-t'>
+              </span><span class='hljl-p'>],)</span><span class='hljl-t'>
+</span><span class='hljl-n'>randeffs</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-n'>η</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>zeros</span><span class='hljl-p'>(</span><span class='hljl-ni'>11</span><span class='hljl-p'>),)</span><span class='hljl-t'>
+</span><span class='hljl-n'>sim</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>simobs</span><span class='hljl-p'>(</span><span class='hljl-n'>mrm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>subject</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>param</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>randeffs</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: simobs not defined
+</pre>
+
+
+<p>The solution to this model gives the concentration profile for each subject. For example:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>plot</span><span class='hljl-p'>(</span><span class='hljl-n'>sim</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: sim not defined
+</pre>
+
+
+<p>PuMaS&#39;s features can then be used to learn the fixed and random effects from data, and from this know how each individual&#39;s drug matabolism will react differently. Using these results, we can predict optimal drug doses specific to an individual&#39;s biology. This mechanism and the software validation is currently undergoing clinical trials at Johns Hopkins Medical Center.</p>
+
+
+<div class="markdown"><h2>Appendix</h2>
+<p>This tutorial is part of the DiffEqTutorials.jl repository, found at: <a href="https://github.com/JuliaDiffEq/DiffEqTutorials.jl">https://github.com/JuliaDiffEq/DiffEqTutorials.jl</a></p>
+</div>
+<div class="markdown"><p>To locally run this tutorial, do the following commands:</p>
+<pre><code>using DiffEqTutorials
+DiffEqTutorials.weave_file&#40;&quot;ode_extras&quot;,&quot;01-ModelingToolkit.jmd&quot;&#41;</code></pre>
+</div>
+<div class="markdown"><p>Computer Information:</p>
+</div>
+<div class="markdown"><pre><code>Julia Version 1.1.1
+Commit 55e36cc308 &#40;2019-05-16 04:10 UTC&#41;
+Platform Info:
+  OS: Linux &#40;x86_64-pc-linux-gnu&#41;
+  CPU: Intel&#40;R&#41; Core&#40;TM&#41; i7-3770 CPU @ 3.40GHz
+  WORD_SIZE: 64
+  LIBM: libopenlibm
+  LLVM: libLLVM-6.0.1 &#40;ORCJIT, ivybridge&#41;
+</code></pre>
+</div>
+<div class="markdown"><p>Package Information:</p>
+</div>
+<div class="markdown"><pre><code>Status &#96;~/.julia/environments/v1.1/Project.toml&#96;
+&#91;7e558dbc-694d-5a72-987c-6f4ebed21442&#93; ArbNumerics 0.5.4
+&#91;6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf&#93; BenchmarkTools 0.4.2
+&#91;be33ccc6-a3ff-5ff2-a52e-74243cff1e17&#93; CUDAnative 2.2.0
+&#91;3a865a2d-5b23-5a0f-bc46-62713ec82fae&#93; CuArrays 1.0.2
+&#91;55939f99-70c6-5e9b-8bb0-5071ed7d61fd&#93; DecFP 0.4.8
+&#91;abce61dc-4473-55a0-ba07-351d65e31d42&#93; Decimals 0.4.0
+&#91;ebbdde9d-f333-5424-9be2-dbf1e9acfb5e&#93; DiffEqBayes 1.1.0
+&#91;eb300fae-53e8-50a0-950c-e21f52c2b7e0&#93; DiffEqBiological 3.8.2
+&#91;459566f4-90b8-5000-8ac3-15dfb0a30def&#93; DiffEqCallbacks 2.5.2
+&#91;f3b72e0c-5b89-59e1-b016-84e28bfd966d&#93; DiffEqDevTools 2.9.0
+&#91;1130ab10-4a5a-5621-a13d-e4788d82bd4c&#93; DiffEqParamEstim 1.6.0
+&#91;055956cb-9e8b-5191-98cc-73ae4a59e68a&#93; DiffEqPhysics 3.1.0
+&#91;6d1b261a-3be8-11e9-3f2f-0b112a9a8436&#93; DiffEqTutorials 0.1.0
+&#91;0c46a032-eb83-5123-abaf-570d42b7fbaa&#93; DifferentialEquations 6.4.0
+&#91;31c24e10-a181-5473-b8eb-7969acd0382f&#93; Distributions 0.20.0
+&#91;497a8b3b-efae-58df-a0af-a86822472b78&#93; DoubleFloats 0.9.1
+&#91;f6369f11-7733-5829-9624-2563aa707210&#93; ForwardDiff 0.10.3
+&#91;c91e804a-d5a3-530f-b6f0-dfbca275c004&#93; Gadfly 1.0.1
+&#91;7073ff75-c697-5162-941a-fcdaad2a7d2a&#93; IJulia 1.18.1
+&#91;4138dd39-2aa7-5051-a626-17a0bb65d9c8&#93; JLD 0.9.1
+&#91;23fbe1c1-3f47-55db-b15f-69d7ec21a316&#93; Latexify 0.8.2
+&#91;eff96d63-e80a-5855-80a2-b1b0885c5ab7&#93; Measurements 2.0.0
+&#91;961ee093-0014-501f-94e3-6117800e7a78&#93; ModelingToolkit 0.2.0
+&#91;76087f3c-5699-56af-9a33-bf431cd00edd&#93; NLopt 0.5.1
+&#91;2774e3e8-f4cf-5e23-947b-6d7e65073b56&#93; NLsolve 4.0.0
+&#91;429524aa-4258-5aef-a3af-852621145aeb&#93; Optim 0.18.1
+&#91;1dea7af3-3e70-54e6-95c3-0bf5283fa5ed&#93; OrdinaryDiffEq 5.8.1
+&#91;65888b18-ceab-5e60-b2b9-181511a3b968&#93; ParameterizedFunctions 4.1.1
+&#91;91a5bcdd-55d7-5caf-9e0b-520d859cae80&#93; Plots 0.25.1
+&#91;d330b81b-6aea-500a-939a-2ce795aea3ee&#93; PyPlot 2.8.1
+&#91;731186ca-8d62-57ce-b412-fbd966d074cd&#93; RecursiveArrayTools 0.20.0
+&#91;90137ffa-7385-5640-81b9-e52037218182&#93; StaticArrays 0.11.0
+&#91;f3b207a7-027a-5e70-b257-86293d7955fd&#93; StatsPlots 0.11.0
+&#91;c3572dad-4567-51f8-b174-8c6c989267f4&#93; Sundials 3.6.1
+&#91;1986cc42-f94f-5a68-af5c-568840ba703d&#93; Unitful 0.15.0
+&#91;44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9&#93; Weave 0.9.0
+&#91;b77e0a4c-d291-57a0-90e8-8db25a27a240&#93; InteractiveUtils
+&#91;37e2e46d-f89d-539d-b4ee-838fcccc9c8e&#93; LinearAlgebra
+&#91;44cfe95a-1eb2-52ea-b672-e2afdf69b78f&#93; Pkg</code></pre>
+</div>
+
+
+
+          <HR/>
+          <div class="footer"><p>
+          Published from <a href="01-ModelingToolkit.jmd">01-ModelingToolkit.jmd</a> using
+          <a href="http://github.com/mpastell/Weave.jl">Weave.jl</a>
+           on 2019-06-27.
+          <p></div>
+
+
+        </div>
+      </div>
+    </div>
+  </BODY>
+</HTML>
