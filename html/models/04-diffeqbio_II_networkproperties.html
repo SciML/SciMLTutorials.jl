@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<HTML lang = "en">
+<HEAD>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>DiffEqBiological Tutorial II: Network Properties API</title>
+  
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+  </script>
+
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+
+  
+<style>
+pre.hljl {
+    border: 1px solid #ccc;
+    margin: 5px;
+    padding: 5px;
+    overflow-x: auto;
+    color: rgb(68,68,68); background-color: rgb(251,251,251); }
+pre.hljl > span.hljl-t { }
+pre.hljl > span.hljl-w { }
+pre.hljl > span.hljl-e { }
+pre.hljl > span.hljl-eB { }
+pre.hljl > span.hljl-o { }
+pre.hljl > span.hljl-k { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kc { color: rgb(59,151,46); font-style: italic; }
+pre.hljl > span.hljl-kd { color: rgb(214,102,97); font-style: italic; }
+pre.hljl > span.hljl-kn { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kp { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kr { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kt { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-n { }
+pre.hljl > span.hljl-na { }
+pre.hljl > span.hljl-nb { }
+pre.hljl > span.hljl-nbp { }
+pre.hljl > span.hljl-nc { }
+pre.hljl > span.hljl-ncB { }
+pre.hljl > span.hljl-nd { color: rgb(214,102,97); }
+pre.hljl > span.hljl-ne { }
+pre.hljl > span.hljl-neB { }
+pre.hljl > span.hljl-nf { color: rgb(66,102,213); }
+pre.hljl > span.hljl-nfm { color: rgb(66,102,213); }
+pre.hljl > span.hljl-np { }
+pre.hljl > span.hljl-nl { }
+pre.hljl > span.hljl-nn { }
+pre.hljl > span.hljl-no { }
+pre.hljl > span.hljl-nt { }
+pre.hljl > span.hljl-nv { }
+pre.hljl > span.hljl-nvc { }
+pre.hljl > span.hljl-nvg { }
+pre.hljl > span.hljl-nvi { }
+pre.hljl > span.hljl-nvm { }
+pre.hljl > span.hljl-l { }
+pre.hljl > span.hljl-ld { color: rgb(148,91,176); font-style: italic; }
+pre.hljl > span.hljl-s { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sa { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sb { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sc { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sd { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sdB { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sdC { color: rgb(201,61,57); }
+pre.hljl > span.hljl-se { color: rgb(59,151,46); }
+pre.hljl > span.hljl-sh { color: rgb(201,61,57); }
+pre.hljl > span.hljl-si { }
+pre.hljl > span.hljl-so { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sr { color: rgb(201,61,57); }
+pre.hljl > span.hljl-ss { color: rgb(201,61,57); }
+pre.hljl > span.hljl-ssB { color: rgb(201,61,57); }
+pre.hljl > span.hljl-nB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nbB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nfB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nh { color: rgb(59,151,46); }
+pre.hljl > span.hljl-ni { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nil { color: rgb(59,151,46); }
+pre.hljl > span.hljl-noB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-oB { color: rgb(102,102,102); font-weight: bold; }
+pre.hljl > span.hljl-ow { color: rgb(102,102,102); font-weight: bold; }
+pre.hljl > span.hljl-p { }
+pre.hljl > span.hljl-c { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-ch { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cm { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cp { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cpB { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cs { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-csB { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-g { }
+pre.hljl > span.hljl-gd { }
+pre.hljl > span.hljl-ge { }
+pre.hljl > span.hljl-geB { }
+pre.hljl > span.hljl-gh { }
+pre.hljl > span.hljl-gi { }
+pre.hljl > span.hljl-go { }
+pre.hljl > span.hljl-gp { }
+pre.hljl > span.hljl-gs { }
+pre.hljl > span.hljl-gsB { }
+pre.hljl > span.hljl-gt { }
+</style>
+
+
+
+  <style type="text/css">
+  @font-face {
+  font-style: normal;
+  font-weight: 300;
+}
+@font-face {
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-style: normal;
+  font-weight: 600;
+}
+html {
+  font-family: sans-serif; /* 1 */
+  -ms-text-size-adjust: 100%; /* 2 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+}
+body {
+  margin: 0;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+  display: block;
+}
+audio,
+canvas,
+progress,
+video {
+  display: inline-block; /* 1 */
+  vertical-align: baseline; /* 2 */
+}
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+[hidden],
+template {
+  display: none;
+}
+a:active,
+a:hover {
+  outline: 0;
+}
+abbr[title] {
+  border-bottom: 1px dotted;
+}
+b,
+strong {
+  font-weight: bold;
+}
+dfn {
+  font-style: italic;
+}
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+mark {
+  background: #ff0;
+  color: #000;
+}
+small {
+  font-size: 80%;
+}
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sup {
+  top: -0.5em;
+}
+sub {
+  bottom: -0.25em;
+}
+img {
+  border: 0;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 70%;
+}
+svg:not(:root) {
+  overflow: hidden;
+}
+figure {
+  margin: 1em 40px;
+}
+hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+}
+pre {
+  overflow: auto;
+}
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+button,
+input,
+optgroup,
+select,
+textarea {
+  color: inherit; /* 1 */
+  font: inherit; /* 2 */
+  margin: 0; /* 3 */
+}
+button {
+  overflow: visible;
+}
+button,
+select {
+  text-transform: none;
+}
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button; /* 2 */
+  cursor: pointer; /* 3 */
+}
+button[disabled],
+html input[disabled] {
+  cursor: default;
+}
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+input {
+  line-height: normal;
+}
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+input[type="search"] {
+  -webkit-appearance: textfield; /* 1 */
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box; /* 2 */
+  box-sizing: content-box;
+}
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+legend {
+  border: 0; /* 1 */
+  padding: 0; /* 2 */
+}
+textarea {
+  overflow: auto;
+}
+optgroup {
+  font-weight: bold;
+}
+table {
+  font-family: monospace, monospace;
+  font-size : 0.8em;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+td,
+th {
+  padding: 0;
+}
+thead th {
+    border-bottom: 1px solid black;
+    background-color: white;
+}
+tr:nth-child(odd){
+  background-color: rgb(248,248,248);
+}
+
+
+/*
+* Skeleton V2.0.4
+* Copyright 2014, Dave Gamache
+* www.getskeleton.com
+* Free to use under the MIT license.
+* http://www.opensource.org/licenses/mit-license.php
+* 12/29/2014
+*/
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box; }
+.column,
+.columns {
+  width: 100%;
+  float: left;
+  box-sizing: border-box; }
+@media (min-width: 400px) {
+  .container {
+    width: 85%;
+    padding: 0; }
+}
+@media (min-width: 550px) {
+  .container {
+    width: 80%; }
+  .column,
+  .columns {
+    margin-left: 4%; }
+  .column:first-child,
+  .columns:first-child {
+    margin-left: 0; }
+
+  .one.column,
+  .one.columns                    { width: 4.66666666667%; }
+  .two.columns                    { width: 13.3333333333%; }
+  .three.columns                  { width: 22%;            }
+  .four.columns                   { width: 30.6666666667%; }
+  .five.columns                   { width: 39.3333333333%; }
+  .six.columns                    { width: 48%;            }
+  .seven.columns                  { width: 56.6666666667%; }
+  .eight.columns                  { width: 65.3333333333%; }
+  .nine.columns                   { width: 74.0%;          }
+  .ten.columns                    { width: 82.6666666667%; }
+  .eleven.columns                 { width: 91.3333333333%; }
+  .twelve.columns                 { width: 100%; margin-left: 0; }
+
+  .one-third.column               { width: 30.6666666667%; }
+  .two-thirds.column              { width: 65.3333333333%; }
+
+  .one-half.column                { width: 48%; }
+
+  /* Offsets */
+  .offset-by-one.column,
+  .offset-by-one.columns          { margin-left: 8.66666666667%; }
+  .offset-by-two.column,
+  .offset-by-two.columns          { margin-left: 17.3333333333%; }
+  .offset-by-three.column,
+  .offset-by-three.columns        { margin-left: 26%;            }
+  .offset-by-four.column,
+  .offset-by-four.columns         { margin-left: 34.6666666667%; }
+  .offset-by-five.column,
+  .offset-by-five.columns         { margin-left: 43.3333333333%; }
+  .offset-by-six.column,
+  .offset-by-six.columns          { margin-left: 52%;            }
+  .offset-by-seven.column,
+  .offset-by-seven.columns        { margin-left: 60.6666666667%; }
+  .offset-by-eight.column,
+  .offset-by-eight.columns        { margin-left: 69.3333333333%; }
+  .offset-by-nine.column,
+  .offset-by-nine.columns         { margin-left: 78.0%;          }
+  .offset-by-ten.column,
+  .offset-by-ten.columns          { margin-left: 86.6666666667%; }
+  .offset-by-eleven.column,
+  .offset-by-eleven.columns       { margin-left: 95.3333333333%; }
+
+  .offset-by-one-third.column,
+  .offset-by-one-third.columns    { margin-left: 34.6666666667%; }
+  .offset-by-two-thirds.column,
+  .offset-by-two-thirds.columns   { margin-left: 69.3333333333%; }
+
+  .offset-by-one-half.column,
+  .offset-by-one-half.columns     { margin-left: 52%; }
+
+}
+html {
+  font-size: 62.5%; }
+body {
+  font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
+  line-height: 1.6;
+  font-weight: 400;
+  font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #222; }
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-weight: 300; }
+h1 { font-size: 3.6rem; line-height: 1.2;  letter-spacing: -.1rem;}
+h2 { font-size: 3.4rem; line-height: 1.25; letter-spacing: -.1rem; }
+h3 { font-size: 3.2rem; line-height: 1.3;  letter-spacing: -.1rem; }
+h4 { font-size: 2.8rem; line-height: 1.35; letter-spacing: -.08rem; }
+h5 { font-size: 2.4rem; line-height: 1.5;  letter-spacing: -.05rem; }
+h6 { font-size: 1.5rem; line-height: 1.6;  letter-spacing: 0; }
+
+p {
+  margin-top: 0; }
+a {
+  color: #1EAEDB; }
+a:hover {
+  color: #0FA0CE; }
+.button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  display: inline-block;
+  height: 38px;
+  padding: 0 30px;
+  color: #555;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 38px;
+  letter-spacing: .1rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: transparent;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  cursor: pointer;
+  box-sizing: border-box; }
+.button:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover,
+.button:focus,
+button:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus,
+input[type="button"]:focus {
+  color: #333;
+  border-color: #888;
+  outline: 0; }
+.button.button-primary,
+button.button-primary,
+input[type="submit"].button-primary,
+input[type="reset"].button-primary,
+input[type="button"].button-primary {
+  color: #FFF;
+  background-color: #33C3F0;
+  border-color: #33C3F0; }
+.button.button-primary:hover,
+button.button-primary:hover,
+input[type="submit"].button-primary:hover,
+input[type="reset"].button-primary:hover,
+input[type="button"].button-primary:hover,
+.button.button-primary:focus,
+button.button-primary:focus,
+input[type="submit"].button-primary:focus,
+input[type="reset"].button-primary:focus,
+input[type="button"].button-primary:focus {
+  color: #FFF;
+  background-color: #1EAEDB;
+  border-color: #1EAEDB; }
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea,
+select {
+  height: 38px;
+  padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */
+  background-color: #fff;
+  border: 1px solid #D1D1D1;
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box; }
+/* Removes awkward default styles on some inputs for iOS */
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none; }
+textarea {
+  min-height: 65px;
+  padding-top: 6px;
+  padding-bottom: 6px; }
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  border: 1px solid #33C3F0;
+  outline: 0; }
+label,
+legend {
+  display: block;
+  margin-bottom: .5rem;
+  font-weight: 600; }
+fieldset {
+  padding: 0;
+  border-width: 0; }
+input[type="checkbox"],
+input[type="radio"] {
+  display: inline; }
+label > .label-body {
+  display: inline-block;
+  margin-left: .5rem;
+  font-weight: normal; }
+ul {
+  list-style: circle; }
+ol {
+  list-style: decimal; }
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+  margin: 1.5rem 0 1.5rem 3rem;
+  font-size: 90%; }
+li > p {margin : 0;}
+th,
+td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #E1E1E1; }
+th:first-child,
+td:first-child {
+  padding-left: 0; }
+th:last-child,
+td:last-child {
+  padding-right: 0; }
+button,
+.button {
+  margin-bottom: 1rem; }
+input,
+textarea,
+select,
+fieldset {
+  margin-bottom: 1.5rem; }
+pre,
+blockquote,
+dl,
+figure,
+table,
+p,
+ul,
+ol,
+form {
+  margin-bottom: 1.0rem; }
+.u-full-width {
+  width: 100%;
+  box-sizing: border-box; }
+.u-max-full-width {
+  max-width: 100%;
+  box-sizing: border-box; }
+.u-pull-right {
+  float: right; }
+.u-pull-left {
+  float: left; }
+hr {
+  margin-top: 3rem;
+  margin-bottom: 3.5rem;
+  border-width: 0;
+  border-top: 1px solid #E1E1E1; }
+.container:after,
+.row:after,
+.u-cf {
+  content: "";
+  display: table;
+  clear: both; }
+
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  word-break: break-all;
+  word-wrap: break-word;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+pre.hljl {
+  margin: 0 0 10px;
+  display: block;
+  background: #f5f5f5;
+  border-radius: 4px;
+  padding : 5px;
+}
+
+pre.output {
+  background: #ffffff;
+}
+
+pre.code {
+  background: #ffffff;
+}
+
+pre.julia-error {
+  color : red
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 13px;
+}
+
+
+@media (min-width: 400px) {}
+@media (min-width: 550px) {}
+@media (min-width: 750px) {}
+@media (min-width: 1000px) {}
+@media (min-width: 1200px) {}
+
+h1.title {margin-top : 20px}
+img {max-width : 100%}
+div.title {text-align: center;}
+
+  </style>
+
+
+
+</HEAD>
+  <BODY>
+    <div class ="container">
+      <div class = "row">
+        <div class = "col-md-12 twelve columns">
+
+          <div class="title">
+            <h1 class="title">DiffEqBiological Tutorial II: Network Properties API</h1>
+            <h5>Samuel Isaacson</h5>
+            
+          </div>
+
+          <p>The <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html">DiffEqBiological API</a> provides a collection of functions for easily accessing network properties, and for incrementally building and extending a network. In this tutorial we&#39;ll go through the API, and then illustrate how to programmatically construct a network.</p>
+<p>We&#39;ll illustrate the API using a toggle-switch like network that contains a variety of different reaction types:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>DifferentialEquations</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>DiffEqBiological</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>Latexify</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>Plots</span><span class='hljl-t'>
+</span><span class='hljl-n'>fmt</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-sc'>:svg</span><span class='hljl-t'>
+</span><span class='hljl-nf'>pyplot</span><span class='hljl-p'>(</span><span class='hljl-n'>fmt</span><span class='hljl-oB'>=</span><span class='hljl-n'>fmt</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>rn</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nd'>@reaction_network</span><span class='hljl-t'> </span><span class='hljl-k'>begin</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>hillr</span><span class='hljl-p'>(</span><span class='hljl-n'>D₂</span><span class='hljl-p'>,</span><span class='hljl-n'>α</span><span class='hljl-p'>,</span><span class='hljl-n'>K</span><span class='hljl-p'>,</span><span class='hljl-n'>n</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-n'>∅</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>m₁</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>hillr</span><span class='hljl-p'>(</span><span class='hljl-n'>D₁</span><span class='hljl-p'>,</span><span class='hljl-n'>α</span><span class='hljl-p'>,</span><span class='hljl-n'>K</span><span class='hljl-p'>,</span><span class='hljl-n'>n</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-n'>∅</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>m₂</span><span class='hljl-t'>
+    </span><span class='hljl-p'>(</span><span class='hljl-n'>δ</span><span class='hljl-p'>,</span><span class='hljl-n'>γ</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-n'>m₁</span><span class='hljl-t'> </span><span class='hljl-oB'>↔</span><span class='hljl-t'> </span><span class='hljl-n'>∅</span><span class='hljl-t'>
+    </span><span class='hljl-p'>(</span><span class='hljl-n'>δ</span><span class='hljl-p'>,</span><span class='hljl-n'>γ</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-n'>m₂</span><span class='hljl-t'> </span><span class='hljl-oB'>↔</span><span class='hljl-t'> </span><span class='hljl-n'>∅</span><span class='hljl-t'>
+    </span><span class='hljl-n'>β</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>m₁</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>m₁</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-n'>P₁</span><span class='hljl-t'>
+    </span><span class='hljl-n'>β</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>m₂</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>m₂</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-n'>P₂</span><span class='hljl-t'>
+    </span><span class='hljl-n'>μ</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>P₁</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>∅</span><span class='hljl-t'>
+    </span><span class='hljl-n'>μ</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>P₂</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>∅</span><span class='hljl-t'>
+    </span><span class='hljl-p'>(</span><span class='hljl-n'>k₊</span><span class='hljl-p'>,</span><span class='hljl-n'>k₋</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-ni'>2</span><span class='hljl-n'>P₁</span><span class='hljl-t'> </span><span class='hljl-oB'>↔</span><span class='hljl-t'> </span><span class='hljl-n'>D₁</span><span class='hljl-t'> 
+    </span><span class='hljl-p'>(</span><span class='hljl-n'>k₊</span><span class='hljl-p'>,</span><span class='hljl-n'>k₋</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-ni'>2</span><span class='hljl-n'>P₂</span><span class='hljl-t'> </span><span class='hljl-oB'>↔</span><span class='hljl-t'> </span><span class='hljl-n'>D₂</span><span class='hljl-t'>
+    </span><span class='hljl-p'>(</span><span class='hljl-n'>k₊</span><span class='hljl-p'>,</span><span class='hljl-n'>k₋</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-n'>P₁</span><span class='hljl-oB'>+</span><span class='hljl-n'>P₂</span><span class='hljl-t'> </span><span class='hljl-oB'>↔</span><span class='hljl-t'> </span><span class='hljl-n'>T</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span><span class='hljl-t'> </span><span class='hljl-n'>α</span><span class='hljl-t'> </span><span class='hljl-n'>K</span><span class='hljl-t'> </span><span class='hljl-n'>n</span><span class='hljl-t'> </span><span class='hljl-n'>δ</span><span class='hljl-t'> </span><span class='hljl-n'>γ</span><span class='hljl-t'> </span><span class='hljl-n'>β</span><span class='hljl-t'> </span><span class='hljl-n'>μ</span><span class='hljl-t'> </span><span class='hljl-n'>k₊</span><span class='hljl-t'> </span><span class='hljl-n'>k₋</span><span class='hljl-p'>;</span>
+</pre>
+
+
+
+<p>This corresponds to the chemical reaction network given by</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>latexify</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>;</span><span class='hljl-t'> </span><span class='hljl-n'>env</span><span class='hljl-oB'>=:</span><span class='hljl-n'>chemical</span><span class='hljl-p'>)</span>
+</pre>
+
+
+
+
+\begin{align*}
+\require{mhchem}
+\ce{ \varnothing &->[\frac{\alpha \cdot K^{n}}{K^{n} + D_2^{n}}] m_{1}}\\
+\ce{ \varnothing &->[\frac{\alpha \cdot K^{n}}{K^{n} + D_1^{n}}] m_{2}}\\
+\ce{ m_{1} &<=>[\delta][\gamma] \varnothing}\\
+\ce{ m_{2} &<=>[\delta][\gamma] \varnothing}\\
+\ce{ m_{1} &->[\beta] m_{1} + P_{1}}\\
+\ce{ m_{2} &->[\beta] m_{2} + P_{2}}\\
+\ce{ P_{1} &->[\mu] \varnothing}\\
+\ce{ P_{2} &->[\mu] \varnothing}\\
+\ce{ 2 \cdot P_1 &<=>[k_{+}][k_{-}] D_{1}}\\
+\ce{ 2 \cdot P_2 &<=>[k_{+}][k_{-}] D_{2}}\\
+\ce{ P_{1} + P_{2} &<=>[k_{+}][k_{-}] T}
+\end{align*}
+
+
+<hr />
+<h2>Network Properties</h2>
+<p><a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Basic-properties-1">Basic properties</a> of the generated network include the <code>speciesmap</code> and <code>paramsmap</code> functions we examined in the last tutorial, along with the corresponding <code>species</code> and <code>params</code> functions:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>species</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+7-element Array&#123;Symbol,1&#125;:
+ :m₁
+ :m₂
+ :P₁
+ :P₂
+ :D₁
+ :D₂
+ :T
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>params</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+9-element Array&#123;Symbol,1&#125;:
+ :α 
+ :K 
+ :n 
+ :δ 
+ :γ 
+ :β 
+ :μ 
+ :k₊
+ :k₋
+</pre>
+
+
+<p>The numbers of species, parameters and reactions can be accessed using <code>numspecies&#40;rn&#41;</code>, <code>numparams&#40;rn&#41;</code> and <code>numreactions&#40;rn&#41;</code>.</p>
+<p>A number of functions are available to access <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Reaction-Properties-1">properties of reactions</a> within the generated network, including <code>substrates</code>, <code>products</code>, <code>dependents</code>, <code>ismassaction</code>, <code>substratestoich</code>, <code>substratesymstoich</code>, <code>productstoich</code>, <code>productsymstoich</code>, and <code>netstoich</code>. Each of these functions takes two arguments, the reaction network <code>rn</code> and the index of the reaction to query information about. For example, to find the substrate symbols and their corresponding stoichiometries for the 11th reaction, <code>2P₁ --&gt; D₁</code>, we would use</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>substratesymstoich</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-ni'>11</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+1-element Array&#123;DiffEqBiological.ReactantStruct,1&#125;:
+ DiffEqBiological.ReactantStruct&#40;:P₁, 2&#41;
+</pre>
+
+
+<p>Broadcasting works on all these functions, allowing the construction of a vector holding the queried information across all reactions, i.e.</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>substratesymstoich</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-ni'>1</span><span class='hljl-oB'>:</span><span class='hljl-nf'>numreactions</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="output">
+16-element Array&#123;Array&#123;DiffEqBiological.ReactantStruct,1&#125;,1&#125;:
+ &#91;&#93;                                              
+ &#91;&#93;                                              
+ &#91;ReactantStruct&#40;:m₁, 1&#41;&#93;                        
+ &#91;&#93;                                              
+ &#91;ReactantStruct&#40;:m₂, 1&#41;&#93;                        
+ &#91;&#93;                                              
+ &#91;ReactantStruct&#40;:m₁, 1&#41;&#93;                        
+ &#91;ReactantStruct&#40;:m₂, 1&#41;&#93;                        
+ &#91;ReactantStruct&#40;:P₁, 1&#41;&#93;                        
+ &#91;ReactantStruct&#40;:P₂, 1&#41;&#93;                        
+ &#91;ReactantStruct&#40;:P₁, 2&#41;&#93;                        
+ &#91;ReactantStruct&#40;:D₁, 1&#41;&#93;                        
+ &#91;ReactantStruct&#40;:P₂, 2&#41;&#93;                        
+ &#91;ReactantStruct&#40;:D₂, 1&#41;&#93;                        
+ &#91;ReactantStruct&#40;:P₁, 1&#41;, ReactantStruct&#40;:P₂, 1&#41;&#93;
+ &#91;ReactantStruct&#40;:T, 1&#41;&#93;
+</pre>
+
+
+<p>To see the net stoichiometries for all reactions we would use</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>netstoich</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-ni'>1</span><span class='hljl-oB'>:</span><span class='hljl-nf'>numreactions</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="output">
+16-element Array&#123;Array&#123;Pair&#123;Int64,Int64&#125;,1&#125;,1&#125;:
+ &#91;1&#61;&gt;1&#93;              
+ &#91;2&#61;&gt;1&#93;              
+ &#91;1&#61;&gt;-1&#93;             
+ &#91;1&#61;&gt;1&#93;              
+ &#91;2&#61;&gt;-1&#93;             
+ &#91;2&#61;&gt;1&#93;              
+ &#91;3&#61;&gt;1&#93;              
+ &#91;4&#61;&gt;1&#93;              
+ &#91;3&#61;&gt;-1&#93;             
+ &#91;4&#61;&gt;-1&#93;             
+ &#91;3&#61;&gt;-2, 5&#61;&gt;1&#93;       
+ &#91;3&#61;&gt;2, 5&#61;&gt;-1&#93;       
+ &#91;4&#61;&gt;-2, 6&#61;&gt;1&#93;       
+ &#91;4&#61;&gt;2, 6&#61;&gt;-1&#93;       
+ &#91;3&#61;&gt;-1, 4&#61;&gt;-1, 7&#61;&gt;1&#93;
+ &#91;3&#61;&gt;1, 4&#61;&gt;1, 7&#61;&gt;-1&#93;
+</pre>
+
+
+<p>Here the first integer in each pair corresponds to the index of the species &#40;with symbol <code>species&#40;rn&#41;&#91;index&#93;</code>&#41;. The second integer corresponds to the net stoichiometric coefficient of the species within the reaction. <code>substratestoich</code> and <code>productstoich</code> are defined similarly. </p>
+<p>Several functions are also provided that calculate different types of <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Dependency-Graphs-1">dependency graphs</a>. These include <code>rxtospecies_depgraph</code>, which provides a mapping from reaction index to the indices of species whose population changes when the reaction occurs:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>rxtospecies_depgraph</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+16-element Array&#123;Array&#123;Int64,1&#125;,1&#125;:
+ &#91;1&#93;      
+ &#91;2&#93;      
+ &#91;1&#93;      
+ &#91;1&#93;      
+ &#91;2&#93;      
+ &#91;2&#93;      
+ &#91;3&#93;      
+ &#91;4&#93;      
+ &#91;3&#93;      
+ &#91;4&#93;      
+ &#91;3, 5&#93;   
+ &#91;3, 5&#93;   
+ &#91;4, 6&#93;   
+ &#91;4, 6&#93;   
+ &#91;3, 4, 7&#93;
+ &#91;3, 4, 7&#93;
+</pre>
+
+
+<p>Here the last row indicates that the species with indices <code>&#91;3,4,7&#93;</code> will change values when the reaction <code>T --&gt; P₁ &#43; P₂</code> occurs. To confirm these are the correct species we can look at</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>species</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>)[[</span><span class='hljl-ni'>3</span><span class='hljl-p'>,</span><span class='hljl-ni'>4</span><span class='hljl-p'>,</span><span class='hljl-ni'>7</span><span class='hljl-p'>]]</span>
+</pre>
+
+
+<pre class="output">
+3-element Array&#123;Symbol,1&#125;:
+ :P₁
+ :P₂
+ :T
+</pre>
+
+
+<p>The <code>speciestorx_depgraph</code> similarly provides a mapping from species to reactions  for which their <em>rate laws</em> depend on that species. These correspond to all reactions for which the given species is in the <code>dependent</code> set of the reaction. We can verify this for the first species, <code>m₁</code>:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>speciestorx_depgraph</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>)[</span><span class='hljl-ni'>1</span><span class='hljl-p'>]</span>
+</pre>
+
+
+<pre class="output">
+2-element Array&#123;Int64,1&#125;:
+ 3
+ 7
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>findall</span><span class='hljl-p'>(</span><span class='hljl-n'>depset</span><span class='hljl-t'> </span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-p'>(</span><span class='hljl-sc'>:m₁</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>depset</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-n'>dependents</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-ni'>1</span><span class='hljl-oB'>:</span><span class='hljl-nf'>numreactions</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>)))</span>
+</pre>
+
+
+<pre class="output">
+2-element Array&#123;Int64,1&#125;:
+ 3
+ 7
+</pre>
+
+
+<p>Finally, <code>rxtorx_depgraph</code> provides a mapping that shows when a given reaction occurs, which other reactions have rate laws that involve species whose value would have changed:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>rxtorx_depgraph</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+16-element Array&#123;Array&#123;Int64,1&#125;,1&#125;:
+ &#91;1, 3, 7&#93;              
+ &#91;2, 5, 8&#93;              
+ &#91;3, 7&#93;                 
+ &#91;3, 4, 7&#93;              
+ &#91;5, 8&#93;                 
+ &#91;5, 6, 8&#93;              
+ &#91;7, 9, 11, 15&#93;         
+ &#91;8, 10, 13, 15&#93;        
+ &#91;9, 11, 15&#93;            
+ &#91;10, 13, 15&#93;           
+ &#91;2, 9, 11, 12, 15&#93;     
+ &#91;2, 9, 11, 12, 15&#93;     
+ &#91;1, 10, 13, 14, 15&#93;    
+ &#91;1, 10, 13, 14, 15&#93;    
+ &#91;9, 10, 11, 13, 15, 16&#93;
+ &#91;9, 10, 11, 13, 15, 16&#93;
+</pre>
+
+
+<h4>Note on Using Network Property API Functions</h4>
+<p>Many basic network query and reaction property functions are simply accessors, returning information that is already stored within the generated <code>reaction_network</code>. For these functions, modifying the returned data structures may lead to inconsistent internal state within the network. As such, they should be used for accessing, but not modifying, network properties. The <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html">API documentation</a> indicates which functions return newly allocated data structures and which return data stored within the <code>reaction_network</code>.</p>
+<hr />
+<h2>Incremental Construction of Networks</h2>
+<p>The <code>@reaction_network</code> macro is monolithic, in that it not only constructs and stores basic network properties such as the reaction stoichiometries, but also generates <strong>everything</strong> needed to immediately solve ODE, SDE and jump models using the network. This includes Jacobian functions, noise functions, and jump functions for each reaction. While this allows for a compact interface to the DifferentialEquations.jl solvers, it can also be computationally expensive for large networks, where a user may only wish to solve one type of problem and/or have fine-grained control over what is generated. In addition, some types of reaction network structures are more amenable to being constructed programmatically, as opposed to writing out all reactions by hand within one macro. For these reasons DiffEqBiological provides two additional macros that only <em>initially</em> setup basic reaction network properties, and which can be extended through a programmatic interface: <code>@min_reaction_network</code> and <code>@empty_reaction_network</code>. We now give an introduction to constructing these more minimal network representations, and how they can be programmatically extended. See also the relevant <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Reaction-Network-Generation-Macros-1">API section</a>.</p>
+<p>The <code>@min_reaction_network</code> macro works identically to the <code>@reaction_network</code> macro, but the generated network will only be complete with respect to its representation of chemical network properties &#40;i.e. species, parameters and reactions&#41;. No ODE, SDE or jump models are generated during the macro call. It can subsequently be extended with the addition of new species, parameters or reactions. The <code>@empty_reaction_network</code> allocates an empty network structure that can also be extended using the programmatic interface. For example, consider a partial version of the toggle-switch like network we defined above:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>rnmin</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nd'>@min_reaction_network</span><span class='hljl-t'> </span><span class='hljl-k'>begin</span><span class='hljl-t'>
+    </span><span class='hljl-p'>(</span><span class='hljl-n'>δ</span><span class='hljl-p'>,</span><span class='hljl-n'>γ</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-n'>m₁</span><span class='hljl-t'> </span><span class='hljl-oB'>↔</span><span class='hljl-t'> </span><span class='hljl-n'>∅</span><span class='hljl-t'>
+    </span><span class='hljl-p'>(</span><span class='hljl-n'>δ</span><span class='hljl-p'>,</span><span class='hljl-n'>γ</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-n'>m₂</span><span class='hljl-t'> </span><span class='hljl-oB'>↔</span><span class='hljl-t'> </span><span class='hljl-n'>∅</span><span class='hljl-t'>
+    </span><span class='hljl-n'>β</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>m₁</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>m₁</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-n'>P₁</span><span class='hljl-t'>
+    </span><span class='hljl-n'>β</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>m₂</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>m₂</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-n'>P₂</span><span class='hljl-t'>
+    </span><span class='hljl-n'>μ</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>P₁</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>∅</span><span class='hljl-t'>
+    </span><span class='hljl-n'>μ</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>P₂</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>∅</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span><span class='hljl-t'> </span><span class='hljl-n'>δ</span><span class='hljl-t'> </span><span class='hljl-n'>γ</span><span class='hljl-t'> </span><span class='hljl-n'>β</span><span class='hljl-t'> </span><span class='hljl-n'>μ</span><span class='hljl-p'>;</span>
+</pre>
+
+
+
+<p>Here we have left out the first two, and last three, reactions from the original <code>reaction_network</code>. To expand the network until it is functionally equivalent to the original model we add back in the missing species, parameters, and <em>finally</em> the missing reactions. Note, it is required that species and parameters be defined before any reactions using them are added. The necessary network extension functions are given by <code>addspecies&#33;</code>, <code>addparam&#33;</code> and <code>addreaction&#33;</code>, and described in the <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Functions-to-Add-Species,-Parameters-and-Reactions-to-a-Network-1">API</a>. To complete <code>rnmin</code> we first add the relevant species:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>addspecies!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:D₁</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addspecies!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:D₂</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addspecies!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:T</span><span class='hljl-p'>)</span>
+</pre>
+
+
+
+<p>Next we add the needed parameters</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>addparam!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:α</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addparam!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:K</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addparam!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:n</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addparam!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:k₊</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addparam!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:k₋</span><span class='hljl-p'>)</span>
+</pre>
+
+
+
+<p>Note, both <code>addspecies&#33;</code> and <code>addparam&#33;</code> also accept strings encoding the variable names &#40;which are then converted to <code>Symbol</code>s internally&#41;.</p>
+<p>We are now ready to add the missing reactions. The API provides two forms of the <code>addreaction&#33;</code> function, one takes expressions analogous to what one would write in the macro:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>addreaction!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>(</span><span class='hljl-nf'>hillr</span><span class='hljl-p'>(</span><span class='hljl-n'>D₁</span><span class='hljl-p'>,</span><span class='hljl-n'>α</span><span class='hljl-p'>,</span><span class='hljl-n'>K</span><span class='hljl-p'>,</span><span class='hljl-n'>n</span><span class='hljl-p'>)),</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>(</span><span class='hljl-n'>∅</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>m₂</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addreaction!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>((</span><span class='hljl-n'>k₊</span><span class='hljl-p'>,</span><span class='hljl-n'>k₋</span><span class='hljl-p'>)),</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>(</span><span class='hljl-ni'>2</span><span class='hljl-n'>P₂</span><span class='hljl-t'> </span><span class='hljl-oB'>↔</span><span class='hljl-t'> </span><span class='hljl-n'>D₂</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addreaction!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:k₊</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>(</span><span class='hljl-ni'>2</span><span class='hljl-n'>P₁</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>D₁</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addreaction!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:k₋</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>(</span><span class='hljl-n'>D₁</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>2</span><span class='hljl-n'>P₁</span><span class='hljl-p'>))</span>
+</pre>
+
+
+
+<p>The rate can be an expression or symbol as above, but can also just be a numeric value. The second form of <code>addreaction&#33;</code> takes tuples of <code>Pair&#123;Symbol,Int&#125;</code> that encode the stoichiometric coefficients of substrates and reactants:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># signature is addreaction!(rnmin, paramexpr, substratestoich, productstoich)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addreaction!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>(</span><span class='hljl-nf'>hillr</span><span class='hljl-p'>(</span><span class='hljl-n'>D₂</span><span class='hljl-p'>,</span><span class='hljl-n'>α</span><span class='hljl-p'>,</span><span class='hljl-n'>K</span><span class='hljl-p'>,</span><span class='hljl-n'>n</span><span class='hljl-p'>)),</span><span class='hljl-t'> </span><span class='hljl-p'>(),</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-sc'>:m₁</span><span class='hljl-t'> </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>1</span><span class='hljl-p'>,))</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addreaction!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:k₊</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-sc'>:P₁</span><span class='hljl-oB'>=&gt;</span><span class='hljl-ni'>1</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:P₂</span><span class='hljl-oB'>=&gt;</span><span class='hljl-ni'>1</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-sc'>:T</span><span class='hljl-oB'>=&gt;</span><span class='hljl-ni'>1</span><span class='hljl-p'>,))</span><span class='hljl-t'>
+</span><span class='hljl-nf'>addreaction!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:k₋</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-sc'>:T</span><span class='hljl-oB'>=&gt;</span><span class='hljl-ni'>1</span><span class='hljl-p'>,),</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-sc'>:P₁</span><span class='hljl-oB'>=&gt;</span><span class='hljl-ni'>1</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:P₂</span><span class='hljl-oB'>=&gt;</span><span class='hljl-ni'>1</span><span class='hljl-p'>))</span>
+</pre>
+
+
+
+<p>Let&#39;s check that <code>rn</code> and <code>rnmin</code> have the same set of species:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>setdiff</span><span class='hljl-p'>(</span><span class='hljl-nf'>species</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-nf'>species</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="output">
+0-element Array&#123;Symbol,1&#125;
+</pre>
+
+
+<p>the same set of params:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>setdiff</span><span class='hljl-p'>(</span><span class='hljl-nf'>params</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-nf'>params</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="output">
+0-element Array&#123;Symbol,1&#125;
+</pre>
+
+
+<p>and the final reaction has the same substrates, reactions, and rate expression:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>rxidx</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>numreactions</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>setdiff</span><span class='hljl-p'>(</span><span class='hljl-nf'>substrates</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>rxidx</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-nf'>substrates</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>rxidx</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="output">
+0-element Array&#123;Symbol,1&#125;
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>setdiff</span><span class='hljl-p'>(</span><span class='hljl-nf'>products</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>rxidx</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-nf'>products</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>rxidx</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="output">
+0-element Array&#123;Symbol,1&#125;
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>rateexpr</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>rxidx</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>==</span><span class='hljl-t'> </span><span class='hljl-nf'>rateexpr</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>rxidx</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+true
+</pre>
+
+
+<hr />
+<h2>Extending Incrementally Generated Networks to Include ODEs, SDEs or Jumps</h2>
+<p>Once a network generated from <code>@min_reaction_network</code> or <code>@empty_reaction_network</code> has had all the associated species, parameters and reactions filled in, corresponding ODE, SDE or jump models can be constructed. The relevant API functions are <code>addodes&#33;</code>, <code>addsdes&#33;</code> and <code>addjumps&#33;</code>. One benefit to contructing models with these functions is that they offer more fine-grained control over what actually gets constructed. For example, <code>addodes&#33;</code> has the optional keyword argument, <code>build_jac</code>, which if set to <code>false</code> will disable construction of symbolic Jacobians and functions for evaluating Jacobians. For large networks this can give a significant speed-up in the time required for constructing an ODE model. Each function and its associated keyword arguments are described in the API section, <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Functions-to-Add-ODEs,-SDEs-or-Jumps-to-a-Network-1">Functions to add ODEs, SDEs or Jumps to a Network</a>.</p>
+<p>Let&#39;s extend <code>rnmin</code> to include the needed functions for use in ODE solvers:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>addodes!</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>)</span>
+</pre>
+
+
+
+<p>The <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Generated-Functions-for-Models-1">Generated Functions for Models</a> section of the API shows what functions have been generated. For ODEs these include <code>oderhsfun&#40;rnmin&#41;</code>, which returns a function of the form <code>f&#40;du,u,p,t&#41;</code> which evaluates the ODEs &#40;i.e. the time derivatives of <code>u</code>&#41; within <code>du</code>. For each generated function, the corresponding expressions from which it was generated can be retrieved using accessors from the <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Generated-Expressions-1">Generated Expressions</a> section of the API. The equations within <code>du</code> can be retrieved using the <code>odeexprs&#40;rnmin&#41;</code> function. For example:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>odeexprs</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+7-element Array&#123;Union&#123;Float64, Int64, Expr, Symbol&#125;,1&#125;:
+ :&#40;&#40;-&#40;δ * m₁&#41; &#43; γ&#41; &#43; &#40;α * K ^ n&#41; / &#40;K ^ n &#43; D₂ ^ n&#41;&#41;                       
+               
+ :&#40;&#40;-&#40;δ * m₂&#41; &#43; γ&#41; &#43; &#40;α * K ^ n&#41; / &#40;K ^ n &#43; D₁ ^ n&#41;&#41;                       
+               
+ :&#40;&#40;&#40;&#40;&#40;β * m₁ - μ * P₁&#41; &#43; -2 * &#40;k₊ / 2&#41; * P₁ ^ 2&#41; &#43; 2 * k₋ * D₁&#41; - k₊ * P₁ 
+* P₂&#41; &#43; k₋ * T&#41;
+ :&#40;&#40;&#40;&#40;&#40;β * m₂ - μ * P₂&#41; &#43; -2 * &#40;k₊ / 2&#41; * P₂ ^ 2&#41; &#43; 2 * k₋ * D₂&#41; - k₊ * P₁ 
+* P₂&#41; &#43; k₋ * T&#41;
+ :&#40;&#40;k₊ / 2&#41; * P₁ ^ 2 - k₋ * D₁&#41;                                            
+               
+ :&#40;&#40;k₊ / 2&#41; * P₂ ^ 2 - k₋ * D₂&#41;                                            
+               
+ :&#40;k₊ * P₁ * P₂ - k₋ * T&#41;
+</pre>
+
+
+<p>Using Latexify we can see the ODEs themselves to compare with these expressions:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>latexify</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>)</span>
+</pre>
+
+
+
+
+\begin{align*}
+\frac{dm_1}{dt} =&  - \delta \cdot m_1 + \gamma + \frac{\alpha \cdot K^{n}}{K^{n} + D_2^{n}} \\
+\frac{dm_2}{dt} =&  - \delta \cdot m_2 + \gamma + \frac{\alpha \cdot K^{n}}{K^{n} + D_1^{n}} \\
+\frac{dP_1}{dt} =& \beta \cdot m_1 - \mu \cdot P_1 -2 \cdot \frac{k_+}{2} \cdot P_1^{2} + 2 \cdot k_- \cdot D_1 - k_+ \cdot P_1 \cdot P_2 + k_- \cdot T \\
+\frac{dP_2}{dt} =& \beta \cdot m_2 - \mu \cdot P_2 -2 \cdot \frac{k_+}{2} \cdot P_2^{2} + 2 \cdot k_- \cdot D_2 - k_+ \cdot P_1 \cdot P_2 + k_- \cdot T \\
+\frac{dD_1}{dt} =& \frac{k_+}{2} \cdot P_1^{2} - k_- \cdot D_1 \\
+\frac{dD_2}{dt} =& \frac{k_+}{2} \cdot P_2^{2} - k_- \cdot D_2 \\
+\frac{dT}{dt} =& k_+ \cdot P_1 \cdot P_2 - k_- \cdot T \\
+\end{align*}
+
+
+<p>For ODEs two other functions are generated by <code>addodes&#33;</code>. <code>jacfun&#40;rnmin&#41;</code> will return the generated Jacobian evaluation function, <code>fjac&#40;dJ,u,p,t&#41;</code>, which given the current solution <code>u</code> evaluates the Jacobian within <code>dJ</code>. <code>jacobianexprs&#40;rnmin&#41;</code> gives the corresponding matrix of expressions, which can be used with Latexify to see the Jacobian:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>latexify</span><span class='hljl-p'>(</span><span class='hljl-nf'>jacobianexprs</span><span class='hljl-p'>(</span><span class='hljl-n'>rnmin</span><span class='hljl-p'>))</span>
+</pre>
+
+
+
+
+\begin{equation*}
+\left[
+\begin{array}{ccccccc}
+ - \delta & 0 & 0 & 0 & 0 & \frac{ - K^{n} \cdot n \cdot \alpha \cdot D_2^{-1 + n}}{\left( K^{n} + D_2^{n} \right)^{2}} & 0 \\
+0 &  - \delta & 0 & 0 & \frac{ - K^{n} \cdot n \cdot \alpha \cdot D_1^{-1 + n}}{\left( K^{n} + D_1^{n} \right)^{2}} & 0 & 0 \\
+\beta & 0 &  - \mu - 2 \cdot k_+ \cdot P_1 - k_+ \cdot P_2 &  - k_+ \cdot P_1 & 2 \cdot k_- & 0 & k_{-} \\
+0 & \beta &  - k_+ \cdot P_2 &  - \mu - 2 \cdot k_+ \cdot P_2 - k_+ \cdot P_1 & 0 & 2 \cdot k_- & k_{-} \\
+0 & 0 & k_+ \cdot P_1 & 0 &  - k_- & 0 & 0 \\
+0 & 0 & 0 & k_+ \cdot P_2 & 0 &  - k_- & 0 \\
+0 & 0 & k_+ \cdot P_2 & k_+ \cdot P_1 & 0 & 0 &  - k_- \\
+\end{array}
+\right]
+\end{equation*}
+
+
+<p><code>addodes&#33;</code> also generates a function that evaluates the Jacobian of the ODE derivative functions with respect to the parameters. <code>paramjacfun&#40;rnmin&#41;</code> then returns the generated function. It has the form <code>fpjac&#40;dPJ,u,p,t&#41;</code>, which given the current solution <code>u</code> evaluates the Jacobian matrix with respect to parameters <code>p</code> within <code>dPJ</code>. For use in DifferentialEquations.jl solvers, an <a href="http://docs.juliadiffeq.org/latest/features/performance_overloads.html"><code>ODEFunction</code></a> representation of the ODEs is available from <code>odefun&#40;rnmin&#41;</code>. </p>
+<p><code>addsdes&#33;</code> and <code>addjumps&#33;</code> work similarly to complete the network for use in StochasticDiffEq and DiffEqJump solvers.  </p>
+<h4>Note on Using Generated Function and Expression API Functions</h4>
+<p>The generated functions and expressions accessible through the API require first calling the appropriate <code>addodes&#33;</code>, <code>addsdes</code> or <code>addjumps</code> function. These are responsible for actually constructing the underlying functions and expressions. The API accessors simply return already constructed functions and expressions that are stored within the <code>reaction_network</code> structure.</p>
+<hr />
+<h2>Example of Generating a Network Programmatically</h2>
+<p>For a user directly typing in a reaction network, it is generally easier to use the <code>@min_reaction_network</code> or <code>@reaction_network</code> macros to fully specify reactions. However, for large, structured networks it can be much easier to generate the network programmatically. For very large networks, with tens of thousands of reactions, the form of <code>addreaction&#33;</code> that uses stoichiometric coefficients should be preferred as it offers substantially better performance. To put together everything we&#39;ve seen, let&#39;s generate the network corresponding to a 1D continuous time random walk, approximating the diffusion of molecules within an interval.</p>
+<p>The basic &quot;reaction&quot; network we wish to study is </p>
+<p class="math">\[
+u_1 \leftrightarrows u_2 \leftrightarrows u_3 \cdots \leftrightarrows u_{N}
+\]</p>
+<p>for <span class="math">$N$</span> lattice sites on <span class="math">$[0,1]$</span>. For <span class="math">$h = 1/N$</span> the lattice spacing, we&#39;ll assume the rate molecules hop from their current site to any particular neighbor is just <span class="math">$h^{-2}$</span>. We can interpret this hopping process as a collection of <span class="math">$2N-2$</span> &quot;reactions&quot;, with the form <span class="math">$u_i \to u_j$</span> for <span class="math">$j=i+1$</span> or <span class="math">$j=i-1$</span>. We construct the corresponding reaction network as follows. First we set values for the basic parameters:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>N</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>64</span><span class='hljl-t'>
+</span><span class='hljl-n'>h</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>1</span><span class='hljl-t'> </span><span class='hljl-oB'>/</span><span class='hljl-t'> </span><span class='hljl-n'>N</span>
+</pre>
+
+
+<pre class="output">
+0.015625
+</pre>
+
+
+<p>then we create an empty network, and add each species</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>rn</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nd'>@empty_reaction_network</span><span class='hljl-t'>
+
+</span><span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>i</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>1</span><span class='hljl-oB'>:</span><span class='hljl-n'>N</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>addspecies!</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nf'>Symbol</span><span class='hljl-p'>(</span><span class='hljl-sc'>:u</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>i</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span>
+</pre>
+
+
+
+<p>We next add one parameter <code>β</code>, which we will set equal to the hopping rate  of molecules, <span class="math">$h^{-2}$</span>:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>addparam!</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:β</span><span class='hljl-p'>)</span>
+</pre>
+
+
+
+<p>Finally, we add in the <span class="math">$2N-2$</span> possible hopping reactions:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>i</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>1</span><span class='hljl-oB'>:</span><span class='hljl-n'>N</span><span class='hljl-t'>
+    </span><span class='hljl-p'>(</span><span class='hljl-n'>i</span><span class='hljl-t'> </span><span class='hljl-oB'>&lt;</span><span class='hljl-t'> </span><span class='hljl-n'>N</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>&amp;&amp;</span><span class='hljl-t'> </span><span class='hljl-nf'>addreaction!</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:β</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-nf'>Symbol</span><span class='hljl-p'>(</span><span class='hljl-sc'>:u</span><span class='hljl-p'>,</span><span class='hljl-n'>i</span><span class='hljl-p'>)</span><span class='hljl-oB'>=&gt;</span><span class='hljl-ni'>1</span><span class='hljl-p'>,),</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-nf'>Symbol</span><span class='hljl-p'>(</span><span class='hljl-sc'>:u</span><span class='hljl-p'>,</span><span class='hljl-n'>i</span><span class='hljl-oB'>+</span><span class='hljl-ni'>1</span><span class='hljl-p'>)</span><span class='hljl-oB'>=&gt;</span><span class='hljl-ni'>1</span><span class='hljl-p'>,))</span><span class='hljl-t'>
+    </span><span class='hljl-p'>(</span><span class='hljl-n'>i</span><span class='hljl-t'> </span><span class='hljl-oB'>&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>1</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>&amp;&amp;</span><span class='hljl-t'> </span><span class='hljl-nf'>addreaction!</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:β</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-nf'>Symbol</span><span class='hljl-p'>(</span><span class='hljl-sc'>:u</span><span class='hljl-p'>,</span><span class='hljl-n'>i</span><span class='hljl-p'>)</span><span class='hljl-oB'>=&gt;</span><span class='hljl-ni'>1</span><span class='hljl-p'>,),</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-nf'>Symbol</span><span class='hljl-p'>(</span><span class='hljl-sc'>:u</span><span class='hljl-p'>,</span><span class='hljl-n'>i</span><span class='hljl-oB'>-</span><span class='hljl-ni'>1</span><span class='hljl-p'>)</span><span class='hljl-oB'>=&gt;</span><span class='hljl-ni'>1</span><span class='hljl-p'>,))</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span>
+</pre>
+
+
+
+<p>Let&#39;s first construct an ODE model for the network</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>addodes!</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>)</span>
+</pre>
+
+
+
+<p>We now need to specify the initial condition, parameter vector and time interval to solve on. We start with 10000 molecules placed at the center of the domain, and setup an <code>ODEProblem</code> to solve:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>u₀</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>zeros</span><span class='hljl-p'>(</span><span class='hljl-n'>N</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>u₀</span><span class='hljl-p'>[</span><span class='hljl-nf'>div</span><span class='hljl-p'>(</span><span class='hljl-n'>N</span><span class='hljl-p'>,</span><span class='hljl-ni'>2</span><span class='hljl-p'>)]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>10000</span><span class='hljl-t'>
+</span><span class='hljl-n'>p</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-oB'>/</span><span class='hljl-p'>(</span><span class='hljl-n'>h</span><span class='hljl-oB'>*</span><span class='hljl-n'>h</span><span class='hljl-p'>)]</span><span class='hljl-t'>
+</span><span class='hljl-n'>tspan</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-nfB'>0.</span><span class='hljl-p'>,</span><span class='hljl-nfB'>.01</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>oprob</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>ODEProblem</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>u₀</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>tspan</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+ODEProblem with uType Array&#123;Float64,1&#125; and tType Float64. In-place: true
+timespan: &#40;0.0, 0.01&#41;
+u0: &#91;0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0.
+0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0&#93;
+</pre>
+
+
+<p>We are now ready to solve the problem and plot the solution. Since we have essentially generated a method of lines discretization of the diffusion equation with a discontinuous initial condition, we&#39;ll use an A-L stable implicit ODE solver, <code>KenCarp4</code>, and plot the solution at a few times:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>sol</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>solve</span><span class='hljl-p'>(</span><span class='hljl-n'>oprob</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nf'>KenCarp4</span><span class='hljl-p'>())</span><span class='hljl-t'>
+</span><span class='hljl-n'>times</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-nfB'>0.</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nfB'>.0001</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nfB'>.001</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nfB'>.01</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-n'>plt</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>plot</span><span class='hljl-p'>()</span><span class='hljl-t'>
+</span><span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>time</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-n'>times</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>plot!</span><span class='hljl-p'>(</span><span class='hljl-n'>plt</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-ni'>1</span><span class='hljl-oB'>:</span><span class='hljl-n'>N</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nf'>sol</span><span class='hljl-p'>(</span><span class='hljl-n'>time</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-n'>fmt</span><span class='hljl-oB'>=</span><span class='hljl-n'>fmt</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>xlabel</span><span class='hljl-oB'>=</span><span class='hljl-s'>&quot;i&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>ylabel</span><span class='hljl-oB'>=</span><span class='hljl-s'>&quot;uᵢ&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>label</span><span class='hljl-oB'>=</span><span class='hljl-nf'>string</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;t = &quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>time</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-n'>lw</span><span class='hljl-oB'>=</span><span class='hljl-ni'>3</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span><span class='hljl-t'>
+</span><span class='hljl-nf'>plot</span><span class='hljl-p'>(</span><span class='hljl-n'>plt</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>ylims</span><span class='hljl-oB'>=</span><span class='hljl-p'>(</span><span class='hljl-nfB'>0.</span><span class='hljl-p'>,</span><span class='hljl-nfB'>10000.</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<img src="data:image/png;base64,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"  />
+
+<p>Here we see the characteristic diffusion of molecules from the center of the domain, resulting in a shortening and widening of the solution as <span class="math">$t$</span> increases.</p>
+<p>Let&#39;s now look at a stochastic chemical kinetics jump process version of the model, where β gives the probability per time each molecule can hop from its current lattice site to an individual neighboring site. We first add in the jumps, disabling <code>regular_jumps</code> since they are not needed, and using the <code>minimal_jumps</code> flag to construct a minimal representation of the needed jumps. We then construct a <code>JumpProblem</code>, and use the Composition-Rejection Direct method, <code>DirectCR</code>, to simulate the process of the molecules hopping about on the lattice:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>addjumps!</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>build_regular_jumps</span><span class='hljl-oB'>=</span><span class='hljl-kc'>false</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>minimal_jumps</span><span class='hljl-oB'>=</span><span class='hljl-kc'>true</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: MethodError: Cannot &#96;convert&#96; an object of type Tuple&#123;&#125; to an object of type Tuple&#123;Union&#123;Float64, Int64, Expr, Symbol&#125;,Vararg&#123;Union&#123;Float64, Int64, Expr, Symbol&#125;,N&#125; where N&#125;
+Closest candidates are:
+  convert&#40;::Type&#123;T&lt;:Tuple&#123;Any,Vararg&#123;Any,N&#125; where N&#125;&#125;, &#33;Matched::T&lt;:Tuple&#123;Any,Vararg&#123;Any,N&#125; where N&#125;&#41; where T&lt;:Tuple&#123;Any,Vararg&#123;Any,N&#125; where N&#125; at essentials.jl:274
+  convert&#40;::Type&#123;T&lt;:Tuple&#123;Any,Vararg&#123;Any,N&#125; where N&#125;&#125;, &#33;Matched::Tuple&#123;Any,Vararg&#123;Any,N&#125; where N&#125;&#41; where T&lt;:Tuple&#123;Any,Vararg&#123;Any,N&#125; where N&#125; at essentials.jl:275
+  convert&#40;::Type&#123;T&lt;:Tuple&#125;, &#33;Matched::CartesianIndex&#41; where T&lt;:Tuple at multidimensional.jl:130
+  ...
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># make the initial condition integer valued </span><span class='hljl-t'>
+</span><span class='hljl-n'>u₀</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>zeros</span><span class='hljl-p'>(</span><span class='hljl-n'>Int</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>N</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>u₀</span><span class='hljl-p'>[</span><span class='hljl-nf'>div</span><span class='hljl-p'>(</span><span class='hljl-n'>N</span><span class='hljl-p'>,</span><span class='hljl-ni'>2</span><span class='hljl-p'>)]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>10000</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'># setup and solve the problem</span><span class='hljl-t'>
+</span><span class='hljl-n'>dprob</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>DiscreteProblem</span><span class='hljl-p'>(</span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>u₀</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>tspan</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>jprob</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>JumpProblem</span><span class='hljl-p'>(</span><span class='hljl-n'>dprob</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nf'>DirectCR</span><span class='hljl-p'>(),</span><span class='hljl-t'> </span><span class='hljl-n'>rn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>save_positions</span><span class='hljl-oB'>=</span><span class='hljl-p'>(</span><span class='hljl-kc'>false</span><span class='hljl-p'>,</span><span class='hljl-kc'>false</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: Call addjumps&#33; before constructing JumpProblems
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>jsol</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>solve</span><span class='hljl-p'>(</span><span class='hljl-n'>jprob</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nf'>SSAStepper</span><span class='hljl-p'>(),</span><span class='hljl-t'> </span><span class='hljl-n'>saveat</span><span class='hljl-oB'>=</span><span class='hljl-n'>times</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: jprob not defined
+</pre>
+
+
+<p>We can now plot bar graphs showing the locations of the molecules at the same set of times we examined the ODE solution. For comparison, we also plot the corresponding ODE solutions &#40;red lines&#41; that we found:</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>times</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-nfB'>0.</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nfB'>.0001</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nfB'>.001</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nfB'>.01</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-n'>plts</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[]</span><span class='hljl-t'>
+</span><span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>i</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>1</span><span class='hljl-oB'>:</span><span class='hljl-ni'>4</span><span class='hljl-t'>
+    </span><span class='hljl-n'>b</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>bar</span><span class='hljl-p'>(</span><span class='hljl-ni'>1</span><span class='hljl-oB'>:</span><span class='hljl-n'>N</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>jsol</span><span class='hljl-p'>[</span><span class='hljl-n'>i</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>legend</span><span class='hljl-oB'>=</span><span class='hljl-kc'>false</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>fmt</span><span class='hljl-oB'>=</span><span class='hljl-n'>fmt</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>xlabel</span><span class='hljl-oB'>=</span><span class='hljl-s'>&quot;i&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>ylabel</span><span class='hljl-oB'>=</span><span class='hljl-s'>&quot;uᵢ&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>title</span><span class='hljl-oB'>=</span><span class='hljl-nf'>string</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;t = &quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>times</span><span class='hljl-p'>[</span><span class='hljl-n'>i</span><span class='hljl-p'>]))</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>plot!</span><span class='hljl-p'>(</span><span class='hljl-n'>b</span><span class='hljl-p'>,</span><span class='hljl-nf'>sol</span><span class='hljl-p'>(</span><span class='hljl-n'>times</span><span class='hljl-p'>[</span><span class='hljl-n'>i</span><span class='hljl-p'>]))</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>push!</span><span class='hljl-p'>(</span><span class='hljl-n'>plts</span><span class='hljl-p'>,</span><span class='hljl-n'>b</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: jsol not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>plot</span><span class='hljl-p'>(</span><span class='hljl-n'>plts</span><span class='hljl-oB'>...</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<img src="data:image/png;base64,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H+eee+5oj5u8ofzd6unpiePHj0eWZdHd3R1Tp04d5WnTdsUVV3zmf/Oh9sWwBdCp3jzx04by5omMnFL39WmHDx+OHTt2xIoVK0ZrTKL0Xb3//vtx2223xf333z8WYxKl76q1tTXGjRsXV199dVRXV8eNN94Y77zzzliMnLRS97Vy5cqora2N888/PyZNmhRPP/103HXXXWMxMqcw1L4Y1tcADfebJzKySt1XRER3d3esXLkyGhsbY/78+SM9Gv+fUna1YcOGWL9+fUyZMmW0xmIApezqxIkT8dRTT0VTU1O8+uqrMW3atFi/fv1ojcinlLKvlpaW2LdvX7z11lvxr3/9K6688sq45ZZbRmtEhmAofTFsAfTpN0/85MJn+uaJjJxS9xUR8d5778Xy5cujrq4ubr/99tEeNXml7mr37t1x1113RbFYjOuuuy727t0bc+bMGYuRk1XqrqZPnx61tbUxZcqUyOVycf3118eLL744FiMnrdR9bdmyJWpra+Occ86Js846K2666aZ49tlnx2JkTmGofTFsATRx4sSoqamJbdu2RUTEzp07o1gs9vt/h0V8/Bzr448/Hm+//XZkWRYPPPBAXHfddcM1BiUqdV/Hjh2L5cuXx1VXXRWbNm0ag0kpdVd79uyJjo6O6OjoiEcffTTmzZsXb7zxxhhMnK5Sd3XttdfGSy+9FN3d3RER8eSTT8bFF1882uMmr9R9zZgxI55++uk4ceJEREQ88cQTMXfu3NEel88w5L4YtpdoZ1m2b9++7LLLLssuuOCCbMGCBdnrr7+eZVmW1dfXZ3/605/6zj344IPZzJkzs69+9atZfX193yvrGV2l7Ovuu+/O8vl8dvHFF/d93H333WM5dpJK/bv1iWeffdZvgY2RUne1devWbPbs2dlFF12Uffvb3866urrGauSklbKv48ePZw0NDdmsWbOyefPmZd/61rey9vb2MZw6PT/60Y+yKVOmZF/4whey8847L5s5c2aWZWfWF94IEQBIzrC+CBoAoBwIIAAgOQIIAEiOAAIAkiOAAIDk/B/D+VOCuvWw6QAAAABJRU5ErkJggg=="  />
+
+<p>Similar to the ODE solutions, we see that the molecules spread out and become more and more well-mixed throughout the domain as <span class="math">$t$</span> increases. The simulation results are noisy due to the finite numbers of molecules present in the stochsatic simulation, but since the number of molecules is large they agree well with the ODE solution at each time.</p>
+<hr />
+<h2>Getting Help</h2>
+<p>Have a question related to DiffEqBiological or this tutorial? Feel free to ask in the DifferentialEquations.jl <a href="https://gitter.im/JuliaDiffEq/Lobby">Gitter</a>. If you think you&#39;ve found a bug in DiffEqBiological, or would like to request/discuss new functionality, feel free to open an issue on <a href="https://github.com/JuliaDiffEq/DiffEqBiological.jl">Github</a> &#40;but please check there is no related issue already open&#41;. If you&#39;ve found a bug in this tutorial, or have a suggestion, feel free to open an issue on the <a href="https://github.com/JuliaDiffEq/DiffEqTutorials.jl">DiffEqTutorials Github site</a>. Or, submit a pull request to DiffEqTutorials updating the tutorial&#33;</p>
+<hr />
+
+
+<div class="markdown"><h2>Appendix</h2>
+<p>This tutorial is part of the DiffEqTutorials.jl repository, found at: <a href="https://github.com/JuliaDiffEq/DiffEqTutorials.jl">https://github.com/JuliaDiffEq/DiffEqTutorials.jl</a></p>
+</div>
+<div class="markdown"><p>To locally run this tutorial, do the following commands:</p>
+<pre><code>using DiffEqTutorials
+DiffEqTutorials.weave_file&#40;&quot;models&quot;,&quot;04-diffeqbio_II_networkproperties.jmd&quot;&#41;</code></pre>
+</div>
+<div class="markdown"><p>Computer Information:</p>
+</div>
+<div class="markdown"><pre><code>Julia Version 1.1.1
+Commit 55e36cc308 &#40;2019-05-16 04:10 UTC&#41;
+Platform Info:
+  OS: Linux &#40;x86_64-pc-linux-gnu&#41;
+  CPU: Intel&#40;R&#41; Core&#40;TM&#41; i7-3770 CPU @ 3.40GHz
+  WORD_SIZE: 64
+  LIBM: libopenlibm
+  LLVM: libLLVM-6.0.1 &#40;ORCJIT, ivybridge&#41;
+</code></pre>
+</div>
+<div class="markdown"><p>Package Information:</p>
+</div>
+<div class="markdown"><pre><code>Status &#96;~/.julia/environments/v1.1/Project.toml&#96;
+&#91;7e558dbc-694d-5a72-987c-6f4ebed21442&#93; ArbNumerics 0.5.4
+&#91;6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf&#93; BenchmarkTools 0.4.2
+&#91;be33ccc6-a3ff-5ff2-a52e-74243cff1e17&#93; CUDAnative 2.2.0
+&#91;3a865a2d-5b23-5a0f-bc46-62713ec82fae&#93; CuArrays 1.0.2
+&#91;55939f99-70c6-5e9b-8bb0-5071ed7d61fd&#93; DecFP 0.4.8
+&#91;abce61dc-4473-55a0-ba07-351d65e31d42&#93; Decimals 0.4.0
+&#91;ebbdde9d-f333-5424-9be2-dbf1e9acfb5e&#93; DiffEqBayes 1.1.0
+&#91;eb300fae-53e8-50a0-950c-e21f52c2b7e0&#93; DiffEqBiological 3.8.2
+&#91;459566f4-90b8-5000-8ac3-15dfb0a30def&#93; DiffEqCallbacks 2.5.2
+&#91;f3b72e0c-5b89-59e1-b016-84e28bfd966d&#93; DiffEqDevTools 2.9.0
+&#91;1130ab10-4a5a-5621-a13d-e4788d82bd4c&#93; DiffEqParamEstim 1.6.0
+&#91;055956cb-9e8b-5191-98cc-73ae4a59e68a&#93; DiffEqPhysics 3.1.0
+&#91;6d1b261a-3be8-11e9-3f2f-0b112a9a8436&#93; DiffEqTutorials 0.1.0
+&#91;0c46a032-eb83-5123-abaf-570d42b7fbaa&#93; DifferentialEquations 6.4.0
+&#91;31c24e10-a181-5473-b8eb-7969acd0382f&#93; Distributions 0.20.0
+&#91;497a8b3b-efae-58df-a0af-a86822472b78&#93; DoubleFloats 0.9.1
+&#91;f6369f11-7733-5829-9624-2563aa707210&#93; ForwardDiff 0.10.3
+&#91;c91e804a-d5a3-530f-b6f0-dfbca275c004&#93; Gadfly 1.0.1
+&#91;7073ff75-c697-5162-941a-fcdaad2a7d2a&#93; IJulia 1.18.1
+&#91;4138dd39-2aa7-5051-a626-17a0bb65d9c8&#93; JLD 0.9.1
+&#91;23fbe1c1-3f47-55db-b15f-69d7ec21a316&#93; Latexify 0.8.2
+&#91;eff96d63-e80a-5855-80a2-b1b0885c5ab7&#93; Measurements 2.0.0
+&#91;961ee093-0014-501f-94e3-6117800e7a78&#93; ModelingToolkit 0.2.0
+&#91;76087f3c-5699-56af-9a33-bf431cd00edd&#93; NLopt 0.5.1
+&#91;2774e3e8-f4cf-5e23-947b-6d7e65073b56&#93; NLsolve 4.0.0
+&#91;429524aa-4258-5aef-a3af-852621145aeb&#93; Optim 0.18.1
+&#91;1dea7af3-3e70-54e6-95c3-0bf5283fa5ed&#93; OrdinaryDiffEq 5.8.1
+&#91;65888b18-ceab-5e60-b2b9-181511a3b968&#93; ParameterizedFunctions 4.1.1
+&#91;91a5bcdd-55d7-5caf-9e0b-520d859cae80&#93; Plots 0.25.1
+&#91;d330b81b-6aea-500a-939a-2ce795aea3ee&#93; PyPlot 2.8.1
+&#91;731186ca-8d62-57ce-b412-fbd966d074cd&#93; RecursiveArrayTools 0.20.0
+&#91;90137ffa-7385-5640-81b9-e52037218182&#93; StaticArrays 0.11.0
+&#91;f3b207a7-027a-5e70-b257-86293d7955fd&#93; StatsPlots 0.11.0
+&#91;c3572dad-4567-51f8-b174-8c6c989267f4&#93; Sundials 3.6.1
+&#91;1986cc42-f94f-5a68-af5c-568840ba703d&#93; Unitful 0.15.0
+&#91;44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9&#93; Weave 0.9.0
+&#91;b77e0a4c-d291-57a0-90e8-8db25a27a240&#93; InteractiveUtils
+&#91;37e2e46d-f89d-539d-b4ee-838fcccc9c8e&#93; LinearAlgebra
+&#91;44cfe95a-1eb2-52ea-b672-e2afdf69b78f&#93; Pkg</code></pre>
+</div>
+
+
+
+          <HR/>
+          <div class="footer"><p>
+          Published from <a href="04-diffeqbio_II_networkproperties.jmd">04-diffeqbio_II_networkproperties.jmd</a> using
+          <a href="http://github.com/mpastell/Weave.jl">Weave.jl</a>
+           on 2019-06-27.
+          <p></div>
+
+
+        </div>
+      </div>
+    </div>
+  </BODY>
+</HTML>
