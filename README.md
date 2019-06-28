@@ -29,7 +29,7 @@ DiffEqTutorials.open_notebooks()
 ## Table of Contents
 
 - Introduction
-  - [Introduction to DifferentialEquations.jl through ODEs](http://juliadiffeq.org/DiffEqTutorials.jl/html/01-introduction/ode_introduction.html)
+  - [Introduction to DifferentialEquations.jl through ODEs](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/01-ode_introduction.html)
   - [Detecting Stiffness and Choosing an ODE Algorithm](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/02-choosing_algs.html)
   - [Optimizing your DiffEq Code](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/03-optimizing_diffeq_code.html)
   - [Callbacks and Event Handling](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/04-callbacks_and_events.html)
