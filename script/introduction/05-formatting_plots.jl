@@ -17,7 +17,7 @@ sol = solve(prob)
 plot(sol)
 
 
-plot(sol,vars=(:x,:y,:z))
+plot(sol,vars=(1, 2, 3))
 
 
 plot(sol,vars=[:x])
