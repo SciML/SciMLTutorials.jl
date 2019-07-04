@@ -28,7 +28,7 @@ plot(sol)
 Now let's change it to a phase plot. As discussed in the [plot functions page](http://docs.juliadiffeq.org/latest/basics/plot.html), we can use the `vars` command to choose the variables to plot. Let's plot variable `x` vs variable `y` vs variable `z`:
 
 ```julia
-plot(sol,vars=(:x,:y,:z))
+plot(sol,vars=(1, 2, 3))
 ```
 
 We can also choose to plot the timeseries for a single variable:
