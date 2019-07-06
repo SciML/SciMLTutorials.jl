@@ -34,6 +34,8 @@ DiffEqTutorials.open_notebooks()
   - [Optimizing your DiffEq Code](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/03-optimizing_diffeq_code.html)
   - [Callbacks and Event Handling](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/04-callbacks_and_events.html)
   - [Formatting Plots](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/05-formatting_plots.html)
+- Exercise Sheets
+  - [DifferentialEquations.jl Workshop Exercises](http://juliadiffeq.org/DiffEqTutorials.jl/html/exercises/01-workshop_exercises.html)
 - Modeling Examples
   - [Classical Physics Models](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/01-classical_physics.html)
   - [Conditional Dosing Example](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/02-conditional_dosing.html)
