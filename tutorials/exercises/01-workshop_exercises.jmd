@@ -35,27 +35,167 @@ The exercises are described as follows:
 
 ## (B) Investigating Sources of Randomness and Uncertainty in a Biological System
 
+In this problem we will walk through the basics of simulating models with
+DifferentialEquations.jl. Let's take the XXX chemical reaction system. This
+system describes XXX.
+
 ### Part 1: Simulating a deterministic chemical reaction system
+
+When modeling, usually one starts off by investigating the deterministic model.
+The deterministic ODE formulation of the XXX chemical reaction system is
+given by the equations
+
+$$\begin{algin}
+\end{align}$$
+
+Use [the tutorial on solving ODEs]() to solve this differential equations.
+To investigate the result, plot the solution of all components over time, and
+plot the phase space plot of the solution (hint: use `vars=(1,2)`).
 
 ### Part 2: Adding stochasticity with stochastic differential equations
 
+How does this system react in the presense of stochasticity? We can investigate
+this question by using stochastic differential equations. The stochastic
+differential equation formulation of this model is
+
+$$\begin{algin}
+\end{align}$$
+
+where the `dW` terms describe a Brownian motion, a continuous random process
+with normally distributed increments. Use the [tutorial on solving SDEs]()
+to solve simulate this model. Then, [use the `EnsembleProblem`]() to generate
+and plot 100 trajectories of the stochastic model, and use `EnsembleSummary`
+to plot the mean and 5%-95% region over time.
+
 ### Part 3: Gillespie jump models of discrete stochasticity
 
-### Part 4: Using DiffEqBiological's Reaction Network DSL
+When biological models have very few particles, continuous models no longer
+make sense, and instead using the full discrete formulation can be required
+to accuracy describe the dynamics. A discrete differential equation, or
+Gillespie model, is a continuous-time Markov chain with Poisson-distributed
+jumps. A discrete description of the XXX model is given by a chemical reaction
+with rate XXX which adds 1 XX XX XXX.
+
+Use the [tutorial on Gillespie SSA models]() to implement the `JumpProblem`
+for this model, and use the `EnsembleProblem` and `EnsembleSummary` to
+characterize the stochastic trajectories.
+
+### (Optional) Part 4: Using DiffEqBiological's Reaction Network DSL
+
+DiffEqBiological.jl is a helper library for the DifferentialEquations.jl
+ecosystem for defining chemical reaction systems at a high leevel for easy
+simulation in these various forms. Use the descrption
+[from the Chemical Reaction Networks documentation page]()
+to build a reaction network and generate the ODE/SDE/jump equations, and
+compare the result to your handcoded versions.
 
 ### (I) Part 5: Bayesian Parameter Estimation with DiffEqBayes.jl + Turing.jl
 
+In many casees, one comes to understand the proper values for their model's
+parameters by utilizing data fitting techniques. In this case, we will use
+the DiffEqBayes.jl library to perform a Bayesian estimation of the parameters.
+For our data we will the following potential output:
+
+```julia{eval=false}
+[
+
+]
+```
+
+[Follow the exmaples on the parameter estimation page]() to perform a Bayesian
+parameter estimation. What are the most likely parameters for the model given
+the posterior parameter distributions?
+
 ## (B) Fitting Hybrid Delay Pharmacokinetic Models with Automated Responses
+
+Hybrid differential equations are differential equations with events, where
+events are some interaction that occurs according to a prespecified condition.
+For example, the bouncing ball is a classic hybrid differential equation given
+by an ODE (Newton's Law of Gravity) mixed with the fact that, whenever the
+ball hits the floor (`x=0`), then the velocity of the ball flips (`v=-v`).
+
+In addition, many models incorporate delays, that is the driving force of the
+equation is dependent not on the current values, but values from the past.
+These delay differential equations model how individuals in the economy act
+on old information, or that biological processes take time to adapt to a new
+environment.
+
+In this equation we will build a hybrid delayed pharmacokinetic model and
+use the parameter estimation techniques to fit this it to a data.
 
 ### Part 1: Defining an ODE with Predetermined Doses
 
+First, let's define the simplest hybrid ordinary differential equation: an ODE
+where the events take place at fixed times. The ODE we will use is known as
+the one-compartment model:
+
+$$\begin{align}
+\frac{d[Depot]}{dt} &= -K_a [Depot] \\
+\frac{d[Central]}{dt} &= K_a [Depot] - K_e [Central]$$
+
+with $t \in [0,90]$, $u_0 = [0,0]$, and $p=[K_a,K_e]=[1,1]$.
+
+With this model, use [the event handling documentation page]()
+to define a `DiscreteCallback` which fires at `t ∈ [0,24,48,72]` and adds a
+dose of 100 into `[Depot]`. (Hint: you'll want to set `tstops=[24,48,72]` to
+force the ODE solver to step at these times).
+
 ### Part 2: Adding Delays
 
-### Part 3: Utilizing Adjoints and Automatic Differentiation (AD) for Optimization
+Now let's assume that instead of there being one compartment, there are many
+transit compartment that the drug must move through in order to reach the
+central compartment. This effectively delays the effect of the transition from
+`[Depot]` to `[Central]`. To model this effect, we will use the delay
+differential equation which utilizes a fixed time delay $\tau$:
+
+$$\begin{align}
+\frac{d[Depot]}{dt} &= -K_a [Depot](t-\tau) \\
+\frac{d[Central]}{dt} &= K_a [Depot](t-\tau) - K_e [Central]$$
+
+[Use the DDE tutorial]() to define and solve this delayed version of the
+hybrid model.
+
+### (I) Part 3: Automatic Differentiation (AD) for Optimization
+
+In order to fit parameters we will want to be able to calculate the gradient
+of the solution with respect to the initial conditions. One way to do this is
+via Automatic Differentition (AD). For small numbers of parameters (<100), it
+is fastest to use Forward-Mode Automatic Differentition
+(even faster than using adjoint sensitivity analysis!). Thus for this problem
+we will make use of ForwardDiff.jl to use Dual number arithmetic to retrive
+both the solution and its derivative w.r.t. parameters in a single solve.
+
+[Use the information from the page on local sensitvity analysis]() to define
+the input dual numbers, solve the equation, and plot both the solution over time
+and the derivative of the solution w.r.t. the parameters.
 
 ### Part 4: Fitting Known Quantities with DiffEqParamEstim.jl + Optim.jl
 
+Now let's fit this model to a dataset. For the data, use the array
+
+```julia{eval=false}
+[
+
+]
+```
+
+Use [the parameter estimation page]() to define a loss function with
+`build_loss_objective` and optimize the parameters against the data. What
+parameters were used to generate the data?
+
 ### (I) Part 5: Implementing Control-Based Logic with ContinuousCallbacks
+
+Now that we have fit our delay differential equation model to the dataset, we
+want to start testing out automated treatment strategies. Let's assume that
+instead of giving doses at fixed time points, we invent a wearable which
+monitors the patient and administers a dose whenever the internal drug
+concentration falls below XXX. To model this effect, we will need to use
+`ContinuousCallbacks` to define a callback that triggers when `[Central]` falls
+below the threshold value.
+
+[Use the documentation on the event handling page]() to define such a callback,
+and plot the solution over time. How many times does the auto-doser administer
+a dose? How much does this change as you change the delay time $\tau$?
 
 ## (B) Differential-Algebraic Equation Modeling of a Double Pendulum
 
@@ -199,6 +339,13 @@ to cause the whole solution to be GPU accelerated.
 
 ## (I) Global Parameter Sensitivity and Optimality with GPU and Distributed Ensembles
 
+In this example we will investigate how the parameters "generally" effect the
+solution in the chaotic Henon-Heiles system. By "generally" we will use global
+sensitivity analysis methods to get an average global characterization of the
+parameters on the solution. In addition to a global sensitivity approach, we
+will generate large ensembles of solutions with different parameters using
+a GPU-based parallelism approach.
+
 ### (B) Part 1: Implementing the Henon-Heiles System
 
 ### (B) (Optional) Part 2: Alternative Dynamical Implmentations of Henon-Heiles
@@ -207,12 +354,29 @@ to cause the whole solution to be GPU accelerated.
 
 ### Part 4: GPU-based Ensemble Solving
 
-### Part 5: Global Surrogate Optimization with Surrogates.jl
-
 ## (I) Training Neural Stochastic Differential Equations with GPU acceleration
+
+In the previous models we had to define a model. Now let's shift the burden of
+model-proofing onto data by utilizing neural differential equations. A neural
+differential equation is a differential equation where the model equations
+are replaced, either in full or in part, by a neural network. For example, a
+neural ordinary differential equation is an equation $u^\prime = f(u,p,t)$
+where $f$ is a neural network. We can learn this neural network from data using
+various methods, the easiest of which is known as the single shooting method,
+where one chooses neural network parameters, solves the equation, and checks
+the ODE's solution against data as a loss.
+
+In this example we will define and train various forms of neural differential
+equations. Note that all of the differential equation types are compatible with
+neural differential equations, so this is only going to scratch the surface of
+the possibilites!
 
 ### Part 1: Constructing and Training a Basic Neural ODE
 
-### Part 2: Constructing a Basic Neural SDE
+### Part 2: GPU-accelerating the Neural ODE Process
 
-### (E) Part 3: Optimizing the training behavior with minibatching
+### Part 3: Defining and Training a Partial Neural ODE
+
+### Part 4: Constructing a Basic Neural SDE
+
+### (E) Part 5: Optimizing the training behavior with minibatching
