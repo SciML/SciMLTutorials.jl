@@ -36,60 +36,98 @@ The exercises are described as follows:
 ## (B) Investigating Sources of Randomness and Uncertainty in a Biological System
 
 In this problem we will walk through the basics of simulating models with
-DifferentialEquations.jl. Let's take the XXX chemical reaction system. This
-system describes XXX.
+DifferentialEquations.jl. Let's take the
+[Oregonator model of the Belousov–Zhabotinskii chemical reaction system](https://www.radford.edu/~thompson/vodef90web/problems/demosnodislin/Demos_Pitagora/DemoOrego/demoorego.pdf).
+This system describes a classical example in non-equilibrium thermodynmics
+and is a well-known natural chemical oscillator.
 
 ### Part 1: Simulating a deterministic chemical reaction system
 
 When modeling, usually one starts off by investigating the deterministic model.
-The deterministic ODE formulation of the XXX chemical reaction system is
+The deterministic ODE formulation of the Oregonator is
 given by the equations
 
 $$\begin{algin}
+\frac{dx}{dt} &= s(y-xy + x - qx^2)
+\frac{dy}{dt} &= (-y - xy + z)/s
+\frac{dz}{dt} &= w(x - z)
 \end{align}$$
 
-Use [the tutorial on solving ODEs]() to solve this differential equations.
-To investigate the result, plot the solution of all components over time, and
-plot the phase space plot of the solution (hint: use `vars=(1,2)`).
+with parameter values $s=77.27$, $w=0.161$, and $q=8.375 \times 10^{-6}$, and
+initial conditions $x(0)=1$, $y(0)=2$, and $z(0)=3$. Use
+[the tutorial on solving ODEs](http://docs.juliadiffeq.org/latest/tutorials/ode_example.html)
+to solve this differential equation on the
+timespan of $t\in[0,360]$ with the default ODE solver. To investigate the result,
+plot the solution of all components over time, and plot the phase space plot of
+the solution (hint: use `vars=(1,2)`). What shape is being drawn in phase space?
 
-### Part 2: Adding stochasticity with stochastic differential equations
+### Part 2: Investigating Stiffness
+
+Because the reaction rates of `q` vs `s` is very large, this model has a "fast"
+system and a "slow" system. This is typical of ODEs which exhibit a property
+known as stiffness. Stiffness changes the ODE solvers which can handle the
+equation well. [Take a look at the ODE solver page](http://docs.juliadiffeq.org/latest/solvers/ode_solve.html)
+and investigate solving the equation using methods for non-stiff equations
+(ex: `Tsit5`) and stiff equations (ex: `Rodas5`).
+
+### Part 3: Adding stochasticity with stochastic differential equations
 
 How does this system react in the presense of stochasticity? We can investigate
-this question by using stochastic differential equations. The stochastic
-differential equation formulation of this model is
+this question by using stochastic differential equations. A stochastic
+differential equation formulation of this model is known as the multiplicative
+noise model, is created with:
 
 $$\begin{algin}
+dx &= s(y-xy + x - qx^2)dt + \sigma_1 x dW_1
+dy &= \frac{-y - xy + z}{s}dt + \sigma_2 y dW_2
+dz &= w(x - z)dt + \sigma_3 z dW_3
 \end{align}$$
 
 where the `dW` terms describe a Brownian motion, a continuous random process
-with normally distributed increments. Use the [tutorial on solving SDEs]()
-to solve simulate this model. Then, [use the `EnsembleProblem`]() to generate
-and plot 100 trajectories of the stochastic model, and use `EnsembleSummary`
-to plot the mean and 5%-95% region over time.
+with normally distributed increments. Use the
+[tutorial on solving SDEs](http://docs.juliadiffeq.org/latest/tutorials/sde_example.html)
+to solve simulate this model. Then,
+[use the `EnsembleProblem`](http://docs.juliadiffeq.org/latest/features/ensemble.html)
+to generate and plot 100 trajectories of the stochastic model, and use
+`EnsembleSummary` to plot the mean and 5%-95% region over time.
 
-### Part 3: Gillespie jump models of discrete stochasticity
+### Part 4: Gillespie jump models of discrete stochasticity
 
 When biological models have very few particles, continuous models no longer
 make sense, and instead using the full discrete formulation can be required
 to accuracy describe the dynamics. A discrete differential equation, or
 Gillespie model, is a continuous-time Markov chain with Poisson-distributed
-jumps. A discrete description of the XXX model is given by a chemical reaction
-with rate XXX which adds 1 XX XX XXX.
+jumps. A discrete description of the Oregonator model is given by a chemical
+reaction systems:
 
-Use the [tutorial on Gillespie SSA models]() to implement the `JumpProblem`
-for this model, and use the `EnsembleProblem` and `EnsembleSummary` to
-characterize the stochastic trajectories.
+```julia{eval=false}
+A+Y -> X+P
+X+Y -> 2P
+A+X -> 2X + 2Z
+2X  -> A + P (note: this has rate kX^2!)
+B + Z -> Y
+```
 
-### (Optional) Part 4: Using DiffEqBiological's Reaction Network DSL
+where reactions take place at a rate which is propoertional to its components,
+i.e. the first reaction has a rate `k*A*Y` for some `k`.
+Use the [tutorial on Gillespie SSA models](http://docs.juliadiffeq.org/latest/tutorials/discrete_stochastic_example.html)
+to implement the `JumpProblem` for this model, and use the `EnsembleProblem`
+and `EnsembleSummary` to characterize the stochastic trajectories.
+
+For what rate constants does the model give the oscillatory dynamics for the
+ODE approximation? For information on the true reaction rates, consult
+[the original paper](https://pubs.acs.org/doi/abs/10.1021/ja00780a001).
+
+### (Optional) Part 5: Using DiffEqBiological's Reaction Network DSL
 
 DiffEqBiological.jl is a helper library for the DifferentialEquations.jl
 ecosystem for defining chemical reaction systems at a high leevel for easy
 simulation in these various forms. Use the descrption
-[from the Chemical Reaction Networks documentation page]()
+[from the Chemical Reaction Networks documentation page](http://docs.juliadiffeq.org/latest/models/biological.html)
 to build a reaction network and generate the ODE/SDE/jump equations, and
 compare the result to your handcoded versions.
 
-### (I) Part 5: Bayesian Parameter Estimation with DiffEqBayes.jl + Turing.jl
+### (I) Part 6: Bayesian Parameter Estimation with DiffEqBayes.jl + Turing.jl
 
 In many casees, one comes to understand the proper values for their model's
 parameters by utilizing data fitting techniques. In this case, we will use
@@ -97,14 +135,15 @@ the DiffEqBayes.jl library to perform a Bayesian estimation of the parameters.
 For our data we will the following potential output:
 
 ```julia{eval=false}
-[
-
-]
+t = 0.0:1.0:30.0
+data = [1.0 2.05224 2.11422 2.1857 2.26827 2.3641 2.47618 2.60869 2.7677 2.96232 3.20711 3.52709 3.97005 4.64319 5.86202 9.29322 536.068 82388.9 57868.4 1.00399 1.00169 1.00117 1.00094 1.00082 1.00075 1.0007 1.00068 1.00066 1.00065 1.00065 1.00065
+        2.0 1.9494 1.89645 1.84227 1.78727 1.73178 1.67601 1.62008 1.56402 1.50772 1.45094 1.39322 1.33366 1.2705 1.19958 1.10651 0.57194 0.180316 0.431409 251.774 591.754 857.464 1062.78 1219.05 1335.56 1419.88 1478.22 1515.63 1536.25 1543.45 1539.98
+        3.0 2.82065 2.68703 2.58974 2.52405 2.48644 2.47449 2.48686 2.52337 2.58526 2.67563 2.80053 2.9713 3.21051 3.5712 4.23706 12.0266 14868.8 24987.8 23453.4 19202.2 15721.6 12872.0 10538.8 8628.66 7064.73 5784.29 4735.96 3877.66 3174.94 2599.6]
 ```
 
-[Follow the exmaples on the parameter estimation page]() to perform a Bayesian
-parameter estimation. What are the most likely parameters for the model given
-the posterior parameter distributions?
+[Follow the exmaples on the parameter estimation page](http://docs.juliadiffeq.org/latest/analysis/parameter_estimation.html#Bayesian-Methods-1)
+to perform a Bayesian parameter estimation. What are the most likely parameters
+for the model given the posterior parameter distributions?
 
 ## (B) Fitting Hybrid Delay Pharmacokinetic Models with Automated Responses
 
@@ -130,13 +169,13 @@ where the events take place at fixed times. The ODE we will use is known as
 the one-compartment model:
 
 $$\begin{align}
-\frac{d[Depot]}{dt} &= -K_a [Depot] \\
+\frac{d[Depot]}{dt} &= -K_a [Depot] + R\\
 \frac{d[Central]}{dt} &= K_a [Depot] - K_e [Central]$$
 
-with $t \in [0,90]$, $u_0 = [0,0]$, and $p=[K_a,K_e]=[1,1]$.
+with $t \in [0,90]$, $u_0 = [100.0,0]$, and $p=[K_a,K_e]=[2.268,0.07398]$.
 
-With this model, use [the event handling documentation page]()
-to define a `DiscreteCallback` which fires at `t ∈ [0,24,48,72]` and adds a
+With this model, use [the event handling documentation page](http://docs.juliadiffeq.org/latest/features/callback_functions.html)
+to define a `DiscreteCallback` which fires at `t ∈ [24,48,72]` and adds a
 dose of 100 into `[Depot]`. (Hint: you'll want to set `tstops=[24,48,72]` to
 force the ODE solver to step at these times).
 
@@ -149,39 +188,40 @@ central compartment. This effectively delays the effect of the transition from
 differential equation which utilizes a fixed time delay $\tau$:
 
 $$\begin{align}
-\frac{d[Depot]}{dt} &= -K_a [Depot](t-\tau) \\
+\frac{d[Depot]}{dt} &= -K_a [Depot](t)\\
 \frac{d[Central]}{dt} &= K_a [Depot](t-\tau) - K_e [Central]$$
 
-[Use the DDE tutorial]() to define and solve this delayed version of the
-hybrid model.
+where the parameter $τ = 6.0$.
+[Use the DDE tutorial](http://docs.juliadiffeq.org/latest/tutorials/dde_example.html)
+to define and solve this delayed version of the hybrid model.
 
 ### (I) Part 3: Automatic Differentiation (AD) for Optimization
 
-In order to fit parameters we will want to be able to calculate the gradient
-of the solution with respect to the initial conditions. One way to do this is
-via Automatic Differentition (AD). For small numbers of parameters (<100), it
-is fastest to use Forward-Mode Automatic Differentition
+In order to fit parameters $(K_a,K_e,\tau)$ we will want to be able to calculate
+the gradient of the solution with respect to the initial conditions. One way to
+do this is via Automatic Differentition (AD). For small numbers of parameters
+(<100), it is fastest to use Forward-Mode Automatic Differentition
 (even faster than using adjoint sensitivity analysis!). Thus for this problem
 we will make use of ForwardDiff.jl to use Dual number arithmetic to retrive
 both the solution and its derivative w.r.t. parameters in a single solve.
 
-[Use the information from the page on local sensitvity analysis]() to define
-the input dual numbers, solve the equation, and plot both the solution over time
-and the derivative of the solution w.r.t. the parameters.
+[Use the information from the page on local sensitvity analysis](http://docs.juliadiffeq.org/latest/analysis/sensitivity.html)
+to define the input dual numbers, solve the equation, and plot both the solution
+over time and the derivative of the solution w.r.t. the parameters.
 
 ### Part 4: Fitting Known Quantities with DiffEqParamEstim.jl + Optim.jl
 
-Now let's fit this model to a dataset. For the data, use the array
+Now let's fit the delayed model to a dataset. For the data, use the array
 
 ```julia{eval=false}
-[
-
-]
+t = 0.0:12.0:90.0
+data = [100.0 0.246196 0.000597933 0.24547 0.000596251 0.245275 0.000595453 0.245511
+        0.0 53.7939 16.8784 58.7789 18.3777 59.1879 18.5003 59.2611]
 ```
 
-Use [the parameter estimation page]() to define a loss function with
-`build_loss_objective` and optimize the parameters against the data. What
-parameters were used to generate the data?
+Use [the parameter estimation page](http://docs.juliadiffeq.org/latest/analysis/parameter_estimation.html)
+to define a loss function with `build_loss_objective` and optimize the parameters
+against the data. What parameters were used to generate the data?
 
 ### (I) Part 5: Implementing Control-Based Logic with ContinuousCallbacks
 
@@ -189,11 +229,11 @@ Now that we have fit our delay differential equation model to the dataset, we
 want to start testing out automated treatment strategies. Let's assume that
 instead of giving doses at fixed time points, we invent a wearable which
 monitors the patient and administers a dose whenever the internal drug
-concentration falls below XXX. To model this effect, we will need to use
+concentration falls below 25. To model this effect, we will need to use
 `ContinuousCallbacks` to define a callback that triggers when `[Central]` falls
 below the threshold value.
 
-[Use the documentation on the event handling page]() to define such a callback,
+[Use the documentation on the event handling page](http://docs.juliadiffeq.org/latest/features/callback_functions.html) to define such a callback,
 and plot the solution over time. How many times does the auto-doser administer
 a dose? How much does this change as you change the delay time $\tau$?
 
