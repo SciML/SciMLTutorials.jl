@@ -29,7 +29,8 @@ The exercises are described as follows:
 - Exercise 4 takes the user through optimizing a PDE solver, utilizing
   automatic sparsity pattern recognition, automatic conversion of numerical
   codes to symbolic codes for analytical construction of the Jacobian,
-  preconditioned GMRES, and setting up a solver for IMEX and GPUs.
+  preconditioned GMRES, and setting up a solver for IMEX and GPUs, and compute
+  adjoints of PDEs.
 - Exercise 5 focuses on a chaotic orbit, utilizing parallel ensembles across
   supercomputers and GPUs to quickly describe phase space.
 - Exercise 6 takes the user through training a neural stochastic differential
@@ -50,7 +51,7 @@ When modeling, usually one starts off by investigating the deterministic model.
 The deterministic ODE formulation of the Oregonator is
 given by the equations
 
-$$\begin{algin}
+$$\begin{align}
 \frac{dx}{dt} &= s(y-xy + x - qx^2)\\
 \frac{dy}{dt} &= (-y - xy + z)/s\\
 \frac{dz}{dt} &= w(x - z)\end{align}$$
@@ -79,8 +80,9 @@ to improve the stepsizes in the solution. However, computing and factorizing
 the Jacobian is costly, and thus it can be beneficial to provide the analytical
 solution.
 
-Use the [ODEFunction definition page]() to define an `ODEFunction` which holds
-both the OREGO ODE and its Jacobian, and solve using `Rodas5`.
+Use the
+[ODEFunction definition page](http://docs.juliadiffeq.org/latest/features/performance_overloads.html)
+to define an `ODEFunction` which holds both the OREGO ODE and its Jacobian, and solve using `Rodas5`.
 
 ### (Optional) Part 4: Automatic Symbolicification and Analytical Jacobian Calculations
 
@@ -89,7 +91,8 @@ can do the work for you. And thankfully, DifferentialEquations.jl has tools
 to automatically convert numerical problems into symbolic problems to perform
 the analysis on!
 
-follow the [ModelingToolkit.jl README]() to automatically convert your ODE definition
+follow the [ModelingToolkit.jl README](https://github.com/JuliaDiffEq/ModelingToolkit.jl)
+to automatically convert your ODE definition
 to its symbolic form using `modelingtoolkitize` and calculate the analytical
 Jacobian. Use the compilation functions to build the `ODEFunction` with the
 embedded analytical solution.
@@ -106,8 +109,8 @@ dx &= s(y-xy + x - qx^2)dt + \sigma_1 x dW_1\\
 dy &= \frac{-y - xy + z}{s}dt + \sigma_2 y dW_2\\
 dz &= w(x - z)dt + \sigma_3 z dW_3\end{align}$$
 
-where the `dW` terms describe a Brownian motion, a continuous random process
-with normally distributed increments. Use the
+with $\sigma_i = 0.1$ where the `dW` terms describe a Brownian motion, a
+continuous random process with normally distributed increments. Use the
 [tutorial on solving SDEs](http://docs.juliadiffeq.org/latest/tutorials/sde_example.html)
 to solve simulate this model. Then,
 [use the `EnsembleProblem`](http://docs.juliadiffeq.org/latest/features/ensemble.html)
@@ -312,8 +315,9 @@ $$\begin{align}
 1 &= y_1 + y_2 + y_3\end{align}$$
 
 with $y(0) = [1,0,0]$ and $dy(0) = [-0.04,0.04,0.0]$ using the mass-matrix
-formulation and `Rodas5()`. Use the [ODEProblem page]() to find out how to
-declare a mass matrix.
+formulation and `Rodas5()`. Use the
+[ODEProblem page](http://docs.juliadiffeq.org/latest/types/ode_types.html)
+to find out how to declare a mass matrix.
 
 (Hint: what if the last row has all zeros?)
 
