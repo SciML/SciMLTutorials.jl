@@ -13,12 +13,16 @@ take some work.
 
 The exercises are described as follows:
 
-- Exercise 1 takes the user through defining the same biological system with
-  stochasticity, utilizing EnsembleProblems to understand 95%
-  bounds on the solution, and perform Bayesian parameter estimation.
-- Exercise 2 takes the user through defining hybrid differential equation,
-  that is a differential equation with events, and using adjoints to
-  to perform gradient-based parameter estimation.
+- Exercise 1 takes the user through solving a stiff ordinary differential equation
+  and using the ModelingToolkit.jl to automatically convert the function to a
+  symbolic form to derive the analytical Jacobian to speed up the solver. The
+  same biological system is then solved with stochasticity, utilizing
+  EnsembleProblems to understand 95% bounds on the solution. Finally, a
+  Bayesian parameter estimation is performed to estimate the true parameters
+  from given data.
+- Exercise 2 takes the user through defining hybrid delay differential equation,
+  that is a differential equation with events, and using automatic differentiation
+  to to perform gradient-based parameter estimation.
 - Exercise 3 takes the user through differential-algebraic equation (DAE)
   modeling, the concept of index, and using both mass-matrix and implicit
   ODE representations.
@@ -26,14 +30,13 @@ The exercises are described as follows:
   automatic sparsity pattern recognition, automatic conversion of numerical
   codes to symbolic codes for analytical construction of the Jacobian,
   preconditioned GMRES, and setting up a solver for IMEX and GPUs.
-- Exercise 5 focuses on a parameter sensitivity study, utilizing GPU-based
-  ensemble solvers to quickly train a surrogate model to perform global
-  parameter optimization.
+- Exercise 5 focuses on a chaotic orbit, utilizing parallel ensembles across
+  supercomputers and GPUs to quickly describe phase space.
 - Exercise 6 takes the user through training a neural stochastic differential
   equation, using GPU-accleration and adjoints through Flux.jl's neural
   network framework to build efficient training codes.
 
-## (B) Investigating Sources of Randomness and Uncertainty in a Biological System
+## Problem 1: Investigating Sources of Randomness and Uncertainty in a Stiff Biological System (B)
 
 In this problem we will walk through the basics of simulating models with
 DifferentialEquations.jl. Let's take the
@@ -41,17 +44,16 @@ DifferentialEquations.jl. Let's take the
 This system describes a classical example in non-equilibrium thermodynmics
 and is a well-known natural chemical oscillator.
 
-### Part 1: Simulating a deterministic chemical reaction system
+### Part 1: Simulating the Oregonator ODE model
 
 When modeling, usually one starts off by investigating the deterministic model.
 The deterministic ODE formulation of the Oregonator is
 given by the equations
 
 $$\begin{algin}
-\frac{dx}{dt} &= s(y-xy + x - qx^2)
-\frac{dy}{dt} &= (-y - xy + z)/s
-\frac{dz}{dt} &= w(x - z)
-\end{align}$$
+\frac{dx}{dt} &= s(y-xy + x - qx^2)\\
+\frac{dy}{dt} &= (-y - xy + z)/s\\
+\frac{dz}{dt} &= w(x - z)\end{align}$$
 
 with parameter values $s=77.27$, $w=0.161$, and $q=8.375 \times 10^{-6}$, and
 initial conditions $x(0)=1$, $y(0)=2$, and $z(0)=3$. Use
@@ -70,18 +72,39 @@ equation well. [Take a look at the ODE solver page](http://docs.juliadiffeq.org/
 and investigate solving the equation using methods for non-stiff equations
 (ex: `Tsit5`) and stiff equations (ex: `Rodas5`).
 
-### Part 3: Adding stochasticity with stochastic differential equations
+### (Optional) Part 3: Specifying Analytical Jacobians (I)
+
+Stiff ODE solvers internally utilize the Jacobian of the ODE system in order
+to improve the stepsizes in the solution. However, computing and factorizing
+the Jacobian is costly, and thus it can be beneficial to provide the analytical
+solution.
+
+Use the [ODEFunction definition page]() to define an `ODEFunction` which holds
+both the OREGO ODE and its Jacobian, and solve using `Rodas5`.
+
+### (Optional) Part 4: Automatic Symbolicification and Analytical Jacobian Calculations
+
+Deriving Jacobians by hand is tedious. Thankfully symbolic mathematical systems
+can do the work for you. And thankfully, DifferentialEquations.jl has tools
+to automatically convert numerical problems into symbolic problems to perform
+the analysis on!
+
+follow the [ModelingToolkit.jl README]() to automatically convert your ODE definition
+to its symbolic form using `modelingtoolkitize` and calculate the analytical
+Jacobian. Use the compilation functions to build the `ODEFunction` with the
+embedded analytical solution.
+
+### Part 5: Adding stochasticity with stochastic differential equations
 
 How does this system react in the presense of stochasticity? We can investigate
 this question by using stochastic differential equations. A stochastic
 differential equation formulation of this model is known as the multiplicative
 noise model, is created with:
 
-$$\begin{algin}
-dx &= s(y-xy + x - qx^2)dt + \sigma_1 x dW_1
-dy &= \frac{-y - xy + z}{s}dt + \sigma_2 y dW_2
-dz &= w(x - z)dt + \sigma_3 z dW_3
-\end{align}$$
+$$\begin{align}
+dx &= s(y-xy + x - qx^2)dt + \sigma_1 x dW_1\\
+dy &= \frac{-y - xy + z}{s}dt + \sigma_2 y dW_2\\
+dz &= w(x - z)dt + \sigma_3 z dW_3\end{align}$$
 
 where the `dW` terms describe a Brownian motion, a continuous random process
 with normally distributed increments. Use the
@@ -91,7 +114,14 @@ to solve simulate this model. Then,
 to generate and plot 100 trajectories of the stochastic model, and use
 `EnsembleSummary` to plot the mean and 5%-95% region over time.
 
-### Part 4: Gillespie jump models of discrete stochasticity
+Try solving with the `ImplicitRKMil` and `SOSRI` methods. Notice that it isn't
+stiff every single time!
+
+(For fun, see if you can make the Euler-Maruyama `EM()` method solve this equation.
+This requires a choice of `dt` small enough to be stable. This is the "standard"
+method!)
+
+### Part 6: Gillespie jump models of discrete stochasticity
 
 When biological models have very few particles, continuous models no longer
 make sense, and instead using the full discrete formulation can be required
@@ -100,7 +130,7 @@ Gillespie model, is a continuous-time Markov chain with Poisson-distributed
 jumps. A discrete description of the Oregonator model is given by a chemical
 reaction systems:
 
-```julia{eval=false}
+```{julia;eval=false}
 A+Y -> X+P
 X+Y -> 2P
 A+X -> 2X + 2Z
@@ -118,23 +148,14 @@ For what rate constants does the model give the oscillatory dynamics for the
 ODE approximation? For information on the true reaction rates, consult
 [the original paper](https://pubs.acs.org/doi/abs/10.1021/ja00780a001).
 
-### (Optional) Part 5: Using DiffEqBiological's Reaction Network DSL
-
-DiffEqBiological.jl is a helper library for the DifferentialEquations.jl
-ecosystem for defining chemical reaction systems at a high leevel for easy
-simulation in these various forms. Use the descrption
-[from the Chemical Reaction Networks documentation page](http://docs.juliadiffeq.org/latest/models/biological.html)
-to build a reaction network and generate the ODE/SDE/jump equations, and
-compare the result to your handcoded versions.
-
-### (I) Part 6: Bayesian Parameter Estimation with DiffEqBayes.jl + Turing.jl
+### Part 7: Bayesian Parameter Estimation with DiffEqBayes.jl + Turing.jl (I)
 
 In many casees, one comes to understand the proper values for their model's
 parameters by utilizing data fitting techniques. In this case, we will use
 the DiffEqBayes.jl library to perform a Bayesian estimation of the parameters.
 For our data we will the following potential output:
 
-```julia{eval=false}
+```{julia;eval=false}
 t = 0.0:1.0:30.0
 data = [1.0 2.05224 2.11422 2.1857 2.26827 2.3641 2.47618 2.60869 2.7677 2.96232 3.20711 3.52709 3.97005 4.64319 5.86202 9.29322 536.068 82388.9 57868.4 1.00399 1.00169 1.00117 1.00094 1.00082 1.00075 1.0007 1.00068 1.00066 1.00065 1.00065 1.00065
         2.0 1.9494 1.89645 1.84227 1.78727 1.73178 1.67601 1.62008 1.56402 1.50772 1.45094 1.39322 1.33366 1.2705 1.19958 1.10651 0.57194 0.180316 0.431409 251.774 591.754 857.464 1062.78 1219.05 1335.56 1419.88 1478.22 1515.63 1536.25 1543.45 1539.98
@@ -145,7 +166,21 @@ data = [1.0 2.05224 2.11422 2.1857 2.26827 2.3641 2.47618 2.60869 2.7677 2.96232
 to perform a Bayesian parameter estimation. What are the most likely parameters
 for the model given the posterior parameter distributions?
 
-## (B) Fitting Hybrid Delay Pharmacokinetic Models with Automated Responses
+Use the `ODEProblem` to perform the fit. If you have time, use the `EnsembleProblem`
+of `SDEProblem`s to perform a fit over averages of the SDE solutions. Note that
+the SDE fit will take significantly more computational resources! See the GPU
+parallelism section for details on how to accelerate this.
+
+### (Optional) Part 8: Using DiffEqBiological's Reaction Network DSL
+
+DiffEqBiological.jl is a helper library for the DifferentialEquations.jl
+ecosystem for defining chemical reaction systems at a high leevel for easy
+simulation in these various forms. Use the descrption
+[from the Chemical Reaction Networks documentation page](http://docs.juliadiffeq.org/latest/models/biological.html)
+to build a reaction network and generate the ODE/SDE/jump equations, and
+compare the result to your handcoded versions.
+
+## Problem 2: Fitting Hybrid Delay Pharmacokinetic Models with Automated Responses (B)
 
 Hybrid differential equations are differential equations with events, where
 events are some interaction that occurs according to a prespecified condition.
@@ -170,7 +205,7 @@ the one-compartment model:
 
 $$\begin{align}
 \frac{d[Depot]}{dt} &= -K_a [Depot] + R\\
-\frac{d[Central]}{dt} &= K_a [Depot] - K_e [Central]$$
+\frac{d[Central]}{dt} &= K_a [Depot] - K_e [Central]\end{align}$$
 
 with $t \in [0,90]$, $u_0 = [100.0,0]$, and $p=[K_a,K_e]=[2.268,0.07398]$.
 
@@ -189,13 +224,13 @@ differential equation which utilizes a fixed time delay $\tau$:
 
 $$\begin{align}
 \frac{d[Depot]}{dt} &= -K_a [Depot](t)\\
-\frac{d[Central]}{dt} &= K_a [Depot](t-\tau) - K_e [Central]$$
+\frac{d[Central]}{dt} &= K_a [Depot](t-\tau) - K_e [Central]\end{align}$$
 
 where the parameter $τ = 6.0$.
 [Use the DDE tutorial](http://docs.juliadiffeq.org/latest/tutorials/dde_example.html)
 to define and solve this delayed version of the hybrid model.
 
-### (I) Part 3: Automatic Differentiation (AD) for Optimization
+### Part 3: Automatic Differentiation (AD) for Optimization (I)
 
 In order to fit parameters $(K_a,K_e,\tau)$ we will want to be able to calculate
 the gradient of the solution with respect to the initial conditions. One way to
@@ -213,7 +248,7 @@ over time and the derivative of the solution w.r.t. the parameters.
 
 Now let's fit the delayed model to a dataset. For the data, use the array
 
-```julia{eval=false}
+```{julia;eval=false}
 t = 0.0:12.0:90.0
 data = [100.0 0.246196 0.000597933 0.24547 0.000596251 0.245275 0.000595453 0.245511
         0.0 53.7939 16.8784 58.7789 18.3777 59.1879 18.5003 59.2611]
@@ -223,7 +258,7 @@ Use [the parameter estimation page](http://docs.juliadiffeq.org/latest/analysis/
 to define a loss function with `build_loss_objective` and optimize the parameters
 against the data. What parameters were used to generate the data?
 
-### (I) Part 5: Implementing Control-Based Logic with ContinuousCallbacks
+### Part 5: Implementing Control-Based Logic with ContinuousCallbacks (I)
 
 Now that we have fit our delay differential equation model to the dataset, we
 want to start testing out automated treatment strategies. Let's assume that
@@ -239,7 +274,13 @@ a dose? How much does this change as you change the delay time $\tau$?
 
 ### Part 6: Global Sensitivity Analysis with the Morris and Sobol Methods
 
-## (B) Differential-Algebraic Equation Modeling of a Double Pendulum
+To understand how the parameters effect the solution in a global sense, one
+wants to use Global Sensitivity Analysis. Use the
+[GSA documentation page](http://docs.juliadiffeq.org/latest/analysis/global_sensitivity.html)
+perform global sensitivity analysis and quantify the effect of the various
+parameters on the solution.
+
+## Problem 3: Differential-Algebraic Equation Modeling of a Double Pendulum (B)
 
 Differential-Algebraic Equaton (DAE) systems are like ODEs but allow for adding
 constraints into the models. This problem will look at solving the double
@@ -253,13 +294,42 @@ problems.
 
 ### Part 1: Simple Introduction to DAEs: Mass-Matrix Robertson Equations
 
+A mass-matrix ordinary differential equation (ODE) is an ODE where the
+left-hand side, the derivative side, is multiplied by a matrix known as the
+mass matrix. This is described as:
+
+$$Mu' = f(u,p,t)$$
+
+where $M$ is the mass matrix. When $M$ is invertible, there is an ODE which is
+equivalent to this formulation. When $M$ is not invertible, this can have a
+distinctly different behavior and is as Differential-Algebraic Equation (DAE).
+
+Solve the Robertson DAE:
+
+$$\begin{align}
+\frac{dy_1}{dt} &= -0.04y_1 + 10^4 y_2y_3\\
+\frac{dy_2}{dt} &=  0.04y_1 - 10^4 y_2y_3 - 3\times 10^7 y_2^2\\
+1 &= y_1 + y_2 + y_3\end{align}$$
+
+with $y(0) = [1,0,0]$ and $dy(0) = [-0.04,0.04,0.0]$ using the mass-matrix
+formulation and `Rodas5()`. Use the [ODEProblem page]() to find out how to
+declare a mass matrix.
+
+(Hint: what if the last row has all zeros?)
+
 ### Part 2: Solving the Implicit Robertson Equations with IDA
 
-### Part 3: Manual Index Reduction of the Double Pendulum
+Use the [DAE Tutorial](http://docs.juliadiffeq.org/latest/tutorials/dae_example.html)
+to define a DAE in its implicit form and solve the Robertson equation with IDA.
+Why is `differential_vars = [true,true,false]`?
 
-### Part 4: Double Pendulum Solution with IDA
+### Part 3: Manual Index Reduction of the Single Pendulum
 
-## (I) Performance Optimizing and Parallelizing Semilinear PDE Solvers
+### Part 4: Single Pendulum Solution with IDA
+
+### Part 5: Solving the Double Penulum DAE System
+
+## Problem 4: Performance Optimizing and Parallelizing Semilinear PDE Solvers (I)
 
 This problem will focus on implementing and optimizing the solution of the
 2-dimensional Brusselator equations. The BRUSS equations are a well-known
@@ -273,30 +343,26 @@ looking deep into solver options and benchmarking.
 The Brusselator PDE is defined as follows:
 
 $$\begin{align}
-\frac{\partial u}{\partial t} &= 1 + u^2v - 4.4u + \alpha(\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2}) + f(x, y, t)
-\frac{\partial v}{\partial t} &= 3.4u - u^2v + \alpha(\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2})
-\end{align}$$
+\frac{\partial u}{\partial t} &= 1 + u^2v - 4.4u + \alpha(\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2}) + f(x, y, t)\\
+\frac{\partial v}{\partial t} &= 3.4u - u^2v + \alpha(\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2})\end{align}$$
 
 where
 
 $$f(x, y, t) = \begin{cases}
 5 & \quad \text{if } (x-0.3)^2+(y-0.6)^2 ≤ 0.1^2 \text{ and } t ≥ 1.1 \\
-0 & \quad \text{else}
-\end{cases}$$
+0 & \quad \text{else}\end{cases}$$
 
 and the initial conditions are
 
 $$\begin{align}
 u(x, y, 0) &= 22\cdot y(1-y)^{3/2} \\
-v(x, y, 0) &= 27\cdot x(1-x)^{3/2}
-\end{align}$$
+v(x, y, 0) &= 27\cdot x(1-x)^{3/2}\end{align}$$
 
 with the periodic boundary condition
 
 $$\begin{align}
 u(x+1,y,t) &= u(x,y,t) \\
-u(x,y+1,t) &= u(x,y,t)
-\end{align}$$
+u(x,y+1,t) &= u(x,y,t)\end{align}$$
 
 on a timespan of $t \in [0,22]$.
 
@@ -353,7 +419,7 @@ to solve the equation with `CVODE_BDF` with Sundials' special internal GMRES.
 To both of these, use the [AlgebraicMultigrid.jl](https://github.com/JuliaLinearAlgebra/AlgebraicMultigrid.jl)
 to add a preconditioner to the GMRES solver.
 
-### Part 7: Exploring IMEX and Exponential Integrator Techniques
+### Part 7: Exploring IMEX and Exponential Integrator Techniques (E)
 
 Instead of using the standard `ODEProblem`, define a [`SplitODEProblem`](http://docs.juliadiffeq.org/latest/types/split_ode_types.html)
 to move some of the equation to the the "non-stiff part". Try different splits
@@ -373,13 +439,15 @@ most efficient.
 [Take a look at DiffEqBenchmarks.jl](https://github.com/JuliaDiffEq/DiffEqBenchmarks.jl)
 for usage examples.
 
-### Part 9: GPU-Parallelism for PDEs
+### Part 9: GPU-Parallelism for PDEs (E)
 
 Fully vectorize your implementation of the ODE and use a `CuArray` from
 [CuArrays.jl](https://github.com/JuliaGPU/CuArrays.jl) as the initial condition
 to cause the whole solution to be GPU accelerated.
 
-## (I) Global Parameter Sensitivity and Optimality with GPU and Distributed Ensembles
+### Part 10: Adjoint Sensitivity Analysis for Gradients of PDEs
+
+## Problem 5: Global Parameter Sensitivity and Optimality with GPU and Distributed Ensembles (B)
 
 In this example we will investigate how the parameters "generally" effect the
 solution in the chaotic Henon-Heiles system. By "generally" we will use global
@@ -388,27 +456,27 @@ parameters on the solution. In addition to a global sensitivity approach, we
 will generate large ensembles of solutions with different parameters using
 a GPU-based parallelism approach.
 
-### (B) Part 1: Implementing the Henon-Heiles System
+### Part 1: Implementing the Henon-Heiles System (B)
 
 The Henon-Heiles Hamiltonian system is described by the ODEs:
 
 $$\begin{align}
-\frac{dp_1}{dt} &= -q_1 (1 + 2q_2)
-\frac{dp_2}{dt} &= -q_2 - (q_1^2 - q_2^2)
-\frac{dq_1}{dt} &= p_1
+\frac{dp_1}{dt} &= -q_1 (1 + 2q_2)\\
+\frac{dp_2}{dt} &= -q_2 - (q_1^2 - q_2^2)\\
+\frac{dq_1}{dt} &= p_1\\
 \frac{dq_2}{dt} &= p_2\end{align}$$
 
 with initial conditions $u_0 = [0.1,0.0,0.0,0.5]$.
 Solve this system over the timespan $t\in[0,1000]$
 
-### (B) (Optional) Part 2: Alternative Dynamical Implmentations of Henon-Heiles
+### (Optional) Part 2: Alternative Dynamical Implmentations of Henon-Heiles (B)
 
 The Henon-Heiles defines a Hamiltonian system with certain structures which
 can be utilized for a more efficient solution. Use [the Dynamical problems page](http://docs.juliadiffeq.org/latest/types/dynamical_types.html)
 to define a `SecondOrderODEProblem` corresponding to the acceleration terms:
 
 $$\begin{align}
-\frac{dp_1^2}{dt} &= -q_1 (1 + 2q_2)
+\frac{dp_1^2}{dt} &= -q_1 (1 + 2q_2)\\
 \frac{dp_2^2}{dt} &= -q_2 - (q_1^2 - q_2^2)\end{align}$$
 
 Solve this with a method that is specific to dynamical problems, like `DPRKN6`.
@@ -438,7 +506,7 @@ Setup the CUDAnative.jl library and use the `EnsembleGPUArray()` method to
 parallelize the solution across the thousands of cores of a GPU. Note that
 this will efficiency solve for hundreds of thousands of trajectores.
 
-## (I) Training Neural Stochastic Differential Equations with GPU acceleration
+## Problme 6: Training Neural Stochastic Differential Equations with GPU acceleration (I)
 
 In the previous models we had to define a model. Now let's shift the burden of
 model-proofing onto data by utilizing neural differential equations. A neural
@@ -463,4 +531,4 @@ the possibilites!
 
 ### Part 4: Constructing a Basic Neural SDE
 
-### (E) Part 5: Optimizing the training behavior with minibatching
+### Part 5: Optimizing the training behavior with minibatching (E)

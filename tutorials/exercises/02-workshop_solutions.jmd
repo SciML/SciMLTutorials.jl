@@ -1,0 +1,14 @@
+---
+title: DifferentialEquations.jl Workshop Exercise Solutions
+author: Chris Rackauckas
+---
+
+## Problem 1: Investigating Sources of Randomness and Uncertainty in a Biological System
+
+### Part 1: Simulating the Oregonator ODE model
+
+### Part 2: Investigating Stiffness
+
+### (Optional) Part 3: Specifying Analytical Jacobians (I)
+
+### (Optional) Part 4: Automatic Symbolicification and Analytical Jacobian Calculations
