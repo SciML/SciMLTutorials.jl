@@ -37,11 +37,16 @@ The exercises are described as follows:
   equation, using GPU-accleration and adjoints through Flux.jl's neural
   network framework to build efficient training codes.
 
+This exercise worksheet is meant to be a living document leading new users through
+a deep dive of the DifferentialEquations.jl feature set. If you further suggestions
+or want to contribute new problems, please open an issue or PR at the
+DiffEqTutorials.jl repository.
+
 ## Problem 1: Investigating Sources of Randomness and Uncertainty in a Stiff Biological System (B)
 
 In this problem we will walk through the basics of simulating models with
 DifferentialEquations.jl. Let's take the
-[Oregonator model of the Belousov–Zhabotinskii chemical reaction system](https://www.radford.edu/~thompson/vodef90web/problems/demosnodislin/Demos_Pitagora/DemoOrego/demoorego.pdf).
+[Oregonator model of the Belousov-Zhabotinskii chemical reaction system](https://www.radford.edu/~thompson/vodef90web/problems/demosnodislin/Demos_Pitagora/DemoOrego/demoorego.pdf).
 This system describes a classical example in non-equilibrium thermodynmics
 and is a well-known natural chemical oscillator.
 
@@ -450,6 +455,23 @@ Fully vectorize your implementation of the ODE and use a `CuArray` from
 to cause the whole solution to be GPU accelerated.
 
 ### Part 10: Adjoint Sensitivity Analysis for Gradients of PDEs
+
+In order to optimize the parameters of a PDE, you need to be able to compute
+the gradient of the solution with respect to the parameters. This is done
+through sensitivity analysis. For PDEs, generally the system is at a scale
+where forward sensitivity analysis (forward-mode automatic differentiation)
+is no longer suitable, and for these cases one uses adjoint sensitivity analysis.
+
+Rewrite the PDE so the constant terms are parameters, and use the
+[adjoint sensitivity analysis](http://docs.juliadiffeq.org/latest/analysis/sensitivity.html#Adjoint-Sensitivity-Analysis-1)
+documentation to solve for the solution gradient with a cost function being the
+L2 distance of the solution from the value 1. Solve with interpolated and
+checkpointed adjoints. Play with using reverse-mode automatic differentiation
+vs direct computation of vector-Jacobian products using the `autojacvec` option
+of the `SensitivityAlg`. Find the set of options most suitable for this PDE.
+
+If you have compute time, use this adjoint to optimize the parameters of the
+PDE with respect to this cost function.
 
 ## Problem 5: Global Parameter Sensitivity and Optimality with GPU and Distributed Ensembles (B)
 

@@ -681,8 +681,9 @@ div.title {text-align: center;}
 <li><p>Exercise 6 takes the user through training a neural stochastic differential equation, using GPU-accleration and adjoints through Flux.jl&#39;s neural network framework to build efficient training codes.</p>
 </li>
 </ul>
+<p>This exercise worksheet is meant to be a living document leading new users through a deep dive of the DifferentialEquations.jl feature set. If you further suggestions or want to contribute new problems, please open an issue or PR at the DiffEqTutorials.jl repository.</p>
 <h2>Problem 1: Investigating Sources of Randomness and Uncertainty in a Stiff Biological System &#40;B&#41;</h2>
-<p>In this problem we will walk through the basics of simulating models with DifferentialEquations.jl. Let&#39;s take the <a href="https://www.radford.edu/~thompson/vodef90web/problems/demosnodislin/Demos_Pitagora/DemoOrego/demoorego.pdf">Oregonator model of the Belousov–Zhabotinskii chemical reaction system</a>. This system describes a classical example in non-equilibrium thermodynmics and is a well-known natural chemical oscillator.</p>
+<p>In this problem we will walk through the basics of simulating models with DifferentialEquations.jl. Let&#39;s take the <a href="https://www.radford.edu/~thompson/vodef90web/problems/demosnodislin/Demos_Pitagora/DemoOrego/demoorego.pdf">Oregonator model of the Belousov-Zhabotinskii chemical reaction system</a>. This system describes a classical example in non-equilibrium thermodynmics and is a well-known natural chemical oscillator.</p>
 <h3>Part 1: Simulating the Oregonator ODE model</h3>
 <p>When modeling, usually one starts off by investigating the deterministic model. The deterministic ODE formulation of the Oregonator is given by the equations</p>
 <p class="math">\[
@@ -858,6 +859,9 @@ u(x,y+1,t) &= u(x,y,t)\end{align}
 <h3>Part 9: GPU-Parallelism for PDEs &#40;E&#41;</h3>
 <p>Fully vectorize your implementation of the ODE and use a <code>CuArray</code> from <a href="https://github.com/JuliaGPU/CuArrays.jl">CuArrays.jl</a> as the initial condition to cause the whole solution to be GPU accelerated.</p>
 <h3>Part 10: Adjoint Sensitivity Analysis for Gradients of PDEs</h3>
+<p>In order to optimize the parameters of a PDE, you need to be able to compute the gradient of the solution with respect to the parameters. This is done through sensitivity analysis. For PDEs, generally the system is at a scale where forward sensitivity analysis &#40;forward-mode automatic differentiation&#41; is no longer suitable, and for these cases one uses adjoint sensitivity analysis.</p>
+<p>Rewrite the PDE so the constant terms are parameters, and use the <a href="http://docs.juliadiffeq.org/latest/analysis/sensitivity.html#Adjoint-Sensitivity-Analysis-1">adjoint sensitivity analysis</a> documentation to solve for the solution gradient with a cost function being the L2 distance of the solution from the value 1. Solve with interpolated and checkpointed adjoints. Play with using reverse-mode automatic differentiation vs direct computation of vector-Jacobian products using the <code>autojacvec</code> option of the <code>SensitivityAlg</code>. Find the set of options most suitable for this PDE.</p>
+<p>If you have compute time, use this adjoint to optimize the parameters of the PDE with respect to this cost function.</p>
 <h2>Problem 5: Global Parameter Sensitivity and Optimality with GPU and Distributed Ensembles &#40;B&#41;</h2>
 <p>In this example we will investigate how the parameters &quot;generally&quot; effect the solution in the chaotic Henon-Heiles system. By &quot;generally&quot; we will use global sensitivity analysis methods to get an average global characterization of the parameters on the solution. In addition to a global sensitivity approach, we will generate large ensembles of solutions with different parameters using a GPU-based parallelism approach.</p>
 <h3>Part 1: Implementing the Henon-Heiles System &#40;B&#41;</h3>
