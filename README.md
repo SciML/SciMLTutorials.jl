@@ -36,6 +36,7 @@ DiffEqTutorials.open_notebooks()
   - [Formatting Plots](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/05-formatting_plots.html)
 - Exercise Sheets
   - [DifferentialEquations.jl Workshop Exercises](http://juliadiffeq.org/DiffEqTutorials.jl/html/exercises/01-workshop_exercises.html)
+  - [DifferentialEquations.jl Workshop Exercise Solutions](http://juliadiffeq.org/DiffEqTutorials.jl/html/exercises/02-workshop_solutions.html)
 - Modeling Examples
   - [Classical Physics Models](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/01-classical_physics.html)
   - [Conditional Dosing Example](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/02-conditional_dosing.html)

@@ -67,7 +67,7 @@ initial conditions $x(0)=1$, $y(0)=2$, and $z(0)=3$. Use
 to solve this differential equation on the
 timespan of $t\in[0,360]$ with the default ODE solver. To investigate the result,
 plot the solution of all components over time, and plot the phase space plot of
-the solution (hint: use `vars=(1,2)`). What shape is being drawn in phase space?
+the solution (hint: use `vars=(1,2,3)`). What shape is being drawn in phase space?
 
 ## Part 2: Investigating Stiffness
 
@@ -77,6 +77,9 @@ known as stiffness. Stiffness changes the ODE solvers which can handle the
 equation well. [Take a look at the ODE solver page](http://docs.juliadiffeq.org/latest/solvers/ode_solve.html)
 and investigate solving the equation using methods for non-stiff equations
 (ex: `Tsit5`) and stiff equations (ex: `Rodas5`).
+
+Benchmark using $t\in[0,50]$ using `@btime` from BenchmarkTools.jl. What
+happens when you increase the timespan?
 
 ## (Optional) Part 3: Specifying Analytical Jacobians (I)
 
@@ -156,7 +159,7 @@ For what rate constants does the model give the oscillatory dynamics for the
 ODE approximation? For information on the true reaction rates, consult
 [the original paper](https://pubs.acs.org/doi/abs/10.1021/ja00780a001).
 
-## Part 7: Bayesian Parameter Estimation with DiffEqBayes.jl + Turing.jl (I)
+## Part 7: Probabilistic Programming / Bayesian Parameter Estimation with DiffEqBayes.jl + Turing.jl (I)
 
 In many casees, one comes to understand the proper values for their model's
 parameters by utilizing data fitting techniques. In this case, we will use
@@ -551,10 +554,79 @@ the possibilites!
 
 ## Part 1: Constructing and Training a Basic Neural ODE
 
+Use the [DiffEqFlux.jl README](https://github.com/JuliaDiffEq/DiffEqFlux.jl) to
+construct a neural ODE to train against the training data:
+
+```{julia;eval=false}
+u0 = Float32[2.; 0.]
+datasize = 30
+tspan = (0.0f0,1.5f0)
+
+function trueODEfunc(du,u,p,t)
+    true_A = [-0.1 2.0; -2.0 -0.1]
+    du .= ((u.^3)'true_A)'
+end
+t = range(tspan[1],tspan[2],length=datasize)
+prob = ODEProblem(trueODEfunc,u0,tspan)
+ode_data = Array(solve(prob,Tsit5(),saveat=t))
+```
+
 ## Part 2: GPU-accelerating the Neural ODE Process
 
-## Part 3: Defining and Training a Partial Neural ODE
+Use the `gpu` function from Flux.jl to transform all of the calculations onto
+the GPU and train the neural ODE using GPU-accelerated `Tsit5` with adjoints.
+
+## Part 3: Defining and Training a Mixed Neural ODE
+
+Gather data from the Lotka-Volterra equation:
+
+```{julia;eval=false}
+function lotka_volterra(du,u,p,t)
+  x, y = u
+  α, β, δ, γ = p
+  du[1] = dx = α*x - β*x*y
+  du[2] = dy = -δ*y + γ*x*y
+end
+u0 = [1.0,1.0]
+tspan = (0.0,10.0)
+p = [1.5,1.0,3.0,1.0]
+prob = ODEProblem(lotka_volterra,u0,tspan,p)
+sol = Array(solve(prob,Tsit5())(0.0:1.0:10.0))
+```
+
+Now use the
+[mixed neural section of the documentation](https://github.com/JuliaDiffEq/DiffEqFlux.jl#mixed-neural-des)
+to define the mixed neural ODE where the functional form of $\frac{dx}{dt}$ is
+known, and try to derive a neural formulation for $\frac{dy}{dt}$ directly from
+the data.
 
 ## Part 4: Constructing a Basic Neural SDE
 
+Generate data from the Lotka-Volterra equation with multiplicative noise
+
+```{julia;eval=false}
+function lotka_volterra(du,u,p,t)
+  x, y = u
+  α, β, δ, γ = p
+  du[1] = dx = α*x - β*x*y
+  du[2] = dy = -δ*y + γ*x*y
+end
+function lv_noise(du,u,p,t)
+  du[1] = p[5]*u[1]
+  du[2] = p[6]*u[2]
+end
+u0 = [1.0,1.0]
+tspan = (0.0,10.0)
+p = [1.5,1.0,3.0,1.0,0.1,0.1]
+prob = SDEProblem(lotka_volterra,lv_noise,u0,tspan,p)
+sol = [Array(solve(prob,SOSRI())(0.0:1.0:10.0)) for i in 1:20] # 20 solution samples
+```
+
+Train a neural stochastic differential equation $dX = f(X)dt + g(X)dW_t$ where
+both the drift ($f$) and the diffusion ($g$) functions are neural networks.
+See if constraining $g$ can make the problem easier to fit.
+
 ## Part 5: Optimizing the training behavior with minibatching (E)
+
+Use minibatching on the data to improve the training procedure. An example
+[can be found at this PR](https://github.com/FluxML/model-zoo/pull/88).

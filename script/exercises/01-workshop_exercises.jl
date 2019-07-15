@@ -16,3 +16,46 @@ t = 0.0:12.0:90.0
 data = [100.0 0.246196 0.000597933 0.24547 0.000596251 0.245275 0.000595453 0.245511
         0.0 53.7939 16.8784 58.7789 18.3777 59.1879 18.5003 59.2611]
 
+
+u0 = Float32[2.; 0.]
+datasize = 30
+tspan = (0.0f0,1.5f0)
+
+function trueODEfunc(du,u,p,t)
+    true_A = [-0.1 2.0; -2.0 -0.1]
+    du .= ((u.^3)'true_A)'
+end
+t = range(tspan[1],tspan[2],length=datasize)
+prob = ODEProblem(trueODEfunc,u0,tspan)
+ode_data = Array(solve(prob,Tsit5(),saveat=t))
+
+
+function lotka_volterra(du,u,p,t)
+  x, y = u
+  α, β, δ, γ = p
+  du[1] = dx = α*x - β*x*y
+  du[2] = dy = -δ*y + γ*x*y
+end
+u0 = [1.0,1.0]
+tspan = (0.0,10.0)
+p = [1.5,1.0,3.0,1.0]
+prob = ODEProblem(lotka_volterra,u0,tspan,p)
+sol = Array(solve(prob,Tsit5())(0.0:1.0:10.0))
+
+
+function lotka_volterra(du,u,p,t)
+  x, y = u
+  α, β, δ, γ = p
+  du[1] = dx = α*x - β*x*y
+  du[2] = dy = -δ*y + γ*x*y
+end
+function lv_noise(du,u,p,t)
+  du[1] = p[5]*u[1]
+  du[2] = p[6]*u[2]
+end
+u0 = [1.0,1.0]
+tspan = (0.0,10.0)
+p = [1.5,1.0,3.0,1.0,0.1,0.1]
+prob = SDEProblem(lotka_volterra,lv_noise,u0,tspan,p)
+sol = [Array(solve(prob,SOSRI())(0.0:1.0:10.0)) for i in 1:20] # 20 solution samples
+
