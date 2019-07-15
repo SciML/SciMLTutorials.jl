@@ -237,6 +237,8 @@ below the threshold value.
 and plot the solution over time. How many times does the auto-doser administer
 a dose? How much does this change as you change the delay time $\tau$?
 
+### Part 6: Global Sensitivity Analysis with the Morris and Sobol Methods
+
 ## (B) Differential-Algebraic Equation Modeling of a Double Pendulum
 
 Differential-Algebraic Equaton (DAE) systems are like ODEs but allow for adding
@@ -388,11 +390,53 @@ a GPU-based parallelism approach.
 
 ### (B) Part 1: Implementing the Henon-Heiles System
 
+The Henon-Heiles Hamiltonian system is described by the ODEs:
+
+$$\begin{align}
+\frac{dp_1}{dt} &= -q_1 (1 + 2q_2)
+\frac{dp_2}{dt} &= -q_2 - (q_1^2 - q_2^2)
+\frac{dq_1}{dt} &= p_1
+\frac{dq_2}{dt} &= p_2\end{align}$$
+
+with initial conditions $u_0 = [0.1,0.0,0.0,0.5]$.
+Solve this system over the timespan $t\in[0,1000]$
+
 ### (B) (Optional) Part 2: Alternative Dynamical Implmentations of Henon-Heiles
 
-### Part 3: Global Sensitivity Analysis with the Morris and Sobol Methods
+The Henon-Heiles defines a Hamiltonian system with certain structures which
+can be utilized for a more efficient solution. Use [the Dynamical problems page](http://docs.juliadiffeq.org/latest/types/dynamical_types.html)
+to define a `SecondOrderODEProblem` corresponding to the acceleration terms:
 
-### Part 4: GPU-based Ensemble Solving
+$$\begin{align}
+\frac{dp_1^2}{dt} &= -q_1 (1 + 2q_2)
+\frac{dp_2^2}{dt} &= -q_2 - (q_1^2 - q_2^2)\end{align}$$
+
+Solve this with a method that is specific to dynamical problems, like `DPRKN6`.
+
+The Hamiltonian can also be directly described:
+
+$$H(p,q) = \frac{1}{2}(p_1^2 + p_2^2) + \frac{1}{2}(q_1^2+q_2^2+2q_1^2 q_2 - \frac{2}{3}q_2^3)$$
+
+Solve this problem using the `HamiltonianProblem` constructor from DiffEqPhysics.jl.
+
+### Part 3: Parallelized Ensemble Solving
+
+To understand the orbits of the Henon-Heiles system, it can be useful to solve
+the system with many different initial conditions. Use the
+[ensemble interface](http://docs.juliadiffeq.org/latest/features/ensemble.html)
+to solve with randomized initial conditions in parallel using threads with
+`EnsembleThreads()`. Then, use `addprocs()` to add more cores and solve using
+`EnsembleDistributed()`. The former will solve using all of the cores on a
+single computer, while the latter will use all of the cores on which there
+are processors, which can include thousands across a supercomputer! See
+[Julia's parallel computing setup page](https://docs.julialang.org/en/v1/manual/parallel-computing/index.html)
+for more details on the setup.
+
+### Part 4: Parallelized GPU Ensemble Solving
+
+Setup the CUDAnative.jl library and use the `EnsembleGPUArray()` method to
+parallelize the solution across the thousands of cores of a GPU. Note that
+this will efficiency solve for hundreds of thousands of trajectores.
 
 ## (I) Training Neural Stochastic Differential Equations with GPU acceleration
 
