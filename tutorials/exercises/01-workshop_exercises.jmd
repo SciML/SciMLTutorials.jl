@@ -350,7 +350,7 @@ This problem will focus on implementing and optimizing the solution of the
 2-dimensional Brusselator equations. The BRUSS equations are a well-known
 highly stiff oscillatory system of partial differential equations which are
 used in stiff ODE solver benchmarks. In this tutorial we will walk first
-through a simple implmentation, then do allocation-free implementations and
+through a simple implementation, then do allocation-free implementations and
 looking deep into solver options and benchmarking.
 
 ## Part 1: Implementing the BRUSS PDE System as ODEs
@@ -386,11 +386,12 @@ difference method. We discretize `u` and `v` into arrays of the values at each
 time point: `u[i,j] = u(i*dx,j*dy)` for some choice of `dx`/`dy`, and same for
 `v`. Then our ODE is defined with `U[i,j,k] = [u v]`. The second derivative
 operator, the Laplacian, discretizes to become the `Tridiagonal` matrix with
-`[1 -2 1]` and a `1` in the top left and right corners. The nonlinear functions
+`[1 -2 1]` and a `1` in the top right and bottom right corners. The nonlinear functions
 are then applied at each point in space (they are broadcast). Use `dx=dy=1/32`.
 
 You will know when you have the correct solution when you plot the solution
-at `x=0.25` and see a periodic orbit.
+at `x=y=0` and see a periodic orbit, e.g., `ts=0:0.05:22; plot(ts, sol1.(ts,
+idxs=1))`.
 
 If you are not familiar with this process, see
 [the Gierer-Meinhardt example from the DiffEqTutorials.](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/03-optimizing_diffeq_code.html)
@@ -437,10 +438,10 @@ to add a preconditioner to the GMRES solver.
 ## Part 7: Exploring IMEX and Exponential Integrator Techniques (E)
 
 Instead of using the standard `ODEProblem`, define a [`SplitODEProblem`](http://docs.juliadiffeq.org/latest/types/split_ode_types.html)
-to move some of the equation to the the "non-stiff part". Try different splits
+to move some of the equation to the "non-stiff part". Try different splits
 and solve with `KenCarp4` to see if the solution can be accelerated.
 
-Next, use `DiffEqArrayOperator` to define part of the equation as linear, and
+Next, use `MatrixFreeOperator` and `DiffEqArrayOperator` to define part of the equation as linear, and
 use the `ETDRK4` exponential integrator to solve the equation. Note that this
 technique is not appropriate for this equation since it relies on the
 nonlinear term being non-stiff for best results.
