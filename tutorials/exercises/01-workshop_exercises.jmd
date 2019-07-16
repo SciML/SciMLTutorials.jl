@@ -3,7 +3,7 @@ title: DifferentialEquations.jl Workshop Exercises
 author: Chris Rackauckas
 ---
 
-These excersies teach common workflows which involve DifferentialEquations.jl.
+These exercises teach common workflows which involve DifferentialEquations.jl.
 The designation (B) is for "Beginner", meaning that a user new to the package
 should feel comfortable trying this exercise. An exercise designated (I) is
 for "Intermediate", meaning the user may want to have some previous background
