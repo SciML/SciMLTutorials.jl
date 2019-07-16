@@ -17,15 +17,18 @@ The exercises are described as follows:
   and using the ModelingToolkit.jl to automatically convert the function to a
   symbolic form to derive the analytical Jacobian to speed up the solver. The
   same biological system is then solved with stochasticity, utilizing
-  EnsembleProblems to understand 95% bounds on the solution. Finally, a
-  Bayesian parameter estimation is performed to estimate the true parameters
-  from given data.
+  EnsembleProblems to understand 95% bounds on the solution. Finally,
+  probabilistic programming is employed to perform Bayesian parameter estimation
+  of the parameters against data.
 - Exercise 2 takes the user through defining hybrid delay differential equation,
-  that is a differential equation with events, and using automatic differentiation
-  to to perform gradient-based parameter estimation.
+  that is a differential equation with events, and using differentiable programming
+  techniques (automatic differentiation) to to perform gradient-based parameter
+  estimation.
 - Exercise 3 takes the user through differential-algebraic equation (DAE)
   modeling, the concept of index, and using both mass-matrix and implicit
-  ODE representations.
+  ODE representations. This will require doing a bit of math, but the student
+  will understand how to change their equations to make their DAE numerically
+  easier for the integrators. 
 - Exercise 4 takes the user through optimizing a PDE solver, utilizing
   automatic sparsity pattern recognition, automatic conversion of numerical
   codes to symbolic codes for analytical construction of the Jacobian,
