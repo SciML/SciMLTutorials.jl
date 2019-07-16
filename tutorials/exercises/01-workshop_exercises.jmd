@@ -385,8 +385,8 @@ To solve this PDE, we will discretize it into a system of ODEs with the finite
 difference method. We discretize `u` and `v` into arrays of the values at each
 time point: `u[i,j] = u(i*dx,j*dy)` for some choice of `dx`/`dy`, and same for
 `v`. Then our ODE is defined with `U[i,j,k] = [u v]`. The second derivative
-operator, the Laplacian, discretizes to become the `Tridiagonal` matrix with
-`[1 -2 1]` and a `1` in the top right and bottom right corners. The nonlinear functions
+operator, the Laplacian, discretizes to become a tridiagonal matrix with
+`[1 -2 1]` and a `1` in the top right and bottom left corners. The nonlinear functions
 are then applied at each point in space (they are broadcast). Use `dx=dy=1/32`.
 
 You will know when you have the correct solution when you plot the solution
