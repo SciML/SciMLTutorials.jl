@@ -221,14 +221,14 @@ q₀ = u₀[3:4]
 prob2 = SecondOrderODEProblem(henon, p₀, q₀, (0., 1000.))
 sol = solve(prob2, DPRKN6(), abstol=1e-10, reltol=1e-10)
 
-plot(sol, vars=[(3,4)])
+plot(sol, vars=[(3,4)], tspan=(0,100))
 
 H(p, q, params) = 1/2 * (p[1]^2 + p[2]^2) + 1/2 * (q[1]^2 + q[2]^2 + 2q[1]^2 * q[2] - 2/3*q[2]^3)
 
-prob2 = HamiltonianProblem(H, p₀, q₀, (0., 1000.))
-sol = solve(prob2, DPRKN6(), abstol=1e-10, reltol=1e-10)
+prob3 = HamiltonianProblem(H, p₀, q₀, (0., 1000.))
+sol = solve(prob3, DPRKN6(), abstol=1e-10, reltol=1e-10)
 
-plot(sol, vars=[(3,4)])
+plot(sol, vars=[(3,4)], tspan=(0,100))
 ```
 
 ## Part 3: Parallelized Ensemble Solving
@@ -236,6 +236,8 @@ plot(sol, vars=[(3,4)])
 In order to solve with an ensamble we need some initial conditions.
 ```julia
 function generate_ics(E,n)
+  # The hardcoded values bellow can be estimated by looking at the
+  # figures in the Henon-Heiles 1964 article
   qrange = range(-0.4, stop = 1.0, length = n)
   prange = range(-0.5, stop = 0.5, length = n)
   z0 = Vector{Vector{Float64}}()
@@ -252,7 +254,7 @@ function generate_ics(E,n)
   return z0
 end
 
-z0 = generate_ics(0.5, 10)
+z0 = generate_ics(0.125, 10)
 
 function prob_func(prob,i,repeat)
   @. prob.u0 = z0[i]
@@ -262,10 +264,17 @@ end
 ensprob = EnsembleProblem(prob, prob_func=prob_func)
 sim = solve(ensprob, Vern9(), EnsembleThreads(), trajectories=length(z0))
 
+plot(sim, vars=(3,4), tspan=(0,10))
 ```
 
 ## Part 4: Parallelized GPU Ensemble Solving
 
+```julia
+using DiffEqGPU
+
+z0 = generate_ics(0.125, 100)
+sim = solve(ensprob, Vern9(), EnsembleGPUArray(), trajectories=length(z0))
+```
 # Problem 6: Training Neural Stochastic Differential Equations with GPU acceleration (I)
 
 ## Part 1: Constructing and Training a Basic Neural ODE
