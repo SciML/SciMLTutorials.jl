@@ -29,32 +29,32 @@ DiffEqTutorials.open_notebooks()
 ## Table of Contents
 
 - Introduction
-  - [Introduction to DifferentialEquations.jl through ODEs](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/01-ode_introduction.html)
-  - [Detecting Stiffness and Choosing an ODE Algorithm](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/02-choosing_algs.html)
-  - [Optimizing your DiffEq Code](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/03-optimizing_diffeq_code.html)
-  - [Callbacks and Event Handling](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/04-callbacks_and_events.html)
-  - [Formatting Plots](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/05-formatting_plots.html)
+  - [Introduction to DifferentialEquations.jl through ODEs](http://tutorials.juliadiffeq.org/html/introduction/01-ode_introduction.html)
+  - [Detecting Stiffness and Choosing an ODE Algorithm](http://tutorials.juliadiffeq.org/html/introduction/02-choosing_algs.html)
+  - [Optimizing your DiffEq Code](http://tutorials.juliadiffeq.org/html/introduction/03-optimizing_diffeq_code.html)
+  - [Callbacks and Event Handling](http://tutorials.juliadiffeq.org/html/introduction/04-callbacks_and_events.html)
+  - [Formatting Plots](http://tutorials.juliadiffeq.org/html/introduction/05-formatting_plots.html)
 - Exercise Sheets
-  - [DifferentialEquations.jl Workshop Exercises](http://juliadiffeq.org/DiffEqTutorials.jl/html/exercises/01-workshop_exercises.html)
-  - [DifferentialEquations.jl Workshop Exercise Solutions](http://juliadiffeq.org/DiffEqTutorials.jl/html/exercises/02-workshop_solutions.html)
+  - [DifferentialEquations.jl Workshop Exercises](http://tutorials.juliadiffeq.org/html/exercises/01-workshop_exercises.html)
+  - [DifferentialEquations.jl Workshop Exercise Solutions](http://tutorials.juliadiffeq.org/html/exercises/02-workshop_solutions.html)
 - Modeling Examples
-  - [Classical Physics Models](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/01-classical_physics.html)
-  - [Conditional Dosing Example](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/02-conditional_dosing.html)
-  - [DiffEqBiological Tutorial I: Introduction](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/03-diffeqbio_I_introduction.html)
-  - [DiffEqBiological Tutorial II: Network Properties API](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/04-diffeqbio_II_networkproperties.html)
-  - [Kepler Problem Orbit](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/05-kepler_problem.html)
-  - [Bayesian Inference of Pendulum Parameters](http://juliadiffeq.org/DiffEqTutorials.jl/html/models/06-pendulum_bayesian_inference.html)
+  - [Classical Physics Models](http://tutorials.juliadiffeq.org/html/models/01-classical_physics.html)
+  - [Conditional Dosing Example](http://tutorials.juliadiffeq.org/html/models/02-conditional_dosing.html)
+  - [DiffEqBiological Tutorial I: Introduction](http://tutorials.juliadiffeq.org/html/models/03-diffeqbio_I_introduction.html)
+  - [DiffEqBiological Tutorial II: Network Properties API](http://tutorials.juliadiffeq.org/html/models/04-diffeqbio_II_networkproperties.html)
+  - [Kepler Problem Orbit](http://tutorials.juliadiffeq.org/html/models/05-kepler_problem.html)
+  - [Bayesian Inference of Pendulum Parameters](http://tutorials.juliadiffeq.org/html/models/06-pendulum_bayesian_inference.html)
 - Advanced ODE Features
-  - [ModelingToolkit.jl, An IR and Compiler for Scientific Models](http://juliadiffeq.org/DiffEqTutorials.jl/html/ode_extras/01-ModelingToolkit.html)
-  - [Feagin's Order 10, 12, and 14 Methods](http://juliadiffeq.org/DiffEqTutorials.jl/html/ode_extras/02-feagin.html)
-  - [Finding Maxima and Minima of DiffEq Solutions](http://juliadiffeq.org/DiffEqTutorials.jl/html/ode_extras/03-ode_minmax.html)
-  - [Monte Carlo Parameter Estimation from Data](http://juliadiffeq.org/DiffEqTutorials.jl/html/ode_extras/04-monte_carlo_parameter_estim.html)
+  - [ModelingToolkit.jl, An IR and Compiler for Scientific Models](http://tutorials.juliadiffeq.org/html/ode_extras/01-ModelingToolkit.html)
+  - [Feagin's Order 10, 12, and 14 Methods](http://tutorials.juliadiffeq.org/html/ode_extras/02-feagin.html)
+  - [Finding Maxima and Minima of DiffEq Solutions](http://tutorials.juliadiffeq.org/html/ode_extras/03-ode_minmax.html)
+  - [Monte Carlo Parameter Estimation from Data](http://tutorials.juliadiffeq.org/html/ode_extras/04-monte_carlo_parameter_estim.html)
 - Type Handling
-  - [Solving Equations with Julia-Defined Types](http://juliadiffeq.org/DiffEqTutorials.jl/html/type_handling/01-number_types.html)
-  - [Numbers with Uncertainties](http://juliadiffeq.org/DiffEqTutorials.jl/html/type_handling/02-uncertainties.html)
-  - [Unit Check Arithmetic via Unitful.jl](http://juliadiffeq.org/DiffEqTutorials.jl/html/type_handling/03-unitful.html)
+  - [Solving Equations with Julia-Defined Types](http://tutorials.juliadiffeq.org/html/type_handling/01-number_types.html)
+  - [Numbers with Uncertainties](http://tutorials.juliadiffeq.org/html/type_handling/02-uncertainties.html)
+  - [Unit Check Arithmetic via Unitful.jl](http://tutorials.juliadiffeq.org/html/type_handling/03-unitful.html)
 - Advanced
-  - [A 2D Cardiac Electrophysiology Model (CUDA-accelerated PDE solver)](http://juliadiffeq.org/DiffEqTutorials.jl/html/advanced/01-beeler_reuter.html)
+  - [A 2D Cardiac Electrophysiology Model (CUDA-accelerated PDE solver)](http://tutorials.juliadiffeq.org/html/advanced/01-beeler_reuter.html)
 
 ## Contributing
 
