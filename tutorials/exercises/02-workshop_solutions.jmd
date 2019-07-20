@@ -151,17 +151,119 @@ p = (Ka = 0.5, Ke = 0.1, τ = 4.0)
 # Problem 3: Differential-Algebraic Equation Modeling of a Double Pendulum (B)
 
 ## Part 1: Simple Introduction to DAEs: Mass-Matrix Robertson Equations
+```julia
+function g(du, u, p, t)
+    du[1] = -p[1]*u[1] + p[2]*u[2]*u[3]
+    du[2] = p[1]*u[1] - p[2]*u[2]*u[3] - p[3]*u[2]*u[2] 
+    du[3] = u[1] + u[2] + u[3] - 1.
+end
+M = [1 0 0; 0 1 0; 0 0 0.]
+p = [0.04, 10^4, 3e7]
+u0 = [1.,0.,0.]
+tspan = (0., 1e6)
+prob = ODEProblem(ODEFunction(f, mass_matrix = M), u0, tspan, p)
+sol = solve(prob, Rodas5())
+plot(sol, xscale=:log10, tspan=(1e-6, 1e5), layout=(3,1))
+```
 
 ## Part 2: Solving the Implicit Robertson Equations with IDA
+```julia
+# Robertson Equation DAE Implicit form 
+function h(out, du, u, p, t)
+    out[1] = -p[1]*u[1] + p[2]*u[2]*u[3] - du[1]
+    out[2] = p[1]*u[1] - p[2]*u[2]*u[3] - p[3]*u[2]*u[2] - du[2]
+    out[3] = u[1] + u[2] + u[3] - 1.
+end
+p = [0.04, 10^4, 3e7]
+du0 = [-0.04, 0.04, 0.0]
+u0 = [1.,0.,0.]
+tspan = (0., 1e6)
+differential_vars = [true, true, false]
+prob = DAEProblem(h, du0, u0, tspan, p, differential_vars = differential_vars)
+sol = solve(prob, IDA())
+plot(sol, xscale=:log10, tspan=(1e-6, 1e5), layout=(3,1))
+```
 
 ## Part 3: Manual Index Reduction of the Single Pendulum
 
 ## Part 4: Single Pendulum Solution with IDA
+```julia
+function f(out, da, a, p, t)
+   (L, m, g) = p
+   u, v, x, y, T = a
+   du, dv, dx, dy, dT = da
+   out[1] = x*T/(m*L) - du
+   out[2] = y*T/(m*L) - g - dv
+   out[3] = u - dx
+   out[4] = v - dy
+   out[5] = u^2 + v^2 - y*g + T/m
+   nothing
+end
+
+# Release pendulum from top right 
+u0 = zeros(5)
+u0[3] = 1.0
+du0 = zeros(5)
+du0[2] = 9.81
+
+p = [1,1,9.8]
+tspan = (0.,100.)
+
+differential_vars = [true, true, true, true, false]
+prob = DAEProblem(f, du0, u0, tspan, p, differential_vars = differential_vars) 
+sol = solve(prob, IDA())
+plot(sol, vars=(3,4))
+```
 
 ## Part 5: Solving the Double Penulum DAE System
+```julia
+```
 
 # Problem 4: Performance Optimizing and Parallelizing Semilinear PDE Solvers (I)
+```julia
+function f(out, da, a, p, t)
+   L1, m1, L2, m2, g = p
 
+   u1, v1, x1, y1, T1, 
+   u2, v2, x2, y2, T2 = a
+
+   du1, dv1, dx1, dy1, dT1,
+   du2, dv2, dx2, dy2, dT2 = da 
+
+   out[1]  = x2*T2/(m2*L2) - du2
+   out[2]  = y2*T2/(m2*L2) - g - dv2
+   out[3]  = u2 - dx2
+   out[4]  = v2 - dy2
+   out[5]  = u2^2 + v2^2 -y2*g + T2/m2
+   
+   out[6]  = x1*T1/(m1*L1) - x2*T2/(m2*L2) - du1
+   out[7]  = y1*T1/(m1*L1) - g - y2*T2/(m2*L2) - dv1
+   out[8]  = u1 - dx1
+   out[9]  = v1 - dy1
+   out[10] = u1^2 + v1^2 + T1/m1 + 
+                (-x1*x2 - y1*y2)/(m1*L2)*T2 - y1*g
+   nothing
+end
+
+# Release pendulum from top right
+u0 = zeros(10)
+u0[3] = 1.0
+u0[8] = 1.0
+du0 = zeros(10)
+du0[2] = 9.8
+du0[7] = 9.8
+
+p = [1,1,1,1,9.8]
+tspan = (0.,100.)
+
+differential_vars = [true, true, true, true, false, 
+                     true, true, true, true, false]
+prob = DAEProblem(f, du0, u0, tspan, p, differential_vars = differential_vars) 
+sol = solve(prob, IDA())
+
+plot(sol, vars=(3,4))
+plot(sol, vars=(8,9))
+```
 ## Part 1: Implementing the BRUSS PDE System as ODEs
 
 ## Part 2: Optimizing the BRUSS Code
