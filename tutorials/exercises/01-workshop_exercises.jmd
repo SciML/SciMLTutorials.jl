@@ -340,9 +340,53 @@ Why is `differential_vars = [true,true,false]`?
 
 ## Part 3: Manual Index Reduction of the Single Pendulum
 
+The index of a DAE is a notion used to measure distance from
+its related ODE. There are many different definitions of index, 
+but we're going to stick to the idea of differential index: 
+the number of differentiations required to convert a system
+of DAEs into explicit ODE form. DAEs of high index are
+usually transformed via a procedure called index reduction. 
+The following example will demonstrate this. 
+
+Consider the index 3 DAE system of the cartesian pendulum. 
+After writing down the force equations in both directions, 
+we arrive at the following DAE: 
+
+$$
+\begin{align}
+m\ddot{x} &= \frac{x}{L}T \\
+m\ddot{y} &= \frac{y}{L}T - mg \\
+x^2 + y^2 &= L
+\end{align}
+$$
+
+Notice that we don't have an equation describing the 
+behaviour of `T`. Let us now perform index reduction to 
+extract an equation for `T`
+
+Differentiate this third equation twice with respect to time 
+to reduce it from index 3 to index 1. 
+
 ## Part 4: Single Pendulum Solution with IDA
+Write these equations in implicit form and solve the system using
+IDA. 
 
 ## Part 5: Solving the Double Penulum DAE System
+
+The following equations describe a double
+pendulum system: 
+$$
+\begin{align}
+m_2\ddot{x_2} &= \frac{x_2}{L_2}T_2 \\
+m_2\ddot{y_2} &= \frac{y_2}{L_2}T_2 - m_2g \\
+{x_2}^2 + {y_2}^2 &= L_2 \\
+m_1\ddot{x_1} &= \frac{x_1}{L_1}T_1 - \frac{x_2}{L_2}T_2 \\
+m_2\ddot{y_1} &= \frac{y_1}{L_1}T_2 - m_1g - \frac{y_2}{L_2}T_2 \\
+{x_1}^2 + {y_1}^2 &= L_1 \\
+\end{align}
+$$
+
+Perform index reduction and solve it like in the previous example. 
 
 # Problem 4: Performance Optimizing and Parallelizing Semilinear PDE Solvers (I)
 
