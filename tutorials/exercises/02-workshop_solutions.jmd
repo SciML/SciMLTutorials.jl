@@ -3,6 +3,13 @@ title: DifferentialEquations.jl Workshop Exercise Solutions
 author: Chris Rackauckas
 ---
 
+```julia
+using DifferentialEquations
+using Sundials
+using BenchmarkTools
+using Plots
+```
+
 # Problem 1: Investigating Sources of Randomness and Uncertainty in a Biological System
 
 ## Part 1: Simulating the Oregonator ODE model
@@ -152,7 +159,7 @@ p = (Ka = 0.5, Ke = 0.1, τ = 4.0)
 
 ## Part 1: Simple Introduction to DAEs: Mass-Matrix Robertson Equations
 ```julia
-function g(du, u, p, t)
+function f(du, u, p, t)
     du[1] = -p[1]*u[1] + p[2]*u[2]*u[3]
     du[2] = p[1]*u[1] - p[2]*u[2]*u[3] - p[3]*u[2]*u[2] 
     du[3] = u[1] + u[2] + u[3] - 1.
