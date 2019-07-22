@@ -257,6 +257,46 @@ plot(sol, vars=(3,4))
 ```
 
 ## Part 5: Solving the Double Penulum DAE System
+For the double pendulum: 
+The equations for the second ball are the same
+as the single pendulum case. That is, the equations 
+for the second ball are:
+$$
+\begin{align}
+   \ddot{x_2} &= \frac{x_2}{m_2L_2}T_2 \\
+   \ddot{y_2} &= \frac{y_2}{m_2L_2}T_2 - g \\
+   \dot{x_2} &= u \\
+   \dot{y_2} &= v \\
+   u_2^2 + v_2^2 -y_2g + \frac{T_2}{m_2} &= 0
+\end{align}
+$$
+For the first ball, consider $x_1^2 + y_1^2 = L $
+$$
+\begin{align}
+x_1^2 + x_2^2 &= L \\
+2x_1\dot{x_1} + 2y_1\dot{y_1} &= 0 \\
+\dot{x_1}^2 + \dot{y_1}^2 + x_1(\frac{x_1}{m_1L_1}T_1 - \frac{x_2}{m_1L_2}T_2) + y_1(\frac{y_1}{m_1L_1}T_1 - g - \frac{y_2}{m_1L_2}T_2) &= 0 \\
+u_1^2 + v_1^2 + \frac{T_1}{m_1} - \frac{x_1x_2 + y_1y_2}{m_1L_2}T_2 &= 0 
+\end{align}
+$$
+
+So the final equations are: 
+$$
+\begin{align}
+   \dot{u_2} &= x_2*T_2/(m_2*L_2)
+   \dot{v_2} &= y_2*T_2/(m_2*L_2) - g
+   \dot{x_2} &= u_2
+   \dot{y_2} &= v_2 
+   u_2^2 + v_2^2 -y_2*g + \frac{T_2}{m_2} &=  0
+   
+   \dot{u_1} &= x_1*T_1/(m_1*L_1) - x_2*T_2/(m_2*L_2)
+   \dot{v_1} &= y_1*T_1/(m_1*L_1) - g - y_2*T_2/(m_2*L_2)
+   \dot{x_1} &= u_1
+   \dot{y_1} &= v_1
+   u_1^2 + v_1^2 + \frac{T_1}{m_1} + 
+                \frac{-x_1*x_2 - y_1*y_2}{m_1L_2}T_2 - y_1g &= 0
+\end{align}
+$$
 ```julia
 function f(out, da, a, p, t)
    L1, m1, L2, m2, g = p
