@@ -192,6 +192,40 @@ plot(sol, xscale=:log10, tspan=(1e-6, 1e5), layout=(3,1))
 ```
 
 ## Part 3: Manual Index Reduction of the Single Pendulum
+Consider the equation: 
+$$
+x^2 + y^2 = L
+$$
+Differentiating once with respect to time: 
+$$
+2x\dot{x} + 2y\dot{y} = 0 
+$$
+A second time: 
+$$
+\begin{align}
+{\dot{x}}^2 + x\ddot{x} + {\dot{y}}^2 + y\ddot{y} &= 0  \\
+u^2 + v^2 + x(\frac{x}{mL}T) + y(\frac{y}{mL}T - g) &= 0  \\
+u^2 + v^2 + \frac{x^2 + y^2}{mL}T - yg &= 0 \\
+u^2 + v^2 + \frac{T}{m} - yg &= 0
+\end{align}
+$$
+
+Our final set of equations is hence
+$$
+\begin{align}
+   \ddot{x} &= \frac{x}{mL}T \\
+   \ddot{y} &= \frac{y}{mL}T - g \\
+   \dot{x} &= u \\
+   \dot{y} &= v \\
+   u^2 + v^2 -yg + \frac{T}{m} &= 0
+\end{align}
+$$
+
+We finally obtain $T$ into the third equation. 
+This required two differentiations with respect 
+to time, and so our system of equations went from 
+index 3 to index 1. Now our solver can handle the 
+index 1 system. 
 
 ## Part 4: Single Pendulum Solution with IDA
 ```julia
@@ -223,10 +257,6 @@ plot(sol, vars=(3,4))
 ```
 
 ## Part 5: Solving the Double Penulum DAE System
-```julia
-```
-
-# Problem 4: Performance Optimizing and Parallelizing Semilinear PDE Solvers (I)
 ```julia
 function f(out, da, a, p, t)
    L1, m1, L2, m2, g = p
@@ -271,6 +301,8 @@ sol = solve(prob, IDA())
 plot(sol, vars=(3,4))
 plot(sol, vars=(8,9))
 ```
+
+# Problem 4: Performance Optimizing and Parallelizing Semilinear PDE Solvers (I)
 ## Part 1: Implementing the BRUSS PDE System as ODEs
 
 ```julia
