@@ -20,7 +20,7 @@ end α K n δ γ β μ k₊ k₋;
 latexify(rn; env=:chemical)
 
 
-x = latexify(rn; env=:chemical, starred=true, mathjax=true);
+x = latexify(rn; env=:chemical, starred=true, mathjax=false);
 display("text/latex", "$x");
 
 
@@ -154,7 +154,7 @@ tspan = (0.,.01)
 oprob = ODEProblem(rn, u₀, tspan, p)
 
 
-sol = solve(oprob, KenCarp4())
+sol = solve(oprob, Rodas5())
 times = [0., .0001, .001, .01]
 plt = plot()
 for time in times

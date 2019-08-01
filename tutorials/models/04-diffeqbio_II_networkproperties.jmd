@@ -411,11 +411,11 @@ oprob = ODEProblem(rn, u₀, tspan, p)
 
 We are now ready to solve the problem and plot the solution. Since we have
 essentially generated a method of lines discretization of the diffusion equation
-with a discontinuous initial condition, we'll use an A-L stable implicit ODE
-solver, `KenCarp4`, and plot the solution at a few times:
+with a discontinuous initial condition, we'll use an A stable implicit ODE
+solver, `Rodas5`, and plot the solution at a few times:
 
 ```julia
-sol = solve(oprob, KenCarp4())
+sol = solve(oprob, Rodas5())
 times = [0., .0001, .001, .01]
 plt = plot()
 for time in times
