@@ -94,7 +94,7 @@ function tutorial_footer(folder=nothing, file=nothing; remove_homedir=true)
     md *= "```\nStatus `$(projfile)`\n"
 
     for pkg in pkgs
-        if pkg.old.ver != nothing
+        if !isnothing(pkg.old) && pkg.old.ver !== nothing
           md *= "[$(string(pkg.uuid))] $(string(pkg.name)) $(string(pkg.old.ver))\n"
         else
           md *= "[$(string(pkg.uuid))] $(string(pkg.name))\n"
