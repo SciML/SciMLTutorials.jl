@@ -411,7 +411,7 @@ oprob = ODEProblem(rn, u₀, tspan, p)
 
 We are now ready to solve the problem and plot the solution. Since we have
 essentially generated a method of lines discretization of the diffusion equation
-with a discontinuous initial condition, we'll use an A stable implicit ODE
+with a discontinuous initial condition, we'll use an A-L stable implicit ODE
 solver, `Rodas5`, and plot the solution at a few times:
 
 ```julia

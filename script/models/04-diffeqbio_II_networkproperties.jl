@@ -20,7 +20,7 @@ end α K n δ γ β μ k₊ k₋;
 latexify(rn; env=:chemical)
 
 
-x = latexify(rn; env=:chemical, starred=true, mathjax=false);
+x = latexify(rn; env=:chemical, starred=true, mathjax=true);
 display("text/latex", "$x");
 
 
