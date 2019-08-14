@@ -38,7 +38,7 @@ This corresponds to the chemical reaction network given by
 latexify(rn; env=:chemical)
 ```
 ```julia; echo=false; skip="notebook";
-x = latexify(rn; env=:chemical, starred=true, mathjax=false);
+x = latexify(rn; env=:chemical, starred=true, mathjax=true);
 display("text/latex", "$x");
 ```
 
