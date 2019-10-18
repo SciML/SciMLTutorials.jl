@@ -42,6 +42,7 @@ DiffEqTutorials.open_notebooks()
   - [Conditional Dosing Example](http://tutorials.juliadiffeq.org/html/models/02-conditional_dosing.html)
   - [DiffEqBiological Tutorial I: Introduction](http://tutorials.juliadiffeq.org/html/models/03-diffeqbio_I_introduction.html)
   - [DiffEqBiological Tutorial II: Network Properties API](http://tutorials.juliadiffeq.org/html/models/04-diffeqbio_II_networkproperties.html)
+  - [DiffEqBiological Tutorial III: Steady-States and Bifurcations](http://tutorials.juliadiffeq.org/html/models/04b-diffeqbio_III_steadystates.html)
   - [Kepler Problem Orbit](http://tutorials.juliadiffeq.org/html/models/05-kepler_problem.html)
   - [Bayesian Inference of Pendulum Parameters](http://tutorials.juliadiffeq.org/html/models/06-pendulum_bayesian_inference.html)
 - Advanced ODE Features
