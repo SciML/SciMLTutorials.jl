@@ -58,7 +58,8 @@ generated rate laws for each reaction
 latexify(repressilator; env=:chemical)
 ```
 ```julia; echo=false; skip="notebook";
-x = latexify(repressilator; env=:chemical, starred=true, mathjax=true);
+mathjax = WEAVE_ARGS[:doctype] == "pdf" ? false : true
+x = latexify(repressilator; env=:chemical, starred=true, mathjax=mathjax);
 display("text/latex", "$x");
 ```
 
@@ -66,10 +67,10 @@ We can also use Latexify to look at the corresponding ODE model for the chemical
 system
 
 ```julia; results="hidden";
-latexify(repressilator)
+latexify(repressilator, cdot=false)
 ```
 ```julia; echo=false; skip="notebook";
-x = latexify(repressilator, starred=true);
+x = latexify(repressilator, cdot=false, starred=true);
 display("text/latex", "$x");
 ```
 
@@ -189,9 +190,13 @@ tspan = (0.,4.);
 
 The corresponding Chemical Langevin Equation SDE is then
 
-$$
-dX_t = \left(c_1 X - c_2 X + c_3 \right) dt + \left( \sqrt{c_1 X} - \sqrt{c_2 X} + \sqrt{c_3} \right)dW_t,
-$$
+```julia; results="hidden";
+latexify(bdp, noise=true, cdot=false)
+```
+```julia; echo=false; skip="notebook";
+x = latexify(bdp, noise=true, cdot=false, starred=true);
+display("text/latex", "$x");
+```
 
 where $W_t$ denotes a standard Brownian Motion. We can solve the CLE SDE model
 by creating an SDEProblem and solving it similar to what we did for ODEs above:
@@ -220,10 +225,10 @@ The generated `reaction_network` contains a lot of basic information. For exampl
   returns the Jacobian of the ODEs in `J`. A corresponding Jacobian matrix of
   expressions can be accessed using the `jacobianexprs` function:  
 ```julia; results="hidden";
-latexify(jacobianexprs(repressilator))
+latexify(jacobianexprs(repressilator), cdot=false)
 ```
 ```julia; echo=false; skip="notebook";
-x = latexify(jacobianexprs(repressilator), starred=true);
+x = latexify(jacobianexprs(repressilator), cdot=false, starred=true);
 display("text/latex", "$x");
 ```
 - `pjac = paramjacfun(repressilator)` is a function `pjac(pJ,u,p,t)` that
