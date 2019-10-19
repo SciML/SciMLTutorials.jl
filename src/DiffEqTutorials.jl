@@ -13,30 +13,35 @@ function weave_file(folder,file,build_list=(:script,:html,:pdf,:notebook); kwarg
     println("Building Script")
     dir = joinpath(repo_directory,"script",folder)
     isdir(dir) || mkdir(dir)
+    args[:doctype] = "script"
     tangle(tmp;out_path=dir)
   end
   if :html ∈ build_list
     println("Building HTML")
     dir = joinpath(repo_directory,"html",folder)
     isdir(dir) || mkdir(dir)
+    args[:doctype] = "html"
     weave(tmp,doctype = "md2html",out_path=dir,args=args; css=cssfile, kwargs...)
   end
   if :pdf ∈ build_list
     println("Building PDF")
     dir = joinpath(repo_directory,"pdf",folder)
     isdir(dir) || mkdir(dir)
+    args[:doctype] = "pdf"
     weave(tmp,doctype="md2pdf",out_path=dir,args=args; template=latexfile, kwargs...)
   end
   if :github ∈ build_list
     println("Building Github Markdown")
     dir = joinpath(repo_directory,"markdown",folder)
     isdir(dir) || mkdir(dir)
+    args[:doctype] = "github"
     weave(tmp,doctype = "github",out_path=dir,args=args; kwargs...)
   end
   if :notebook ∈ build_list
     println("Building Notebook")
     dir = joinpath(repo_directory,"notebook",folder)
     isdir(dir) || mkdir(dir)
+    args[:doctype] = "notebook"
     Weave.convert_doc(tmp,joinpath(dir,file[1:end-4]*".ipynb"))
   end
 end

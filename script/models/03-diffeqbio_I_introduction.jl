@@ -25,14 +25,15 @@ end α K n δ γ β μ;
 latexify(repressilator; env=:chemical)
 
 
-x = latexify(repressilator; env=:chemical, starred=true, mathjax=true);
+mathjax = WEAVE_ARGS[:doctype] == "pdf" ? false : true
+x = latexify(repressilator; env=:chemical, starred=true, mathjax=mathjax);
 display("text/latex", "$x");
 
 
-latexify(repressilator)
+latexify(repressilator, cdot=false)
 
 
-x = latexify(repressilator, starred=true);
+x = latexify(repressilator, cdot=false, starred=true);
 display("text/latex", "$x");
 
 
@@ -89,6 +90,13 @@ u₀ = [5.]
 tspan = (0.,4.);
 
 
+latexify(bdp, noise=true, cdot=false)
+
+
+x = latexify(bdp, noise=true, cdot=false, starred=true);
+display("text/latex", "$x");
+
+
 # SDEProblem for CLE
 sprob = SDEProblem(bdp, u₀, tspan, p)
 
@@ -98,10 +106,10 @@ sol = solve(sprob, tstops=range(0., step=4e-3, length=1001))
 plot(sol, fmt=:svg)
 
 
-latexify(jacobianexprs(repressilator))
+latexify(jacobianexprs(repressilator), cdot=false)
 
 
-x = latexify(jacobianexprs(repressilator), starred=true);
+x = latexify(jacobianexprs(repressilator), cdot=false, starred=true);
 display("text/latex", "$x");
 
 
