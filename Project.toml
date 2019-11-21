@@ -47,4 +47,12 @@ Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
 
 [compat]
 DiffEqCallbacks = "2.9"
+DiffEqParamEstim = "1.8"
+AlgebraicMultigrid = "0.2"
+CUDAnative = "2.5"
+Weave = "0.9"
+DiffEqPhysics = "3.2"
+StaticArrays = "0.10, 0.11, 0.12"
+BenchmarkTools = "0.4"
+Latexify = "0.12"
 julia = "1"
