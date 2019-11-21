@@ -47,4 +47,5 @@ Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
 
 [compat]
 BenchmarkTools = "0.4"
+Latexify = "0.12"
 julia = "1"
