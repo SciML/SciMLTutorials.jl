@@ -46,5 +46,7 @@ Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
 
 [compat]
-StaticArrays = "0.12"
+StaticArrays = "0.10, 0.11, 0.12"
+BenchmarkTools = "0.4"
+Latexify = "0.12"
 julia = "1"
