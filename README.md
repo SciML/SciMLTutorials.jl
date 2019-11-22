@@ -5,8 +5,8 @@
 DiffEqTutorials.jl holds PDFs, webpages, and interactive Jupyter notebooks
 showing how to utilize the software in the JuliaDiffEq ecosystem. This set of
 tutorials was made to complement the
-[documentation](http://docs.juliadiffeq.org/latest/) and the
-[devdocs](http://devdocs.juliadiffeq.org/latest/)
+[documentation](http://docs.juliadiffeq.org/dev/) and the
+[devdocs](http://devdocs.juliadiffeq.org/dev/)
 by providing practical examples of the concepts. For more details, please
 consult the docs.
 
