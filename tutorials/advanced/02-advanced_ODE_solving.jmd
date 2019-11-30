@@ -504,3 +504,8 @@ plot(sol, xscale=:log10, tspan=(1e-6, 1e5), layout=(3,1))
 Note that if your mass matrix is singular, i.e. your system is a DAE, then you
 need to make sure you choose
 [a solver that is compatible with DAEs](http://docs.juliadiffeq.org/dev/solvers/dae_solve.html#Full-List-of-Methods-1)
+
+```{julia; echo=false; skip="notebook"}
+using DiffEqTutorials
+DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+```
