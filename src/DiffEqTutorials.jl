@@ -6,7 +6,7 @@ repo_directory = joinpath(@__DIR__,"..")
 cssfile = joinpath(@__DIR__, "..", "templates", "skeleton_css.css")
 latexfile = joinpath(@__DIR__, "..", "templates", "julia_tex.tpl")
 
-function weave_file(folder,file,build_list=(:script,:html,:pdf,:notebook); kwargs...)
+function weave_file(folder,file,build_list=(:script,:html,:pdf,:github,:notebook); kwargs...)
   tmp = joinpath(repo_directory,"tutorials",folder,file)
   args = Dict{Symbol,String}(:folder=>folder,:file=>file)
   if :script ∈ build_list
