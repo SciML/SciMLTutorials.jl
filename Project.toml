@@ -1,7 +1,7 @@
 name = "DiffEqTutorials"
 uuid = "6d1b261a-3be8-11e9-3f2f-0b112a9a8436"
 authors = ["Chris Rackauckas <accounts@chrisrackauckas.com>"]
-version = "0.2.0"
+version = "0.2.1"
 
 [deps]
 AlgebraicMultigrid = "2169fc97-5a83-5252-b627-83903c6c433c"
