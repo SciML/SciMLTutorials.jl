@@ -10,8 +10,8 @@ using ModelingToolkit
 eqs = [D(x) ~ σ*(y-x),
        D(y) ~ x*(ρ-z)-y,
        D(z) ~ x*y - β*z]
-de = ODESystem(eqs)
-ode_f = ODEFunction(de, [x,y,z], [σ,ρ,β])
+de = ODESystem(eqs, t, [x,y,z], [σ,ρ,β])
+ode_f = ODEFunction(de)
 
 ### Use in DifferentialEquations.jl
 
@@ -26,10 +26,10 @@ using Plots
 plot(sol,vars=(1,2,3))
 
 
-generate_function(de, [x,y,z], [σ,ρ,β])
+generate_function(de)[1]
 
 
-generate_function(de, [x,y,z], [σ,ρ,β]; version=ModelingToolkit.SArrayFunction)
+generate_function(de)[2]
 
 
 jac = calculate_jacobian(de)
@@ -48,11 +48,11 @@ ModelingToolkit.generate_factorized_W(de)[1]
 eqs = [0 ~ σ*(y-x),
        0 ~ x*(ρ-z)-y,
        0 ~ x*y - β*z]
-ns = NonlinearSystem(eqs, [x,y,z])
-nlsys_func = generate_function(ns, [x,y,z], [σ,ρ,β])
+ns = NonlinearSystem(eqs, [x,y,z], [σ,ρ,β])
+nlsys_func = generate_function(ns)
 
 
-nl_f = @eval eval(nlsys_func)
+nl_f = @eval eval(nlsys_func[2])
 # Make a closure over the parameters for for NLsolve.jl
 f2 = (du,u) -> nl_f(du,u,(10.0,26.0,2.33))
 
@@ -65,7 +65,7 @@ nlsolve(f2,ones(3))
 @variables u(t), x(t)
 eqs = [D3(u) ~ 2(D2(u)) + D(u) + D(x) + 1
        D2(x) ~ D(x) + 2]
-de = ODESystem(eqs)
+de = ODESystem(eqs, t, [u,x], [])
 de1 = ode_order_lowering(de)
 
 
@@ -87,13 +87,13 @@ J = expand_derivatives.(J)
 
 
 using LinearAlgebra
-luJ = lu(J)
+luJ = lu(J,Val(false))
 
 
 luJ.L
 
 
-invJ = inv(J)
+invJ = inv(luJ)
 
 
 function lorenz(du,u,p,t)
@@ -122,7 +122,7 @@ function SparseArrays.SparseMatrixCSC(M::Matrix{T}) where {T<:ModelingToolkit.Ex
     I = [i[1] for i in idxs]
     J = [i[2] for i in idxs]
     V = [M[i] for i in idxs]
-    return SparseArrays.sparse_IJ_sorted!(I, J, V, size(M)...)
+    return SparseArrays.sparse(I, J, V, size(M)...)
 end
 sJ = SparseMatrixCSC(J)
 
