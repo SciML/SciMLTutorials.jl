@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>An Implicit&#x2F;Explicit CUDA-Accelerated Solver for the 2D Beeler-Reuter Model</title>
-  
+
 
   <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
@@ -16,7 +16,7 @@
   <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
   </script>
 
-  
+
 <style>
 pre.hljl {
     border: 1px solid #ccc;
@@ -662,12 +662,12 @@ div.title {text-align: center;}
           <div class="title">
             <h1 class="title">An Implicit&#x2F;Explicit CUDA-Accelerated Solver for the 2D Beeler-Reuter Model</h1>
             <h5>Shahriar Iravanian</h5>
-            
+
           </div>
 
           <h2>Background</h2>
 <p><a href="https://github.com/JuliaDiffEq">JuliaDiffEq</a> is a suite of optimized Julia libraries to solve ordinary differential equations &#40;ODE&#41;. <em>JuliaDiffEq</em> provides a large number of explicit and implicit solvers suited for different types of ODE problems. It is possible to reduce a system of partial differential equations into an ODE problem by employing the <a href="https://en.wikipedia.org/wiki/Method_of_lines">method of lines &#40;MOL&#41;</a>. The essence of MOL is to discretize the spatial derivatives &#40;by finite difference, finite volume or finite element methods&#41; into algebraic equations and to keep the time derivatives as is. The resulting differential equations are left with only one independent variable &#40;time&#41; and can be solved with an ODE solver. <a href="http://www.stochasticlifestyle.com/solving-systems-stochastic-pdes-using-gpus-julia/">Solving Systems of Stochastic PDEs and using GPUs in Julia</a> is a brief introduction to MOL and using GPUs to accelerate PDE solving in <em>JuliaDiffEq</em>. Here we expand on this introduction by developing an implicit/explicit &#40;IMEX&#41; solver for a 2D cardiac electrophysiology model and show how to use <a href="https://github.com/JuliaGPU/CuArrays.jl">CuArray</a> and <a href="https://github.com/JuliaGPU/CUDAnative.jl">CUDAnative</a> libraries to run the explicit part of the model on a GPU.</p>
-<p>Note that this tutorial does not use the <a href="http://docs.juliadiffeq.org/latest/solvers/split_ode_solve.html#Implicit-Explicit-&#40;IMEX&#41;-ODE-1">higher order IMEX methods built into DifferentialEquations.jl</a> but instead shows how to hand-split an equation when the explicit portion has an analytical solution &#40;or approxiate&#41;, which is common in many scenarios.</p>
+<p>Note that this tutorial does not use the <a href="https://docs.juliadiffeq.org/latest/solvers/split_ode_solve/#Implicit-Explicit-(IMEX)-ODE-1">higher order IMEX methods built into DifferentialEquations.jl</a> but instead shows how to hand-split an equation when the explicit portion has an analytical solution &#40;or approxiate&#41;, which is common in many scenarios.</p>
 <p>There are hundreds of ionic models that describe cardiac electrical activity in various degrees of detail. Most are based on the classic <a href="https://en.wikipedia.org/wiki/Hodgkin&#37;E2&#37;80&#37;93Huxley_model">Hodgkin-Huxley model</a> and define the time-evolution of different state variables in the form of nonlinear first-order ODEs. The state vector for these models includes the transmembrane potential, gating variables, and ionic concentrations. The coupling between cells is through the transmembrame potential only and is described as a reaction-diffusion equation, which is a parabolic PDE,</p>
 <p class="math">\[
 \partial V / \partial t = \nabla (D  \nabla V) - \frac {I_\text{ion}} {C_m},
@@ -681,7 +681,7 @@ div.title {text-align: center;}
 <h3>The Beeler-Reuter Model</h3>
 <p>We have chosen the <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1283659/">Beeler-Reuter ventricular ionic model</a> as our example. It is a classic model first described in 1977 and is used as a base for many other ionic models. It has eight state variables, which makes it complicated enough to be interesting without obscuring the main points of the exercise. The eight state variables are: the transmembrane potential &#40;<span class="math">$V$</span>&#41;, sodium-channel activation and inactivation gates &#40;<span class="math">$m$</span> and <span class="math">$h$</span>, similar to the Hodgkin-Huxley model&#41;, with an additional slow inactivation gate &#40;<span class="math">$j$</span>&#41;, calcium-channel activation and deactivations gates &#40;<span class="math">$d$</span> and <span class="math">$f$</span>&#41;, a time-dependent inward-rectifying potassium current gate &#40;<span class="math">$x_1$</span>&#41;, and intracellular calcium concentration &#40;<span class="math">$c$</span>&#41;. There are four currents: a sodium current &#40;<span class="math">$i_{Na}$</span>&#41;, a calcium current &#40;<span class="math">$i_{Ca}$</span>&#41;, and two potassium currents, one time-dependent &#40;<span class="math">$i_{x_1}$</span>&#41; and one background time-independent &#40;<span class="math">$i_{K_1}$</span>&#41;.</p>
 <h2>CPU-Only Beeler-Reuter Solver</h2>
-<p>Let&#39;s start by developing a CPU only IMEX solver. The main idea is to use the <em>DifferentialEquations</em> framework to handle the implicit part of the equation and code the analytical approximation for explicit part separately. If no analytical approximation was known for the explicit part, one could use methods from <a href="http://docs.juliadiffeq.org/latest/solvers/split_ode_solve.html#Implicit-Explicit-&#40;IMEX&#41;-ODE-1">this list</a>.</p>
+<p>Let&#39;s start by developing a CPU only IMEX solver. The main idea is to use the <em>DifferentialEquations</em> framework to handle the implicit part of the equation and code the analytical approximation for explicit part separately. If no analytical approximation was known for the explicit part, one could use methods from <a href="https://docs.juliadiffeq.org/latest/solvers/split_ode_solve/#Implicit-Explicit-(IMEX)-ODE-1">this list</a>.</p>
 <p>First, we define the model constants:</p>
 
 
@@ -795,7 +795,7 @@ laplacian &#40;generic function with 1 method&#41;
 
 
 <h3>The Rush-Larsen Method</h3>
-<p>We use an explicit solver for all the state variables except for the transmembrane potential which is solved with the help of an implicit solver. The explicit solver is a domain-specific exponential method, the Rush-Larsen method. This method utilizes an approximation on the model in order to transform the IMEX equation into a form suitable for an implicit ODE solver. This combination of implicit and explicit methods forms a specialized IMEX solver. For general IMEX integration, please see the <a href="http://docs.juliadiffeq.org/latest/solvers/split_ode_solve.html#Implicit-Explicit-&#37;28IMEX&#37;29-ODE-1">IMEX solvers documentation</a>. While we could have used the general model to solve the current problem, for this specific model, the transformation approach is more efficient and is of practical interest.</p>
+<p>We use an explicit solver for all the state variables except for the transmembrane potential which is solved with the help of an implicit solver. The explicit solver is a domain-specific exponential method, the Rush-Larsen method. This method utilizes an approximation on the model in order to transform the IMEX equation into a form suitable for an implicit ODE solver. This combination of implicit and explicit methods forms a specialized IMEX solver. For general IMEX integration, please see the <a href="https://docs.juliadiffeq.org/latest/solvers/split_ode_solve/#Implicit-Explicit-(IMEX)-ODE-1">IMEX solvers documentation</a>. While we could have used the general model to solve the current problem, for this specific model, the transformation approach is more efficient and is of practical interest.</p>
 <p>The <a href="https://ieeexplore.ieee.org/document/4122859/">Rush-Larsen</a> method replaces the explicit Euler integration for the gating variables with direct integration. The starting point is the general ODE for the gating variables in Hodgkin-Huxley style ODEs,</p>
 <p class="math">\[
 \frac{dg}{dt} = \alpha(V) (1 - g) - \beta(V) g

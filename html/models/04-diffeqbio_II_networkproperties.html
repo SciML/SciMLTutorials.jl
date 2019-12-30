@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>DiffEqBiological Tutorial II: Network Properties API</title>
-  
+
 
   <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
@@ -16,7 +16,7 @@
   <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
   </script>
 
-  
+
 <style>
 pre.hljl {
     border: 1px solid #ccc;
@@ -662,10 +662,10 @@ div.title {text-align: center;}
           <div class="title">
             <h1 class="title">DiffEqBiological Tutorial II: Network Properties API</h1>
             <h5>Samuel Isaacson</h5>
-            
+
           </div>
 
-          <p>The <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html">DiffEqBiological API</a> provides a collection of functions for easily accessing network properties, and for incrementally building and extending a network. In this tutorial we&#39;ll go through the API, and then illustrate how to programmatically construct a network.</p>
+          <p>The <a href="https://docs.juliadiffeq.org/latest/apis/diffeqbio">DiffEqBiological API</a> provides a collection of functions for easily accessing network properties, and for incrementally building and extending a network. In this tutorial we&#39;ll go through the API, and then illustrate how to programmatically construct a network.</p>
 <p>We&#39;ll illustrate the API using a toggle-switch like network that contains a variety of different reaction types:</p>
 
 
@@ -682,7 +682,7 @@ div.title {text-align: center;}
     </span><span class='hljl-n'>β</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>m₂</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>m₂</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-n'>P₂</span><span class='hljl-t'>
     </span><span class='hljl-n'>μ</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>P₁</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>∅</span><span class='hljl-t'>
     </span><span class='hljl-n'>μ</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>P₂</span><span class='hljl-t'> </span><span class='hljl-oB'>--&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>∅</span><span class='hljl-t'>
-    </span><span class='hljl-p'>(</span><span class='hljl-n'>k₊</span><span class='hljl-p'>,</span><span class='hljl-n'>k₋</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-ni'>2</span><span class='hljl-n'>P₁</span><span class='hljl-t'> </span><span class='hljl-oB'>↔</span><span class='hljl-t'> </span><span class='hljl-n'>D₁</span><span class='hljl-t'> 
+    </span><span class='hljl-p'>(</span><span class='hljl-n'>k₊</span><span class='hljl-p'>,</span><span class='hljl-n'>k₋</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-ni'>2</span><span class='hljl-n'>P₁</span><span class='hljl-t'> </span><span class='hljl-oB'>↔</span><span class='hljl-t'> </span><span class='hljl-n'>D₁</span><span class='hljl-t'>
     </span><span class='hljl-p'>(</span><span class='hljl-n'>k₊</span><span class='hljl-p'>,</span><span class='hljl-n'>k₋</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-ni'>2</span><span class='hljl-n'>P₂</span><span class='hljl-t'> </span><span class='hljl-oB'>↔</span><span class='hljl-t'> </span><span class='hljl-n'>D₂</span><span class='hljl-t'>
     </span><span class='hljl-p'>(</span><span class='hljl-n'>k₊</span><span class='hljl-p'>,</span><span class='hljl-n'>k₋</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-n'>P₁</span><span class='hljl-oB'>+</span><span class='hljl-n'>P₂</span><span class='hljl-t'> </span><span class='hljl-oB'>↔</span><span class='hljl-t'> </span><span class='hljl-n'>T</span><span class='hljl-t'>
 </span><span class='hljl-k'>end</span><span class='hljl-t'> </span><span class='hljl-n'>α</span><span class='hljl-t'> </span><span class='hljl-n'>K</span><span class='hljl-t'> </span><span class='hljl-n'>n</span><span class='hljl-t'> </span><span class='hljl-n'>δ</span><span class='hljl-t'> </span><span class='hljl-n'>γ</span><span class='hljl-t'> </span><span class='hljl-n'>β</span><span class='hljl-t'> </span><span class='hljl-n'>μ</span><span class='hljl-t'> </span><span class='hljl-n'>k₊</span><span class='hljl-t'> </span><span class='hljl-n'>k₋</span><span class='hljl-p'>;</span>
@@ -718,7 +718,7 @@ div.title {text-align: center;}
 
 <hr />
 <h2>Network Properties</h2>
-<p><a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Basic-properties-1">Basic properties</a> of the generated network include the <code>speciesmap</code> and <code>paramsmap</code> functions we examined in the last tutorial, along with the corresponding <code>species</code> and <code>params</code> functions:</p>
+<p><a href="https://docs.juliadiffeq.org/latest/apis/diffeqbio/#Basic-properties-1">Basic properties</a> of the generated network include the <code>speciesmap</code> and <code>paramsmap</code> functions we examined in the last tutorial, along with the corresponding <code>species</code> and <code>params</code> functions:</p>
 
 
 <pre class='hljl'>
@@ -746,20 +746,20 @@ div.title {text-align: center;}
 
 <pre class="output">
 9-element Array&#123;Symbol,1&#125;:
- :α 
- :K 
- :n 
- :δ 
- :γ 
- :β 
- :μ 
+ :α
+ :K
+ :n
+ :δ
+ :γ
+ :β
+ :μ
  :k₊
  :k₋
 </pre>
 
 
 <p>The numbers of species, parameters and reactions can be accessed using <code>numspecies&#40;rn&#41;</code>, <code>numparams&#40;rn&#41;</code> and <code>numreactions&#40;rn&#41;</code>.</p>
-<p>A number of functions are available to access <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Reaction-Properties-1">properties of reactions</a> within the generated network, including <code>substrates</code>, <code>products</code>, <code>dependents</code>, <code>ismassaction</code>, <code>substratestoich</code>, <code>substratesymstoich</code>, <code>productstoich</code>, <code>productsymstoich</code>, and <code>netstoich</code>. Each of these functions takes two arguments, the reaction network <code>rn</code> and the index of the reaction to query information about. For example, to find the substrate symbols and their corresponding stoichiometries for the 11th reaction, <code>2P₁ --&gt; D₁</code>, we would use</p>
+<p>A number of functions are available to access <a href="https://docs.juliadiffeq.org/latest/apis/diffeqbio/#Reaction-Properties-1">properties of reactions</a> within the generated network, including <code>substrates</code>, <code>products</code>, <code>dependents</code>, <code>ismassaction</code>, <code>substratestoich</code>, <code>substratesymstoich</code>, <code>productstoich</code>, <code>productsymstoich</code>, and <code>netstoich</code>. Each of these functions takes two arguments, the reaction network <code>rn</code> and the index of the reaction to query information about. For example, to find the substrate symbols and their corresponding stoichiometries for the 11th reaction, <code>2P₁ --&gt; D₁</code>, we would use</p>
 
 
 <pre class='hljl'>
@@ -783,20 +783,20 @@ div.title {text-align: center;}
 
 <pre class="output">
 16-element Array&#123;Array&#123;DiffEqBiological.ReactantStruct,1&#125;,1&#125;:
- &#91;&#93;                                              
- &#91;&#93;                                              
- &#91;ReactantStruct&#40;:m₁, 1&#41;&#93;                        
- &#91;&#93;                                              
- &#91;ReactantStruct&#40;:m₂, 1&#41;&#93;                        
- &#91;&#93;                                              
- &#91;ReactantStruct&#40;:m₁, 1&#41;&#93;                        
- &#91;ReactantStruct&#40;:m₂, 1&#41;&#93;                        
- &#91;ReactantStruct&#40;:P₁, 1&#41;&#93;                        
- &#91;ReactantStruct&#40;:P₂, 1&#41;&#93;                        
- &#91;ReactantStruct&#40;:P₁, 2&#41;&#93;                        
- &#91;ReactantStruct&#40;:D₁, 1&#41;&#93;                        
- &#91;ReactantStruct&#40;:P₂, 2&#41;&#93;                        
- &#91;ReactantStruct&#40;:D₂, 1&#41;&#93;                        
+ &#91;&#93;
+ &#91;&#93;
+ &#91;ReactantStruct&#40;:m₁, 1&#41;&#93;
+ &#91;&#93;
+ &#91;ReactantStruct&#40;:m₂, 1&#41;&#93;
+ &#91;&#93;
+ &#91;ReactantStruct&#40;:m₁, 1&#41;&#93;
+ &#91;ReactantStruct&#40;:m₂, 1&#41;&#93;
+ &#91;ReactantStruct&#40;:P₁, 1&#41;&#93;
+ &#91;ReactantStruct&#40;:P₂, 1&#41;&#93;
+ &#91;ReactantStruct&#40;:P₁, 2&#41;&#93;
+ &#91;ReactantStruct&#40;:D₁, 1&#41;&#93;
+ &#91;ReactantStruct&#40;:P₂, 2&#41;&#93;
+ &#91;ReactantStruct&#40;:D₂, 1&#41;&#93;
  &#91;ReactantStruct&#40;:P₁, 1&#41;, ReactantStruct&#40;:P₂, 1&#41;&#93;
  &#91;ReactantStruct&#40;:T, 1&#41;&#93;
 </pre>
@@ -812,27 +812,27 @@ div.title {text-align: center;}
 
 <pre class="output">
 16-element Array&#123;Array&#123;Pair&#123;Int64,Int64&#125;,1&#125;,1&#125;:
- &#91;1&#61;&gt;1&#93;              
- &#91;2&#61;&gt;1&#93;              
- &#91;1&#61;&gt;-1&#93;             
- &#91;1&#61;&gt;1&#93;              
- &#91;2&#61;&gt;-1&#93;             
- &#91;2&#61;&gt;1&#93;              
- &#91;3&#61;&gt;1&#93;              
- &#91;4&#61;&gt;1&#93;              
- &#91;3&#61;&gt;-1&#93;             
- &#91;4&#61;&gt;-1&#93;             
- &#91;3&#61;&gt;-2, 5&#61;&gt;1&#93;       
- &#91;3&#61;&gt;2, 5&#61;&gt;-1&#93;       
- &#91;4&#61;&gt;-2, 6&#61;&gt;1&#93;       
- &#91;4&#61;&gt;2, 6&#61;&gt;-1&#93;       
+ &#91;1&#61;&gt;1&#93;
+ &#91;2&#61;&gt;1&#93;
+ &#91;1&#61;&gt;-1&#93;
+ &#91;1&#61;&gt;1&#93;
+ &#91;2&#61;&gt;-1&#93;
+ &#91;2&#61;&gt;1&#93;
+ &#91;3&#61;&gt;1&#93;
+ &#91;4&#61;&gt;1&#93;
+ &#91;3&#61;&gt;-1&#93;
+ &#91;4&#61;&gt;-1&#93;
+ &#91;3&#61;&gt;-2, 5&#61;&gt;1&#93;
+ &#91;3&#61;&gt;2, 5&#61;&gt;-1&#93;
+ &#91;4&#61;&gt;-2, 6&#61;&gt;1&#93;
+ &#91;4&#61;&gt;2, 6&#61;&gt;-1&#93;
  &#91;3&#61;&gt;-1, 4&#61;&gt;-1, 7&#61;&gt;1&#93;
  &#91;3&#61;&gt;1, 4&#61;&gt;1, 7&#61;&gt;-1&#93;
 </pre>
 
 
 <p>Here the first integer in each pair corresponds to the index of the species &#40;with symbol <code>species&#40;rn&#41;&#91;index&#93;</code>&#41;. The second integer corresponds to the net stoichiometric coefficient of the species within the reaction. <code>substratestoich</code> and <code>productstoich</code> are defined similarly. </p>
-<p>Several functions are also provided that calculate different types of <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Dependency-Graphs-1">dependency graphs</a>. These include <code>rxtospecies_depgraph</code>, which provides a mapping from reaction index to the indices of species whose population changes when the reaction occurs:</p>
+<p>Several functions are also provided that calculate different types of <a href="https://docs.juliadiffeq.org/latest/apis/diffeqbio/#Dependency-Graphs-1">dependency graphs</a>. These include <code>rxtospecies_depgraph</code>, which provides a mapping from reaction index to the indices of species whose population changes when the reaction occurs:</p>
 
 
 <pre class='hljl'>
@@ -842,20 +842,20 @@ div.title {text-align: center;}
 
 <pre class="output">
 16-element Array&#123;Array&#123;Int64,1&#125;,1&#125;:
- &#91;1&#93;      
- &#91;2&#93;      
- &#91;1&#93;      
- &#91;1&#93;      
- &#91;2&#93;      
- &#91;2&#93;      
- &#91;3&#93;      
- &#91;4&#93;      
- &#91;3&#93;      
- &#91;4&#93;      
- &#91;3, 5&#93;   
- &#91;3, 5&#93;   
- &#91;4, 6&#93;   
- &#91;4, 6&#93;   
+ &#91;1&#93;
+ &#91;2&#93;
+ &#91;1&#93;
+ &#91;1&#93;
+ &#91;2&#93;
+ &#91;2&#93;
+ &#91;3&#93;
+ &#91;4&#93;
+ &#91;3&#93;
+ &#91;4&#93;
+ &#91;3, 5&#93;
+ &#91;3, 5&#93;
+ &#91;4, 6&#93;
+ &#91;4, 6&#93;
  &#91;3, 4, 7&#93;
  &#91;3, 4, 7&#93;
 </pre>
@@ -915,30 +915,30 @@ div.title {text-align: center;}
 
 <pre class="output">
 16-element Array&#123;Array&#123;Int64,1&#125;,1&#125;:
- &#91;1, 3, 7&#93;              
- &#91;2, 5, 8&#93;              
- &#91;3, 7&#93;                 
- &#91;3, 4, 7&#93;              
- &#91;5, 8&#93;                 
- &#91;5, 6, 8&#93;              
- &#91;7, 9, 11, 15&#93;         
- &#91;8, 10, 13, 15&#93;        
- &#91;9, 11, 15&#93;            
- &#91;10, 13, 15&#93;           
- &#91;2, 9, 11, 12, 15&#93;     
- &#91;2, 9, 11, 12, 15&#93;     
- &#91;1, 10, 13, 14, 15&#93;    
- &#91;1, 10, 13, 14, 15&#93;    
+ &#91;1, 3, 7&#93;
+ &#91;2, 5, 8&#93;
+ &#91;3, 7&#93;
+ &#91;3, 4, 7&#93;
+ &#91;5, 8&#93;
+ &#91;5, 6, 8&#93;
+ &#91;7, 9, 11, 15&#93;
+ &#91;8, 10, 13, 15&#93;
+ &#91;9, 11, 15&#93;
+ &#91;10, 13, 15&#93;
+ &#91;2, 9, 11, 12, 15&#93;
+ &#91;2, 9, 11, 12, 15&#93;
+ &#91;1, 10, 13, 14, 15&#93;
+ &#91;1, 10, 13, 14, 15&#93;
  &#91;9, 10, 11, 13, 15, 16&#93;
  &#91;9, 10, 11, 13, 15, 16&#93;
 </pre>
 
 
 <h4>Note on Using Network Property API Functions</h4>
-<p>Many basic network query and reaction property functions are simply accessors, returning information that is already stored within the generated <code>reaction_network</code>. For these functions, modifying the returned data structures may lead to inconsistent internal state within the network. As such, they should be used for accessing, but not modifying, network properties. The <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html">API documentation</a> indicates which functions return newly allocated data structures and which return data stored within the <code>reaction_network</code>.</p>
+<p>Many basic network query and reaction property functions are simply accessors, returning information that is already stored within the generated <code>reaction_network</code>. For these functions, modifying the returned data structures may lead to inconsistent internal state within the network. As such, they should be used for accessing, but not modifying, network properties. The <a href="https://docs.juliadiffeq.org/latest/apis/diffeqbio">API documentation</a> indicates which functions return newly allocated data structures and which return data stored within the <code>reaction_network</code>.</p>
 <hr />
 <h2>Incremental Construction of Networks</h2>
-<p>The <code>@reaction_network</code> macro is monolithic, in that it not only constructs and stores basic network properties such as the reaction stoichiometries, but also generates <strong>everything</strong> needed to immediately solve ODE, SDE and jump models using the network. This includes Jacobian functions, noise functions, and jump functions for each reaction. While this allows for a compact interface to the DifferentialEquations.jl solvers, it can also be computationally expensive for large networks, where a user may only wish to solve one type of problem and/or have fine-grained control over what is generated. In addition, some types of reaction network structures are more amenable to being constructed programmatically, as opposed to writing out all reactions by hand within one macro. For these reasons DiffEqBiological provides two additional macros that only <em>initially</em> setup basic reaction network properties, and which can be extended through a programmatic interface: <code>@min_reaction_network</code> and <code>@empty_reaction_network</code>. We now give an introduction to constructing these more minimal network representations, and how they can be programmatically extended. See also the relevant <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Reaction-Network-Generation-Macros-1">API section</a>.</p>
+<p>The <code>@reaction_network</code> macro is monolithic, in that it not only constructs and stores basic network properties such as the reaction stoichiometries, but also generates <strong>everything</strong> needed to immediately solve ODE, SDE and jump models using the network. This includes Jacobian functions, noise functions, and jump functions for each reaction. While this allows for a compact interface to the DifferentialEquations.jl solvers, it can also be computationally expensive for large networks, where a user may only wish to solve one type of problem and/or have fine-grained control over what is generated. In addition, some types of reaction network structures are more amenable to being constructed programmatically, as opposed to writing out all reactions by hand within one macro. For these reasons DiffEqBiological provides two additional macros that only <em>initially</em> setup basic reaction network properties, and which can be extended through a programmatic interface: <code>@min_reaction_network</code> and <code>@empty_reaction_network</code>. We now give an introduction to constructing these more minimal network representations, and how they can be programmatically extended. See also the relevant <a href="https://docs.juliadiffeq.org/latest/apis/diffeqbio/#Reaction-Network-Generation-Macros-1">API section</a>.</p>
 <p>The <code>@min_reaction_network</code> macro works identically to the <code>@reaction_network</code> macro, but the generated network will only be complete with respect to its representation of chemical network properties &#40;i.e. species, parameters and reactions&#41;. No ODE, SDE or jump models are generated during the macro call. It can subsequently be extended with the addition of new species, parameters or reactions. The <code>@empty_reaction_network</code> allocates an empty network structure that can also be extended using the programmatic interface. For example, consider a partial version of the toggle-switch like network we defined above:</p>
 
 
@@ -955,7 +955,7 @@ div.title {text-align: center;}
 
 
 
-<p>Here we have left out the first two, and last three, reactions from the original <code>reaction_network</code>. To expand the network until it is functionally equivalent to the original model we add back in the missing species, parameters, and <em>finally</em> the missing reactions. Note, it is required that species and parameters be defined before any reactions using them are added. The necessary network extension functions are given by <code>addspecies&#33;</code>, <code>addparam&#33;</code> and <code>addreaction&#33;</code>, and described in the <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Functions-to-Add-Species,-Parameters-and-Reactions-to-a-Network-1">API</a>. To complete <code>rnmin</code> we first add the relevant species:</p>
+<p>Here we have left out the first two, and last three, reactions from the original <code>reaction_network</code>. To expand the network until it is functionally equivalent to the original model we add back in the missing species, parameters, and <em>finally</em> the missing reactions. Note, it is required that species and parameters be defined before any reactions using them are added. The necessary network extension functions are given by <code>addspecies&#33;</code>, <code>addparam&#33;</code> and <code>addreaction&#33;</code>, and described in the <a href="https://docs.juliadiffeq.org/latest/apis/diffeqbio/#Functions-to-Add-Species,-Parameters-and-Reactions-to-a-Network-1">API</a>. To complete <code>rnmin</code> we first add the relevant species:</p>
 
 
 <pre class='hljl'>
@@ -1068,7 +1068,7 @@ true
 
 <hr />
 <h2>Extending Incrementally Generated Networks to Include ODEs, SDEs or Jumps</h2>
-<p>Once a network generated from <code>@min_reaction_network</code> or <code>@empty_reaction_network</code> has had all the associated species, parameters and reactions filled in, corresponding ODE, SDE or jump models can be constructed. The relevant API functions are <code>addodes&#33;</code>, <code>addsdes&#33;</code> and <code>addjumps&#33;</code>. One benefit to contructing models with these functions is that they offer more fine-grained control over what actually gets constructed. For example, <code>addodes&#33;</code> has the optional keyword argument, <code>build_jac</code>, which if set to <code>false</code> will disable construction of symbolic Jacobians and functions for evaluating Jacobians. For large networks this can give a significant speed-up in the time required for constructing an ODE model. Each function and its associated keyword arguments are described in the API section, <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Functions-to-Add-ODEs,-SDEs-or-Jumps-to-a-Network-1">Functions to add ODEs, SDEs or Jumps to a Network</a>.</p>
+<p>Once a network generated from <code>@min_reaction_network</code> or <code>@empty_reaction_network</code> has had all the associated species, parameters and reactions filled in, corresponding ODE, SDE or jump models can be constructed. The relevant API functions are <code>addodes&#33;</code>, <code>addsdes&#33;</code> and <code>addjumps&#33;</code>. One benefit to contructing models with these functions is that they offer more fine-grained control over what actually gets constructed. For example, <code>addodes&#33;</code> has the optional keyword argument, <code>build_jac</code>, which if set to <code>false</code> will disable construction of symbolic Jacobians and functions for evaluating Jacobians. For large networks this can give a significant speed-up in the time required for constructing an ODE model. Each function and its associated keyword arguments are described in the API section, <a href="https://docs.juliadiffeq.org/latest/apis/diffeqbio/#Functions-to-Add-ODEs,-SDEs-or-Jumps-to-a-Network-1">Functions to add ODEs, SDEs or Jumps to a Network</a>.</p>
 <p>Let&#39;s extend <code>rnmin</code> to include the needed functions for use in ODE solvers:</p>
 
 
@@ -1078,7 +1078,7 @@ true
 
 
 
-<p>The <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Generated-Functions-for-Models-1">Generated Functions for Models</a> section of the API shows what functions have been generated. For ODEs these include <code>oderhsfun&#40;rnmin&#41;</code>, which returns a function of the form <code>f&#40;du,u,p,t&#41;</code> which evaluates the ODEs &#40;i.e. the time derivatives of <code>u</code>&#41; within <code>du</code>. For each generated function, the corresponding expressions from which it was generated can be retrieved using accessors from the <a href="http://docs.juliadiffeq.org/latest/apis/diffeqbio.html#Generated-Expressions-1">Generated Expressions</a> section of the API. The equations within <code>du</code> can be retrieved using the <code>odeexprs&#40;rnmin&#41;</code> function. For example:</p>
+<p>The <a href="https://docs.juliadiffeq.org/latest/apis/diffeqbio/#Generated-Functions-for-Models-1">Generated Functions for Models</a> section of the API shows what functions have been generated. For ODEs these include <code>oderhsfun&#40;rnmin&#41;</code>, which returns a function of the form <code>f&#40;du,u,p,t&#41;</code> which evaluates the ODEs &#40;i.e. the time derivatives of <code>u</code>&#41; within <code>du</code>. For each generated function, the corresponding expressions from which it was generated can be retrieved using accessors from the <a href="https://docs.juliadiffeq.org/latest/apis/diffeqbio/#Generated-Expressions-1">Generated Expressions</a> section of the API. The equations within <code>du</code> can be retrieved using the <code>odeexprs&#40;rnmin&#41;</code> function. For example:</p>
 
 
 <pre class='hljl'>
@@ -1088,18 +1088,18 @@ true
 
 <pre class="output">
 7-element Array&#123;Union&#123;Float64, Int64, Expr, Symbol&#125;,1&#125;:
- :&#40;&#40;-&#40;δ * m₁&#41; &#43; γ&#41; &#43; &#40;α * K ^ n&#41; / &#40;K ^ n &#43; D₂ ^ n&#41;&#41;                       
-               
- :&#40;&#40;-&#40;δ * m₂&#41; &#43; γ&#41; &#43; &#40;α * K ^ n&#41; / &#40;K ^ n &#43; D₁ ^ n&#41;&#41;                       
-               
- :&#40;&#40;&#40;&#40;&#40;β * m₁ - μ * P₁&#41; &#43; -2 * &#40;k₊ / 2&#41; * P₁ ^ 2&#41; &#43; 2 * k₋ * D₁&#41; - k₊ * P₁ 
+ :&#40;&#40;-&#40;δ * m₁&#41; &#43; γ&#41; &#43; &#40;α * K ^ n&#41; / &#40;K ^ n &#43; D₂ ^ n&#41;&#41;
+
+ :&#40;&#40;-&#40;δ * m₂&#41; &#43; γ&#41; &#43; &#40;α * K ^ n&#41; / &#40;K ^ n &#43; D₁ ^ n&#41;&#41;
+
+ :&#40;&#40;&#40;&#40;&#40;β * m₁ - μ * P₁&#41; &#43; -2 * &#40;k₊ / 2&#41; * P₁ ^ 2&#41; &#43; 2 * k₋ * D₁&#41; - k₊ * P₁
 * P₂&#41; &#43; k₋ * T&#41;
- :&#40;&#40;&#40;&#40;&#40;β * m₂ - μ * P₂&#41; &#43; -2 * &#40;k₊ / 2&#41; * P₂ ^ 2&#41; &#43; 2 * k₋ * D₂&#41; - k₊ * P₁ 
+ :&#40;&#40;&#40;&#40;&#40;β * m₂ - μ * P₂&#41; &#43; -2 * &#40;k₊ / 2&#41; * P₂ ^ 2&#41; &#43; 2 * k₋ * D₂&#41; - k₊ * P₁
 * P₂&#41; &#43; k₋ * T&#41;
- :&#40;&#40;k₊ / 2&#41; * P₁ ^ 2 - k₋ * D₁&#41;                                            
-               
- :&#40;&#40;k₊ / 2&#41; * P₂ ^ 2 - k₋ * D₂&#41;                                            
-               
+ :&#40;&#40;k₊ / 2&#41; * P₁ ^ 2 - k₋ * D₁&#41;
+
+ :&#40;&#40;k₊ / 2&#41; * P₂ ^ 2 - k₋ * D₂&#41;
+
  :&#40;k₊ * P₁ * P₂ - k₋ * T&#41;
 </pre>
 
@@ -1150,7 +1150,7 @@ true
 \end{equation*}
 
 
-<p><code>addodes&#33;</code> also generates a function that evaluates the Jacobian of the ODE derivative functions with respect to the parameters. <code>paramjacfun&#40;rnmin&#41;</code> then returns the generated function. It has the form <code>fpjac&#40;dPJ,u,p,t&#41;</code>, which given the current solution <code>u</code> evaluates the Jacobian matrix with respect to parameters <code>p</code> within <code>dPJ</code>. For use in DifferentialEquations.jl solvers, an <a href="http://docs.juliadiffeq.org/latest/features/performance_overloads.html"><code>ODEFunction</code></a> representation of the ODEs is available from <code>odefun&#40;rnmin&#41;</code>. </p>
+<p><code>addodes&#33;</code> also generates a function that evaluates the Jacobian of the ODE derivative functions with respect to the parameters. <code>paramjacfun&#40;rnmin&#41;</code> then returns the generated function. It has the form <code>fpjac&#40;dPJ,u,p,t&#41;</code>, which given the current solution <code>u</code> evaluates the Jacobian matrix with respect to parameters <code>p</code> within <code>dPJ</code>. For use in DifferentialEquations.jl solvers, an <a href="https://docs.juliadiffeq.org/latest/features/performance_overloads"><code>ODEFunction</code></a> representation of the ODEs is available from <code>odefun&#40;rnmin&#41;</code>. </p>
 <p><code>addsdes&#33;</code> and <code>addjumps&#33;</code> work similarly to complete the network for use in StochasticDiffEq and DiffEqJump solvers.  </p>
 <h4>Note on Using Generated Function and Expression API Functions</h4>
 <p>The generated functions and expressions accessible through the API require first calling the appropriate <code>addodes&#33;</code>, <code>addsdes</code> or <code>addjumps</code> function. These are responsible for actually constructing the underlying functions and expressions. The API accessors simply return already constructed functions and expressions that are stored within the <code>reaction_network</code> structure.</p>
@@ -1276,14 +1276,14 @@ u0: &#91;0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0
 retcode: Default
 Interpolation: Piecewise constant interpolation
 t: 4-element Array&#123;Float64,1&#125;:
- 0.0   
+ 0.0
  0.0001
- 0.001 
- 0.01  
+ 0.001
+ 0.01
 u: 4-element Array&#123;Array&#123;Int64,1&#125;,1&#125;:
- &#91;0, 0, 0, 0, 0, 0, 0, 0, 0, 0  …  0, 0, 0, 0, 0, 0, 0, 0, 0, 0&#93;       
- &#91;0, 0, 0, 0, 0, 0, 0, 0, 0, 0  …  0, 0, 0, 0, 0, 0, 0, 0, 0, 0&#93;       
- &#91;0, 0, 0, 0, 0, 0, 0, 0, 0, 0  …  0, 0, 0, 0, 0, 0, 0, 0, 0, 0&#93;       
+ &#91;0, 0, 0, 0, 0, 0, 0, 0, 0, 0  …  0, 0, 0, 0, 0, 0, 0, 0, 0, 0&#93;
+ &#91;0, 0, 0, 0, 0, 0, 0, 0, 0, 0  …  0, 0, 0, 0, 0, 0, 0, 0, 0, 0&#93;
+ &#91;0, 0, 0, 0, 0, 0, 0, 0, 0, 0  …  0, 0, 0, 0, 0, 0, 0, 0, 0, 0&#93;
  &#91;3, 4, 2, 3, 12, 6, 5, 17, 21, 22  …  19, 13, 10, 9, 5, 5, 4, 1, 0, 0&#93;
 </pre>
 

@@ -4,7 +4,7 @@ author: Samuel Isaacson
 ---
 
 The [DiffEqBiological
-API](http://docs.juliadiffeq.org/dev/apis/diffeqbio.html) provides a
+API](https://docs.juliadiffeq.org/dev/apis/diffeqbio) provides a
 collection of functions for easily accessing network properties, and for
 incrementally building and extending a network. In this tutorial we'll go
 through the API, and then illustrate how to programmatically construct a
@@ -26,7 +26,7 @@ rn = @reaction_network begin
     β, m₂ --> m₂ + P₂
     μ, P₁ --> ∅
     μ, P₂ --> ∅
-    (k₊,k₋), 2P₁ ↔ D₁ 
+    (k₊,k₋), 2P₁ ↔ D₁
     (k₊,k₋), 2P₂ ↔ D₂
     (k₊,k₋), P₁+P₂ ↔ T
 end α K n δ γ β μ k₊ k₋;
@@ -34,7 +34,7 @@ end α K n δ γ β μ k₊ k₋;
 
 This corresponds to the chemical reaction network given by
 
-```julia; results="hidden"; 
+```julia; results="hidden";
 latexify(rn; env=:chemical)
 ```
 ```julia; echo=false; skip="notebook";
@@ -45,7 +45,7 @@ display("text/latex", "$x");
 ---
 ## Network Properties
 [Basic
-properties](http://docs.juliadiffeq.org/dev/apis/diffeqbio.html#Basic-properties-1)
+properties](https://docs.juliadiffeq.org/latest/apis/diffeqbio/#Basic-properties-1)
 of the generated network include the `speciesmap` and `paramsmap` functions we
 examined in the last tutorial, along with the corresponding `species` and
 `params` functions:
@@ -61,7 +61,7 @@ The numbers of species, parameters and reactions can be accessed using
 `numspecies(rn)`, `numparams(rn)` and `numreactions(rn)`.
 
 A number of functions are available to access [properties of
-reactions](http://docs.juliadiffeq.org/dev/apis/diffeqbio.html#Reaction-Properties-1)
+reactions](https://docs.juliadiffeq.org/latest/apis/diffeqbio/#Reaction-Properties-1)
 within the generated network, including `substrates`, `products`, `dependents`,
 `ismassaction`, `substratestoich`, `substratesymstoich`, `productstoich`,
 `productsymstoich`, and `netstoich`. Each of these functions takes two
@@ -89,11 +89,11 @@ netstoich.(rn, 1:numreactions(rn))
 Here the first integer in each pair corresponds to the index of the species
 (with symbol `species(rn)[index]`). The second integer corresponds to the net
 stoichiometric coefficient of the species within the reaction. `substratestoich`
-and `productstoich` are defined similarly. 
+and `productstoich` are defined similarly.
 
 Several functions are also provided that calculate different types of
 [dependency
-graphs](http://docs.juliadiffeq.org/dev/apis/diffeqbio.html#Dependency-Graphs-1).
+graphs](https://docs.juliadiffeq.org/latest/apis/diffeqbio/#Dependency-Graphs-1).
 These include `rxtospecies_depgraph`, which provides a mapping from reaction
 index to the indices of species whose population changes when the reaction
 occurs:
@@ -110,7 +110,7 @@ correct species we can look at
 species(rn)[[3,4,7]]
 ```
 
-The `speciestorx_depgraph` similarly provides a mapping from species to reactions 
+The `speciestorx_depgraph` similarly provides a mapping from species to reactions
 for which their *rate laws* depend on that species. These correspond to all reactions
 for which the given species is in the `dependent` set of the reaction. We can verify this
 for the first species, `m₁`:
@@ -136,7 +136,7 @@ returning information that is already stored within the generated
 `reaction_network`. For these functions, modifying the returned data structures
 may lead to inconsistent internal state within the network. As such, they should
 be used for accessing, but not modifying, network properties. The [API
-documentation](http://docs.juliadiffeq.org/dev/apis/diffeqbio.html)
+documentation](https://docs.juliadiffeq.org/dev/apis/diffeqbio)
 indicates which functions return newly allocated data structures and which
 return data stored within the `reaction_network`.
 
@@ -158,7 +158,7 @@ extended through a programmatic interface: `@min_reaction_network` and
 `@empty_reaction_network`. We now give an introduction to constructing these
 more minimal network representations, and how they can be programmatically
 extended. See also the relevant [API
-section](http://docs.juliadiffeq.org/dev/apis/diffeqbio.html#Reaction-Network-Generation-Macros-1).
+section](https://docs.juliadiffeq.org/latest/apis/diffeqbio/#Reaction-Network-Generation-Macros-1).
 
 The `@min_reaction_network` macro works identically to the `@reaction_network`
 macro, but the generated network will only be complete with respect to its
@@ -187,7 +187,7 @@ the missing reactions. Note, it is required that species and parameters be
 defined before any reactions using them are added. The necessary network
 extension functions are given by `addspecies!`, `addparam!` and `addreaction!`,
 and described in the
-[API](http://docs.juliadiffeq.org/dev/apis/diffeqbio.html#Functions-to-Add-Species,-Parameters-and-Reactions-to-a-Network-1). To complete `rnmin` we first add the relevant
+[API](https://docs.juliadiffeq.org/latest/apis/diffeqbio/#Functions-to-Add-Species,-Parameters-and-Reactions-to-a-Network-1). To complete `rnmin` we first add the relevant
 species:
 
 ```julia
@@ -271,7 +271,7 @@ evaluating Jacobians. For large networks this can give a significant speed-up in
 the time required for constructing an ODE model. Each function and its
 associated keyword arguments are described in the API section, [Functions to add
 ODEs, SDEs or Jumps to a
-Network](http://docs.juliadiffeq.org/dev/apis/diffeqbio.html#Functions-to-Add-ODEs,-SDEs-or-Jumps-to-a-Network-1).
+Network](https://docs.juliadiffeq.org/latest/apis/diffeqbio/#Functions-to-Add-ODEs,-SDEs-or-Jumps-to-a-Network-1).
 
 Let's extend `rnmin` to include the needed functions for use in ODE
 solvers:
@@ -281,13 +281,13 @@ addodes!(rnmin)
 ```
 
 The [Generated Functions for
-Models](http://docs.juliadiffeq.org/dev/apis/diffeqbio.html#Generated-Functions-for-Models-1)
+Models](https://docs.juliadiffeq.org/latest/apis/diffeqbio/#Generated-Functions-for-Models-1)
 section of the API shows what functions have been generated. For ODEs these
 include `oderhsfun(rnmin)`, which returns a function of the form `f(du,u,p,t)`
 which evaluates the ODEs (i.e. the time derivatives of `u`) within `du`. For
 each generated function, the corresponding expressions from which it was
 generated can be retrieved using accessors from the [Generated
-Expressions](http://docs.juliadiffeq.org/dev/apis/diffeqbio.html#Generated-Expressions-1)
+Expressions](https://docs.juliadiffeq.org/latest/apis/diffeqbio/#Generated-Expressions-1)
 section of the API. The equations within `du` can be retrieved using the
 `odeexprs(rnmin)` function. For example:
 
@@ -324,11 +324,11 @@ derivative functions with respect to the parameters. `paramjacfun(rnmin)` then
 returns the generated function. It has the form `fpjac(dPJ,u,p,t)`, which
 given the current solution `u` evaluates the Jacobian matrix with respect to
 parameters `p` within `dPJ`. For use in DifferentialEquations.jl solvers, an
-[`ODEFunction`](http://docs.juliadiffeq.org/dev/features/performance_overloads.html)
-representation of the ODEs is available from `odefun(rnmin)`. 
+[`ODEFunction`](https://docs.juliadiffeq.org/dev/features/performance_overloads)
+representation of the ODEs is available from `odefun(rnmin)`.
 
 `addsdes!` and `addjumps!` work similarly to complete the network for use in
-StochasticDiffEq and DiffEqJump solvers.  
+StochasticDiffEq and DiffEqJump solvers.
 
 #### Note on Using Generated Function and Expression API Functions
 The generated functions and expressions accessible through the API require first
@@ -349,7 +349,7 @@ To put together everything we've seen, let's generate the network corresponding
 to a 1D continuous time random walk, approximating the diffusion of molecules
 within an interval.
 
-The basic "reaction" network we wish to study is 
+The basic "reaction" network we wish to study is
 
 $$
 u_1 \leftrightarrows u_2 \leftrightarrows u_3 \cdots \leftrightarrows u_{N}
@@ -376,7 +376,7 @@ for i = 1:N
 end
 ```
 
-We next add one parameter `β`, which we will set equal to the hopping rate 
+We next add one parameter `β`, which we will set equal to the hopping rate
 of molecules, $h^{-2}$:
 
 ```julia
@@ -439,7 +439,7 @@ the lattice:
 ```julia
 addjumps!(rn, build_regular_jumps=false, minimal_jumps=true)
 
-# make the initial condition integer valued 
+# make the initial condition integer valued
 u₀ = zeros(Int, N)
 u₀[div(N,2)] = 10000
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Solving Stiff Equations</title>
-  
+
 
   <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
@@ -16,7 +16,7 @@
   <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
   </script>
 
-  
+
 <style>
 pre.hljl {
     border: 1px solid #ccc;
@@ -662,7 +662,7 @@ div.title {text-align: center;}
           <div class="title">
             <h1 class="title">Solving Stiff Equations</h1>
             <h5>Chris Rackauckas</h5>
-            
+
           </div>
 
           <p>This tutorial is for getting into the extra features for solving stiff ordinary differential equations in an efficient manner. Solving stiff ordinary differential equations requires specializing the linear solver on properties of the Jacobian in order to cut down on the O&#40;n^3&#41; linear solve and the O&#40;n^2&#41; back-solves. Note that these same functions and controls also extend to stiff SDEs, DDEs, DAEs, etc.</p>
@@ -670,10 +670,10 @@ div.title {text-align: center;}
 <h3>Writing Efficient Code</h3>
 <p>For a detailed tutorial on how to optimize one&#39;s DifferentialEquations.jl code, please see the <a href="http://tutorials.juliadiffeq.org/html/introduction/03-optimizing_diffeq_code.html">Optimizing DiffEq Code tutorial</a>.</p>
 <h3>Choosing a Good Solver</h3>
-<p>Choosing a good solver is required for getting top notch speed. General recommendations can be found on the solver page &#40;for example, the <a href="http://docs.juliadiffeq.org/latest/solvers/ode_solve.html">ODE Solver Recommendations</a>&#41;. The current recommendations can be simplified to a Rosenbrock method &#40;<code>Rosenbrock23</code> or <code>Rodas5</code>&#41; for smaller &#40;&lt;50 ODEs&#41; problems, ESDIRK methods for slightly larger &#40;<code>TRBDF2</code> or <code>KenCarp4</code> for &lt;2000 ODEs&#41;, and Sundials <code>CVODE_BDF</code> for even larger problems. <code>lsoda</code> from <a href="https://github.com/rveltz/LSODA.jl">LSODA.jl</a> is generally worth a try.</p>
+<p>Choosing a good solver is required for getting top notch speed. General recommendations can be found on the solver page &#40;for example, the <a href="https://docs.juliadiffeq.org/latest/solvers/ode_solve">ODE Solver Recommendations</a>&#41;. The current recommendations can be simplified to a Rosenbrock method &#40;<code>Rosenbrock23</code> or <code>Rodas5</code>&#41; for smaller &#40;&lt;50 ODEs&#41; problems, ESDIRK methods for slightly larger &#40;<code>TRBDF2</code> or <code>KenCarp4</code> for &lt;2000 ODEs&#41;, and Sundials <code>CVODE_BDF</code> for even larger problems. <code>lsoda</code> from <a href="https://github.com/rveltz/LSODA.jl">LSODA.jl</a> is generally worth a try.</p>
 <p>More details on the solver to choose can be found by benchmarking. See the <a href="https://github.com/JuliaDiffEq/DiffEqBenchmarks.jl">DiffEqBenchmarks</a> to compare many solvers on many problems.</p>
 <h3>Check Out the Speed FAQ</h3>
-<p>See <a href="http://docs.juliadiffeq.org/latest/basics/faq.html#Performance-1">this FAQ</a> for information on common pitfalls and how to improve performance.</p>
+<p>See <a href="https://docs.juliadiffeq.org/latest/basics/faq/#faq_performance-1">this FAQ</a> for information on common pitfalls and how to improve performance.</p>
 <h3>Setting Up Your Julia Installation for Speed</h3>
 <p>Julia uses an underlying BLAS implementation for its matrix multiplications and factorizations. This library is automatically multithreaded and accelerates the internal linear algebra of DifferentialEquations.jl. However, for optimality, you should make sure that the number of BLAS threads that you are using matches the number of physical cores and not the number of logical cores. See <a href="https://github.com/JuliaLang/julia/issues/33409">this issue for more details</a>.</p>
 <p>To check the number of BLAS threads, use:</p>
@@ -701,7 +701,7 @@ div.title {text-align: center;}
 
 <p>Additionally, in some cases Intel&#39;s MKL might be a faster BLAS than the standard BLAS that ships with Julia &#40;OpenBLAS&#41;. To switch your BLAS implementation, you can use <a href="https://github.com/JuliaComputing/MKL.jl">MKL.jl</a> which will accelerate the linear algebra routines. Please see the package for the limitations.</p>
 <h3>Use Accelerator Hardware</h3>
-<p>When possible, use GPUs. If your ODE system is small and you need to solve it with very many different parameters, see the <a href="http://docs.juliadiffeq.org/latest/features/ensemble.html">ensembles interface</a> and <a href="https://github.com/JuliaDiffEq/DiffEqGPU.jl">DiffEqGPU.jl</a>. If your problem is large, consider using a <a href="https://github.com/JuliaGPU/CuArrays.jl">CuArray</a> for the state to allow for GPU-parallelism of the internal linear algebra.</p>
+<p>When possible, use GPUs. If your ODE system is small and you need to solve it with very many different parameters, see the <a href="https://docs.juliadiffeq.org/latest/features/ensemble">ensembles interface</a> and <a href="https://github.com/JuliaDiffEq/DiffEqGPU.jl">DiffEqGPU.jl</a>. If your problem is large, consider using a <a href="https://github.com/JuliaGPU/CuArrays.jl">CuArray</a> for the state to allow for GPU-parallelism of the internal linear algebra.</p>
 <h2>Speeding Up Jacobian Calculations</h2>
 <p>When one is using an implicit or semi-implicit differential equation solver, the Jacobian must be built at many iterations and this can be one of the most expensive steps. There are two pieces that must be optimized in order to reach maximal efficiency when solving stiff equations: the sparsity pattern and the construction of the Jacobian. The construction is filling the matrix <code>J</code> with values, while the sparsity pattern is what <code>J</code> to use.</p>
 <p>The sparsity pattern is given by a prototype matrix, the <code>jac_prototype</code>, which will be copied to be used as <code>J</code>. The default is for <code>J</code> to be a <code>Matrix</code>, i.e. a dense matrix. However, if you know the sparsity of your problem, then you can pass a different matrix type. For example, a <code>SparseMatrixCSC</code> will give a sparse matrix. Additionally, structured matrix types like <code>Tridiagonal</code>, <code>BandedMatrix</code> &#40;from <a href="https://github.com/JuliaMatrices/BandedMatrices.jl">BandedMatrices.jl</a>&#41;, <code>BlockBandedMatrix</code> &#40;from <a href="https://github.com/JuliaMatrices/BlockBandedMatrices.jl">BlockBandedMatrices.jl</a>&#41;, and more can be given. DifferentialEquations.jl will internally use this matrix type, making the factorizations faster by utilizing the specialized forms.</p>
@@ -759,46 +759,46 @@ dy_3 &= 3*10^7 y_{3}^2 \\
 retcode: Success
 Interpolation: Automatic order switching interpolation
 t: 115-element Array&#123;Float64,1&#125;:
-      0.0                  
+      0.0
       0.0014148468219250373
       0.0020449182545311173
       0.0031082402716566307
-      0.004077787050059496 
-      0.005515332443361059 
-      0.007190040962774541 
-      0.009125372578778032 
-      0.011053912492732977 
-      0.012779077276958607 
-      ⋮                    
-  47335.56357690261        
-  52732.01292853374        
-  58693.72991412389        
-  65278.000210850696       
-  72548.20206513454        
-  80574.5643369749         
-  89435.05301092885        
-  99216.41264599326        
- 100000.0                  
+      0.004077787050059496
+      0.005515332443361059
+      0.007190040962774541
+      0.009125372578778032
+      0.011053912492732977
+      0.012779077276958607
+      ⋮
+  47335.56357690261
+  52732.01292853374
+  58693.72991412389
+  65278.000210850696
+  72548.20206513454
+  80574.5643369749
+  89435.05301092885
+  99216.41264599326
+ 100000.0
 u: 115-element Array&#123;Array&#123;Float64,1&#125;,1&#125;:
- &#91;1.0, 0.0, 0.0&#93;                                                    
- &#91;0.9999434113193613, 3.283958829839966e-5, 2.3749092340286502e-5&#93;  
- &#91;0.9999182177783585, 3.55426801363446e-5, 4.6239541505020656e-5&#93;   
- &#91;0.999875715036629, 3.6302469334849744e-5, 8.798249403609506e-5&#93;   
- &#91;0.9998369766077329, 3.646280308115459e-5, 0.00012656058918590176&#93; 
- &#91;0.9997795672444667, 3.646643085642237e-5, 0.0001839663246768369&#93;  
- &#91;0.9997127287139348, 3.6447279992896e-5, 0.00025082400607228316&#93;   
+ &#91;1.0, 0.0, 0.0&#93;
+ &#91;0.9999434113193613, 3.283958829839966e-5, 2.3749092340286502e-5&#93;
+ &#91;0.9999182177783585, 3.55426801363446e-5, 4.6239541505020656e-5&#93;
+ &#91;0.999875715036629, 3.6302469334849744e-5, 8.798249403609506e-5&#93;
+ &#91;0.9998369766077329, 3.646280308115459e-5, 0.00012656058918590176&#93;
+ &#91;0.9997795672444667, 3.646643085642237e-5, 0.0001839663246768369&#93;
+ &#91;0.9997127287139348, 3.6447279992896e-5, 0.00025082400607228316&#93;
  &#91;0.9996355450022019, 3.6366816179962866e-5, 0.00032808818161818775&#93;
  &#91;0.9995586925734838, 3.6018927453312764e-5, 0.00040528849906290045&#93;
- &#91;0.9994899965196854, 3.468694637786026e-5, 0.000475316533936808&#93;   
- ⋮                                                                  
- &#91;0.03394368168613229, 1.404798439362035e-7, 0.9660561778340258&#93;    
- &#91;0.031028975539652698, 1.280360743781007e-7, 0.9689708964242754&#93;   
- &#91;0.02835436357223889, 1.1668209524677941e-7, 0.9716455197456683&#93;   
- &#91;0.025901326001934923, 1.0632276689411095e-7, 0.9740985676753005&#93;  
- &#91;0.023652545345805354, 9.687112514942483e-8, 0.9763473577830714&#93;   
- &#91;0.021591862129552664, 8.824767963573306e-8, 0.9784080496227692&#93;   
- &#91;0.019704225538717677, 8.037977048382674e-8, 0.9802956940815135&#93;   
- &#91;0.017975641463053707, 7.320098240041474e-8, 0.9820242853359655&#93;   
+ &#91;0.9994899965196854, 3.468694637786026e-5, 0.000475316533936808&#93;
+ ⋮
+ &#91;0.03394368168613229, 1.404798439362035e-7, 0.9660561778340258&#93;
+ &#91;0.031028975539652698, 1.280360743781007e-7, 0.9689708964242754&#93;
+ &#91;0.02835436357223889, 1.1668209524677941e-7, 0.9716455197456683&#93;
+ &#91;0.025901326001934923, 1.0632276689411095e-7, 0.9740985676753005&#93;
+ &#91;0.023652545345805354, 9.687112514942483e-8, 0.9763473577830714&#93;
+ &#91;0.021591862129552664, 8.824767963573306e-8, 0.9784080496227692&#93;
+ &#91;0.019704225538717677, 8.037977048382674e-8, 0.9802956940815135&#93;
+ &#91;0.017975641463053707, 7.320098240041474e-8, 0.9820242853359655&#93;
  &#91;0.017850566233695766, 7.268384360678819e-8, 0.9821493610824623&#93;
 </pre>
 
@@ -833,46 +833,46 @@ u: 115-element Array&#123;Array&#123;Float64,1&#125;,1&#125;:
 retcode: Success
 Interpolation: Automatic order switching interpolation
 t: 115-element Array&#123;Float64,1&#125;:
-      0.0                  
+      0.0
       0.0014148468219250373
       0.0020449182545311173
       0.0031082402716566307
-      0.004077787050059496 
-      0.005515332443361059 
-      0.007190040962774541 
-      0.009125372578778032 
-      0.011053912492732977 
-      0.012779077276958607 
-      ⋮                    
-  45964.060340548356       
-  51219.40381376205        
-  57025.01899700374        
-  63436.021374561584       
-  70513.1073617524         
-  78323.14229130604        
-  86939.82338876331        
-  96444.41085674686        
- 100000.0                  
+      0.004077787050059496
+      0.005515332443361059
+      0.007190040962774541
+      0.009125372578778032
+      0.011053912492732977
+      0.012779077276958607
+      ⋮
+  45964.060340548356
+  51219.40381376205
+  57025.01899700374
+  63436.021374561584
+  70513.1073617524
+  78323.14229130604
+  86939.82338876331
+  96444.41085674686
+ 100000.0
 u: 115-element Array&#123;Array&#123;Float64,1&#125;,1&#125;:
- &#91;1.0, 0.0, 0.0&#93;                                                    
- &#91;0.9999434113193613, 3.283958829839966e-5, 2.3749092340286502e-5&#93;  
- &#91;0.9999182177783585, 3.55426801363446e-5, 4.6239541505020656e-5&#93;   
- &#91;0.999875715036629, 3.6302469334849744e-5, 8.798249403609506e-5&#93;   
- &#91;0.9998369766077329, 3.646280308115459e-5, 0.00012656058918590176&#93; 
- &#91;0.9997795672444667, 3.646643085642237e-5, 0.0001839663246768369&#93;  
- &#91;0.9997127287139348, 3.6447279992896e-5, 0.00025082400607228316&#93;   
+ &#91;1.0, 0.0, 0.0&#93;
+ &#91;0.9999434113193613, 3.283958829839966e-5, 2.3749092340286502e-5&#93;
+ &#91;0.9999182177783585, 3.55426801363446e-5, 4.6239541505020656e-5&#93;
+ &#91;0.999875715036629, 3.6302469334849744e-5, 8.798249403609506e-5&#93;
+ &#91;0.9998369766077329, 3.646280308115459e-5, 0.00012656058918590176&#93;
+ &#91;0.9997795672444667, 3.646643085642237e-5, 0.0001839663246768369&#93;
+ &#91;0.9997127287139348, 3.6447279992896e-5, 0.00025082400607228316&#93;
  &#91;0.9996355450022019, 3.6366816179962866e-5, 0.00032808818161818775&#93;
  &#91;0.9995586925734838, 3.6018927453312764e-5, 0.00040528849906290045&#93;
- &#91;0.9994899965196854, 3.468694637786026e-5, 0.000475316533936808&#93;   
- ⋮                                                                  
- &#91;0.03478048133177493, 1.4406682005231008e-7, 0.9652193746014031&#93;   
- &#91;0.03179591062189176, 1.313038656880417e-7, 0.9682039580742408&#93;    
- &#91;0.029057356622057315, 1.1966100432939363e-7, 0.9709425237169371&#93;  
- &#91;0.02654597011713668, 1.0904070990251299e-7, 0.9734539208421517&#93;   
- &#91;0.024244118287194777, 9.935385522693504e-8, 0.9757557823589477&#93;   
- &#91;0.022135344621501105, 9.05190025093182e-8, 0.9778645648594945&#93;    
- &#91;0.02020432071854, 8.246174295748071e-8, 0.9797955968197154&#93;       
- &#91;0.018436796681356796, 7.511410189106845e-8, 0.9815631282045397&#93;   
+ &#91;0.9994899965196854, 3.468694637786026e-5, 0.000475316533936808&#93;
+ ⋮
+ &#91;0.03478048133177493, 1.4406682005231008e-7, 0.9652193746014031&#93;
+ &#91;0.03179591062189176, 1.313038656880417e-7, 0.9682039580742408&#93;
+ &#91;0.029057356622057315, 1.1966100432939363e-7, 0.9709425237169371&#93;
+ &#91;0.02654597011713668, 1.0904070990251299e-7, 0.9734539208421517&#93;
+ &#91;0.024244118287194777, 9.935385522693504e-8, 0.9757557823589477&#93;
+ &#91;0.022135344621501105, 9.05190025093182e-8, 0.9778645648594945&#93;
+ &#91;0.02020432071854, 8.246174295748071e-8, 0.9797955968197154&#93;
+ &#91;0.018436796681356796, 7.511410189106845e-8, 0.9815631282045397&#93;
  &#91;0.01785426048218692, 7.269900678199638e-8, 0.9821456668188047&#93;
 </pre>
 
@@ -1172,10 +1172,10 @@ u: 2-element Array&#123;Array&#123;Float64,3&#125;,1&#125;:
 
 &#91;0.0 0.0 … 0.0 0.0; 0.14892258453196755 0.14892258453196755 … 0.14892258453
 196755 0.14892258453196755; … ; 0.14892258453196738 0.14892258453196738 … 0
-.14892258453196738 0.14892258453196738; 0.0 0.0 … 0.0 0.0&#93;                 
-                                                                           
-                                                                           
-                                                 
+.14892258453196738 0.14892258453196738; 0.0 0.0 … 0.0 0.0&#93;
+
+
+
  &#91;3.2183315970074036 3.2183043434767553 … 3.2184226343677738 3.218371247341
 7185; 3.2183804713733872 3.2183499447177057 … 3.2184831183646856 3.21842504
 7282479; … ; 3.218246108233481 3.2182241729222354 … 3.2183185170391946 3.21
@@ -1235,10 +1235,10 @@ u: 2-element Array&#123;Array&#123;Float64,3&#125;,1&#125;:
 
 &#91;0.0 0.0 … 0.0 0.0; 0.14892258453196755 0.14892258453196755 … 0.14892258453
 196755 0.14892258453196755; … ; 0.14892258453196738 0.14892258453196738 … 0
-.14892258453196738 0.14892258453196738; 0.0 0.0 … 0.0 0.0&#93;                 
-                                                                           
-                                                                           
-                                                   
+.14892258453196738 0.14892258453196738; 0.0 0.0 … 0.0 0.0&#93;
+
+
+
  &#91;3.2183373918177796 3.2183101409241526 … 3.2184284167956267 3.218377034566
 1604; 3.2183862623036537 3.218355740108313 … 3.218488896905827 3.2184308308
 09056; … ; 3.218251904608678 3.2182299624517134 … 3.2183243097118095 3.2182
@@ -1290,10 +1290,10 @@ u: 2-element Array&#123;Array&#123;Float64,3&#125;,1&#125;:
 
 &#91;0.0 0.0 … 0.0 0.0; 0.14892258453196755 0.14892258453196755 … 0.14892258453
 196755 0.14892258453196755; … ; 0.14892258453196738 0.14892258453196738 … 0
-.14892258453196738 0.14892258453196738; 0.0 0.0 … 0.0 0.0&#93;                 
-                                                                           
-                                                                           
-                                              
+.14892258453196738 0.14892258453196738; 0.0 0.0 … 0.0 0.0&#93;
+
+
+
  &#91;2.8494040430340677 2.849376568123844 … 2.849495874352271 2.84944397101885
 77; 2.8494535304517883 2.8494226751421077 … 2.849557062218097 2.84949828863
 504; … ; 2.8493164846505232 2.849294110741412 … 2.8493903195873105 2.849349
@@ -1308,7 +1308,7 @@ u: 2-element Array&#123;Array&#123;Float64,3&#125;,1&#125;:
 </pre>
 
 
-<p>For more information on linear solver choices, see the <a href="http://docs.juliadiffeq.org/latest/features/linear_nonlinear.html">linear solver documentation</a>.</p>
+<p>For more information on linear solver choices, see the <a href="https://docs.juliadiffeq.org/latest/features/linear_nonlinear">linear solver documentation</a>.</p>
 <p>On this problem, handling the sparsity correctly seemed to give much more of a speedup than going to a Krylov approach, but that can be dependent on the problem &#40;and whether a good preconditioner is found&#41;.</p>
 <p>We can also enhance this by using a Jacobian-Free implementation of <code>f&#39;&#40;x&#41;*v</code>. To define the Jacobian-Free operator, we can use <a href="https://github.com/JuliaDiffEq/DiffEqOperators.jl">DiffEqOperators.jl</a> to generate an operator <code>JacVecOperator</code> such that <code>Jv*v</code> performs <code>f&#39;&#40;x&#41;*v</code> without building the Jacobian matrix.</p>
 
@@ -1414,10 +1414,10 @@ u: 2-element Array&#123;Array&#123;Float64,3&#125;,1&#125;:
 
 &#91;0.0 0.0 … 0.0 0.0; 0.14892258453196755 0.14892258453196755 … 0.14892258453
 196755 0.14892258453196755; … ; 0.14892258453196738 0.14892258453196738 … 0
-.14892258453196738 0.14892258453196738; 0.0 0.0 … 0.0 0.0&#93;                 
-                                                                           
-                                                                           
-                                            
+.14892258453196738 0.14892258453196738; 0.0 0.0 … 0.0 0.0&#93;
+
+
+
  &#91;2.7872216645408567 2.787194432792592 … 2.78731308303355 2.787261467045361
 5; 2.787271339364228 2.787240720815802 … 2.787374377179153 2.78731605405600
 74; … ; 2.787134161549321 2.7871118187949984 … 2.7872072238860723 2.7871659
@@ -1433,7 +1433,7 @@ u: 2-element Array&#123;Array&#123;Float64,3&#125;,1&#125;:
 
 
 <h3>Adding a Preconditioner</h3>
-<p>The <a href="http://docs.juliadiffeq.org/latest/features/linear_nonlinear.html#IterativeSolvers.jl-Based-Methods-1">linear solver documentation</a> shows how you can add a preconditioner to the GMRES. For example, you can use packages like <a href="https://github.com/JuliaLinearAlgebra/AlgebraicMultigrid.jl">AlgebraicMultigrid.jl</a> to add an algebraic multigrid &#40;AMG&#41; or <a href="https://github.com/haampie/IncompleteLU.jl">IncompleteLU.jl</a> for an incomplete LU-factorization &#40;iLU&#41;.</p>
+<p>The <a href="https://docs.juliadiffeq.org/latest/features/linear_nonlinear/#iterativesolvers-jl-1">linear solver documentation</a> shows how you can add a preconditioner to the GMRES. For example, you can use packages like <a href="https://github.com/JuliaLinearAlgebra/AlgebraicMultigrid.jl">AlgebraicMultigrid.jl</a> to add an algebraic multigrid &#40;AMG&#41; or <a href="https://github.com/haampie/IncompleteLU.jl">IncompleteLU.jl</a> for an incomplete LU-factorization &#40;iLU&#41;.</p>
 
 
 <pre class='hljl'>
@@ -1457,10 +1457,10 @@ u: 2-element Array&#123;Array&#123;Float64,3&#125;,1&#125;:
 
 &#91;0.0 0.0 … 0.0 0.0; 0.14892258453196755 0.14892258453196755 … 0.14892258453
 196755 0.14892258453196755; … ; 0.14892258453196738 0.14892258453196738 … 0
-.14892258453196738 0.14892258453196738; 0.0 0.0 … 0.0 0.0&#93;                 
-                                                                           
-                                                                           
-                                                             
+.14892258453196738 0.14892258453196738; 0.0 0.0 … 0.0 0.0&#93;
+
+
+
  &#91;3.5273952159283844e10 -1.4265682748702106e10 … 9234.374594756042 13421.86
 8437681665; -7.091075675799031e9 6.51451873695435e9 … 9234.400545337947 134
 21.868410996974; … ; 13421.868025883945 9234.400562276434 … 9234.4001922958
@@ -1470,7 +1470,7 @@ u: 2-element Array&#123;Array&#123;Float64,3&#125;,1&#125;:
 &#91;66730.63093229767 -115820.52698935539 … 16462.92400611659 16458.1794290617
 3; 8.043448946694581e6 1.307043107719831e7 … 11331.237739674985 11326.51840
 7046895; … ; 11326.51842066477 11331.237738901911 … 11331.237752373656 1132
-6.518406581376; 16458.179429033426 16462.923993307235 … 16462.923992815315 
+6.518406581376; 16458.179429033426 16462.923993307235 … 16462.923992815315
 16458.179429539887&#93;
 </pre>
 
@@ -1492,7 +1492,7 @@ u: 2-element Array&#123;Array&#123;Float64,3&#125;,1&#125;:
 </ul>
 <p>Matrices which do not satisfy this interface can still be used, but the matrix coloring will not be automatic, and an appropriate linear solver may need to be given &#40;otherwise it will default to attempting an LU-decomposition&#41;.</p>
 <h2>Sundials-Specific Handling</h2>
-<p>While much of the setup makes the transition to using Sundials automatic, there are some differences between the pure Julia implementations and the Sundials implementations which must be taken note of. These are all detailed in the <a href="http://docs.juliadiffeq.org/latest/solvers/ode_solve.html#Sundials.jl-1">Sundials solver documentation</a>, but here we will highlight the main details which one should make note of.</p>
+<p>While much of the setup makes the transition to using Sundials automatic, there are some differences between the pure Julia implementations and the Sundials implementations which must be taken note of. These are all detailed in the <a href="https://docs.juliadiffeq.org/latest/solvers/ode_solve/#ode_solve_sundials-1">Sundials solver documentation</a>, but here we will highlight the main details which one should make note of.</p>
 <p>Defining a sparse matrix and a Jacobian for Sundials works just like any other package. The core difference is in the choice of the linear solver. With Sundials, the linear solver choice is done with a Symbol in the <code>linear_solver</code> from a preset list. Particular choices of note are <code>:Band</code> for a banded matrix and <code>:GMRES</code> for using GMRES. If you are using Sundials, <code>:GMRES</code> will not require defining the JacVecOperator, and instead will always make use of a Jacobian-Free Newton Krylov &#40;with numerical differentiation&#41;. Thus on this problem we could do:</p>
 
 
@@ -1529,10 +1529,10 @@ u: 2-element Array&#123;Array&#123;Float64,3&#125;,1&#125;:
 
 &#91;0.0 0.0 … 0.0 0.0; 0.14892258453196755 0.14892258453196755 … 0.14892258453
 196755 0.14892258453196755; … ; 0.14892258453196738 0.14892258453196738 … 0
-.14892258453196738 0.14892258453196738; 0.0 0.0 … 0.0 0.0&#93;                 
-                                                                           
-                                                                           
-                                                  
+.14892258453196738 0.14892258453196738; 0.0 0.0 … 0.0 0.0&#93;
+
+
+
  &#91;0.45369441125092624 0.45367162922766396 … 0.45377307354145824 0.453728249
 24331306; 0.45372813444006976 0.45370139820263283 … 0.45382031508907966 0.4
 537681622154197; … ; 0.4536347409999057 0.4536184243336325 … 0.453690734603
@@ -1540,14 +1540,14 @@ u: 2-element Array&#123;Array&#123;Float64,3&#125;,1&#125;:
 5001047 0.45369169445940305&#93;
 
 &#91;5.023428953606044 5.023425514309876 … 5.02343972583798 5.0234337753788845;
- 5.023442660236476 5.023439873077652 … 5.02345101637559 5.023446317614284; 
+ 5.023442660236476 5.023439873077652 … 5.02345101637559 5.023446317614284;
 … ; 5.023404093671991 5.023399216246354 … 5.023419229667771 5.0234107290209
 42; 5.023415926060523 5.023411776722086 … 5.02342895844194 5.02342180621704
 3&#93;
 </pre>
 
 
-<p>Details for setting up a preconditioner with Sundials can be found at the <a href="http://docs.juliadiffeq.org/latest/solvers/ode_solve.html#Sundials.jl-1">Sundials solver page</a>.</p>
+<p>Details for setting up a preconditioner with Sundials can be found at the <a href="https://docs.juliadiffeq.org/latest/solvers/ode_solve/#ode_solve_sundials-1">Sundials solver page</a>.</p>
 <h2>Handling Mass Matrices</h2>
 <p>Instead of just defining an ODE as <span class="math">$u' = f(u,p,t)$</span>, it can be common to express the differential equation in the form with a mass matrix:</p>
 <p class="math">\[
@@ -1595,7 +1595,7 @@ dy_2 &= 0.04 y_1 - 10^4 y_2 y_3 - 3*10^7 y_{2}^2 \\
 
 <img src="data:image/png;base64,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"  />
 
-<p>Note that if your mass matrix is singular, i.e. your system is a DAE, then you need to make sure you choose <a href="http://docs.juliadiffeq.org/latest/solvers/dae_solve.html#Full-List-of-Methods-1">a solver that is compatible with DAEs</a></p>
+<p>Note that if your mass matrix is singular, i.e. your system is a DAE, then you need to make sure you choose <a href="https://docs.juliadiffeq.org/latest/solvers/dae_solve/#dae_solve_full-1">a solver that is compatible with DAEs</a></p>
 
 
 

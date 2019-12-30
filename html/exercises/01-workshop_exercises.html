@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>DifferentialEquations.jl Workshop Exercises</title>
-  
+
 
   <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
@@ -16,7 +16,7 @@
   <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
   </script>
 
-  
+
 <style>
 pre.hljl {
     border: 1px solid #ccc;
@@ -662,7 +662,7 @@ div.title {text-align: center;}
           <div class="title">
             <h1 class="title">DifferentialEquations.jl Workshop Exercises</h1>
             <h5>Chris Rackauckas</h5>
-            
+
           </div>
 
           <p>These exercises teach common workflows which involve DifferentialEquations.jl. The designation &#40;B&#41; is for &quot;Beginner&quot;, meaning that a user new to the package should feel comfortable trying this exercise. An exercise designated &#40;I&#41; is for &quot;Intermediate&quot;, meaning the user may want to have some previous background in DifferentialEquations.jl or try some &#40;B&#41; exercises first. The additional &#40;E&#41; designation is for &quot;Experienced&quot;, which are portions of exercises which may take some work.</p>
@@ -692,13 +692,13 @@ div.title {text-align: center;}
 \frac{dy}{dt} &= (-y - xy + z)/s\\
 \frac{dz}{dt} &= w(x - z)\end{align}
 \]</p>
-<p>with parameter values <span class="math">$s=77.27$</span>, <span class="math">$w=0.161$</span>, and <span class="math">$q=8.375 \times 10^{-6}$</span>, and initial conditions <span class="math">$x(0)=1$</span>, <span class="math">$y(0)=2$</span>, and <span class="math">$z(0)=3$</span>. Use <a href="http://docs.juliadiffeq.org/latest/tutorials/ode_example.html">the tutorial on solving ODEs</a> to solve this differential equation on the timespan of <span class="math">$t\in[0,360]$</span> with the default ODE solver. To investigate the result, plot the solution of all components over time, and plot the phase space plot of the solution &#40;hint: use <code>vars&#61;&#40;1,2,3&#41;</code>&#41;. What shape is being drawn in phase space?</p>
+<p>with parameter values <span class="math">$s=77.27$</span>, <span class="math">$w=0.161$</span>, and <span class="math">$q=8.375 \times 10^{-6}$</span>, and initial conditions <span class="math">$x(0)=1$</span>, <span class="math">$y(0)=2$</span>, and <span class="math">$z(0)=3$</span>. Use <a href="https://docs.juliadiffeq.org/latest/tutorials/ode_example">the tutorial on solving ODEs</a> to solve this differential equation on the timespan of <span class="math">$t\in[0,360]$</span> with the default ODE solver. To investigate the result, plot the solution of all components over time, and plot the phase space plot of the solution &#40;hint: use <code>vars&#61;&#40;1,2,3&#41;</code>&#41;. What shape is being drawn in phase space?</p>
 <h2>Part 2: Investigating Stiffness</h2>
-<p>Because the reaction rates of <code>q</code> vs <code>s</code> is very large, this model has a &quot;fast&quot; system and a &quot;slow&quot; system. This is typical of ODEs which exhibit a property known as stiffness. Stiffness changes the ODE solvers which can handle the equation well. <a href="http://docs.juliadiffeq.org/latest/solvers/ode_solve.html">Take a look at the ODE solver page</a> and investigate solving the equation using methods for non-stiff equations &#40;ex: <code>Tsit5</code>&#41; and stiff equations &#40;ex: <code>Rodas5</code>&#41;.</p>
+<p>Because the reaction rates of <code>q</code> vs <code>s</code> is very large, this model has a &quot;fast&quot; system and a &quot;slow&quot; system. This is typical of ODEs which exhibit a property known as stiffness. Stiffness changes the ODE solvers which can handle the equation well. <a href="https://docs.juliadiffeq.org/latest/solvers/ode_solve">Take a look at the ODE solver page</a> and investigate solving the equation using methods for non-stiff equations &#40;ex: <code>Tsit5</code>&#41; and stiff equations &#40;ex: <code>Rodas5</code>&#41;.</p>
 <p>Benchmark using <span class="math">$t\in[0,50]$</span> using <code>@btime</code> from BenchmarkTools.jl. What happens when you increase the timespan?</p>
 <h2>&#40;Optional&#41; Part 3: Specifying Analytical Jacobians &#40;I&#41;</h2>
 <p>Stiff ODE solvers internally utilize the Jacobian of the ODE system in order to improve the stepsizes in the solution. However, computing and factorizing the Jacobian is costly, and thus it can be beneficial to provide the analytical solution.</p>
-<p>Use the <a href="http://docs.juliadiffeq.org/latest/features/performance_overloads.html">ODEFunction definition page</a> to define an <code>ODEFunction</code> which holds both the OREGO ODE and its Jacobian, and solve using <code>Rodas5</code>.</p>
+<p>Use the <a href="https://docs.juliadiffeq.org/latest/features/performance_overloads">ODEFunction definition page</a> to define an <code>ODEFunction</code> which holds both the OREGO ODE and its Jacobian, and solve using <code>Rodas5</code>.</p>
 <h2>&#40;Optional&#41; Part 4: Automatic Symbolicification and Analytical Jacobian Calculations</h2>
 <p>Deriving Jacobians by hand is tedious. Thankfully symbolic mathematical systems can do the work for you. And thankfully, DifferentialEquations.jl has tools to automatically convert numerical problems into symbolic problems to perform the analysis on&#33;</p>
 <p>follow the <a href="https://github.com/JuliaDiffEq/ModelingToolkit.jl">ModelingToolkit.jl README</a> to automatically convert your ODE definition to its symbolic form using <code>modelingtoolkitize</code> and calculate the analytical Jacobian. Use the compilation functions to build the <code>ODEFunction</code> with the embedded analytical solution.</p>
@@ -710,7 +710,7 @@ dx &= s(y-xy + x - qx^2)dt + \sigma_1 x dW_1\\
 dy &= \frac{-y - xy + z}{s}dt + \sigma_2 y dW_2\\
 dz &= w(x - z)dt + \sigma_3 z dW_3\end{align}
 \]</p>
-<p>with <span class="math">$\sigma_i = 0.1$</span> where the <code>dW</code> terms describe a Brownian motion, a continuous random process with normally distributed increments. Use the <a href="http://docs.juliadiffeq.org/latest/tutorials/sde_example.html">tutorial on solving SDEs</a> to solve simulate this model. Then, <a href="http://docs.juliadiffeq.org/latest/features/ensemble.html">use the <code>EnsembleProblem</code></a> to generate and plot 100 trajectories of the stochastic model, and use <code>EnsembleSummary</code> to plot the mean and 5&#37;-95&#37; region over time.</p>
+<p>with <span class="math">$\sigma_i = 0.1$</span> where the <code>dW</code> terms describe a Brownian motion, a continuous random process with normally distributed increments. Use the <a href="https://docs.juliadiffeq.org/latest/tutorials/sde_example">tutorial on solving SDEs</a> to solve simulate this model. Then, <a href="https://docs.juliadiffeq.org/latest/features/ensemble">use the <code>EnsembleProblem</code></a> to generate and plot 100 trajectories of the stochastic model, and use <code>EnsembleSummary</code> to plot the mean and 5&#37;-95&#37; region over time.</p>
 <p>Try solving with the <code>ImplicitRKMil</code> and <code>SOSRI</code> methods. Notice that it isn&#39;t stiff every single time&#33;</p>
 <p>&#40;For fun, see if you can make the Euler-Maruyama <code>EM&#40;&#41;</code> method solve this equation. This requires a choice of <code>dt</code> small enough to be stable. This is the &quot;standard&quot; method&#33;&#41;</p>
 <h2>Part 6: Gillespie jump models of discrete stochasticity</h2>
@@ -727,7 +727,7 @@ dz &= w(x - z)dt + \sigma_3 z dW_3\end{align}
 </pre>
 
 
-<p>where reactions take place at a rate which is propoertional to its components, i.e. the first reaction has a rate <code>k*A*Y</code> for some <code>k</code>. Use the <a href="http://docs.juliadiffeq.org/latest/tutorials/discrete_stochastic_example.html">tutorial on Gillespie SSA models</a> to implement the <code>JumpProblem</code> for this model, and use the <code>EnsembleProblem</code> and <code>EnsembleSummary</code> to characterize the stochastic trajectories.</p>
+<p>where reactions take place at a rate which is propoertional to its components, i.e. the first reaction has a rate <code>k*A*Y</code> for some <code>k</code>. Use the <a href="https://docs.juliadiffeq.org/latest/tutorials/discrete_stochastic_example">tutorial on Gillespie SSA models</a> to implement the <code>JumpProblem</code> for this model, and use the <code>EnsembleProblem</code> and <code>EnsembleSummary</code> to characterize the stochastic trajectories.</p>
 <p>For what rate constants does the model give the oscillatory dynamics for the ODE approximation? For information on the true reaction rates, consult <a href="https://pubs.acs.org/doi/abs/10.1021/ja00780a001">the original paper</a>.</p>
 <h2>Part 7: Probabilistic Programming / Bayesian Parameter Estimation with DiffEqBayes.jl &#43; Turing.jl &#40;I&#41;</h2>
 <p>In many casees, one comes to understand the proper values for their model&#39;s parameters by utilizing data fitting techniques. In this case, we will use the DiffEqBayes.jl library to perform a Bayesian estimation of the parameters. For our data we will the following potential output:</p>
@@ -742,10 +742,10 @@ dz &= w(x - z)dt + \sigma_3 z dW_3\end{align}
 </pre>
 
 
-<p><a href="http://docs.juliadiffeq.org/latest/analysis/parameter_estimation.html#Bayesian-Methods-1">Follow the exmaples on the parameter estimation page</a> to perform a Bayesian parameter estimation. What are the most likely parameters for the model given the posterior parameter distributions?</p>
+<p><a href="https://docs.juliadiffeq.org/latest/analysis/parameter_estimation/#Bayesian-Inference-Examples-1">Follow the exmaples on the parameter estimation page</a> to perform a Bayesian parameter estimation. What are the most likely parameters for the model given the posterior parameter distributions?</p>
 <p>Use the <code>ODEProblem</code> to perform the fit. If you have time, use the <code>EnsembleProblem</code> of <code>SDEProblem</code>s to perform a fit over averages of the SDE solutions. Note that the SDE fit will take significantly more computational resources&#33; See the GPU parallelism section for details on how to accelerate this.</p>
 <h2>&#40;Optional&#41; Part 8: Using DiffEqBiological&#39;s Reaction Network DSL</h2>
-<p>DiffEqBiological.jl is a helper library for the DifferentialEquations.jl ecosystem for defining chemical reaction systems at a high leevel for easy simulation in these various forms. Use the descrption <a href="http://docs.juliadiffeq.org/latest/models/biological.html">from the Chemical Reaction Networks documentation page</a> to build a reaction network and generate the ODE/SDE/jump equations, and compare the result to your handcoded versions.</p>
+<p>DiffEqBiological.jl is a helper library for the DifferentialEquations.jl ecosystem for defining chemical reaction systems at a high leevel for easy simulation in these various forms. Use the descrption <a href="https://docs.juliadiffeq.org/latest/models/biological">from the Chemical Reaction Networks documentation page</a> to build a reaction network and generate the ODE/SDE/jump equations, and compare the result to your handcoded versions.</p>
 <h1>Problem 2: Fitting Hybrid Delay Pharmacokinetic Models with Automated Responses &#40;B&#41;</h1>
 <p>Hybrid differential equations are differential equations with events, where events are some interaction that occurs according to a prespecified condition. For example, the bouncing ball is a classic hybrid differential equation given by an ODE &#40;Newton&#39;s Law of Gravity&#41; mixed with the fact that, whenever the ball hits the floor &#40;<code>x&#61;0</code>&#41;, then the velocity of the ball flips &#40;<code>v&#61;-v</code>&#41;.</p>
 <p>In addition, many models incorporate delays, that is the driving force of the equation is dependent not on the current values, but values from the past. These delay differential equations model how individuals in the economy act on old information, or that biological processes take time to adapt to a new environment.</p>
@@ -758,7 +758,7 @@ dz &= w(x - z)dt + \sigma_3 z dW_3\end{align}
 \frac{d[Central]}{dt} &= K_a [Depot] - K_e [Central]\end{align}
 \]</p>
 <p>with <span class="math">$t \in [0,90]$</span>, <span class="math">$u_0 = [100.0,0]$</span>, and <span class="math">$p=[K_a,K_e]=[2.268,0.07398]$</span>.</p>
-<p>With this model, use <a href="http://docs.juliadiffeq.org/latest/features/callback_functions.html">the event handling documentation page</a> to define a <code>DiscreteCallback</code> which fires at <code>t ∈ &#91;24,48,72&#93;</code> and adds a dose of 100 into <code>&#91;Depot&#93;</code>. &#40;Hint: you&#39;ll want to set <code>tstops&#61;&#91;24,48,72&#93;</code> to force the ODE solver to step at these times&#41;.</p>
+<p>With this model, use <a href="https://docs.juliadiffeq.org/latest/features/callback_functions">the event handling documentation page</a> to define a <code>DiscreteCallback</code> which fires at <code>t ∈ &#91;24,48,72&#93;</code> and adds a dose of 100 into <code>&#91;Depot&#93;</code>. &#40;Hint: you&#39;ll want to set <code>tstops&#61;&#91;24,48,72&#93;</code> to force the ODE solver to step at these times&#41;.</p>
 <h2>Part 2: Adding Delays</h2>
 <p>Now let&#39;s assume that instead of there being one compartment, there are many transit compartment that the drug must move through in order to reach the central compartment. This effectively delays the effect of the transition from <code>&#91;Depot&#93;</code> to <code>&#91;Central&#93;</code>. To model this effect, we will use the delay differential equation which utilizes a fixed time delay <span class="math">$\tau$</span>:</p>
 <p class="math">\[
@@ -766,10 +766,10 @@ dz &= w(x - z)dt + \sigma_3 z dW_3\end{align}
 \frac{d[Depot]}{dt} &= -K_a [Depot](t)\\
 \frac{d[Central]}{dt} &= K_a [Depot](t-\tau) - K_e [Central]\end{align}
 \]</p>
-<p>where the parameter <span class="math">$τ = 6.0$</span>. <a href="http://docs.juliadiffeq.org/latest/tutorials/dde_example.html">Use the DDE tutorial</a> to define and solve this delayed version of the hybrid model.</p>
+<p>where the parameter <span class="math">$τ = 6.0$</span>. <a href="https://docs.juliadiffeq.org/latest/tutorials/dde_example">Use the DDE tutorial</a> to define and solve this delayed version of the hybrid model.</p>
 <h2>Part 3: Automatic Differentiation &#40;AD&#41; for Optimization &#40;I&#41;</h2>
 <p>In order to fit parameters <span class="math">$(K_a,K_e,\tau)$</span> we will want to be able to calculate the gradient of the solution with respect to the initial conditions. One way to do this is via Automatic Differentition &#40;AD&#41;. For small numbers of parameters &#40;&lt;100&#41;, it is fastest to use Forward-Mode Automatic Differentition &#40;even faster than using adjoint sensitivity analysis&#33;&#41;. Thus for this problem we will make use of ForwardDiff.jl to use Dual number arithmetic to retrive both the solution and its derivative w.r.t. parameters in a single solve.</p>
-<p><a href="http://docs.juliadiffeq.org/latest/analysis/sensitivity.html">Use the information from the page on local sensitvity analysis</a> to define the input dual numbers, solve the equation, and plot both the solution over time and the derivative of the solution w.r.t. the parameters.</p>
+<p><a href="https://docs.juliadiffeq.org/latest/analysis/sensitivity">Use the information from the page on local sensitvity analysis</a> to define the input dual numbers, solve the equation, and plot both the solution over time and the derivative of the solution w.r.t. the parameters.</p>
 <h2>Part 4: Fitting Known Quantities with DiffEqParamEstim.jl &#43; Optim.jl</h2>
 <p>Now let&#39;s fit the delayed model to a dataset. For the data, use the array</p>
 
@@ -782,12 +782,12 @@ dz &= w(x - z)dt + \sigma_3 z dW_3\end{align}
 </pre>
 
 
-<p>Use <a href="http://docs.juliadiffeq.org/latest/analysis/parameter_estimation.html">the parameter estimation page</a> to define a loss function with <code>build_loss_objective</code> and optimize the parameters against the data. What parameters were used to generate the data?</p>
+<p>Use <a href="https://docs.juliadiffeq.org/latest/analysis/parameter_estimation">the parameter estimation page</a> to define a loss function with <code>build_loss_objective</code> and optimize the parameters against the data. What parameters were used to generate the data?</p>
 <h2>Part 5: Implementing Control-Based Logic with ContinuousCallbacks &#40;I&#41;</h2>
 <p>Now that we have fit our delay differential equation model to the dataset, we want to start testing out automated treatment strategies. Let&#39;s assume that instead of giving doses at fixed time points, we invent a wearable which monitors the patient and administers a dose whenever the internal drug concentration falls below 25. To model this effect, we will need to use <code>ContinuousCallbacks</code> to define a callback that triggers when <code>&#91;Central&#93;</code> falls below the threshold value.</p>
-<p><a href="http://docs.juliadiffeq.org/latest/features/callback_functions.html">Use the documentation on the event handling page</a> to define such a callback, and plot the solution over time. How many times does the auto-doser administer a dose? How much does this change as you change the delay time <span class="math">$\tau$</span>?</p>
+<p><a href="https://docs.juliadiffeq.org/latest/features/callback_functions">Use the documentation on the event handling page</a> to define such a callback, and plot the solution over time. How many times does the auto-doser administer a dose? How much does this change as you change the delay time <span class="math">$\tau$</span>?</p>
 <h2>Part 6: Global Sensitivity Analysis with the Morris and Sobol Methods</h2>
-<p>To understand how the parameters effect the solution in a global sense, one wants to use Global Sensitivity Analysis. Use the <a href="http://docs.juliadiffeq.org/latest/analysis/global_sensitivity.html">GSA documentation page</a> perform global sensitivity analysis and quantify the effect of the various parameters on the solution.</p>
+<p>To understand how the parameters effect the solution in a global sense, one wants to use Global Sensitivity Analysis. Use the <a href="https://docs.juliadiffeq.org/latest/analysis/global_sensitivity">GSA documentation page</a> perform global sensitivity analysis and quantify the effect of the various parameters on the solution.</p>
 <h1>Problem 3: Differential-Algebraic Equation Modeling of a Double Pendulum &#40;B&#41;</h1>
 <p>Differential-Algebraic Equaton &#40;DAE&#41; systems are like ODEs but allow for adding constraints into the models. This problem will look at solving the double penulum problem with enforcement of the rigid body constraints, requiring that the total distance <code>L</code> is constant throughout the simulation. While these equations can be rewritten in an ODE form, in many cases it can be simpler to solve the equation directly with the constraints. This tutorial will cover both the idea of index, how to manually perform index reduction, and how to make use of mass matrix and implicit ODE solvers to handle these problems.</p>
 <h2>Part 1: Simple Introduction to DAEs: Mass-Matrix Robertson Equations</h2>
@@ -803,10 +803,10 @@ Mu' = f(u,p,t)
 \frac{dy_2}{dt} &=  0.04y_1 - 10^4 y_2y_3 - 3\times 10^7 y_2^2\\
 1 &= y_1 + y_2 + y_3\end{align}
 \]</p>
-<p>with <span class="math">$y(0) = [1,0,0]$</span> and <span class="math">$dy(0) = [-0.04,0.04,0.0]$</span> using the mass-matrix formulation and <code>Rodas5&#40;&#41;</code>. Use the <a href="http://docs.juliadiffeq.org/latest/types/ode_types.html">ODEProblem page</a> to find out how to declare a mass matrix.</p>
+<p>with <span class="math">$y(0) = [1,0,0]$</span> and <span class="math">$dy(0) = [-0.04,0.04,0.0]$</span> using the mass-matrix formulation and <code>Rodas5&#40;&#41;</code>. Use the <a href="https://docs.juliadiffeq.org/latest/types/ode_types">ODEProblem page</a> to find out how to declare a mass matrix.</p>
 <p>&#40;Hint: what if the last row has all zeros?&#41;</p>
 <h2>Part 2: Solving the Implicit Robertson Equations with IDA</h2>
-<p>Use the <a href="http://docs.juliadiffeq.org/latest/tutorials/dae_example.html">DAE Tutorial</a> to define a DAE in its implicit form and solve the Robertson equation with IDA. Why is <code>differential_vars &#61; &#91;true,true,false&#93;</code>?</p>
+<p>Use the <a href="https://docs.juliadiffeq.org/latest/tutorials/dae_example">DAE Tutorial</a> to define a DAE in its implicit form and solve the Robertson equation with IDA. Why is <code>differential_vars &#61; &#91;true,true,false&#93;</code>?</p>
 <h2>Part 3: Manual Index Reduction of the Single Pendulum</h2>
 <h2>Part 4: Single Pendulum Solution with IDA</h2>
 <h2>Part 5: Solving the Double Penulum DAE System</h2>
@@ -845,15 +845,15 @@ u(x,y+1,t) &= u(x,y,t)\end{align}
 <h2>Part 2: Optimizing the BRUSS Code</h2>
 <p>PDEs are expensive to solve, and so we will go nowhere without some code optimizing&#33; Follow the steps described in the <a href="http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/03-optimizing_diffeq_code.html">the Gierer-Meinhardt example from the DiffEqTutorials</a> to optimize your Brusselator code. Try other formulations and see what ends up the fastest&#33; Find a trade-off between performance and simplicity that suits your needs.</p>
 <h2>Part 3: Exploiting Jacobian Sparsity with Color Differentiation</h2>
-<p>Use the <code>sparsity&#33;</code> function from <a href="https://github.com/JuliaDiffEq/SparseDiffTools.jl">SparseDiffTools</a> to generate the sparsity pattern for the Jacobian of this problem. Follow the documentations <a href="http://docs.juliadiffeq.org/latest/features/performance_overloads.html">on the DiffEqFunction page</a> to specify the sparsity pattern of the Jacobian. Generate an add the color vector to speed up the computation of the Jacobian.</p>
+<p>Use the <code>sparsity&#33;</code> function from <a href="https://github.com/JuliaDiffEq/SparseDiffTools.jl">SparseDiffTools</a> to generate the sparsity pattern for the Jacobian of this problem. Follow the documentations <a href="https://docs.juliadiffeq.org/latest/features/performance_overloads">on the DiffEqFunction page</a> to specify the sparsity pattern of the Jacobian. Generate an add the color vector to speed up the computation of the Jacobian.</p>
 <h2>&#40;Optional&#41; Part 4: Structured Jacobians</h2>
 <p>Specify the sparsity pattern using a BlockBandedMatrix from <a href="https://github.com/JuliaMatrices/BlockBandedMatrices.jl">BlockBandedMatrices.jl</a> to accelerate the previous sparsity handling tricks.</p>
 <h2>&#40;Optional&#41; Part 5: Automatic Symbolicification and Analytical Jacobian</h2>
 <p>Use the <code>modelingtoolkitize</code> function from ModelingToolkit.jl to convert your numerical ODE function into a symbolic ODE function and use that to compute and solve with an analytical sparse Jacobian.</p>
 <h2>Part 6: Utilizing Preconditioned-GMRES Linear Solvers</h2>
-<p>Use the <a href="http://docs.juliadiffeq.org/latest/features/linear_nonlinear.html">linear solver specification page</a> to solve the equation with <code>TRBDF2</code> with GMRES. Use the Sundials documentation to solve the equation with <code>CVODE_BDF</code> with Sundials&#39; special internal GMRES. To both of these, use the <a href="https://github.com/JuliaLinearAlgebra/AlgebraicMultigrid.jl">AlgebraicMultigrid.jl</a> to add a preconditioner to the GMRES solver.</p>
+<p>Use the <a href="https://docs.juliadiffeq.org/latest/features/linear_nonlinear">linear solver specification page</a> to solve the equation with <code>TRBDF2</code> with GMRES. Use the Sundials documentation to solve the equation with <code>CVODE_BDF</code> with Sundials&#39; special internal GMRES. To both of these, use the <a href="https://github.com/JuliaLinearAlgebra/AlgebraicMultigrid.jl">AlgebraicMultigrid.jl</a> to add a preconditioner to the GMRES solver.</p>
 <h2>Part 7: Exploring IMEX and Exponential Integrator Techniques &#40;E&#41;</h2>
-<p>Instead of using the standard <code>ODEProblem</code>, define a <a href="http://docs.juliadiffeq.org/latest/types/split_ode_types.html"><code>SplitODEProblem</code></a> to move some of the equation to the the &quot;non-stiff part&quot;. Try different splits and solve with <code>KenCarp4</code> to see if the solution can be accelerated.</p>
+<p>Instead of using the standard <code>ODEProblem</code>, define a <a href="https://docs.juliadiffeq.org/latest/types/split_ode_types"><code>SplitODEProblem</code></a> to move some of the equation to the the &quot;non-stiff part&quot;. Try different splits and solve with <code>KenCarp4</code> to see if the solution can be accelerated.</p>
 <p>Next, use <code>DiffEqArrayOperator</code> to define part of the equation as linear, and use the <code>ETDRK4</code> exponential integrator to solve the equation. Note that this technique is not appropriate for this equation since it relies on the nonlinear term being non-stiff for best results.</p>
 <h2>Part 8: Work-Precision Diagrams for Benchmarking Solver Choices</h2>
 <p>Use the <code>WorkPrecisionSet</code> method from <a href="https://github.com/JuliaDiffEq/DiffEqDevTools.jl">DiffEqDevTools.jl</a> to benchmark multiple different solver methods and find out what combination is most efficient. <a href="https://github.com/JuliaDiffEq/DiffEqBenchmarks.jl">Take a look at DiffEqBenchmarks.jl</a> for usage examples.</p>
@@ -861,7 +861,7 @@ u(x,y+1,t) &= u(x,y,t)\end{align}
 <p>Fully vectorize your implementation of the ODE and use a <code>CuArray</code> from <a href="https://github.com/JuliaGPU/CuArrays.jl">CuArrays.jl</a> as the initial condition to cause the whole solution to be GPU accelerated.</p>
 <h2>Part 10: Adjoint Sensitivity Analysis for Gradients of PDEs</h2>
 <p>In order to optimize the parameters of a PDE, you need to be able to compute the gradient of the solution with respect to the parameters. This is done through sensitivity analysis. For PDEs, generally the system is at a scale where forward sensitivity analysis &#40;forward-mode automatic differentiation&#41; is no longer suitable, and for these cases one uses adjoint sensitivity analysis.</p>
-<p>Rewrite the PDE so the constant terms are parameters, and use the <a href="http://docs.juliadiffeq.org/latest/analysis/sensitivity.html#Adjoint-Sensitivity-Analysis-1">adjoint sensitivity analysis</a> documentation to solve for the solution gradient with a cost function being the L2 distance of the solution from the value 1. Solve with interpolated and checkpointed adjoints. Play with using reverse-mode automatic differentiation vs direct computation of vector-Jacobian products using the <code>autojacvec</code> option of the <code>SensitivityAlg</code>. Find the set of options most suitable for this PDE.</p>
+<p>Rewrite the PDE so the constant terms are parameters, and use the <a href="https://docs.juliadiffeq.org/latest/analysis/sensitivity/#Adjoint-Sensitivity-Analysis-1">adjoint sensitivity analysis</a> documentation to solve for the solution gradient with a cost function being the L2 distance of the solution from the value 1. Solve with interpolated and checkpointed adjoints. Play with using reverse-mode automatic differentiation vs direct computation of vector-Jacobian products using the <code>autojacvec</code> option of the <code>SensitivityAlg</code>. Find the set of options most suitable for this PDE.</p>
 <p>If you have compute time, use this adjoint to optimize the parameters of the PDE with respect to this cost function.</p>
 <h1>Problem 5: Global Parameter Sensitivity and Optimality with GPU and Distributed Ensembles &#40;B&#41;</h1>
 <p>In this example we will investigate how the parameters &quot;generally&quot; effect the solution in the chaotic Henon-Heiles system. By &quot;generally&quot; we will use global sensitivity analysis methods to get an average global characterization of the parameters on the solution. In addition to a global sensitivity approach, we will generate large ensembles of solutions with different parameters using a GPU-based parallelism approach.</p>
@@ -876,7 +876,7 @@ u(x,y+1,t) &= u(x,y,t)\end{align}
 \]</p>
 <p>with initial conditions <span class="math">$u_0 = [0.1,0.0,0.0,0.5]$</span>. Solve this system over the timespan <span class="math">$t\in[0,1000]$</span></p>
 <h2>&#40;Optional&#41; Part 2: Alternative Dynamical Implmentations of Henon-Heiles &#40;B&#41;</h2>
-<p>The Henon-Heiles defines a Hamiltonian system with certain structures which can be utilized for a more efficient solution. Use <a href="http://docs.juliadiffeq.org/latest/types/dynamical_types.html">the Dynamical problems page</a> to define a <code>SecondOrderODEProblem</code> corresponding to the acceleration terms:</p>
+<p>The Henon-Heiles defines a Hamiltonian system with certain structures which can be utilized for a more efficient solution. Use <a href="https://docs.juliadiffeq.org/latest/types/dynamical_types">the Dynamical problems page</a> to define a <code>SecondOrderODEProblem</code> corresponding to the acceleration terms:</p>
 <p class="math">\[
 \begin{align}
 \frac{dp_1^2}{dt} &= -q_1 (1 + 2q_2)\\
@@ -889,7 +889,7 @@ H(p,q) = \frac{1}{2}(p_1^2 + p_2^2) + \frac{1}{2}(q_1^2+q_2^2+2q_1^2 q_2 - \frac
 \]</p>
 <p>Solve this problem using the <code>HamiltonianProblem</code> constructor from DiffEqPhysics.jl.</p>
 <h2>Part 3: Parallelized Ensemble Solving</h2>
-<p>To understand the orbits of the Henon-Heiles system, it can be useful to solve the system with many different initial conditions. Use the <a href="http://docs.juliadiffeq.org/latest/features/ensemble.html">ensemble interface</a> to solve with randomized initial conditions in parallel using threads with <code>EnsembleThreads&#40;&#41;</code>. Then, use <code>addprocs&#40;&#41;</code> to add more cores and solve using <code>EnsembleDistributed&#40;&#41;</code>. The former will solve using all of the cores on a single computer, while the latter will use all of the cores on which there are processors, which can include thousands across a supercomputer&#33; See <a href="https://docs.julialang.org/en/v1/manual/parallel-computing/index.html">Julia&#39;s parallel computing setup page</a> for more details on the setup.</p>
+<p>To understand the orbits of the Henon-Heiles system, it can be useful to solve the system with many different initial conditions. Use the <a href="https://docs.juliadiffeq.org/latest/features/ensemble">ensemble interface</a> to solve with randomized initial conditions in parallel using threads with <code>EnsembleThreads&#40;&#41;</code>. Then, use <code>addprocs&#40;&#41;</code> to add more cores and solve using <code>EnsembleDistributed&#40;&#41;</code>. The former will solve using all of the cores on a single computer, while the latter will use all of the cores on which there are processors, which can include thousands across a supercomputer&#33; See <a href="https://docs.julialang.org/en/v1/manual/parallel-computing/index.html">Julia&#39;s parallel computing setup page</a> for more details on the setup.</p>
 <h2>Part 4: Parallelized GPU Ensemble Solving</h2>
 <p>Setup the CUDAnative.jl library and use the <code>EnsembleGPUArray&#40;&#41;</code> method to parallelize the solution across the thousands of cores of a GPU. Note that this will efficiency solve for hundreds of thousands of trajectores.</p>
 <h1>Problem 6: Training Neural Stochastic Differential Equations with GPU acceleration &#40;I&#41;</h1>
