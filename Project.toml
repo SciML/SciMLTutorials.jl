@@ -49,7 +49,7 @@ Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
 [compat]
 AlgebraicMultigrid = "0.2"
 ArbNumerics = "1.0"
-BenchmarkTools = "0.4"
+BenchmarkTools = "0.4, 0.5"
 CUDAnative = "2.5"
 Cairo = "0.8, 1.0"
 CuArrays = "1.4"
