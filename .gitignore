@@ -8,3 +8,5 @@
 *.out
 *.tex
 Manifest.toml
+tutorials/**/*.html
+tutorials/**/*.pdf
