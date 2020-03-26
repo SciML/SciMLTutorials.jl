@@ -5,9 +5,9 @@ author: Yingbo Ma, Chris Rackauckas
 
 If you're getting some cold feet to jump in to DiffEq land, here are some handcrafted differential equations mini problems to hold your hand along the beginning of your journey.
 
-## Radioactive Decay of Carbon-14
+## First order linear ODE
 
-#### First order linear ODE
+#### Radioactive Decay of Carbon-14
 
 $$f(t,u) = \frac{du}{dt}$$
 
@@ -36,9 +36,67 @@ plot(sol,linewidth=2,title ="Carbon-14 half-life", xaxis = "Time in thousands of
 plot!(sol.t, t->exp(-C₁*t),lw=3,ls=:dash,label="Analytical Solution")
 ```
 
-## Simple Pendulum
+## Second Order Linear ODE
 
-#### Second Order Linear ODE
+#### Simple Harmonic Oscillator
+
+Another classical example is the harmonic oscillator, given by
+$$
+\ddot{x} + \omega^2 x = 0
+$$
+with the known analytical solution
+$$
+\begin{align*}
+x(t) &= A\cos(\omega t - \phi) \\
+v(t) &= -A\omega\sin(\omega t - \phi),
+\end{align*}
+$$
+where
+$$
+A = \sqrt{c_1 + c_2} \qquad\text{and}\qquad \tan \phi = \frac{c_2}{c_1}
+$$
+with $c_1, c_2$ constants determined by the initial conditions such that
+$c_1$ is the initial position and $\omega c_2$ is the initial velocity.
+
+Instead of transforming this to a system of ODEs to solve with `ODEProblem`,
+we can use `SecondOrderODEProblem` as follows.
+
+```julia
+# Simple Harmonic Oscillator Problem
+using OrdinaryDiffEq, Plots
+
+#Parameters
+ω = 1
+
+#Initial Conditions
+x₀ = [0.0]
+dx₀ = [π/2]
+tspan = (0.0, 2π)
+
+ϕ = atan((dx₀[1]/ω)/x₀[1])
+A = √(x₀[1]^2 + dx₀[1]^2)
+
+#Define the problem
+function harmonicoscillator(ddu,du,u,ω,t)
+    ddu .= -ω^2 * u
+end
+
+#Pass to solvers
+prob = SecondOrderODEProblem(harmonicoscillator, dx₀, x₀, tspan, ω)
+sol = solve(prob, DPRKN6())
+
+#Plot
+plot(sol, vars=[2,1], linewidth=2, title ="Simple Harmonic Oscillator", xaxis = "Time", yaxis = "Elongation", label = ["x" "dx"])
+plot!(t->A*cos(ω*t-ϕ), lw=3, ls=:dash, label="Analytical Solution x")
+plot!(t->-A*ω*sin(ω*t-ϕ), lw=3, ls=:dash, label="Analytical Solution dx")
+```
+
+Note that the order of the variables (and initial conditions) is `dx`, `x`.
+Thus, if we want the first series to be `x`, we have to flip the order with `vars=[2,1]`.
+
+## Second Order Non-linear ODE
+
+#### Simple Pendulum
 
 We will start by solving the pendulum problem. In the physics class, we often solve this problem by small angle approximation, i.e. $ sin(\theta) \approx \theta$, because otherwise, we get an elliptic integral which doesn't have an analytic solution. The linearized form is
 
@@ -104,63 +162,7 @@ end
 plot(p,xlims = (-9,9))
 ```
 
-## Simple Harmonic Oscillator
-
-Another classical example is the harmonic oscillator, given by
-$$
-\ddot{x} + \omega^2 x = 0
-$$
-with the known analytical solution
-$$
-\begin{align*}
-x(t) &= A\cos(\omega t - \phi) \\
-v(t) &= -A\omega\sin(\omega t - \phi),
-\end{align*}
-$$
-where
-$$
-A = \sqrt{c_1 + c_2} \qquad\text{and}\qquad \tan \phi = \frac{c_2}{c_1}
-$$
-with $c_1, c_2$ constants determined by the initial conditions such that
-$c_1$ is the initial position and $\omega c_2$ is the initial velocity.
-
-Instead of transforming this to a system of ODEs to solve with `ODEProblem`,
-we can use `SecondOrderODEProblem` as follows.
-
-```julia
-# Simple Harmonic Oscillator Problem
-using OrdinaryDiffEq, Plots
-
-#Parameters
-ω = 1
-
-#Initial Conditions
-x₀ = [0.0]
-dx₀ = [π/2]
-tspan = (0.0, 2π)
-
-ϕ = atan((dx₀[1]/ω)/x₀[1])
-A = √(x₀[1]^2 + dx₀[1]^2)
-
-#Define the problem
-function harmonicoscillator(ddu,du,u,ω,t)
-    ddu .= -ω^2 * u
-end
-
-#Pass to solvers
-prob = SecondOrderODEProblem(harmonicoscillator, dx₀, x₀, tspan, ω)
-sol = solve(prob, DPRKN6())
-
-#Plot
-plot(sol, vars=[2,1], linewidth=2, title ="Simple Harmonic Oscillator", xaxis = "Time", yaxis = "Elongation", label = ["x" "dx"])
-plot!(t->A*cos(ω*t-ϕ), lw=3, ls=:dash, label="Analytical Solution x")
-plot!(t->-A*ω*sin(ω*t-ϕ), lw=3, ls=:dash, label="Analytical Solution dx")
-```
-
-Note that the order of the variables (and initial conditions) is `dx`, `x`.
-Thus, if we want the first series to be `x`, we have to flip the order with `vars=[2,1]`.
-
-### Double Pendulum
+#### Double Pendulum
 
 A more complicated example is given by the double pendulum. The equations governing
 its motion are given by the following (taken from this [StackOverflow question](https://mathematica.stackexchange.com/questions/40122/help-to-plot-poincar%C3%A9-section-for-double-pendulum))
@@ -217,7 +219,7 @@ ts, ps = polar2cart(sol, l1=L₁, l2=L₂, dt=0.01)
 plot(ps...)
 ```
 
-### Poincaré section
+##### Poincaré section
 
 In this case the phase space is 4 dimensional and it cannot be easily visualized.
 Instead of looking at the full phase space, we can look at Poincaré sections,
@@ -271,7 +273,7 @@ end
 plot(p, xlabel="\\beta", ylabel="l_\\beta", ylims=(0, 0.03))
 ```
 
-## Hénon-Heiles System
+#### Hénon-Heiles System
 
 The Hénon-Heiles potential occurs when non-linear motion of a star around a galactic center with the motion restricted to a plane.
 
