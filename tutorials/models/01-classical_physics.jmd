@@ -48,6 +48,17 @@ But we have numerical ODE solvers! Why not solve the *real* pendulum?
 
 $$\ddot{\theta} + \frac{g}{L}{\sin(\theta)} = 0$$
 
+Notice that now we have a second order ODE.
+In order to use the same method as above, we nee to transform it into a system
+of first order ODEs by employing the notation $\omega = \dot{\theta}$.
+
+$$
+\begin{align}
+&\dot{\theta} = \omega \\
+&\dot{\omega} = - \frac{g}{L}{\sin(\theta)}
+\end{align}
+$$
+
 ```julia
 # Simple Pendulum Problem
 using OrdinaryDiffEq, Plots
@@ -62,9 +73,9 @@ tspan = (0.0,6.3)
 
 #Define the problem
 function simplependulum(du,u,p,t)
-    θ  = u[1]
-    dθ = u[2]
-    du[1] = dθ
+    θ = u[1]
+    ω = u[2]
+    du[1] = ω
     du[2] = -(g/L)*sin(θ)
 end
 
