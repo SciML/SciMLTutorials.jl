@@ -106,6 +106,60 @@ plot(p,xlims = (-9,9))
 
 ## Simple Harmonic Oscillator
 
+Another classical example is the harmonic oscillator, given by
+$$
+\ddot{x} + \omega^2 x = 0
+$$
+with the known analytical solution
+$$
+\begin{align*}
+x(t) &= A\cos(\omega t - \phi) \\
+v(t) &= -A\omega\sin(\omega t - \phi),
+\end{align*}
+$$
+where
+$$
+A = \sqrt{c_1 + c_2} \qquad\text{and}\qquad \tan \phi = \frac{c_2}{c_1}
+$$
+with $c_1, c_2$ constants determined by the initial conditions such that
+$c_1$ is the initial position and $\omega c_2$ is the initial velocity.
+
+Instead of transforming this to a system of ODEs to solve with `ODEProblem`,
+we can use `SecondOrderODEProblem` as follows.
+
+```julia
+# Simple Harmonic Oscillator Problem
+using OrdinaryDiffEq, Plots
+
+#Parameters
+ω = 1
+
+#Initial Conditions
+x₀ = [0.0]
+dx₀ = [π/2]
+tspan = (0.0, 2π)
+
+ϕ = atan((dx₀[1]/ω)/x₀[1])
+A = √(x₀[1]^2 + dx₀[1]^2)
+
+#Define the problem
+function harmonicoscillator(ddu,du,u,ω,t)
+    ddu .= -ω^2 * u
+end
+
+#Pass to solvers
+prob = SecondOrderODEProblem(harmonicoscillator, dx₀, x₀, tspan, ω)
+sol = solve(prob, DPRKN6())
+
+#Plot
+plot(sol, vars=[2,1], linewidth=2, title ="Simple Harmonic Oscillator", xaxis = "Time", yaxis = "Elongation", label = ["x" "dx"])
+plot!(t->A*cos(ω*t-ϕ), lw=3, ls=:dash, label="Analytical Solution x")
+plot!(t->-A*ω*sin(ω*t-ϕ), lw=3, ls=:dash, label="Analytical Solution dx")
+```
+
+Note that the order of the variables (and initial conditions) is `dx`, `x`.
+Thus, if we want the first series to be `x`, we have to flip the order with `vars=[2,1]`.
+
 ### Double Pendulum
 
 ```julia
