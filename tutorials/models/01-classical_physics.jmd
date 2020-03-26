@@ -50,13 +50,13 @@ $$\ddot{\theta} + \frac{g}{L}{\sin(\theta)} = 0$$
 
 Notice that now we have a second order ODE.
 In order to use the same method as above, we nee to transform it into a system
-of first order ODEs by employing the notation $\omega = \dot{\theta}$.
+of first order ODEs by employing the notation $d\theta = \dot{\theta}$.
 
 $$
-\begin{align}
-&\dot{\theta} = \omega \\
-&\dot{\omega} = - \frac{g}{L}{\sin(\theta)}
-\end{align}
+\begin{align*}
+&\dot{\theta} = d{\theta} \\
+&\dot{d\theta} = - \frac{g}{L}{\sin(\theta)}
+\end{align*}
 $$
 
 ```julia
@@ -74,17 +74,17 @@ tspan = (0.0,6.3)
 #Define the problem
 function simplependulum(du,u,p,t)
     θ = u[1]
-    ω = u[2]
-    du[1] = ω
+    dθ = u[2]
+    du[1] = dθ
     du[2] = -(g/L)*sin(θ)
 end
 
 #Pass to solvers
-prob = ODEProblem(simplependulum,u₀, tspan)
+prob = ODEProblem(simplependulum, u₀, tspan)
 sol = solve(prob,Tsit5())
 
 #Plot
-plot(sol,linewidth=2,title ="Simple Pendulum Problem", xaxis = "Time", yaxis = "Height", label = ["Theta","dTheta"])
+plot(sol,linewidth=2,title ="Simple Pendulum Problem", xaxis = "Time", yaxis = "Height", label = ["\\theta" "d\\theta"])
 ```
 
 So now we know that behaviour of the position versus time. However, it will be useful to us to look at the phase space of the pendulum, i.e., and representation of all possible states of the system in question (the pendulum) by looking at its velocity and position. Phase space analysis is ubiquitous in the analysis of dynamical systems, and thus we will provide a few facilities for it.
