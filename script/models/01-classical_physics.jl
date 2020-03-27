@@ -21,6 +21,35 @@ plot(sol,linewidth=2,title ="Carbon-14 half-life", xaxis = "Time in thousands of
 plot!(sol.t, t->exp(-C₁*t),lw=3,ls=:dash,label="Analytical Solution")
 
 
+# Simple Harmonic Oscillator Problem
+using OrdinaryDiffEq, Plots
+
+#Parameters
+ω = 1
+
+#Initial Conditions
+x₀ = [0.0]
+dx₀ = [π/2]
+tspan = (0.0, 2π)
+
+ϕ = atan((dx₀[1]/ω)/x₀[1])
+A = √(x₀[1]^2 + dx₀[1]^2)
+
+#Define the problem
+function harmonicoscillator(ddu,du,u,ω,t)
+    ddu .= -ω^2 * u
+end
+
+#Pass to solvers
+prob = SecondOrderODEProblem(harmonicoscillator, dx₀, x₀, tspan, ω)
+sol = solve(prob, DPRKN6())
+
+#Plot
+plot(sol, vars=[2,1], linewidth=2, title ="Simple Harmonic Oscillator", xaxis = "Time", yaxis = "Elongation", label = ["x" "dx"])
+plot!(t->A*cos(ω*t-ϕ), lw=3, ls=:dash, label="Analytical Solution x")
+plot!(t->-A*ω*sin(ω*t-ϕ), lw=3, ls=:dash, label="Analytical Solution dx")
+
+
 # Simple Pendulum Problem
 using OrdinaryDiffEq, Plots
 
@@ -34,18 +63,18 @@ tspan = (0.0,6.3)
 
 #Define the problem
 function simplependulum(du,u,p,t)
-    θ  = u[1]
+    θ = u[1]
     dθ = u[2]
     du[1] = dθ
     du[2] = -(g/L)*sin(θ)
 end
 
 #Pass to solvers
-prob = ODEProblem(simplependulum,u₀, tspan)
+prob = ODEProblem(simplependulum, u₀, tspan)
 sol = solve(prob,Tsit5())
 
 #Plot
-plot(sol,linewidth=2,title ="Simple Pendulum Problem", xaxis = "Time", yaxis = "Height", label = ["Theta","dTheta"])
+plot(sol,linewidth=2,title ="Simple Pendulum Problem", xaxis = "Time", yaxis = "Height", label = ["\\theta" "d\\theta"])
 
 
 p = plot(sol,vars = (1,2), xlims = (-9,9), title = "Phase Space Plot", xaxis = "Velocity", yaxis = "Position", leg=false)
@@ -104,7 +133,7 @@ plot(ps...)
 #Constants and setup
 using OrdinaryDiffEq
 initial2 = [0.01, 0.005, 0.01, 0.01]
-tspan2 = (0.,200.)
+tspan2 = (0.,500.)
 
 #Define the problem
 function double_pendulum_hamiltonian(udot,u,p,t)
@@ -127,20 +156,21 @@ cb = ContinuousCallback(condition,affect!,nothing,
 
 # Construct Problem
 poincare = ODEProblem(double_pendulum_hamiltonian, initial2, tspan2)
-sol2 = solve(poincare, Vern9(), save_everystep = false, callback=cb, abstol=1e-9)
+sol2 = solve(poincare, Vern9(), save_everystep = false, save_start=false, save_end=false, callback=cb, abstol=1e-16, reltol=1e-16,)
 
 function poincare_map(prob, u₀, p; callback=cb)
-    _prob = ODEProblem(prob.f,[0.01, 0.01, 0.01, u₀],prob.tspan)
-    sol = solve(_prob, Vern9(), save_everystep = false, callback=cb, abstol=1e-9)
-    scatter!(p, sol, vars=(3,4), markersize = 2)
+    _prob = ODEProblem(prob.f, u₀, prob.tspan)
+    sol = solve(_prob, Vern9(), save_everystep = false, save_start=false, save_end=false, callback=cb, abstol=1e-16, reltol=1e-16)
+    scatter!(p, sol, vars=(3,4), markersize = 3, msw=0)
 end
 
 
-p = scatter(sol2, vars=(3,4), leg=false, markersize = 2, ylims=(-0.01,0.03))
-for i in -0.01:0.00125:0.01
-    poincare_map(poincare, i, p)
+lβrange = -0.02:0.0025:0.02
+p = scatter(sol2, vars=(3,4), leg=false, markersize = 3, msw=0)
+for lβ in lβrange
+    poincare_map(poincare, [0.01, 0.01, 0.01, lβ], p)
 end
-plot(p,ylims=(-0.01,0.03))
+plot(p, xlabel="\\beta", ylabel="l_\\beta", ylims=(0, 0.03))
 
 
 using OrdinaryDiffEq, Plots
@@ -191,7 +221,7 @@ energy = map(x->E(x...), sol.u)
 @show ΔE = energy[1]-energy[end]
 
 #Plot
-plot(sol.t, energy, title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
+plot(sol.t, energy .- energy[1], title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
 
 
 function HH_acceleration!(dv,v,u,p,t)
@@ -219,14 +249,14 @@ energy = map(x->E(x[3], x[4], x[1], x[2]), sol2.u)
 @show ΔE = energy[1]-energy[end]
 
 #Plot
-plot(sol2.t, energy, title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
+plot(sol2.t, energy .- energy[1], title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
 
 
 sol3 = solve(prob, DPRKN6());
 energy = map(x->E(x[3], x[4], x[1], x[2]), sol3.u)
 @show ΔE = energy[1]-energy[end]
 gr()
-plot(sol3.t, energy, title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
+plot(sol3.t, energy .- energy[1], title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
 
 
 using DiffEqTutorials

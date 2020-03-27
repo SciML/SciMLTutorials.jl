@@ -5,9 +5,9 @@ author: Yingbo Ma, Chris Rackauckas
 
 If you're getting some cold feet to jump in to DiffEq land, here are some handcrafted differential equations mini problems to hold your hand along the beginning of your journey.
 
-## Radioactive Decay of Carbon-14
+## First order linear ODE
 
-#### First order linear ODE
+#### Radioactive Decay of Carbon-14
 
 $$f(t,u) = \frac{du}{dt}$$
 
@@ -36,9 +36,67 @@ plot(sol,linewidth=2,title ="Carbon-14 half-life", xaxis = "Time in thousands of
 plot!(sol.t, t->exp(-C₁*t),lw=3,ls=:dash,label="Analytical Solution")
 ```
 
-## Simple Pendulum
+## Second Order Linear ODE
 
-#### Second Order Linear ODE
+#### Simple Harmonic Oscillator
+
+Another classical example is the harmonic oscillator, given by
+$$
+\ddot{x} + \omega^2 x = 0
+$$
+with the known analytical solution
+$$
+\begin{align*}
+x(t) &= A\cos(\omega t - \phi) \\
+v(t) &= -A\omega\sin(\omega t - \phi),
+\end{align*}
+$$
+where
+$$
+A = \sqrt{c_1 + c_2} \qquad\text{and}\qquad \tan \phi = \frac{c_2}{c_1}
+$$
+with $c_1, c_2$ constants determined by the initial conditions such that
+$c_1$ is the initial position and $\omega c_2$ is the initial velocity.
+
+Instead of transforming this to a system of ODEs to solve with `ODEProblem`,
+we can use `SecondOrderODEProblem` as follows.
+
+```julia
+# Simple Harmonic Oscillator Problem
+using OrdinaryDiffEq, Plots
+
+#Parameters
+ω = 1
+
+#Initial Conditions
+x₀ = [0.0]
+dx₀ = [π/2]
+tspan = (0.0, 2π)
+
+ϕ = atan((dx₀[1]/ω)/x₀[1])
+A = √(x₀[1]^2 + dx₀[1]^2)
+
+#Define the problem
+function harmonicoscillator(ddu,du,u,ω,t)
+    ddu .= -ω^2 * u
+end
+
+#Pass to solvers
+prob = SecondOrderODEProblem(harmonicoscillator, dx₀, x₀, tspan, ω)
+sol = solve(prob, DPRKN6())
+
+#Plot
+plot(sol, vars=[2,1], linewidth=2, title ="Simple Harmonic Oscillator", xaxis = "Time", yaxis = "Elongation", label = ["x" "dx"])
+plot!(t->A*cos(ω*t-ϕ), lw=3, ls=:dash, label="Analytical Solution x")
+plot!(t->-A*ω*sin(ω*t-ϕ), lw=3, ls=:dash, label="Analytical Solution dx")
+```
+
+Note that the order of the variables (and initial conditions) is `dx`, `x`.
+Thus, if we want the first series to be `x`, we have to flip the order with `vars=[2,1]`.
+
+## Second Order Non-linear ODE
+
+#### Simple Pendulum
 
 We will start by solving the pendulum problem. In the physics class, we often solve this problem by small angle approximation, i.e. $ sin(\theta) \approx \theta$, because otherwise, we get an elliptic integral which doesn't have an analytic solution. The linearized form is
 
@@ -47,6 +105,17 @@ $$\ddot{\theta} + \frac{g}{L}{\theta} = 0$$
 But we have numerical ODE solvers! Why not solve the *real* pendulum?
 
 $$\ddot{\theta} + \frac{g}{L}{\sin(\theta)} = 0$$
+
+Notice that now we have a second order ODE.
+In order to use the same method as above, we nee to transform it into a system
+of first order ODEs by employing the notation $d\theta = \dot{\theta}$.
+
+$$
+\begin{align*}
+&\dot{\theta} = d{\theta} \\
+&\dot{d\theta} = - \frac{g}{L}{\sin(\theta)}
+\end{align*}
+$$
 
 ```julia
 # Simple Pendulum Problem
@@ -62,18 +131,18 @@ tspan = (0.0,6.3)
 
 #Define the problem
 function simplependulum(du,u,p,t)
-    θ  = u[1]
+    θ = u[1]
     dθ = u[2]
     du[1] = dθ
     du[2] = -(g/L)*sin(θ)
 end
 
 #Pass to solvers
-prob = ODEProblem(simplependulum,u₀, tspan)
+prob = ODEProblem(simplependulum, u₀, tspan)
 sol = solve(prob,Tsit5())
 
 #Plot
-plot(sol,linewidth=2,title ="Simple Pendulum Problem", xaxis = "Time", yaxis = "Height", label = ["Theta","dTheta"])
+plot(sol,linewidth=2,title ="Simple Pendulum Problem", xaxis = "Time", yaxis = "Height", label = ["\\theta" "d\\theta"])
 ```
 
 So now we know that behaviour of the position versus time. However, it will be useful to us to look at the phase space of the pendulum, i.e., and representation of all possible states of the system in question (the pendulum) by looking at its velocity and position. Phase space analysis is ubiquitous in the analysis of dynamical systems, and thus we will provide a few facilities for it.
@@ -93,9 +162,21 @@ end
 plot(p,xlims = (-9,9))
 ```
 
-## Simple Harmonic Oscillator
+#### Double Pendulum
 
-### Double Pendulum
+A more complicated example is given by the double pendulum. The equations governing
+its motion are given by the following (taken from this [StackOverflow question](https://mathematica.stackexchange.com/questions/40122/help-to-plot-poincar%C3%A9-section-for-double-pendulum))
+
+$$\frac{d}{dt}
+\begin{pmatrix}
+\alpha \\ l_\alpha \\ \beta \\ l_\beta
+\end{pmatrix}=
+\begin{pmatrix}
+2\frac{l_\alpha - (1+\cos\beta)l_\beta}{3-\cos 2\beta} \\
+-2\sin\alpha - \sin(\alpha + \beta) \\
+2\frac{-(1+\cos\beta)l_\alpha + (3+2\cos\beta)l_\beta}{3-\cos2\beta}\\
+-\sin(\alpha+\beta) - 2\sin(\beta)\frac{(l_\alpha-l_\beta)l_\beta}{3-\cos2\beta} + 2\sin(2\beta)\frac{l_\alpha^2-2(1+\cos\beta)l_\alpha l_\beta + (3+2\cos\beta)l_\beta^2}{(3-\cos2\beta)^2}
+\end{pmatrix}$$
 
 ```julia
 #Double Pendulum Problem
@@ -138,33 +219,20 @@ ts, ps = polar2cart(sol, l1=L₁, l2=L₂, dt=0.01)
 plot(ps...)
 ```
 
-### Poincaré section
+##### Poincaré section
 
-The Poincaré section is a contour plot of a higher-dimensional phase space diagram. It helps to understand the dynamic interactions and is wonderfully pretty.
+In this case the phase space is 4 dimensional and it cannot be easily visualized.
+Instead of looking at the full phase space, we can look at Poincaré sections,
+which are sections through a higher-dimensional phase space diagram.
+This helps to understand the dynamics of interactions and is wonderfully pretty.
 
-The following equation came from [StackOverflow question](https://mathematica.stackexchange.com/questions/40122/help-to-plot-poincar%C3%A9-section-for-double-pendulum)
-
-$$\frac{d}{dt}
- \begin{pmatrix}
- \alpha \\ l_\alpha \\ \beta \\ l_\beta
- \end{pmatrix}=
- \begin{pmatrix}
-  2\frac{l_\alpha - (1+\cos\beta)l_\beta}{3-\cos 2\beta} \\
-  -2\sin\alpha - \sin(\alpha + \beta) \\
-  2\frac{-(1+\cos\beta)l_\alpha + (3+2\cos\beta)l_\beta}{3-\cos2\beta}\\
-  -\sin(\alpha+\beta) - 2\sin(\beta)\frac{(l_\alpha-l_\beta)l_\beta}{3-\cos2\beta} + 2\sin(2\beta)\frac{l_\alpha^2-2(1+\cos\beta)l_\alpha l_\beta + (3+2\cos\beta)l_\beta^2}{(3-\cos2\beta)^2}
- \end{pmatrix}$$
-
-The Poincaré section here is the collection of $(β,l_β)$ when $α=0$ and $\frac{dα}{dt}>0$.
-
-#### Hamiltonian of a double pendulum
-Now we will plot the Hamiltonian of a double pendulum
+The Poincaré section in this is given by the collection of $(β,l_β)$ when $α=0$ and $\frac{dα}{dt}>0$.
 
 ```julia
 #Constants and setup
 using OrdinaryDiffEq
 initial2 = [0.01, 0.005, 0.01, 0.01]
-tspan2 = (0.,200.)
+tspan2 = (0.,500.)
 
 #Define the problem
 function double_pendulum_hamiltonian(udot,u,p,t)
@@ -187,24 +255,25 @@ cb = ContinuousCallback(condition,affect!,nothing,
 
 # Construct Problem
 poincare = ODEProblem(double_pendulum_hamiltonian, initial2, tspan2)
-sol2 = solve(poincare, Vern9(), save_everystep = false, callback=cb, abstol=1e-9)
+sol2 = solve(poincare, Vern9(), save_everystep = false, save_start=false, save_end=false, callback=cb, abstol=1e-16, reltol=1e-16,)
 
 function poincare_map(prob, u₀, p; callback=cb)
-    _prob = ODEProblem(prob.f,[0.01, 0.01, 0.01, u₀],prob.tspan)
-    sol = solve(_prob, Vern9(), save_everystep = false, callback=cb, abstol=1e-9)
-    scatter!(p, sol, vars=(3,4), markersize = 2)
+    _prob = ODEProblem(prob.f, u₀, prob.tspan)
+    sol = solve(_prob, Vern9(), save_everystep = false, save_start=false, save_end=false, callback=cb, abstol=1e-16, reltol=1e-16)
+    scatter!(p, sol, vars=(3,4), markersize = 3, msw=0)
 end
 ```
 
 ```julia
-p = scatter(sol2, vars=(3,4), leg=false, markersize = 2, ylims=(-0.01,0.03))
-for i in -0.01:0.00125:0.01
-    poincare_map(poincare, i, p)
+lβrange = -0.02:0.0025:0.02
+p = scatter(sol2, vars=(3,4), leg=false, markersize = 3, msw=0)
+for lβ in lβrange
+    poincare_map(poincare, [0.01, 0.01, 0.01, lβ], p)
 end
-plot(p,ylims=(-0.01,0.03))
+plot(p, xlabel="\\beta", ylabel="l_\\beta", ylims=(0, 0.03))
 ```
 
-## Hénon-Heiles System
+#### Hénon-Heiles System
 
 The Hénon-Heiles potential occurs when non-linear motion of a star around a galactic center with the motion restricted to a plane.
 
@@ -281,10 +350,10 @@ energy = map(x->E(x...), sol.u)
 @show ΔE = energy[1]-energy[end]
 
 #Plot
-plot(sol.t, energy, title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
+plot(sol.t, energy .- energy[1], title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
 ```
 
-### Symplectic Integration
+##### Symplectic Integration
 
 To prevent energy drift, we can instead use a symplectic integrator. We can directly define and solve the `SecondOrderODEProblem`:
 
@@ -321,17 +390,17 @@ energy = map(x->E(x[3], x[4], x[1], x[2]), sol2.u)
 @show ΔE = energy[1]-energy[end]
 
 #Plot
-plot(sol2.t, energy, title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
+plot(sol2.t, energy .- energy[1], title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
 ```
 
-It's so close to zero it breaks GR! And let's try to use a Runge-Kutta-Nyström solver to solve this. Note that Runge-Kutta-Nyström isn't symplectic.
+And let's try to use a Runge-Kutta-Nyström solver to solve this. Note that Runge-Kutta-Nyström isn't symplectic.
 
 ```julia
 sol3 = solve(prob, DPRKN6());
 energy = map(x->E(x[3], x[4], x[1], x[2]), sol3.u)
 @show ΔE = energy[1]-energy[end]
 gr()
-plot(sol3.t, energy, title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
+plot(sol3.t, energy .- energy[1], title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
 ```
 
 Note that we are using the `DPRKN6` sovler at `reltol=1e-3` (the default), yet it has a smaller energy variation than `Vern9` at `abs_tol=1e-16, rel_tol=1e-16`. Therefore, using specialized solvers to solve its particular problem is very efficient.
