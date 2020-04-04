@@ -1,5 +1,5 @@
 
-using DiffEqBayes, OrdinaryDiffEq, RecursiveArrayTools, Distributions, Plots, StatsPlots
+using DiffEqBayes, OrdinaryDiffEq, RecursiveArrayTools, Distributions, Plots, StatsPlots, BenchmarkTools, TransformVariables, CmdStan, DynamicHMC
 
 
 function pendulum(du,u,p,t)
@@ -37,4 +37,13 @@ plot(bayesian_result)
 
 
 plot(bayesian_result, colordim = :parameter)
+
+
+@btime bayesian_result = turing_inference(prob1,Tsit5(),t,data,priors;syms = [:omega,:L],num_samples=10_000)
+
+
+@btime bayesian_result = stan_inference(prob1,t,data,priors;num_samples=10_000,printsummary=false)
+
+
+@btime bayesian_result = dynamichmc_inference(prob1,Tsit5(),t,data,priors;num_samples = 10_000)
 
