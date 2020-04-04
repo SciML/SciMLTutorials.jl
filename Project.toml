@@ -47,7 +47,7 @@ Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
 
 [compat]
-AlgebraicMultigrid = "0.2"
+AlgebraicMultigrid = "0.2, 0.3"
 ArbNumerics = "1.0"
 BenchmarkTools = "0.4, 0.5"
 CUDAnative = "2.5, 3.0"
