@@ -267,7 +267,7 @@ with our pattern, that we can turn into our `jac_prototype`.
 using SparsityDetection, SparseArrays
 input = rand(32,32,2)
 output = similar(input)
-sparsity_pattern = sparsity!(brusselator_2d_loop,output,input,p,0.0)
+sparsity_pattern = jacobian_sparsity(brusselator_2d_loop,output,input,p,0.0)
 jac_sparsity = Float64.(sparse(sparsity_pattern))
 ```
 
