@@ -1027,14 +1027,14 @@ u0: &#91;1.0, 0.0, 0.0&#93;
 </pre>
 
 
-<p>Given this setup, we can give and example <code>input</code> and <code>output</code> and call <code>sparsity&#33;</code> on our function with the example arguments and it will kick out a sparse matrix with our pattern, that we can turn into our <code>jac_prototype</code>.</p>
+<p>Given this setup, we can give and example <code>input</code> and <code>output</code> and call <code>jacobian_sparsity</code> on our function with the example arguments and it will kick out a sparse matrix with our pattern, that we can turn into our <code>jac_prototype</code>.</p>
 
 
 <pre class='hljl'>
 <span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>SparsityDetection</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>SparseArrays</span><span class='hljl-t'>
 </span><span class='hljl-n'>input</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>rand</span><span class='hljl-p'>(</span><span class='hljl-ni'>32</span><span class='hljl-p'>,</span><span class='hljl-ni'>32</span><span class='hljl-p'>,</span><span class='hljl-ni'>2</span><span class='hljl-p'>)</span><span class='hljl-t'>
 </span><span class='hljl-n'>output</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>similar</span><span class='hljl-p'>(</span><span class='hljl-n'>input</span><span class='hljl-p'>)</span><span class='hljl-t'>
-</span><span class='hljl-n'>sparsity_pattern</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>sparsity!</span><span class='hljl-p'>(</span><span class='hljl-n'>brusselator_2d_loop</span><span class='hljl-p'>,</span><span class='hljl-n'>output</span><span class='hljl-p'>,</span><span class='hljl-n'>input</span><span class='hljl-p'>,</span><span class='hljl-n'>p</span><span class='hljl-p'>,</span><span class='hljl-nfB'>0.0</span><span class='hljl-p'>)</span>
+</span><span class='hljl-n'>sparsity_pattern</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>jacobian_sparsity</span><span class='hljl-p'>(</span><span class='hljl-n'>brusselator_2d_loop</span><span class='hljl-p'>,</span><span class='hljl-n'>output</span><span class='hljl-p'>,</span><span class='hljl-n'>input</span><span class='hljl-p'>,</span><span class='hljl-n'>p</span><span class='hljl-p'>,</span><span class='hljl-nfB'>0.0</span><span class='hljl-p'>)</span>
 </pre>
 
 
