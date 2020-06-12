@@ -8,6 +8,7 @@ using Flux, StochasticDiffEq
 using  NeuralNetDiffEq
 using Plots
 using LinearAlgebra
+using CuArrays
 ```
 ## Introduction on Kolmogorov Equations
 
@@ -23,11 +24,15 @@ $$
   \frac{\partial V}{\partial t} + rS\frac{\partial V}{\partial S} + \frac{1}{2}{\sigma^2}{S^2}\frac{\partial^2 V}{\partial S^2} -rV = 0
 \end{equation}
 $$
+
 In order to make the above equation in the form of the Backward - Kolmogorov PDE we should substitute
+
 $$
 \begin{equation}
   V(S , t) = e^{rt}p(S , t)
 \end{equation}
+$$
+$$
 \begin{equation}
   p(S , T) = max\{ x - \mathcal{K} , 0 \}
 \end{equation}
@@ -90,7 +95,7 @@ for x in x_out
   f_val(du , u , p , t) = du .= 0.04.*u
   dt = 0.01
   tspan = (0.0,1.0)
-  prob = SDEProblem(f,g,u₀,tspan)
+  prob = SDEProblem(f_val,g_val,u₀,tspan)
   output_func(sol,i) = (sol[end],false)
   ensembleprob_val = EnsembleProblem(prob , output_func = output_func )
   sim_val = solve(ensembleprob_val, EM(), EnsembleThreads() , dt=0.01, trajectories=100000,adaptive=false)
