@@ -6,11 +6,10 @@ setup:
   stage: setup
   only:
     - triggers
+  image: python
   script: |
-    apt -qq update
-    DEBIAN_FRONTEND=noninteractive apt -qqy install python3-pip
-    pip3 install pyyaml
-    python3 make_pipeline.py > rebuild.yml
+    pip install pyyaml
+    python make_pipeline.py > rebuild.yml
   artifacts:
     paths:
       - rebuild.yml
@@ -21,3 +20,5 @@ rebuild:
     include:
       - artifact: rebuild.yml
         job: setup
+  variables:  # TODO: Delete after JuliaGPU/gitlab-ci#20
+    JULIA_PROJECT: "@."
