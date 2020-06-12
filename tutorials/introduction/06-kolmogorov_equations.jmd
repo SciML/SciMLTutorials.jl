@@ -3,7 +3,6 @@ title: Kolmogorov Equations
 author: Ashutosh Bharambe
 ---
 
-
 ```julia
 using Flux, StochasticDiffEq
 using  NeuralNetDiffEq
@@ -11,6 +10,29 @@ using Distributions
 using Plots
 using LinearAlgebra , DiffEqNoiseProcess
 ```
+## Introduction on Kolmogorov Equations
+
+The one dimensional backward kolmogorov equation that we are going to deal with is of the form :
+$$\begin{equation}
+  \frac{\partial p}{\partial t} = \mu(x)\frac{\partial p}{\partial x} + \frac{1}{2}{\sigma^2}(x)\frac{\partial^2 p}{\partial x^2}
+\end{equation}
+$$
+Consider a Black Scholes Partial Differential Equation of the form :
+$$
+\begin{equation}
+  \frac{\partial V}{\partial t} + rS\frac{\partial V}{\partial S} + \frac{1}{2}{\sigma^2}{S^2}\frac{\partial^2 V}{\partial S^2} -rV = 0
+\end{equation}
+$$
+In order to make the above equation in the form of the Backward - Kolmogorov PDE we should substitute
+$$
+\begin{equation}
+  V(S , t) = e^{rt}p(S , t)
+\end{equation}
+\begin{equation}
+  p(S , T) = max\{ x - \mathcal{K} , 0 \}
+\end{equation}
+$$
+
 
 ```julia
 function phi(xi)
@@ -24,21 +46,30 @@ function phi(xi)
     return y
 end
 ```
+Now we shall define the problem :
+
+
 
 ```julia
-xspan = (98.00 , 105.00)
-tspan = (0.0 , 1.0)
-sigma = fill(0.01 , d2 , d2) + Diagonal(fill(0.03 , d2 , d2))
+d = 1
 r = 0.06
-g(du , u , p , t) = mul!(du ,sigma , u)
-f(du , u , p , t) = du .= r.*u
-d = 10
+sigma = 0.4
+σ(du , u , p , t) = du .= sigma.*u
+μ(du , u , p , t) = du .= r.*u
+sdealg = EM()
+ensemblealg = EnsembleThreads()
+xspan = (95.00 , 110.0)
+tspan = (0.0 , 1.0)
+dt = 0.01
+dx = 0.01
+trajectories = 100000
+opt = Flux.ADAM(0.01)
+m = Chain(Dense(d, 32, leakyrelu),Dense(32, 128, leakyrelu),Dense(128 , 32 , leakyrelu) , Dense(32 , 1))
+m = fmap(cu , m)
 sdealg = EM()
 ensemlealg = EnsembleThreads()
-prob = KolmogorovPDEProblem(f , g, phi , xspan , tspan, d)
+prob = KolmogorovPDEProblem(μ , σ , phi , xspan , tspan, d)
 opt = Flux.ADAM(0.01)
-m = Chain(Dense(d, 16, relu) , Dense(16 , 32 , relu),Dense(32 , 16 , relu), Dense(16 , 1))
-sol = solve(prob, NeuralNetDiffEq.NNKolmogorov(m,opt , sdealg, ensemblealg), verbose = true, dt = 0.01,
-            dx = 0.01 , trajectories = 100000 , abstol=1e-6, maxiters = 500)
-
+sol = solve(prob, NeuralNetDiffEq.NNKolmogorov(m, opt, sdealg, ensemblealg), verbose = true, dt = dt,
+            dx = dx , trajectories = trajectories , abstol=1e-6, maxiters = 2000)
 ```
