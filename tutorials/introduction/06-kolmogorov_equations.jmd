@@ -91,7 +91,7 @@ monte_carlo_sol = []
 x_out = collect(98:1.00:105.00)
 for x in x_out
   u₀= [x]
-  g_val(du , u , p , t) = 0.4.*u
+  g_val(du , u , p , t) = du .= 0.4.*u
   f_val(du , u , p , t) = du .= 0.04.*u
   dt = 0.01
   tspan = (0.0,1.0)
