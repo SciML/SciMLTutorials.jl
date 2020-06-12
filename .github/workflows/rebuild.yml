@@ -1,0 +1,50 @@
+name: Rebuild Tutorials
+on:
+  schedule:
+    - cron: 0 0 */3 * *
+  issue_comment:
+    types:
+      - created
+  push:
+env:
+  GITLAB_TRIGGER: https://gitlab.com/api/v4/projects/19345468/trigger/pipeline
+  GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+jobs:
+  Random rebuild:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl \
+            -X POST \
+            -F "token=$GITLAB_TOKEN" \
+            "$GITLAB_TRIGGER"
+  Manual rebuild:
+    if: github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '!rebuild')
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          arg="$(echo ${{ github.event.comment.body }} | cut -d' ' -f2)"
+          folder="$(echo $arg | cut -d/ -f1)"
+          file="$(echo $arg | cut -d/ -f2)"
+          curl \
+            -X POST \
+            -F "token=$GITLAB_CI_TOKEN" \
+            -F "variables[FOLDER]=$folder" \
+            -F "variables[FILE]=$file" \
+            "$GITLAB_TRIGGER"
+  Open PR:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/rebuild/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Rebuild tutorials",
+              head: "${{ github.ref }}".split("/").slice(2).join("/"),
+              base: "master",
+            })

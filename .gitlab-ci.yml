@@ -1,0 +1,22 @@
+stages:
+  - setup
+  - rebuild
+
+setup:
+  stage: setup
+  only:
+    - triggers
+  script: |
+    apt -qq update
+    DEBIAN_FRONTEND=noninteractive apt -qqy install python3-pip
+    pip3 install pyyaml
+    python3 make_pipeline.py > rebuild.yml
+  artifacts:
+    paths:
+      - rebuild.yml
+
+rebuild:
+  stage: rebuild
+  trigger:
+    include: rebuild.yml
+    job: setup
