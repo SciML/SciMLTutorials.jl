@@ -1,5 +1,5 @@
 ---
-title: Kolmogorov Equations
+title:  Kolmogorov Backward Equations
 author: Ashutosh Bharambe
 ---
 
@@ -7,8 +7,7 @@ author: Ashutosh Bharambe
 using Flux, StochasticDiffEq
 using  NeuralNetDiffEq
 using Plots
-using LinearAlgebra
-using CuArrays
+using Distributions
 ```
 ## Introduction on Kolmogorov Equations
 
@@ -37,7 +36,8 @@ $$
   p(S , T) = max\{ x - \mathcal{K} , 0 \}
 \end{equation}
 $$
-
+We will train our model and the model itself will be the solution of the equation
+## Defining the problem and the solver
 We should start defining the terminal condition for our equation:
 ```julia
 function phi(xi)
@@ -52,31 +52,31 @@ function phi(xi)
 end
 ```
 Now we shall define the problem :
-We will start with a simple one dimensional Black-Scholes PDE and then move to the higher dimensions
 We will define the σ and μ by comparing it to the orignal equation.
 ```julia
 d = 1
-r = 0.06
+r = 0.04
 sigma = 0.4
 xspan = (95.00 , 110.0)
 tspan = (0.0 , 1.0)
 σ(du , u , p , t) = du .= sigma.*u
 μ(du , u , p , t) = du .= r.*u
+prob = KolmogorovPDEProblem(μ , σ , phi , xspan , tspan, d)
+
 ```
 Now once we have defined our problem it is necessary to define the parameters for the solver.
 ```julia
 sdealg = EM()
 ensemblealg = EnsembleThreads()
 dt = 0.01
-dx = 0.01
+dx = 0.001
 trajectories = 100000
 ```
 
 Now lets define our model m and the optimiser
 ```julia
-m = Chain(Dense(d, 32, leakyrelu),Dense(32, 128, leakyrelu),Dense(128 , 32 , leakyrelu) , Dense(32 , 1))
+m = Chain(Dense(d, 32, leakyrelu),Dense(32, 64, leakyrelu),Dense(64 , 32 , leakyrelu) , Dense(32 , 1))
 m = fmap(cu , m)
-prob = KolmogorovPDEProblem(μ , σ , phi , xspan , tspan, d)
 opt = Flux.ADAM(0.01)
 ```
 And then finally call the solver
@@ -88,7 +88,7 @@ sol = solve(prob, NeuralNetDiffEq.NNKolmogorov(m, opt, sdealg, ensemblealg), ver
 Now let us find a Monte-Carlo Solution and plot the both:
 ```julia
 monte_carlo_sol = []
-x_out = collect(98:1.00:110.00)
+x_out = collect(98:1.00:105.00)
 for x in x_out
   u₀= [x]
   g_val(du , u , p , t) = 0.4.*u
@@ -104,14 +104,14 @@ for x in x_out
 end
 ```
 
+##Plotting the Solutions
+We should reshape the inputs and outputs to make it compatible with our model
 ```julia
-m = fmap(cpu , m)
 x_model = reshape(x_out, 1 , size(x_out)[1])
 y_out = m(x_model)
 y_out = reshape(y_out , 13 , 1)
 ```
-Plotting the solutions
-
+And now finally we can plot the solutions
 ```julia
 plot(x_out , y_out , lw = 3 ,  xaxis="Initial Stock Price", yaxis="Payoff")
 plot!(x_out , monte_carlo_sol , lw = 3 ,  xaxis="Initial Stock Price", yaxis="Payoff")
