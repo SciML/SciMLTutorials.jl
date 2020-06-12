@@ -18,5 +18,6 @@ setup:
 rebuild:
   stage: rebuild
   trigger:
-    include: rebuild.yml
-    job: setup
+    include:
+      - artifact: rebuild.yml
+        job: setup
