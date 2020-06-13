@@ -11,40 +11,36 @@ using Distributions
 ```
 ## Introduction on Backward Kolmogorov Equations
 
-The one dimensional backward kolmogorov equation that we are going to deal with is of the form :
-$$
 The backward Kolmogorov Equation deals with a terminal condtion.
-\begin{equation}
-  \frac{\partial p}{\partial t} = \mu(x)\frac{\partial p}{\partial x} + \frac{1}{2}{\sigma^2}(x)\frac{\partial^2 p}{\partial x^2}
-\end{equation}
+The one dimensional backward kolmogorov equation that we are going to deal with is of the form :
+
 $$
-Consider a Black Scholes Partial Differential Equation of the form :
+  \frac{\partial p}{\partial t} = -\mu(x)\frac{\partial p}{\partial x} - \frac{1}{2}{\sigma^2}(x)\frac{\partial^2 p}{\partial x^2} ,\hspace{0.5cm} p(T , x) = \varphi(x)
+$$
+for all $ t \in{ [0 , T] } $ and for all $ x \in R^d $
+
+#### The Black Scholes Model
+
 The Black-Scholes Model governs the price evolution of the European put or call option. In the below equation V is the price of some derivative , S is the Stock Price , r is the risk free interest
-rate and σ the volatility of the stock returns. The payoff at a time T is known to us. And this makes it a terminal PDE.
+rate and σ the volatility of the stock returns. The payoff at a time T is known to us. And this makes it a terminal PDE. In case of an European put option the PDE is:
 $$
-\begin{equation}
-  \frac{\partial V}{\partial t} + rS\frac{\partial V}{\partial S} + \frac{1}{2}{\sigma^2}{S^2}\frac{\partial^2 V}{\partial S^2} -rV = 0
-\end{equation}
+  \frac{\partial V}{\partial t} + rS\frac{\partial V}{\partial S} + \frac{1}{2}{\sigma^2}{S^2}\frac{\partial^2 V}{\partial S^2} -rV = 0  ,\hspace{0.5cm} V(T , S) =  max\{\mathcal{K} - S , 0 \}
 $$
+for all $ t \in{ [0 , T] } $ and for all $ S \in R^d $
 
 In order to make the above equation in the form of the Backward - Kolmogorov PDE we should substitute
 
 $$
-\begin{equation}
-  V(S , t) = e^{rt}p(S , t)
-\end{equation}
+  V(S , t) = e^{r(t-T)}p(S , t)
 $$
 and thus we get
 $$
-\begin{equation}
-  e^{rt}\frac{\partial p}{\partial t} + re^{rt}p(S , t)  = -\mu(x)\frac{\partial p}{\partial x}e^{rt} - \frac{1}{2}{\sigma^2}(x)\frac{\partial^2 p}{\partial x^2}e^{rt}
-  + re^{rt}p(S , t)
-\end{equation}
+  e^{r(t-T)}\frac{\partial p}{\partial t} + re^{r(t-T)}p(S , t)  = -\mu(x)\frac{\partial p}{\partial x}e^{r(t-T)} - \frac{1}{2}{\sigma^2}(x)\frac{\partial^2 p}{\partial x^2}e^{r(t-T)}
+  + re^{r(t-T)}p(S , t)
 $$
+And the terminal condition
 $$
-\begin{equation}
   p(S , T) = max\{ \mathcal{K} - x , 0 \}
-\end{equation}
 $$
 We will train our model and the model itself will be the solution of the equation
 ## Defining the problem and the solver
