@@ -9,15 +9,18 @@ using  NeuralNetDiffEq
 using Plots
 using Distributions
 ```
-## Introduction on Kolmogorov Equations
+## Introduction on Backward Kolmogorov Equations
 
 The one dimensional backward kolmogorov equation that we are going to deal with is of the form :
 $$
+The backward Kolmogorov Equation deals with a terminal condtion.
 \begin{equation}
   \frac{\partial p}{\partial t} = \mu(x)\frac{\partial p}{\partial x} + \frac{1}{2}{\sigma^2}(x)\frac{\partial^2 p}{\partial x^2}
 \end{equation}
 $$
 Consider a Black Scholes Partial Differential Equation of the form :
+The Black-Scholes Model governs the price evolution of the European put or call option. In the below equation V is the price of some derivative , S is the Stock Price , r is the risk free interest
+rate and σ the volatility of the stock returns. The payoff at a time T is known to us. And this makes it a terminal PDE.
 $$
 \begin{equation}
   \frac{\partial V}{\partial t} + rS\frac{\partial V}{\partial S} + \frac{1}{2}{\sigma^2}{S^2}\frac{\partial^2 V}{\partial S^2} -rV = 0
@@ -31,9 +34,16 @@ $$
   V(S , t) = e^{rt}p(S , t)
 \end{equation}
 $$
+and thus we get
 $$
 \begin{equation}
-  p(S , T) = max\{ x - \mathcal{K} , 0 \}
+  e^{rt}\frac{\partial p}{\partial t} + re^{rt}p(S , t)  = -\mu(x)\frac{\partial p}{\partial x}e^{rt} - \frac{1}{2}{\sigma^2}(x)\frac{\partial^2 p}{\partial x^2}e^{rt}
+  + re^{rt}p(S , t)
+\end{equation}
+$$
+$$
+\begin{equation}
+  p(S , T) = max\{ \mathcal{K} - x , 0 \}
 \end{equation}
 $$
 We will train our model and the model itself will be the solution of the equation
@@ -52,7 +62,7 @@ function phi(xi)
 end
 ```
 Now we shall define the problem :
-We will define the σ and μ by comparing it to the orignal equation.
+We will define the σ and μ by comparing it to the orignal equation. The xspan is the span of initial stock prices.
 ```julia
 d = 1
 r = 0.04
@@ -62,7 +72,6 @@ tspan = (0.0 , 1.0)
 σ(du , u , p , t) = du .= sigma.*u
 μ(du , u , p , t) = du .= r.*u
 prob = KolmogorovPDEProblem(μ , σ , phi , xspan , tspan, d)
-
 ```
 Now once we have defined our problem it is necessary to define the parameters for the solver.
 ```julia
@@ -75,20 +84,20 @@ trajectories = 100000
 
 Now lets define our model m and the optimiser
 ```julia
-m = Chain(Dense(d, 32, leakyrelu),Dense(32, 64, leakyrelu),Dense(64 , 32 , leakyrelu) , Dense(32 , 1))
+m = Chain(Dense(d, 8, leakyrelu),Dense(8, 16, leakyrelu),Dense(16 , 8 , leakyrelu) , Dense(8 , 1))
 m = fmap(cu , m)
 opt = Flux.ADAM(0.01)
 ```
 And then finally call the solver
 ```julia
 sol = solve(prob, NeuralNetDiffEq.NNKolmogorov(m, opt, sdealg, ensemblealg), verbose = true, dt = dt,
-            dx = dx , trajectories = trajectories , abstol=1e-6, maxiters = 3000)
+            dx = dx , trajectories = trajectories , abstol=1e-6, maxiters = 4200)
 ```
 ## Analyzing the solution
 Now let us find a Monte-Carlo Solution and plot the both:
 ```julia
 monte_carlo_sol = []
-x_out = collect(98:1.00:105.00)
+x_out = collect(98:1.00:110.00)
 for x in x_out
   u₀= [x]
   g_val(du , u , p , t) = du .= 0.4.*u
@@ -105,14 +114,15 @@ end
 ```
 
 ##Plotting the Solutions
-We should reshape the inputs and outputs to make it compatible with our model
+We should reshape the inputs and outputs to make it compatible with our model. This is the most important part. The algorithm gives a distributed function over all initial prices in the xspan.
 ```julia
 x_model = reshape(x_out, 1 , size(x_out)[1])
+m = fmap(cpu , m)
 y_out = m(x_model)
 y_out = reshape(y_out , 13 , 1)
 ```
 And now finally we can plot the solutions
 ```julia
-plot(x_out , y_out , lw = 3 ,  xaxis="Initial Stock Price", yaxis="Payoff")
-plot!(x_out , monte_carlo_sol , lw = 3 ,  xaxis="Initial Stock Price", yaxis="Payoff")
+plot(x_out , y_out , lw = 3 ,  xaxis="Initial Stock Price", yaxis="Payoff" , label = "NNKolmogorov")
+plot!(x_out , monte_carlo_sol , lw = 3 ,  xaxis="Initial Stock Price", yaxis="Payoff" ,label = "Monte Carlo Solutions")
 ```
