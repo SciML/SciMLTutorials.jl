@@ -51,7 +51,7 @@ pipeline = {
     "rebuild": {
         "extends": ".julia:1.4",
         "variables": {
-            "CI_APT_INSTALL": "git texlive-science texlive-xetex",
+            "CI_APT_INSTALL": "git python3-dev texlive-science texlive-xetex",
             "JULIA_NUM_THREADS": 4,
         },
         "tags": tags,
