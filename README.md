@@ -45,6 +45,7 @@ DiffEqTutorials.open_notebooks()
   - [DiffEqBiological Tutorial III: Steady-States and Bifurcations](http://tutorials.juliadiffeq.org/html/models/04b-diffeqbio_III_steadystates.html)
   - [Kepler Problem Orbit](http://tutorials.juliadiffeq.org/html/models/05-kepler_problem.html)
   - [Bayesian Inference of Pendulum Parameters](http://tutorials.juliadiffeq.org/html/models/06-pendulum_bayesian_inference.html)
+  - [Kolmogorov Backward Equations](http://tutorials.juliadiffeq.org/html/models/08-kolmogorov_equations.html)
 - Advanced ODE Features
   - [ModelingToolkit.jl, An IR and Compiler for Scientific Models](http://tutorials.juliadiffeq.org/html/ode_extras/01-ModelingToolkit.html)
   - [Feagin's Order 10, 12, and 14 Methods](http://tutorials.juliadiffeq.org/html/ode_extras/02-feagin.html)

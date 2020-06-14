@@ -113,7 +113,7 @@ end
 We should reshape the inputs and outputs to make it compatible with our model. This is the most important part. The algorithm gives a distributed function over all initial prices in the xspan.
 ```julia
 x_model = reshape(x_out, 1 , size(x_out)[1])
-m = fmap(cpu , m)
+m = fmap(cu , m)
 y_out = m(x_model)
 y_out = reshape(y_out , 13 , 1)
 ```
