@@ -19,7 +19,7 @@ if not file:
     file = choice([f for f in os.listdir(folder) if f.endswith(".jmd") and f not in LONG])
 os.chdir(cwd)
 
-tag = "nvidia" if file in GPU else "intel"
+tags = ["nvidia"] if file in GPU else []
 
 script = f"""
 julia -e '
@@ -52,7 +52,7 @@ pipeline = {
             "CI_APT_INSTALL": "git texlive-science texlive-xetex",
             "JULIA_NUM_THREADS": 4,
         },
-        "tags": [tag],
+        "tags": tags,
         "script": script,
     },
 }
