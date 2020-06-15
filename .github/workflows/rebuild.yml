@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          arg="$(echo ${{ github.event.comment.body }} | head -n1 | cut -d' ' -f2)"
+          arg="$(echo '${{ github.event.comment.body }}' | head -n1 | cut -d' ' -f2)"
           folder="$(echo $arg | cut -d/ -f1)"
           file="$(echo $arg | cut -d/ -f2)"
           curl --fail \
