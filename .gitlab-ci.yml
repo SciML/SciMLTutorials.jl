@@ -1,0 +1,25 @@
+stages:
+  - setup
+  - rebuild
+
+setup:
+  stage: setup
+  only:
+    - triggers
+  image: python
+  script: |
+    pip install pyyaml
+    python make_pipeline.py > rebuild.yml
+  artifacts:
+    paths:
+      - rebuild.yml
+
+rebuild:
+  stage: rebuild
+  trigger:
+    include:
+      - artifact: rebuild.yml
+        job: setup
+    strategy: depend
+  variables:  # TODO: Delete after JuliaGPU/gitlab-ci#20
+    JULIA_PROJECT: "@."

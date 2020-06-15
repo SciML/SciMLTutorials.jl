@@ -1,0 +1,69 @@
+name: Rebuild Tutorials
+on:
+  schedule:
+    - cron: 0 0 */3 * *
+  issue_comment:
+    types:
+      - created
+  push:
+  status:
+env:
+  GITLAB_TRIGGER: https://gitlab.com/api/v4/projects/19345468/trigger/pipeline
+  GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+jobs:
+  RandomRebuild:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl \
+            -X POST \
+            -F "token=$GITLAB_TOKEN" \
+            -F "ref=master" \
+            "$GITLAB_TRIGGER"
+  ManualRebuild:
+    if: github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '!rebuild')
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          arg="$(echo ${{ github.event.comment.body }} | cut -d' ' -f2)"
+          folder="$(echo $arg | cut -d/ -f1)"
+          file="$(echo $arg | cut -d/ -f2)"
+          curl \
+            -X POST \
+            -F "token=$GITLAB_TOKEN" \
+            -F "ref=master" \
+            -F "variables[FOLDER]=$folder" \
+            -F "variables[FILE]=$file" \
+            "$GITLAB_TRIGGER"
+  OpenPR:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/rebuild/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.pulls.create({
+              ...context.repo,
+              title: "Rebuild tutorials",
+              head: "${{ github.ref }}".slice(11),
+              base: "master",
+            })
+  FixStatus:
+    if: github.event_name == 'status' && github.event.context == 'ci/gitlab/gitlab.com' && github.event.state == 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      # TODO: Replace this SHA with a tag when the next version is released.
+      - uses: actions/github-script@82b33c82ef5e155cb8e0de0862e5dbde0cd451eb
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.repos.createCommitStatus({
+              ...context.repo,
+              sha: context.payload.sha,
+              state: "success",
+              context: context.payload.context,
+              description: "This status can be ignored",
+              target_url: context.payload.target_url,
+            })
