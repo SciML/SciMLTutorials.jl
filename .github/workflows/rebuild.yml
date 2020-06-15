@@ -16,8 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          curl \
-            -X POST \
+          curl --fail \
             -F "token=$GITLAB_TOKEN" \
             -F "ref=master" \
             "$GITLAB_TRIGGER"
@@ -26,16 +25,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          arg="$(echo ${{ github.event.comment.body }} | cut -d' ' -f2)"
+          arg="$(echo ${{ github.event.comment.body }} | head -n1 | cut -d' ' -f2)"
           folder="$(echo $arg | cut -d/ -f1)"
           file="$(echo $arg | cut -d/ -f2)"
-          curl \
-            -X POST \
+          curl --fail \
             -F "token=$GITLAB_TOKEN" \
             -F "ref=master" \
             -F "variables[FOLDER]=$folder" \
             -F "variables[FILE]=$file" \
             "$GITLAB_TRIGGER"
+      - uses: actions/github-script@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.reactions.createForIssueComment({
+              ...context.repo,
+              comment_id: context.payload.comment.id,
+              content: "+1",
+            })
   OpenPR:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/rebuild/')
     runs-on: ubuntu-latest
