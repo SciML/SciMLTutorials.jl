@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          cmd="$(echo '${{ github.event.comment.body }}' | head -n1 | cut -d' ' -f2-)"
+          cmd="$(jq -r .comment.body < "$GITHUB_EVENT_PATH" | head -n1 | cut -d' ' -f2-)"
           while [[ "$cmd" != '' && "$cmd" != '!rebuild' ]]; do
             arg="$(echo $cmd | cut -d' ' -f1)"
             key="$(echo $arg | cut -d= -f1)"
