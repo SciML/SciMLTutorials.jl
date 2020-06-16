@@ -1,7 +1,7 @@
 import os
+import sys
 
 from random import choice
-from sys import stdout
 from uuid import uuid4
 
 import yaml
@@ -21,6 +21,13 @@ os.chdir(cwd)
 
 tags = ["nvidia"] if file in GPU else []
 
+branch = os.getenv("BRANCH")
+if not branch:
+    branch = f"rebuild/{str(uuid4())[:8]}"
+if not branch.startswith("rebuild/"):
+    print("Branch name must begin with 'rebuild/'")
+    sys.exit(1)
+
 script = f"""
 julia -e '
   using Pkg
@@ -39,11 +46,10 @@ chmod 400 "$SSH_KEY"
 git config core.sshCommand "ssh -o StrictHostKeyChecking=no -i $SSH_KEY"
 git config user.name "github-actions[bot]"
 git config user.email "actions@github.com"
-branch="rebuild/{str(uuid4())[:8]}"
-git checkout -b "$branch"
+git checkout -b {branch}
 git commit -am "Rebuild tutorials"
 git remote add github "git@github.com:SciML/DiffEqTutorials.jl.git"
-git push github "$branch"
+git push github {branch} -f
 """
 
 pipeline = {
@@ -59,4 +65,4 @@ pipeline = {
     },
 }
 
-yaml.dump(pipeline, stdout)
+yaml.dump(pipeline, sys.stdout)
