@@ -1,0 +1,19 @@
+[deps]
+ArbNumerics = "7e558dbc-694d-5a72-987c-6f4ebed21442"
+DecFP = "55939f99-70c6-5e9b-8bb0-5071ed7d61fd"
+Decimals = "abce61dc-4473-55a0-ba07-351d65e31d42"
+DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
+DoubleFloats = "497a8b3b-efae-58df-a0af-a86822472b78"
+Measurements = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
+OrdinaryDiffEq = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+
+[compat]
+ArbNumerics = "1.0"
+DecFP = "0.4, 1.0"
+Decimals = "0.4"
+DifferentialEquations = "6.8"
+DoubleFloats = "0.9, 1.0"
+Measurements = "2.1"
+OrdinaryDiffEq = "5.23"
+Plots = "0.27, 0.28, 0.29, 1.0"
