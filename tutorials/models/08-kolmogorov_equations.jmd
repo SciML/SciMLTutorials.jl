@@ -7,7 +7,7 @@ author: Ashutosh Bharambe
 using Flux, StochasticDiffEq
 using  NeuralNetDiffEq
 using Plots
-using Distributions
+using CuArrays
 ```
 ## Introduction on Backward Kolmogorov Equations
 
@@ -105,15 +105,17 @@ for x in x_out
   ensembleprob_val = EnsembleProblem(prob , output_func = output_func )
   sim_val = solve(ensembleprob_val, EM(), EnsembleThreads() , dt=0.01, trajectories=100000,adaptive=false)
   s = reduce(hcat , sim_val.u)
-  global monte_carlo_sol = push!(monte_carlo_sol , mean(phi(s)))
+  mean_phi = sum(phi(s))/length(phi(s))
+  global monte_carlo_sol = push!(monte_carlo_sol , mean_phi)
 end
+
 ```
 
 ##Plotting the Solutions
 We should reshape the inputs and outputs to make it compatible with our model. This is the most important part. The algorithm gives a distributed function over all initial prices in the xspan.
 ```julia
 x_model = reshape(x_out, 1 , size(x_out)[1])
-m = fmap(cu , m)
+m = fmap(cpu , m)
 y_out = m(x_model)
 y_out = reshape(y_out , 13 , 1)
 ```
