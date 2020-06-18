@@ -86,8 +86,8 @@ opt = Flux.ADAM(0.01)
 ```
 And then finally call the solver
 ```julia
-sol = solve(prob, NeuralNetDiffEq.NNKolmogorov(m, opt, sdealg, ensemblealg), verbose = true, dt = dt,
-            dx = dx , trajectories = trajectories , abstol=1e-6, maxiters = 4200)
+@time sol = solve(prob, NeuralNetDiffEq.NNKolmogorov(m, opt, sdealg, ensemblealg), verbose = true, dt = dt,
+            dx = dx , trajectories = trajectories , abstol=1e-6, maxiters = 4200 , use_gpu = true)
 ```
 ## Analyzing the solution
 Now let us find a Monte-Carlo Solution and plot the both:
