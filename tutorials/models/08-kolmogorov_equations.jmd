@@ -7,7 +7,8 @@ author: Ashutosh Bharambe
 using Flux, StochasticDiffEq
 using  NeuralNetDiffEq
 using Plots
-using Distributions
+using CuArrays
+using CUDA
 ```
 ## Introduction on Backward Kolmogorov Equations
 
@@ -81,13 +82,17 @@ trajectories = 100000
 Now lets define our model m and the optimiser
 ```julia
 m = Chain(Dense(d, 8, leakyrelu),Dense(8, 16, leakyrelu),Dense(16 , 8 , leakyrelu) , Dense(8 , 1))
-m = fmap(cu , m)
+use_gpu = false
+if CUDA.functional() == true
+  m = fmap(CuArrays.cu , m)
+  use_gpu = true
+end
 opt = Flux.ADAM(0.01)
 ```
 And then finally call the solver
 ```julia
-sol = solve(prob, NeuralNetDiffEq.NNKolmogorov(m, opt, sdealg, ensemblealg), verbose = true, dt = dt,
-            dx = dx , trajectories = trajectories , abstol=1e-6, maxiters = 4200)
+@time sol = solve(prob, NeuralNetDiffEq.NNKolmogorov(m, opt, sdealg, ensemblealg), verbose = true, dt = dt,
+            dx = dx , trajectories = trajectories , abstol=1e-6, maxiters = 4200 , use_gpu = use_gpu)
 ```
 ## Analyzing the solution
 Now let us find a Monte-Carlo Solution and plot the both:
@@ -105,15 +110,19 @@ for x in x_out
   ensembleprob_val = EnsembleProblem(prob , output_func = output_func )
   sim_val = solve(ensembleprob_val, EM(), EnsembleThreads() , dt=0.01, trajectories=100000,adaptive=false)
   s = reduce(hcat , sim_val.u)
-  global monte_carlo_sol = push!(monte_carlo_sol , mean(phi(s)))
+  mean_phi = sum(phi(s))/length(phi(s))
+  global monte_carlo_sol = push!(monte_carlo_sol , mean_phi)
 end
+
 ```
 
 ##Plotting the Solutions
 We should reshape the inputs and outputs to make it compatible with our model. This is the most important part. The algorithm gives a distributed function over all initial prices in the xspan.
 ```julia
 x_model = reshape(x_out, 1 , size(x_out)[1])
-m = fmap(cu , m)
+if use_gpu == true
+  m = fmap(cpu , m)
+end
 y_out = m(x_model)
 y_out = reshape(y_out , 13 , 1)
 ```
