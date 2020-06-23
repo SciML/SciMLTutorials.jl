@@ -1,4 +1,4 @@
-name: Rebuild Tutorials
+name: Rebuild Content
 on:
   schedule:
     - cron: 0 0 */3 * *
@@ -7,81 +7,13 @@ on:
       - created
   push:
   status:
+env:
+  GITLAB_PROJECT: ${{ secrets.GITLAB_PROJECT }}
+  GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
 jobs:
-  TriggerRebuild:
-    if: github.event_name == 'schedule' || github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '!rebuild')
+  Rebuild:
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          cmd="$(jq -r .comment.body < "$GITHUB_EVENT_PATH" | head -n1 | cut -d' ' -f2-)"
-          while [[ "$cmd" != '' && "$cmd" != '!rebuild' ]]; do
-            arg="$(echo $cmd | cut -d' ' -f1)"
-            key="$(echo $arg | cut -d= -f1)"
-            val="$(echo $arg | cut -d= -f2)"
-            case "$key" in
-              branch)
-                branch="$val"
-                ;;
-              file)
-                folder="$(echo $val | cut -d/ -f1)"
-                file="$(echo $val | cut -d/ -f2)"
-                ;;
-              *)
-                echo "Unknown command $key"
-                exit 1
-                ;;
-            esac
-            if echo "$cmd" | grep -q ' '; then
-              cmd="$(echo $cmd | cut -d' ' -f2)"
-            else
-              cmd=""
-            fi
-          done
-          curl --fail \
-            -F "token=${{ secrets.GITLAB_TOKEN }}" \
-            -F "ref=master" \
-            -F "variables[BRANCH]=$branch" \
-            -F "variables[FOLDER]=$folder" \
-            -F "variables[FILE]=$file" \
-            https://gitlab.com/api/v4/projects/19345468/trigger/pipeline
-      - if: github.event_name == 'issue_comment'
-        uses: actions/github-script@v2
+      - uses: SciML/RebuildAction@master
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.reactions.createForIssueComment({
-              ...context.repo,
-              comment_id: context.payload.comment.id,
-              content: "+1",
-            })
-  OpenPR:
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/rebuild/')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/github-script@v2
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.pulls.create({
-              ...context.repo,
-              title: "Rebuild tutorials",
-              head: "${{ github.ref }}".slice(11),
-              base: "master",
-            })
-  FixStatus:
-    if: github.event_name == 'status' && github.event.context == 'ci/gitlab/gitlab.com' && github.event.state == 'failure'
-    runs-on: ubuntu-latest
-    steps:
-      # TODO: Replace this SHA with a tag when the next version is released.
-      - uses: actions/github-script@82b33c82ef5e155cb8e0de0862e5dbde0cd451eb
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.repos.createCommitStatus({
-              ...context.repo,
-              sha: context.payload.sha,
-              state: "success",
-              context: context.payload.context,
-              description: "This status can be ignored",
-              target_url: context.payload.target_url,
-            })
+          token: ${{ secrets.GITHUB_TOKEN }}
