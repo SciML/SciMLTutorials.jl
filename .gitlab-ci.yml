@@ -1,6 +1,6 @@
 include: https://raw.githubusercontent.com/SciML/RebuildAction/master/rebuild.yml
 variables:
   CONTENT_DIR: tutorials
-  EXCLUDE: exercises/02-workshop-solutions, models/06-pendulum_bayesian_inference
-  NEEDS_GPU: advanced/01-beeler-reuter
+  EXCLUDE: exercises/02-workshop_solutions, models/06-pendulum_bayesian_inference
+  NEEDS_GPU: advanced/01-beeler_reuter
   GITHUB_REPOSITORY: SciML/DiffEqTutorials.jl
