@@ -200,16 +200,44 @@ title!("I added a title")
 
 You can do all sorts of things. Have fun!
 
-````
-Error: ArgumentError: Package DiffEqTutorials not found in current path:
-- Run `import Pkg; Pkg.add("DiffEqTutorials")` to install the DiffEqTutoria
-ls package.
-````
 
+## Appendix
 
+ This tutorial is part of the DiffEqTutorials.jl repository, found at: <https://github.com/JuliaDiffEq/DiffEqTutorials.jl>
 
-````
-Error: UndefVarError: DiffEqTutorials not defined
-````
+To locally run this tutorial, do the following commands:
+```
+using DiffEqTutorials
+DiffEqTutorials.weave_file("introduction","05-formatting_plots.jmd")
+```
 
+Computer Information:
+```
+Julia Version 1.4.2
+Commit 44fa15b150* (2020-05-23 18:35 UTC)
+Platform Info:
+  OS: Linux (x86_64-pc-linux-gnu)
+  CPU: Intel(R) Core(TM) i7-9700K CPU @ 3.60GHz
+  WORD_SIZE: 64
+  LIBM: libopenlibm
+  LLVM: libLLVM-8.0.1 (ORCJIT, skylake)
+Environment:
+  JULIA_DEPOT_PATH = /builds/JuliaGPU/DiffEqTutorials.jl/.julia
+  JULIA_CUDA_MEMORY_LIMIT = 536870912
+  JULIA_PROJECT = @.
+  JULIA_NUM_THREADS = 4
 
+```
+
+Package Information:
+
+```
+Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/introduction/Project.toml`
+[6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf] BenchmarkTools 0.5.0
+[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.14.0
+[65888b18-ceab-5e60-b2b9-181511a3b968] ParameterizedFunctions 5.3.0
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.4.3
+[90137ffa-7385-5640-81b9-e52037218182] StaticArrays 0.12.3
+[c3572dad-4567-51f8-b174-8c6c989267f4] Sundials 4.2.3
+[37e2e46d-f89d-539d-b4ee-838fcccc9c8e] LinearAlgebra
+```
