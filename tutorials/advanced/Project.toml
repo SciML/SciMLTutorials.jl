@@ -16,4 +16,13 @@ SparsityDetection = "684fba80-ace3-11e9-3d08-3bc7ed6f96df"
 Sundials = "c3572dad-4567-51f8-b174-8c6c989267f4"
 
 [compat]
+AlgebraicMultigrid = "0.3"
+BenchmarkTools = "0.5"
+DiffEqOperators = "4.10"
+DifferentialEquations = "6.14"
+Sundials = "4.2"
+SparsityDetection = "0.3"
+OrdinaryDiffEq = "5.41"
+ModelingToolkit = "3.10"
+CuArrays = "2.2"
 CUDAnative = "3.1"
