@@ -18,3 +18,4 @@ Sundials = "c3572dad-4567-51f8-b174-8c6c989267f4"
 [compat]
 BenchmarkTools = "0.5"
 DiffEqOperators = "4.10"
+SparsityDetection = "0.3"
