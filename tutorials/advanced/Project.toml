@@ -14,3 +14,6 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 SparseDiffTools = "47a9eef4-7e08-11e9-0b38-333d64bd3804"
 SparsityDetection = "684fba80-ace3-11e9-3d08-3bc7ed6f96df"
 Sundials = "c3572dad-4567-51f8-b174-8c6c989267f4"
+
+[compat]
+OrdinaryDiffEq = "5.41"
