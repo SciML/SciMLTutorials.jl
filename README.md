@@ -44,13 +44,15 @@ DiffEqTutorials.open_notebooks()
   - [DiffEqBiological Tutorial II: Network Properties API](http://tutorials.juliadiffeq.org/html/models/04-diffeqbio_II_networkproperties.html)
   - [DiffEqBiological Tutorial III: Steady-States and Bifurcations](http://tutorials.juliadiffeq.org/html/models/04b-diffeqbio_III_steadystates.html)
   - [Kepler Problem Orbit](http://tutorials.juliadiffeq.org/html/models/05-kepler_problem.html)
-  - [Bayesian Inference of Pendulum Parameters](http://tutorials.juliadiffeq.org/html/models/06-pendulum_bayesian_inference.html)
   - [Kolmogorov Backward Equations](http://tutorials.juliadiffeq.org/html/models/08-kolmogorov_equations.html)
 - Advanced ODE Features
   - [ModelingToolkit.jl, An IR and Compiler for Scientific Models](http://tutorials.juliadiffeq.org/html/ode_extras/01-ModelingToolkit.html)
   - [Feagin's Order 10, 12, and 14 Methods](http://tutorials.juliadiffeq.org/html/ode_extras/02-feagin.html)
   - [Finding Maxima and Minima of DiffEq Solutions](http://tutorials.juliadiffeq.org/html/ode_extras/03-ode_minmax.html)
-  - [Monte Carlo Parameter Estimation from Data](http://tutorials.juliadiffeq.org/html/ode_extras/04-monte_carlo_parameter_estim.html)
+
+- Model Inference
+  - [Bayesian Inference of Pendulum Parameters](http://tutorials.juliadiffeq.org/html/model_inference/01-pendulum_bayesian_inference.html)
+  - [Monte Carlo Parameter Estimation from Data](http://tutorials.juliadiffeq.org/html/model_inference/02-monte_carlo_parameter_estim.html)
 - Type Handling
   - [Solving Equations with Julia-Defined Types](http://tutorials.juliadiffeq.org/html/type_handling/01-number_types.html)
   - [Numbers with Uncertainties](http://tutorials.juliadiffeq.org/html/type_handling/02-uncertainties.html)
