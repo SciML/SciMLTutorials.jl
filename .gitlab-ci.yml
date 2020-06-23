@@ -1,25 +1,6 @@
-stages:
-  - setup
-  - rebuild
-
-setup:
-  stage: setup
-  only:
-    - triggers
-  image: python
-  script: |
-    pip install pyyaml
-    python make_pipeline.py > rebuild.yml
-  artifacts:
-    paths:
-      - rebuild.yml
-
-rebuild:
-  stage: rebuild
-  trigger:
-    include:
-      - artifact: rebuild.yml
-        job: setup
-    strategy: depend
-  variables:  # TODO: Delete after JuliaGPU/gitlab-ci#20
-    JULIA_PROJECT: "@."
+include: https://raw.githubusercontent.com/SciML/RebuildAction/master/rebuild.yml
+variables:
+  CONTENT_DIR: tutorials
+  EXCLUDE: exercises/02-workshop-solutions, models/06-pendulum_bayesian_inference
+  NEEDS_GPU: advanced/01-beeler-reuter
+  GITHUB_REPOSITORY: SciML/DiffEqTutorials.jl
