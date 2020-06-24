@@ -30,7 +30,11 @@ function weave_file(folder,file,build_list=(:script,:html,:pdf,:github,:notebook
     dir = joinpath(repo_directory,"pdf",folder)
     isdir(dir) || mkdir(dir)
     args[:doctype] = "pdf"
-    weave(tmp,doctype="md2pdf",out_path=dir,args=args; template=latexfile, kwargs...)
+    try
+      weave(tmp,doctype="md2pdf",out_path=dir,args=args; template=latexfile, kwargs...)
+    catch ex
+      @warn "PDF generation failed" exception=(ex, catch_backtrace())
+    end
   end
   if :github ∈ build_list
     println("Building Github Markdown")
