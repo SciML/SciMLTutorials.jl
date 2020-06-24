@@ -1,3 +1,9 @@
+---
+author: "Chris Rackauckas"
+title: "Callbacks and Events"
+---
+
+
 In working with a differential equation, our system will evolve through many states. Particular states of the system may be of interest to us, and we say that an ***"event"*** is triggered when our system reaches these states. For example, events may include the moment when our system reaches a particular temperature or velocity. We ***handle*** these events with ***callbacks***, which tell us what to do once an event has been triggered.
 
 These callbacks allow for a lot more than event handling, however. For example, we can use callbacks to achieve high-level behavior like exactly preserve conservation laws and save the trace of a matrix at pre-defined time points. This extra functionality allows us to use the callback system as a modding system for the DiffEq ecosystem's solvers.
@@ -20,9 +26,11 @@ end g
 
 
 ````
-(::Main.WeaveSandBox23.BallBounce{Main.WeaveSandBox23.var"#1#5",Main.WeaveS
-andBox23.var"#2#6",Main.WeaveSandBox23.var"#3#7",Nothing,Nothing,Main.Weave
-SandBox23.var"#4#8",Expr,Expr}) (generic function with 2 methods)
+(::Main.##WeaveSandBox#432.BallBounce{Main.##WeaveSandBox#432.var"###Parame
+terizedDiffEqFunction#452",Main.##WeaveSandBox#432.var"###ParameterizedTGra
+dFunction#453",Main.##WeaveSandBox#432.var"###ParameterizedJacobianFunction
+#454",Nothing,Nothing,ModelingToolkit.ODESystem}) (generic function with 1 
+method)
 ````
 
 
@@ -86,12 +94,12 @@ bounce_cb = ContinuousCallback(condition,affect!)
 
 
 ````
-DiffEqBase.ContinuousCallback{typeof(Main.WeaveSandBox23.condition),typeof(
-Main.WeaveSandBox23.affect!),typeof(Main.WeaveSandBox23.affect!),typeof(Dif
-fEqBase.INITIALIZE_DEFAULT),Float64,Int64,Nothing}(Main.WeaveSandBox23.cond
-ition, Main.WeaveSandBox23.affect!, Main.WeaveSandBox23.affect!, DiffEqBase
-.INITIALIZE_DEFAULT, nothing, true, 10, Bool[1, 1], 2.220446049250313e-15, 
-0)
+DiffEqBase.ContinuousCallback{typeof(Main.##WeaveSandBox#432.condition),typ
+eof(Main.##WeaveSandBox#432.affect!),typeof(Main.##WeaveSandBox#432.affect!
+),typeof(DiffEqBase.INITIALIZE_DEFAULT),Float64,Int64,Nothing,Int64}(Main.#
+#WeaveSandBox#432.condition, Main.##WeaveSandBox#432.affect!, Main.##WeaveS
+andBox#432.affect!, DiffEqBase.INITIALIZE_DEFAULT, nothing, true, 10, Bool[
+1, 1], 1, 2.220446049250313e-15, 0)
 ````
 
 
@@ -220,20 +228,21 @@ cb = CallbackSet(bounce_cb,kick_cb)
 
 
 ````
-DiffEqBase.CallbackSet{Tuple{DiffEqBase.ContinuousCallback{typeof(Main.Weav
-eSandBox23.condition),typeof(Main.WeaveSandBox23.affect!),typeof(Main.Weave
-SandBox23.affect!),typeof(DiffEqBase.INITIALIZE_DEFAULT),Float64,Int64,Noth
-ing}},Tuple{DiffEqBase.DiscreteCallback{typeof(Main.WeaveSandBox23.conditio
-n_kick),typeof(Main.WeaveSandBox23.affect_kick!),typeof(DiffEqBase.INITIALI
-ZE_DEFAULT)}}}((DiffEqBase.ContinuousCallback{typeof(Main.WeaveSandBox23.co
-ndition),typeof(Main.WeaveSandBox23.affect!),typeof(Main.WeaveSandBox23.aff
-ect!),typeof(DiffEqBase.INITIALIZE_DEFAULT),Float64,Int64,Nothing}(Main.Wea
-veSandBox23.condition, Main.WeaveSandBox23.affect!, Main.WeaveSandBox23.aff
-ect!, DiffEqBase.INITIALIZE_DEFAULT, nothing, true, 10, Bool[1, 1], 2.22044
-6049250313e-15, 0),), (DiffEqBase.DiscreteCallback{typeof(Main.WeaveSandBox
-23.condition_kick),typeof(Main.WeaveSandBox23.affect_kick!),typeof(DiffEqBa
-se.INITIALIZE_DEFAULT)}(Main.WeaveSandBox23.condition_kick, Main.WeaveSandB
-ox23.affect_kick!, DiffEqBase.INITIALIZE_DEFAULT, Bool[1, 1]),))
+DiffEqBase.CallbackSet{Tuple{DiffEqBase.ContinuousCallback{typeof(Main.##We
+aveSandBox#432.condition),typeof(Main.##WeaveSandBox#432.affect!),typeof(Ma
+in.##WeaveSandBox#432.affect!),typeof(DiffEqBase.INITIALIZE_DEFAULT),Float6
+4,Int64,Nothing,Int64}},Tuple{DiffEqBase.DiscreteCallback{typeof(Main.##Wea
+veSandBox#432.condition_kick),typeof(Main.##WeaveSandBox#432.affect_kick!),
+typeof(DiffEqBase.INITIALIZE_DEFAULT)}}}((DiffEqBase.ContinuousCallback{typ
+eof(Main.##WeaveSandBox#432.condition),typeof(Main.##WeaveSandBox#432.affec
+t!),typeof(Main.##WeaveSandBox#432.affect!),typeof(DiffEqBase.INITIALIZE_DE
+FAULT),Float64,Int64,Nothing,Int64}(Main.##WeaveSandBox#432.condition, Main
+.##WeaveSandBox#432.affect!, Main.##WeaveSandBox#432.affect!, DiffEqBase.IN
+ITIALIZE_DEFAULT, nothing, true, 10, Bool[1, 1], 1, 2.220446049250313e-15, 
+0),), (DiffEqBase.DiscreteCallback{typeof(Main.##WeaveSandBox#432.condition
+_kick),typeof(Main.##WeaveSandBox#432.affect_kick!),typeof(DiffEqBase.INITI
+ALIZE_DEFAULT)}(Main.##WeaveSandBox#432.condition_kick, Main.##WeaveSandBox
+#432.affect_kick!, DiffEqBase.INITIALIZE_DEFAULT, Bool[1, 1]),))
 ````
 
 
@@ -311,12 +320,13 @@ terminate_cb = ContinuousCallback(terminate_condition,terminate_affect!)
 
 
 ````
-DiffEqBase.ContinuousCallback{typeof(Main.WeaveSandBox23.terminate_conditio
-n),typeof(Main.WeaveSandBox23.terminate_affect!),typeof(Main.WeaveSandBox23
-.terminate_affect!),typeof(DiffEqBase.INITIALIZE_DEFAULT),Float64,Int64,Not
-hing}(Main.WeaveSandBox23.terminate_condition, Main.WeaveSandBox23.terminat
-e_affect!, Main.WeaveSandBox23.terminate_affect!, DiffEqBase.INITIALIZE_DEF
-AULT, nothing, true, 10, Bool[1, 1], 2.220446049250313e-15, 0)
+DiffEqBase.ContinuousCallback{typeof(Main.##WeaveSandBox#432.terminate_cond
+ition),typeof(Main.##WeaveSandBox#432.terminate_affect!),typeof(Main.##Weav
+eSandBox#432.terminate_affect!),typeof(DiffEqBase.INITIALIZE_DEFAULT),Float
+64,Int64,Nothing,Int64}(Main.##WeaveSandBox#432.terminate_condition, Main.#
+#WeaveSandBox#432.terminate_affect!, Main.##WeaveSandBox#432.terminate_affe
+ct!, DiffEqBase.INITIALIZE_DEFAULT, nothing, true, 10, Bool[1, 1], 1, 2.220
+446049250313e-15, 0)
 ````
 
 
@@ -343,7 +353,7 @@ sol.t[end]
 
 
 ````
-3.141590249763006
+3.1415902497630053
 ````
 
 
@@ -360,11 +370,12 @@ terminate_upcrossing_cb = ContinuousCallback(terminate_condition,terminate_affec
 
 
 ````
-DiffEqBase.ContinuousCallback{typeof(Main.WeaveSandBox23.terminate_conditio
-n),typeof(Main.WeaveSandBox23.terminate_affect!),Nothing,typeof(DiffEqBase.
-INITIALIZE_DEFAULT),Float64,Int64,Nothing}(Main.WeaveSandBox23.terminate_co
-ndition, Main.WeaveSandBox23.terminate_affect!, nothing, DiffEqBase.INITIAL
-IZE_DEFAULT, nothing, true, 10, Bool[1, 1], 2.220446049250313e-15, 0)
+DiffEqBase.ContinuousCallback{typeof(Main.##WeaveSandBox#432.terminate_cond
+ition),typeof(Main.##WeaveSandBox#432.terminate_affect!),Nothing,typeof(Dif
+fEqBase.INITIALIZE_DEFAULT),Float64,Int64,Nothing,Int64}(Main.##WeaveSandBo
+x#432.terminate_condition, Main.##WeaveSandBox#432.terminate_affect!, nothi
+ng, DiffEqBase.INITIALIZE_DEFAULT, nothing, true, 10, Bool[1, 1], 1, 2.2204
+46049250313e-15, 0)
 ````
 
 
@@ -490,11 +501,11 @@ prob = ODEProblem((du,u,p,t)->du.=u,rand(1000,1000),(0.0,1.0))
 ````
 ODEProblem with uType Array{Float64,2} and tType Float64. In-place: true
 timespan: (0.0, 1.0)
-u0: [0.568470291155529 0.41462625531460984 … 0.4348511362219136 0.672768528
-7377083; 0.8562956257502548 0.04923263363643571 … 0.03705330327930567 0.846
-2066893948199; … ; 0.9420911847529623 0.5878308863064468 … 0.31183796410991
-715 0.9542191679961416; 0.3092450533552782 0.7810206164250577 … 0.059230466
-22868888 0.017405741026814914]
+u0: [0.9879931455893609 0.8459514795879628 … 0.12437660939897444 0.60144899
+7240285; 0.5075186459948859 0.5570664700161223 … 0.9830110970851273 0.93296
+78540098196; … ; 0.6094372577262306 0.9886923913157719 … 0.6897194729548028
+ 0.9010207091690918; 0.4125617049501118 0.04365446235919235 … 0.16143622331
+469043 0.29661794248884554]
 ````
 
 
@@ -530,19 +541,19 @@ cb = SavingCallback((u,t,integrator)->(tr(u),norm(u)), saved_values)
 
 ````
 DiffEqBase.DiscreteCallback{DiffEqCallbacks.var"#30#31",DiffEqCallbacks.Sav
-ingAffect{Main.WeaveSandBox23.var"#21#22",Float64,Tuple{Float64,Float64},Da
-taStructures.BinaryHeap{Float64,DataStructures.LessThan},Array{Float64,1}},
-typeof(DiffEqCallbacks.saving_initialize)}(DiffEqCallbacks.var"#30#31"(), D
-iffEqCallbacks.SavingAffect{Main.WeaveSandBox23.var"#21#22",Float64,Tuple{F
-loat64,Float64},DataStructures.BinaryHeap{Float64,DataStructures.LessThan},
-Array{Float64,1}}(Main.WeaveSandBox23.var"#21#22"(), SavedValues{tType=Floa
-t64, savevalType=Tuple{Float64,Float64}}
+ingAffect{Main.##WeaveSandBox#432.var"#17#18",Float64,Tuple{Float64,Float64
+},DataStructures.BinaryHeap{Float64,DataStructures.LessThan},Array{Float64,
+1}},typeof(DiffEqCallbacks.saving_initialize)}(DiffEqCallbacks.var"#30#31"(
+), DiffEqCallbacks.SavingAffect{Main.##WeaveSandBox#432.var"#17#18",Float64
+,Tuple{Float64,Float64},DataStructures.BinaryHeap{Float64,DataStructures.Le
+ssThan},Array{Float64,1}}(Main.##WeaveSandBox#432.var"#17#18"(), SavedValue
+s{tType=Float64, savevalType=Tuple{Float64,Float64}}
 t:
 Float64[]
 saveval:
 Tuple{Float64,Float64}[], DataStructures.BinaryHeap{Float64,DataStructures.
-LessThan}(DataStructures.LessThan(), Float64[]), Float64[], true, true, 0),
- DiffEqCallbacks.saving_initialize, Bool[0, 0])
+LessThan}(DataStructures.LessThan(), Float64[]), Float64[], true, true, tru
+e, 0), DiffEqCallbacks.saving_initialize, Bool[0, 0])
 ````
 
 
@@ -576,10 +587,10 @@ saved_values.t
 
 ````
 5-element Array{Float64,1}:
- 0.0                
- 0.10012848642155436
- 0.3483879805579634 
- 0.6837323919368242 
+ 0.0
+ 0.10012909234078712
+ 0.34839012956458915
+ 0.6837368053160041
  1.0
 ````
 
@@ -592,11 +603,11 @@ saved_values.saveval
 
 ````
 5-element Array{Tuple{Float64,Float64},1}:
- (491.63023697897114, 577.4033673183338) 
- (543.4052560788195, 638.2114058045864)  
- (696.5327843779138, 818.0545965170656)  
- (974.0466980602114, 1143.9854611898627) 
- (1336.3894807653803, 1569.5450120895084)
+ (493.8130627293116, 577.574819350342)
+ (545.8182923190569, 638.40130077138)
+ (699.626875729263, 818.2992651684409)
+ (978.375758562294, 1144.3302023748365)
+ (1342.3230160768928, 1570.0110670126246)
 ````
 
 
@@ -650,17 +661,17 @@ saved_values.saveval
 
 ````
 11-element Array{Tuple{Float64,Float64},1}:
- (491.63023697897114, 577.4033673183338) 
- (543.3354403672624, 638.1294095726373)  
- (600.4785488961977, 705.2420906119352)  
- (663.6313655007577, 779.4129739717189)  
- (733.4262629397872, 861.3847604317464)  
- (810.5611873186424, 951.9771644870359)  
- (895.808349796127, 1052.0971224686643)  
- (990.0217204540621, 1162.7475938444281) 
- (1094.1433011583665, 1285.0349284856145)
- (1209.2148717529099, 1420.182662181133) 
- (1336.3894807653803, 1569.5450120895084)
+ (493.8130627293116, 577.574819350342)
+ (545.7478359058158, 638.3188933722616)
+ (603.1446583851525, 705.4515026061309)
+ (666.5778718850487, 779.6444099899865)
+ (736.6826568938942, 861.6405368507976)
+ (814.1600583919651, 952.2598411005755)
+ (899.7857160671499, 1052.4095282922406)
+ (994.4173917015307, 1163.0928558195844)
+ (1099.001269598267, 1285.4165020376604)
+ (1214.5837550613833, 1420.6043660290525)
+ (1342.3230160768928, 1570.0110670126246)
 ````
 
 
@@ -684,16 +695,18 @@ DiffEqTutorials.weave_file("introduction","04-callbacks_and_events.jmd")
 
 Computer Information:
 ```
-Julia Version 1.3.0
-Commit 46ce4d7933 (2019-11-26 06:09 UTC)
+Julia Version 1.4.2
+Commit 44fa15b150* (2020-05-23 18:35 UTC)
 Platform Info:
-  OS: Windows (x86_64-w64-mingw32)
-  CPU: Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz
+  OS: Linux (x86_64-pc-linux-gnu)
+  CPU: Intel(R) Core(TM) i7-9700K CPU @ 3.60GHz
   WORD_SIZE: 64
   LIBM: libopenlibm
-  LLVM: libLLVM-6.0.1 (ORCJIT, skylake)
+  LLVM: libLLVM-8.0.1 (ORCJIT, skylake)
 Environment:
-  JULIA_EDITOR = "C:\Users\accou\AppData\Local\atom\app-1.42.0\atom.exe"  -a
+  JULIA_DEPOT_PATH = /builds/JuliaGPU/DiffEqTutorials.jl/.julia
+  JULIA_CUDA_MEMORY_LIMIT = 536870912
+  JULIA_PROJECT = @.
   JULIA_NUM_THREADS = 4
 
 ```
@@ -701,5 +714,12 @@ Environment:
 Package Information:
 
 ```
-Status `~\.julia\dev\DiffEqTutorials\Project.toml`
+Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/introduction/Project.toml`
+[6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf] BenchmarkTools 0.5.0
+[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.14.0
+[65888b18-ceab-5e60-b2b9-181511a3b968] ParameterizedFunctions 5.3.0
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.4.3
+[90137ffa-7385-5640-81b9-e52037218182] StaticArrays 0.12.3
+[c3572dad-4567-51f8-b174-8c6c989267f4] Sundials 4.2.3
+[37e2e46d-f89d-539d-b4ee-838fcccc9c8e] LinearAlgebra
 ```
