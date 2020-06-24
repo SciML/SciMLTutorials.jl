@@ -11,7 +11,7 @@ rn = @reaction_network begin
     β, m₂ --> m₂ + P₂
     μ, P₁ --> ∅
     μ, P₂ --> ∅
-    (k₊,k₋), 2P₁ ↔ D₁ 
+    (k₊,k₋), 2P₁ ↔ D₁
     (k₊,k₋), 2P₂ ↔ D₂
     (k₊,k₋), P₁+P₂ ↔ T
 end α K n δ γ β μ k₊ k₋;
@@ -165,7 +165,7 @@ plot(plt, ylims=(0.,10000.))
 
 addjumps!(rn, build_regular_jumps=false, minimal_jumps=true)
 
-# make the initial condition integer valued 
+# make the initial condition integer valued
 u₀ = zeros(Int, N)
 u₀[div(N,2)] = 10000
 
