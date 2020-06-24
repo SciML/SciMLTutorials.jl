@@ -1,6 +1,6 @@
 
 # If not already installed, first hit "]" within a Julia REPL. Then type:
-# add DifferentialEquations DiffEqBiological PyPlot Plots Latexify 
+# add DifferentialEquations DiffEqBiological PyPlot Plots Latexify
 
 using DifferentialEquations, DiffEqBiological, Plots, Latexify
 pyplot(fmt=:svg);
@@ -100,7 +100,7 @@ display("text/latex", "$x");
 # SDEProblem for CLE
 sprob = SDEProblem(bdp, u₀, tspan, p)
 
-# solve and plot, tstops is used to specify enough points 
+# solve and plot, tstops is used to specify enough points
 # that the plot looks well-resolved
 sol = solve(sprob, tstops=range(0., step=4e-3, length=1001))
 plot(sol, fmt=:svg)
