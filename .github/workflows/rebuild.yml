@@ -6,7 +6,6 @@ on:
     types:
       - created
   push:
-  status:
 env:
   GITLAB_PROJECT: ${{ secrets.GITLAB_PROJECT }}
   GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
