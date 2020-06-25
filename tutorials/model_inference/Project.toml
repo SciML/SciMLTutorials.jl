@@ -14,6 +14,7 @@ StatsPlots = "f3b207a7-027a-5e70-b257-86293d7955fd"
 TransformVariables = "84d833dd-6860-57f9-a1a7-6da5db126cff"
 
 [compat]
+DynamicHMC = "2.1"
 TransformVariables = "0.3"
 OrdinaryDiffEq = "5.41"
 Optim = "0.21"
