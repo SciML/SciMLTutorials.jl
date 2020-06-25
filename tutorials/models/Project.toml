@@ -19,4 +19,13 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 StochasticDiffEq = "789caeaf-c7a9-5a7d-9973-96adeb23e2a0"
 
 [compat]
+DifferentialEquations = "6.14"
+RecursiveArrayTools = "2.5"
+NLsolve = "4.4"
+Flux = "0.10"
+Plots = "1.4"
+ForwardDiff = "0.10"
+DiffEqPhysics = "3.5"
+DiffEqDevTools = "2.22"
+DiffEqBiological = "4.3"
 OrdinaryDiffEq = "5.41"
