@@ -6,3 +6,11 @@ ParameterizedFunctions = "65888b18-ceab-5e60-b2b9-181511a3b968"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Sundials = "c3572dad-4567-51f8-b174-8c6c989267f4"
+
+[compat]
+BenchmarkTools = "0.5"
+Plots = "1.4"
+ParameterizedFunctions = "5.3"
+StaticArrays = "0.12"
+DifferentialEquations = "6.14"
+Sundials = "4.2"
