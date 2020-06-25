@@ -9,3 +9,4 @@ Sundials = "c3572dad-4567-51f8-b174-8c6c989267f4"
 
 [compat]
 ParameterizedFunctions = "5.3"
+StaticArrays = "0.12"
