@@ -20,3 +20,4 @@ StochasticDiffEq = "789caeaf-c7a9-5a7d-9973-96adeb23e2a0"
 
 [compat]
 DifferentialEquations = "6.14"
+RecursiveArrayTools = "2.5"
