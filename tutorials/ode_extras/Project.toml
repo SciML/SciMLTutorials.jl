@@ -8,3 +8,4 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
 NLsolve = "4.4"
+OrdinaryDiffEq = "5.41"
