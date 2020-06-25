@@ -17,3 +17,6 @@ Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 RecursiveArrayTools = "731186ca-8d62-57ce-b412-fbd966d074cd"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 StochasticDiffEq = "789caeaf-c7a9-5a7d-9973-96adeb23e2a0"
+
+[compat]
+Flux = "0.10"
