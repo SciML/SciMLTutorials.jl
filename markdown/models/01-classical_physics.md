@@ -758,14 +758,14 @@ Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/models/Project.toml`
 [0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.14.0
 [31c24e10-a181-5473-b8eb-7969acd0382f] Distributions 0.23.4
 [587475ba-b771-5e3f-ad9e-33799f191a9c] Flux 0.10.4
-[f6369f11-7733-5829-9624-2563aa707210] ForwardDiff 0.10.10
+[f6369f11-7733-5829-9624-2563aa707210] ForwardDiff 0.10.11
 [23fbe1c1-3f47-55db-b15f-69d7ec21a316] Latexify 0.13.5
-[961ee093-0014-501f-94e3-6117800e7a78] ModelingToolkit 3.10.2
+[961ee093-0014-501f-94e3-6117800e7a78] ModelingToolkit 3.11.0
 [2774e3e8-f4cf-5e23-947b-6d7e65073b56] NLsolve 4.4.0
 [8faf48c0-8b73-11e9-0e63-2155955bfa4d] NeuralNetDiffEq 1.6.0
 [429524aa-4258-5aef-a3af-852621145aeb] Optim 0.21.0
 [1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.41.0
-[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.4.3
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.4.4
 [731186ca-8d62-57ce-b412-fbd966d074cd] RecursiveArrayTools 2.5.0
 [789caeaf-c7a9-5a7d-9973-96adeb23e2a0] StochasticDiffEq 6.23.1
 [37e2e46d-f89d-539d-b4ee-838fcccc9c8e] LinearAlgebra
