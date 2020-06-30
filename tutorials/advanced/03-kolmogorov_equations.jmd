@@ -64,7 +64,7 @@ We will define the σ and μ by comparing it to the orignal equation. The xspan 
 d = 1
 r = 0.02
 sigma = 0.4
-xspan = (85.00 , 115.0)
+xspan = (80.00 , 115.0)
 tspan = (0.0 , 1.0)
 σ(du , u , p , t) = du .= sigma.*u
 μ(du , u , p , t) = du .= r.*u
@@ -98,7 +98,7 @@ And then finally call the solver
 Now let us find a Monte-Carlo Solution and plot the both:
 ```julia
 monte_carlo_sol = []
-x_out = collect(85:5.00:115.00)
+x_out = collect(85:5.00:110.00)
 for x in x_out
   u₀= [x]
   g_val(du , u , p , t) = du .= 0.4.*u
@@ -124,10 +124,11 @@ if use_gpu == true
   m = fmap(cpu , m)
 end
 y_out = m(x_model)
-y_out = reshape(y_out , 7 , 1)
+y_out = reshape(y_out , 6 , 1)
 ```
 And now finally we can plot the solutions
 ```julia
 plot(x_out , y_out , lw = 3 ,  xaxis="Initial Stock Price", yaxis="Payoff" , label = "NNKolmogorov")
 plot!(x_out , monte_carlo_sol , lw = 3 ,  xaxis="Initial Stock Price", yaxis="Payoff" ,label = "Monte Carlo Solutions")
+
 ```
