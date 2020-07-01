@@ -62,8 +62,8 @@ Now we shall define the problem :
 We will define the σ and μ by comparing it to the orignal equation. The xspan is the span of initial stock prices.
 ```julia
 d = 1
-r = 0.02
-sigma = 0.4
+r = 0.04
+sigma = 0.2
 xspan = (80.00 , 115.0)
 tspan = (0.0 , 1.0)
 σ(du , u , p , t) = du .= sigma.*u
@@ -75,34 +75,34 @@ Now once we have defined our problem it is necessary to define the parameters fo
 sdealg = EM()
 ensemblealg = EnsembleThreads()
 dt = 0.01
-dx = 0.001
+dx = 0.01
 trajectories = 100000
 ```
 
 Now lets define our model m and the optimiser
 ```julia
-m = Chain(Dense(d, 8, leakyrelu),Dense(8, 16, leakyrelu),Dense(16 , 8 , leakyrelu) , Dense(8 , 1))
+m = Chain(Dense(d, 64, elu),Dense(64, 128, elu),Dense(128 , 16 , elu) , Dense(16 , 1))
 use_gpu = false
 if CUDAnative.functional() == true
   m = fmap(CuArrays.cu , m)
   use_gpu = true
 end
-opt = Flux.ADAM(0.01)
+opt = Flux.ADAM(0.0005)
 ```
 And then finally call the solver
 ```julia
 @time sol = solve(prob, NeuralNetDiffEq.NNKolmogorov(m, opt, sdealg, ensemblealg), verbose = true, dt = dt,
-            dx = dx , trajectories = trajectories , abstol=1e-6, maxiters = 4200 , use_gpu = use_gpu)
+            dx = dx , trajectories = trajectories , abstol=1e-6, maxiters = 1000 , use_gpu = use_gpu)
 ```
 ## Analyzing the solution
 Now let us find a Monte-Carlo Solution and plot the both:
 ```julia
 monte_carlo_sol = []
-x_out = collect(85:5.00:110.00)
+x_out = collect(85:2.00:110.00)
 for x in x_out
   u₀= [x]
-  g_val(du , u , p , t) = du .= 0.4.*u
-  f_val(du , u , p , t) = du .= 0.02.*u
+  g_val(du , u , p , t) = du .= 0.2.*u
+  f_val(du , u , p , t) = du .= 0.04.*u
   dt = 0.01
   tspan = (0.0,1.0)
   prob = SDEProblem(f_val,g_val,u₀,tspan)
@@ -124,11 +124,10 @@ if use_gpu == true
   m = fmap(cpu , m)
 end
 y_out = m(x_model)
-y_out = reshape(y_out , 6 , 1)
+y_out = reshape(y_out , 13 , 1)
 ```
 And now finally we can plot the solutions
 ```julia
 plot(x_out , y_out , lw = 3 ,  xaxis="Initial Stock Price", yaxis="Payoff" , label = "NNKolmogorov")
 plot!(x_out , monte_carlo_sol , lw = 3 ,  xaxis="Initial Stock Price", yaxis="Payoff" ,label = "Monte Carlo Solutions")
-
 ```
