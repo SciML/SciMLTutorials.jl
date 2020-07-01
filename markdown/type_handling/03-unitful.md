@@ -14,24 +14,12 @@ To use Unitful, you need to have the package installed. Then you can add units t
 
 ````julia
 using Unitful
-````
-
-
-````
-Error: ArgumentError: Package Unitful not found in current path:
-- Run `import Pkg; Pkg.add("Unitful")` to install the Unitful package.
-````
-
-
-
-````julia
 t = 1.0u"s"
 ````
 
 
 ````
-Error: LoadError: UndefVarError: @u_str not defined
-in expression starting at none:1
+1.0 s
 ````
 
 
@@ -42,23 +30,12 @@ Notice that `t` is a variable with units in seconds. If we make another value wi
 
 ````julia
 t2 = 1.02u"s"
-````
-
-
-````
-Error: LoadError: UndefVarError: @u_str not defined
-in expression starting at none:1
-````
-
-
-
-````julia
 t+t2
 ````
 
 
 ````
-Error: UndefVarError: t not defined
+2.02 s
 ````
 
 
@@ -73,7 +50,7 @@ t*t2
 
 
 ````
-Error: UndefVarError: t not defined
+1.02 s^2
 ````
 
 
@@ -88,7 +65,7 @@ sqrt(t)
 
 
 ````
-Error: UndefVarError: t not defined
+1.0 s^1/2
 ````
 
 
@@ -103,7 +80,7 @@ t + sqrt(t)
 
 
 ````
-Error: UndefVarError: t not defined
+Error: DimensionError: 1.0 s and 1.0 s^1/2 are not dimensionally compatible.
 ````
 
 
@@ -118,35 +95,13 @@ Just like with other number systems, you can choose the units for your numbers b
 using DifferentialEquations
 f = (y,p,t) -> 0.5*y
 u0 = 1.5u"N"
-````
-
-
-````
-Error: LoadError: UndefVarError: @u_str not defined
-in expression starting at none:1
-````
-
-
-
-````julia
 prob = ODEProblem(f,u0,(0.0u"s",1.0u"s"))
-````
-
-
-````
-Error: LoadError: UndefVarError: @u_str not defined
-in expression starting at none:1
-````
-
-
-
-````julia
 sol = solve(prob,Tsit5())
 ````
 
 
 ````
-Error: UndefVarError: prob not defined
+Error: DimensionError: N s^-1 and 0.75 N are not dimensionally compatible.
 ````
 
 
@@ -161,35 +116,22 @@ we must have that `f` is a rate, i.e. `f` is a change in `y` per unit time. So w
 
 ````julia
 f = (y,p,t) -> 0.5*y/3.0u"s"
-````
-
-
-````
-Error: LoadError: UndefVarError: @u_str not defined
-in expression starting at none:1
-````
-
-
-
-````julia
 prob = ODEProblem(f,u0,(0.0u"s",1.0u"s"))
-````
-
-
-````
-Error: LoadError: UndefVarError: @u_str not defined
-in expression starting at none:1
-````
-
-
-
-````julia
 sol = solve(prob,Tsit5())
 ````
 
 
 ````
-Error: UndefVarError: prob not defined
+retcode: Success
+Interpolation: specialized 4th order "free" interpolation
+t: 3-element Array{Unitful.Quantity{Float64,𝐓,Unitful.FreeUnits{(s,),𝐓,nothing}},1}:
+                 0.0 s
+ 0.14311598261241779 s
+                 1.0 s
+u: 3-element Array{Unitful.Quantity{Float64,𝐋 𝐌 𝐓^-2,Unitful.FreeUnits{(N,),𝐋 𝐌 𝐓^-2,nothing}},1}:
+                1.5 N
+ 1.5362091208988309 N
+ 1.7720406194871123 N
 ````
 
 
@@ -204,7 +146,7 @@ print(sol[:])
 
 
 ````
-Error: UndefVarError: sol not defined
+Unitful.Quantity{Float64,𝐋 𝐌 𝐓^-2,Unitful.FreeUnits{(N,),𝐋 𝐌 𝐓^-2,nothing}}[1.5 N, 1.5362091208988309 N, 1.7720406194871123 N]
 ````
 
 
@@ -220,11 +162,7 @@ plot(ustrip(sol.t),ustrip(sol[:]),lw=3)
 ````
 
 
-````
-Error: UndefVarError: sol not defined
-````
-
-
+![](figures/03-unitful_9_1.png)
 
 
 ## Appendix
@@ -267,4 +205,5 @@ Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/type_handling/Project.toml
 [eff96d63-e80a-5855-80a2-b1b0885c5ab7] Measurements 2.2.1
 [1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.41.0
 [91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.5.0
+[1986cc42-f94f-5a68-af5c-568840ba703d] Unitful 1.3.0
 ```
