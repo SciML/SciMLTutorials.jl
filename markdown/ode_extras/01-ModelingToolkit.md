@@ -60,11 +60,11 @@ generate_function(de)[1]
 
 
 ````
-:((var"##MTKArg#360", var"##MTKArg#361", var"##MTKArg#362")->begin
-          if var"##MTKArg#360" isa Array || !(typeof(var"##MTKArg#360") <: StaticArray) && false
+:((var"##MTKArg#361", var"##MTKArg#362", var"##MTKArg#363")->begin
+          if var"##MTKArg#361" isa Array || !(typeof(var"##MTKArg#361") <: StaticArray) && false
               return @inbounds(begin
-                          let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#360"[1], var"##MTKArg#360"[2], var"##MTKArg#360"[3], var"##MTK
-Arg#361"[1], var"##MTKArg#361"[2], var"##MTKArg#361"[3], var"##MTKArg#362")
+                          let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#361"[1], var"##MTKArg#361"[2], var"##MTKArg#361"[3], var"##MTK
+Arg#362"[1], var"##MTKArg#362"[2], var"##MTKArg#362"[3], var"##MTKArg#363")
                               [(getproperty(Base, :*))(σ, (getproperty(Base, :-))(y, x)), (getproperty(Base, :-))((getproperty(Bas
 e, :*))(x, (getproperty(Base, :-))(ρ, z)), y), (getproperty(Base, :-))((getproperty(Base, :*))(x, y), (getproperty(Base, :*))(β, z
 ))]
@@ -72,18 +72,18 @@ e, :*))(x, (getproperty(Base, :-))(ρ, z)), y), (getproperty(Base, :-))((getprop
                       end)
           else
               X = @inbounds(begin
-                          let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#360"[1], var"##MTKArg#360"[2], var"##MTKArg#360"[3], var"##MTK
-Arg#361"[1], var"##MTKArg#361"[2], var"##MTKArg#361"[3], var"##MTKArg#362")
+                          let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#361"[1], var"##MTKArg#361"[2], var"##MTKArg#361"[3], var"##MTK
+Arg#362"[1], var"##MTKArg#362"[2], var"##MTKArg#362"[3], var"##MTKArg#363")
                               ((getproperty(Base, :*))(σ, (getproperty(Base, :-))(y, x)), (getproperty(Base, :-))((getproperty(Bas
 e, :*))(x, (getproperty(Base, :-))(ρ, z)), y), (getproperty(Base, :-))((getproperty(Base, :*))(x, y), (getproperty(Base, :*))(β, z
 )))
                           end
                       end)
-              construct = if var"##MTKArg#360" isa ModelingToolkit.StaticArrays.StaticArray
-                      (getproperty(ModelingToolkit.StaticArrays, :similar_type))(typeof(var"##MTKArg#360"), eltype(X))
+              construct = if var"##MTKArg#361" isa ModelingToolkit.StaticArrays.StaticArray
+                      (getproperty(ModelingToolkit.StaticArrays, :similar_type))(typeof(var"##MTKArg#361"), eltype(X))
                   else
                       x->begin
-                              convert(typeof(var"##MTKArg#360"), x)
+                              convert(typeof(var"##MTKArg#361"), x)
                           end
                   end
               return construct(X)
@@ -103,14 +103,14 @@ generate_function(de)[2]
 
 
 ````
-:((var"##MTIIPVar#370", var"##MTKArg#366", var"##MTKArg#367", var"##MTKArg#368")->begin
+:((var"##MTIIPVar#371", var"##MTKArg#367", var"##MTKArg#368", var"##MTKArg#369")->begin
           @inbounds begin
-                  let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#366"[1], var"##MTKArg#366"[2], var"##MTKArg#366"[3], var"##MTKArg#367"
-[1], var"##MTKArg#367"[2], var"##MTKArg#367"[3], var"##MTKArg#368")
-                      var"##MTIIPVar#370"[1] = (getproperty(Base, :*))(σ, (getproperty(Base, :-))(y, x))
-                      var"##MTIIPVar#370"[2] = (getproperty(Base, :-))((getproperty(Base, :*))(x, (getproperty(Base, :-))(ρ, z)), 
+                  let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#367"[1], var"##MTKArg#367"[2], var"##MTKArg#367"[3], var"##MTKArg#368"
+[1], var"##MTKArg#368"[2], var"##MTKArg#368"[3], var"##MTKArg#369")
+                      var"##MTIIPVar#371"[1] = (getproperty(Base, :*))(σ, (getproperty(Base, :-))(y, x))
+                      var"##MTIIPVar#371"[2] = (getproperty(Base, :-))((getproperty(Base, :*))(x, (getproperty(Base, :-))(ρ, z)), 
 y)
-                      var"##MTIIPVar#370"[3] = (getproperty(Base, :-))((getproperty(Base, :*))(x, y), (getproperty(Base, :*))(β, z
+                      var"##MTIIPVar#371"[3] = (getproperty(Base, :-))((getproperty(Base, :*))(x, y), (getproperty(Base, :*))(β, z
 ))
                   end
               end
@@ -148,46 +148,46 @@ jac_expr = generate_jacobian(de)
 
 
 ````
-(:((var"##MTKArg#372", var"##MTKArg#373", var"##MTKArg#374")->begin
-          if var"##MTKArg#372" isa Array || !(typeof(var"##MTKArg#372") <: StaticArray) && false
+(:((var"##MTKArg#373", var"##MTKArg#374", var"##MTKArg#375")->begin
+          if var"##MTKArg#373" isa Array || !(typeof(var"##MTKArg#373") <: StaticArray) && false
               return @inbounds(begin
-                          let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#372"[1], var"##MTKArg#372"[2], var"##MTKArg#372"[3], var"##MTK
-Arg#373"[1], var"##MTKArg#373"[2], var"##MTKArg#373"[3], var"##MTKArg#374")
+                          let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#373"[1], var"##MTKArg#373"[2], var"##MTKArg#373"[3], var"##MTK
+Arg#374"[1], var"##MTKArg#374"[2], var"##MTKArg#374"[3], var"##MTKArg#375")
                               [(getproperty(Base, :*))(-1, σ) σ 0; (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ) -1 (
 getproperty(Base, :*))(-1, x); y x (getproperty(Base, :*))(-1, β)]
                           end
                       end)
           else
               X = @inbounds(begin
-                          let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#372"[1], var"##MTKArg#372"[2], var"##MTKArg#372"[3], var"##MTK
-Arg#373"[1], var"##MTKArg#373"[2], var"##MTKArg#373"[3], var"##MTKArg#374")
+                          let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#373"[1], var"##MTKArg#373"[2], var"##MTKArg#373"[3], var"##MTK
+Arg#374"[1], var"##MTKArg#374"[2], var"##MTKArg#374"[3], var"##MTKArg#375")
                               ((getproperty(Base, :*))(-1, σ), (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ), y, σ, -
 1, x, 0, (getproperty(Base, :*))(-1, x), (getproperty(Base, :*))(-1, β))
                           end
                       end)
-              construct = if var"##MTKArg#372" isa ModelingToolkit.StaticArrays.StaticArray
+              construct = if var"##MTKArg#373" isa ModelingToolkit.StaticArrays.StaticArray
                       ModelingToolkit.StaticArrays.SMatrix{3, 3}
                   else
                       x->begin
-                              out = similar(typeof(var"##MTKArg#372"), 3, 3)
+                              out = similar(typeof(var"##MTKArg#373"), 3, 3)
                               out .= x
                           end
                   end
               return construct(X)
           end
-      end), :((var"##MTIIPVar#376", var"##MTKArg#372", var"##MTKArg#373", var"##MTKArg#374")->begin
+      end), :((var"##MTIIPVar#377", var"##MTKArg#373", var"##MTKArg#374", var"##MTKArg#375")->begin
           @inbounds begin
-                  let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#372"[1], var"##MTKArg#372"[2], var"##MTKArg#372"[3], var"##MTKArg#373"
-[1], var"##MTKArg#373"[2], var"##MTKArg#373"[3], var"##MTKArg#374")
-                      var"##MTIIPVar#376"[1] = (getproperty(Base, :*))(-1, σ)
-                      var"##MTIIPVar#376"[2] = (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)
-                      var"##MTIIPVar#376"[3] = y
-                      var"##MTIIPVar#376"[4] = σ
-                      var"##MTIIPVar#376"[5] = -1
-                      var"##MTIIPVar#376"[6] = x
-                      var"##MTIIPVar#376"[7] = 0
-                      var"##MTIIPVar#376"[8] = (getproperty(Base, :*))(-1, x)
-                      var"##MTIIPVar#376"[9] = (getproperty(Base, :*))(-1, β)
+                  let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#373"[1], var"##MTKArg#373"[2], var"##MTKArg#373"[3], var"##MTKArg#374"
+[1], var"##MTKArg#374"[2], var"##MTKArg#374"[3], var"##MTKArg#375")
+                      var"##MTIIPVar#377"[1] = (getproperty(Base, :*))(-1, σ)
+                      var"##MTIIPVar#377"[2] = (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)
+                      var"##MTIIPVar#377"[3] = y
+                      var"##MTIIPVar#377"[4] = σ
+                      var"##MTIIPVar#377"[5] = -1
+                      var"##MTIIPVar#377"[6] = x
+                      var"##MTIIPVar#377"[7] = 0
+                      var"##MTIIPVar#377"[8] = (getproperty(Base, :*))(-1, x)
+                      var"##MTIIPVar#377"[9] = (getproperty(Base, :*))(-1, β)
                   end
               end
           nothing
@@ -206,11 +206,11 @@ ModelingToolkit.generate_factorized_W(de)[1]
 
 
 ````
-(:((var"##MTKArg#378", var"##MTKArg#379", var"##MTKArg#380", var"##MTKArg#381")->begin
-          if var"##MTKArg#378" isa Array || !(typeof(var"##MTKArg#378") <: StaticArray) && false
+(:((var"##MTKArg#379", var"##MTKArg#380", var"##MTKArg#381", var"##MTKArg#382")->begin
+          if var"##MTKArg#379" isa Array || !(typeof(var"##MTKArg#379") <: StaticArray) && false
               return @inbounds(begin
-                          let (x, y, z, σ, ρ, β, __MTKWgamma, t) = (var"##MTKArg#378"[1], var"##MTKArg#378"[2], var"##MTKArg#378"[
-3], var"##MTKArg#379"[1], var"##MTKArg#379"[2], var"##MTKArg#379"[3], var"##MTKArg#380", var"##MTKArg#381")
+                          let (x, y, z, σ, ρ, β, __MTKWgamma, t) = (var"##MTKArg#379"[1], var"##MTKArg#379"[2], var"##MTKArg#379"[
+3], var"##MTKArg#380"[1], var"##MTKArg#380"[2], var"##MTKArg#380"[3], var"##MTKArg#381", var"##MTKArg#382")
                               [(getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ)) (getproperty(Base, :*))(__
 MTKWgamma, σ) 0; (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWg
 amma, σ))), __MTKWgamma, (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)) (getproperty(Base, :*))(-1, (getproperty(Base
@@ -231,8 +231,8 @@ roperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))), x, __MT
                       end)
           else
               X = @inbounds(begin
-                          let (x, y, z, σ, ρ, β, __MTKWgamma, t) = (var"##MTKArg#378"[1], var"##MTKArg#378"[2], var"##MTKArg#378"[
-3], var"##MTKArg#379"[1], var"##MTKArg#379"[2], var"##MTKArg#379"[3], var"##MTKArg#380", var"##MTKArg#381")
+                          let (x, y, z, σ, ρ, β, __MTKWgamma, t) = (var"##MTKArg#379"[1], var"##MTKArg#379"[2], var"##MTKArg#379"[
+3], var"##MTKArg#380"[1], var"##MTKArg#380"[2], var"##MTKArg#380"[3], var"##MTKArg#381", var"##MTKArg#382")
                               ((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ)), (getproperty(Base, :*))((
 getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma, (getproperty(Base
 , :+))((getproperty(Base, :*))(-1, z), ρ)), (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getprop
@@ -260,27 +260,27 @@ gular(A), SVector(ntuple((n->begin
                       end)
               return construct(X)
           end
-      end), :((var"##MTIIPVar#383", var"##MTKArg#378", var"##MTKArg#379", var"##MTKArg#380", var"##MTKArg#381")->begin
+      end), :((var"##MTIIPVar#384", var"##MTKArg#379", var"##MTKArg#380", var"##MTKArg#381", var"##MTKArg#382")->begin
           @inbounds begin
-                  let (x, y, z, σ, ρ, β, __MTKWgamma, t) = (var"##MTKArg#378"[1], var"##MTKArg#378"[2], var"##MTKArg#378"[3], var"
-##MTKArg#379"[1], var"##MTKArg#379"[2], var"##MTKArg#379"[3], var"##MTKArg#380", var"##MTKArg#381")
-                      var"##MTIIPVar#383"[1] = (getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))
-                      var"##MTIIPVar#383"[2] = (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getp
+                  let (x, y, z, σ, ρ, β, __MTKWgamma, t) = (var"##MTKArg#379"[1], var"##MTKArg#379"[2], var"##MTKArg#379"[3], var"
+##MTKArg#380"[1], var"##MTKArg#380"[2], var"##MTKArg#380"[3], var"##MTKArg#381", var"##MTKArg#382")
+                      var"##MTIIPVar#384"[1] = (getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))
+                      var"##MTIIPVar#384"[2] = (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getp
 roperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma, (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ))
-                      var"##MTIIPVar#383"[3] = (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getp
+                      var"##MTIIPVar#384"[3] = (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getp
 roperty(Base, :*))(-1, __MTKWgamma, σ))), y, __MTKWgamma)
-                      var"##MTIIPVar#383"[4] = (getproperty(Base, :*))(__MTKWgamma, σ)
-                      var"##MTIIPVar#383"[5] = (getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (getproperty(Base, :*))((get
+                      var"##MTIIPVar#384"[4] = (getproperty(Base, :*))(__MTKWgamma, σ)
+                      var"##MTIIPVar#384"[5] = (getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (getproperty(Base, :*))((get
 property(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma ^ 2, σ, (getproperty(
 Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))
-                      var"##MTIIPVar#383"[6] = (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :*))(-1, (getp
+                      var"##MTIIPVar#384"[6] = (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :*))(-1, (getp
 roperty(Base, :+))(1, (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __
 MTKWgamma, σ))), __MTKWgamma ^ 2, σ, (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))), (getproperty(Bas
 e, :+))((getproperty(Base, :*))(x, __MTKWgamma), (getproperty(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :+))(-1,
  (getproperty(Base, :*))(-1, __MTKWgamma, σ))), y, __MTKWgamma ^ 2, σ)))
-                      var"##MTIIPVar#383"[7] = 0
-                      var"##MTIIPVar#383"[8] = (getproperty(Base, :*))(-1, x, __MTKWgamma)
-                      var"##MTIIPVar#383"[9] = (getproperty(Base, :+))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (get
+                      var"##MTIIPVar#384"[7] = 0
+                      var"##MTIIPVar#384"[8] = (getproperty(Base, :*))(-1, x, __MTKWgamma)
+                      var"##MTIIPVar#384"[9] = (getproperty(Base, :+))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (get
 property(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (getproperty(Base, :*))((
 getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma ^ 2, σ, (getproper
 ty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))), x, __MTKWgamma, (getproperty(Base, :+))((getproperty(Base, :*))
@@ -314,37 +314,37 @@ nlsys_func = generate_function(ns)
 
 
 ````
-(:((var"##MTKArg#393", var"##MTKArg#394")->begin
-          if var"##MTKArg#393" isa Array || !(typeof(var"##MTKArg#393") <: StaticArray) && false
+(:((var"##MTKArg#394", var"##MTKArg#395")->begin
+          if var"##MTKArg#394" isa Array || !(typeof(var"##MTKArg#394") <: StaticArray) && false
               return @inbounds(begin
-                          let (x, y, z, σ, ρ, β) = (var"##MTKArg#393"[1], var"##MTKArg#393"[2], var"##MTKArg#393"[3], var"##MTKArg
-#394"[1], var"##MTKArg#394"[2], var"##MTKArg#394"[3])
+                          let (x, y, z, σ, ρ, β) = (var"##MTKArg#394"[1], var"##MTKArg#394"[2], var"##MTKArg#394"[3], var"##MTKArg
+#395"[1], var"##MTKArg#395"[2], var"##MTKArg#395"[3])
                               [(*)(σ, (-)(y, x)), (-)((*)(x, (-)(ρ, z)), y), (-)((*)(x, y), (*)(β, z))]
                           end
                       end)
           else
               X = @inbounds(begin
-                          let (x, y, z, σ, ρ, β) = (var"##MTKArg#393"[1], var"##MTKArg#393"[2], var"##MTKArg#393"[3], var"##MTKArg
-#394"[1], var"##MTKArg#394"[2], var"##MTKArg#394"[3])
+                          let (x, y, z, σ, ρ, β) = (var"##MTKArg#394"[1], var"##MTKArg#394"[2], var"##MTKArg#394"[3], var"##MTKArg
+#395"[1], var"##MTKArg#395"[2], var"##MTKArg#395"[3])
                               ((*)(σ, (-)(y, x)), (-)((*)(x, (-)(ρ, z)), y), (-)((*)(x, y), (*)(β, z)))
                           end
                       end)
-              construct = if var"##MTKArg#393" isa ModelingToolkit.StaticArrays.StaticArray
-                      (getproperty(ModelingToolkit.StaticArrays, :similar_type))(typeof(var"##MTKArg#393"), eltype(X))
+              construct = if var"##MTKArg#394" isa ModelingToolkit.StaticArrays.StaticArray
+                      (getproperty(ModelingToolkit.StaticArrays, :similar_type))(typeof(var"##MTKArg#394"), eltype(X))
                   else
                       x->begin
-                              convert(typeof(var"##MTKArg#393"), x)
+                              convert(typeof(var"##MTKArg#394"), x)
                           end
                   end
               return construct(X)
           end
-      end), :((var"##MTIIPVar#396", var"##MTKArg#393", var"##MTKArg#394")->begin
+      end), :((var"##MTIIPVar#397", var"##MTKArg#394", var"##MTKArg#395")->begin
           @inbounds begin
-                  let (x, y, z, σ, ρ, β) = (var"##MTKArg#393"[1], var"##MTKArg#393"[2], var"##MTKArg#393"[3], var"##MTKArg#394"[1]
-, var"##MTKArg#394"[2], var"##MTKArg#394"[3])
-                      var"##MTIIPVar#396"[1] = (*)(σ, (-)(y, x))
-                      var"##MTIIPVar#396"[2] = (-)((*)(x, (-)(ρ, z)), y)
-                      var"##MTIIPVar#396"[3] = (-)((*)(x, y), (*)(β, z))
+                  let (x, y, z, σ, ρ, β) = (var"##MTKArg#394"[1], var"##MTKArg#394"[2], var"##MTKArg#394"[3], var"##MTKArg#395"[1]
+, var"##MTKArg#395"[2], var"##MTKArg#395"[3])
+                      var"##MTIIPVar#397"[1] = (*)(σ, (-)(y, x))
+                      var"##MTIIPVar#397"[2] = (-)((*)(x, (-)(ρ, z)), y)
+                      var"##MTIIPVar#397"[3] = (-)((*)(x, y), (*)(β, z))
                   end
               end
           nothing
@@ -407,7 +407,7 @@ odelingToolkit.Equation(derivative(u(t), t), uˍt(t)), ModelingToolkit.Equation(
 ariable[uˍtt, xˍt, uˍt, u, x], ModelingToolkit.Variable[], Base.RefValue{Array{ModelingToolkit.Expression,1}}(ModelingToolkit.Expr
 ession[]), Base.RefValue{Array{ModelingToolkit.Expression,2}}(Array{ModelingToolkit.Expression}(undef,0,0)), Base.RefValue{Array{M
 odelingToolkit.Expression,2}}(Array{ModelingToolkit.Expression}(undef,0,0)), Base.RefValue{Array{ModelingToolkit.Expression,2}}(Ar
-ray{ModelingToolkit.Expression}(undef,0,0)), Symbol("##ODESystem#399"), ModelingToolkit.ODESystem[])
+ray{ModelingToolkit.Expression}(undef,0,0)), Symbol("##ODESystem#400"), ModelingToolkit.ODESystem[])
 ````
 
 
@@ -817,10 +817,13 @@ Package Information:
 
 ```
 Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/ode_extras/Project.toml`
+[f3b72e0c-5b89-59e1-b016-84e28bfd966d] DiffEqDevTools 2.22.0
 [961ee093-0014-501f-94e3-6117800e7a78] ModelingToolkit 3.11.0
+[76087f3c-5699-56af-9a33-bf431cd00edd] NLopt 0.6.0
 [2774e3e8-f4cf-5e23-947b-6d7e65073b56] NLsolve 4.4.0
+[429524aa-4258-5aef-a3af-852621145aeb] Optim 0.22.0
 [1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.41.0
-[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.5.0
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.5.1
 [37e2e46d-f89d-539d-b4ee-838fcccc9c8e] LinearAlgebra
 [2f01184e-e22b-5df5-ae63-d93ebab69eaf] SparseArrays
 ```
