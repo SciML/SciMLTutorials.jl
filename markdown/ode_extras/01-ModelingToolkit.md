@@ -1,3 +1,9 @@
+---
+author: "Chris Rackauckas"
+title: "ModelingToolkit.jl, An IR and Compiler for Scientific Models"
+---
+
+
 A lot of people are building modeling languages for their specific domains. However, while the syntax my vary greatly between these domain-specific languages (DSLs), the internals of modeling frameworks are surprisingly similar: building differential equations, calculating Jacobians, etc.
 
 #### ModelingToolkit.jl is metamodeling systemitized
@@ -54,41 +60,34 @@ generate_function(de)[1]
 
 
 ````
-:((u, p, t)->begin
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:61 =#
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:62 =#
-          if u isa Array
-              #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:63 =#
-              return #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:55 =# @inbounds(begin
-                          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:55 =#
-                          let (x, y, z, σ, ρ, β) = (u[1], u[2], u[3], p[1], p[2], p[3])
-                              [σ * (y - x), x * (ρ - z) - y, x * y - β * z]
+:((var"##MTKArg#360", var"##MTKArg#361", var"##MTKArg#362")->begin
+          if var"##MTKArg#360" isa Array || !(typeof(var"##MTKArg#360") <: StaticArray) && false
+              return @inbounds(begin
+                          let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#360"[1], var"##MTKArg#360"[2], var"##MTKArg#360"[3], var"##MTK
+Arg#361"[1], var"##MTKArg#361"[2], var"##MTKArg#361"[3], var"##MTKArg#362")
+                              [(getproperty(Base, :*))(σ, (getproperty(Base, :-))(y, x)), (getproperty(Base, :-))((getproperty(Bas
+e, :*))(x, (getproperty(Base, :-))(ρ, z)), y), (getproperty(Base, :-))((getproperty(Base, :*))(x, y), (getproperty(Base, :*))(β, z
+))]
                           end
                       end)
           else
-              #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:65 =#
-              X = #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:54 =# @inbounds(begin
-                          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:54 =#
-                          let (x, y, z, σ, ρ, β) = (u[1], u[2], u[3], p[1], p[2], p[3])
-                              (σ * (y - x), x * (ρ - z) - y, x * y - β * z)
+              X = @inbounds(begin
+                          let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#360"[1], var"##MTKArg#360"[2], var"##MTKArg#360"[3], var"##MTK
+Arg#361"[1], var"##MTKArg#361"[2], var"##MTKArg#361"[3], var"##MTKArg#362")
+                              ((getproperty(Base, :*))(σ, (getproperty(Base, :-))(y, x)), (getproperty(Base, :-))((getproperty(Bas
+e, :*))(x, (getproperty(Base, :-))(ρ, z)), y), (getproperty(Base, :-))((getproperty(Base, :*))(x, y), (getproperty(Base, :*))(β, z
+)))
                           end
                       end)
+              construct = if var"##MTKArg#360" isa ModelingToolkit.StaticArrays.StaticArray
+                      (getproperty(ModelingToolkit.StaticArrays, :similar_type))(typeof(var"##MTKArg#360"), eltype(X))
+                  else
+                      x->begin
+                              convert(typeof(var"##MTKArg#360"), x)
+                          end
+                  end
+              return construct(X)
           end
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:67 =#
-          T = promote_type(map(typeof, X)...)
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:68 =#
-          map(T, X)
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:69 =#
-          construct = if u isa ModelingToolkit.StaticArrays.StaticArray
-                  ModelingToolkit.StaticArrays.similar_type(typeof(u), eltype(X))
-              else
-                  x->begin
-                          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:69 =#
-                          convert(typeof(u), x)
-                      end
-              end
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:70 =#
-          construct(X)
       end)
 ````
 
@@ -104,21 +103,17 @@ generate_function(de)[2]
 
 
 ````
-:((var"##MTIIPVar#1282", u, p, t)->begin
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:75 =#
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:76 =#
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:76 =# @inbounds begin
-                  #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:77 =#
-                  #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:56 =# @inbounds begin
-                          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:56 =#
-                          let (x, y, z, σ, ρ, β) = (u[1], u[2], u[3], p[1], p[2], p[3])
-                              var"##MTIIPVar#1282"[1] = σ * (y - x)
-                              var"##MTIIPVar#1282"[2] = x * (ρ - z) - y
-                              var"##MTIIPVar#1282"[3] = x * y - β * z
-                          end
-                      end
+:((var"##MTIIPVar#370", var"##MTKArg#366", var"##MTKArg#367", var"##MTKArg#368")->begin
+          @inbounds begin
+                  let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#366"[1], var"##MTKArg#366"[2], var"##MTKArg#366"[3], var"##MTKArg#367"
+[1], var"##MTKArg#367"[2], var"##MTKArg#367"[3], var"##MTKArg#368")
+                      var"##MTIIPVar#370"[1] = (getproperty(Base, :*))(σ, (getproperty(Base, :-))(y, x))
+                      var"##MTIIPVar#370"[2] = (getproperty(Base, :-))((getproperty(Base, :*))(x, (getproperty(Base, :-))(ρ, z)), 
+y)
+                      var"##MTIIPVar#370"[3] = (getproperty(Base, :-))((getproperty(Base, :*))(x, y), (getproperty(Base, :*))(β, z
+))
+                  end
               end
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:79 =#
           nothing
       end)
 ````
@@ -135,10 +130,10 @@ jac = calculate_jacobian(de)
 
 
 ````
-3×3 Array{Expression,2}:
-   σ * -1             σ  Constant(0)
- ρ - z(t)  Constant(-1)    x(t) * -1
-     y(t)          x(t)          -1β
+3×3 Array{ModelingToolkit.Expression,2}:
+           -1σ             σ  Constant(0)
+ -1 * z(t) + ρ  Constant(-1)    -1 * x(t)
+          y(t)          x(t)          -1β
 ````
 
 
@@ -153,62 +148,48 @@ jac_expr = generate_jacobian(de)
 
 
 ````
-(:((u, p, t)->begin
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:61 =#
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:62 =#
-          if u isa Array
-              #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:63 =#
-              return #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:55 =# @inbounds(begin
-                          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:55 =#
-                          let (x, y, z, σ, ρ, β) = (u[1], u[2], u[3], p[1], p[2], p[3])
-                              [σ * -1, ρ - z, y, σ, -1, x, 0, x * -1, -1β]
+(:((var"##MTKArg#372", var"##MTKArg#373", var"##MTKArg#374")->begin
+          if var"##MTKArg#372" isa Array || !(typeof(var"##MTKArg#372") <: StaticArray) && false
+              return @inbounds(begin
+                          let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#372"[1], var"##MTKArg#372"[2], var"##MTKArg#372"[3], var"##MTK
+Arg#373"[1], var"##MTKArg#373"[2], var"##MTKArg#373"[3], var"##MTKArg#374")
+                              [(getproperty(Base, :*))(-1, σ) σ 0; (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ) -1 (
+getproperty(Base, :*))(-1, x); y x (getproperty(Base, :*))(-1, β)]
                           end
                       end)
           else
-              #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:65 =#
-              X = #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:54 =# @inbounds(begin
-                          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:54 =#
-                          let (x, y, z, σ, ρ, β) = (u[1], u[2], u[3], p[1], p[2], p[3])
-                              (σ * -1, ρ - z, y, σ, -1, x, 0, x * -1, -1β)
+              X = @inbounds(begin
+                          let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#372"[1], var"##MTKArg#372"[2], var"##MTKArg#372"[3], var"##MTK
+Arg#373"[1], var"##MTKArg#373"[2], var"##MTKArg#373"[3], var"##MTKArg#374")
+                              ((getproperty(Base, :*))(-1, σ), (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ), y, σ, -
+1, x, 0, (getproperty(Base, :*))(-1, x), (getproperty(Base, :*))(-1, β))
                           end
                       end)
-          end
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:67 =#
-          T = promote_type(map(typeof, X)...)
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:68 =#
-          map(T, X)
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:69 =#
-          construct = if u isa ModelingToolkit.StaticArrays.StaticArray
-                  ModelingToolkit.StaticArrays.similar_type(typeof(u), eltype(X))
-              else
-                  x->begin
-                          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:69 =#
-                          convert(typeof(u), x)
-                      end
-              end
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:70 =#
-          construct(X)
-      end), :((var"##MTIIPVar#1284", u, p, t)->begin
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:75 =#
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:76 =#
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:76 =# @inbounds begin
-                  #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:77 =#
-                  #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:56 =# @inbounds begin
-                          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:56 =#
-                          let (x, y, z, σ, ρ, β) = (u[1], u[2], u[3], p[1], p[2], p[3])
-                              var"##MTIIPVar#1284"[1] = σ * -1
-                              var"##MTIIPVar#1284"[2] = ρ - z
-                              var"##MTIIPVar#1284"[3] = y
-                              var"##MTIIPVar#1284"[4] = σ
-                              var"##MTIIPVar#1284"[5] = -1
-                              var"##MTIIPVar#1284"[6] = x
-                              var"##MTIIPVar#1284"[7] = 0
-                              var"##MTIIPVar#1284"[8] = x * -1
-                              var"##MTIIPVar#1284"[9] = -1β
+              construct = if var"##MTKArg#372" isa ModelingToolkit.StaticArrays.StaticArray
+                      ModelingToolkit.StaticArrays.SMatrix{3, 3}
+                  else
+                      x->begin
+                              out = similar(typeof(var"##MTKArg#372"), 3, 3)
+                              out .= x
                           end
-                      end
+                  end
+              return construct(X)
+          end
+      end), :((var"##MTIIPVar#376", var"##MTKArg#372", var"##MTKArg#373", var"##MTKArg#374")->begin
+          @inbounds begin
+                  let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#372"[1], var"##MTKArg#372"[2], var"##MTKArg#372"[3], var"##MTKArg#373"
+[1], var"##MTKArg#373"[2], var"##MTKArg#373"[3], var"##MTKArg#374")
+                      var"##MTIIPVar#376"[1] = (getproperty(Base, :*))(-1, σ)
+                      var"##MTIIPVar#376"[2] = (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)
+                      var"##MTIIPVar#376"[3] = y
+                      var"##MTIIPVar#376"[4] = σ
+                      var"##MTIIPVar#376"[5] = -1
+                      var"##MTIIPVar#376"[6] = x
+                      var"##MTIIPVar#376"[7] = 0
+                      var"##MTIIPVar#376"[8] = (getproperty(Base, :*))(-1, x)
+                      var"##MTIIPVar#376"[9] = (getproperty(Base, :*))(-1, β)
+                  end
               end
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:79 =#
           nothing
       end))
 ````
@@ -225,76 +206,88 @@ ModelingToolkit.generate_factorized_W(de)[1]
 
 
 ````
-(:((u, p, gam, t)->begin
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:61 =#
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:62 =#
-          if u isa Array
-              #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:63 =#
-              return #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:55 =# @inbounds(begin
-                          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:55 =#
-                          let (x, y, z, σ, ρ, β) = (u[1], u[2], u[3], p[1], p[2], p[3])
-                              [σ * -1 * gam + -1, gam * (ρ - z) * inv(σ * -1 * gam + -1), gam * y * inv(σ * -1 * gam + -1), gam * 
-σ, (gam * -1 + -1) - gam * (ρ - z) * inv(σ * -1 * gam + -1) * gam * σ, (gam * x - gam * y * inv(σ * -1 * gam + -1) * gam * σ) * in
-v((gam * -1 + -1) - gam * (ρ - z) * inv(σ * -1 * gam + -1) * gam * σ), 0, x * -1 * gam - 0, ((-1 * β * gam + -1) - 0) - (gam * x -
- gam * y * inv(σ * -1 * gam + -1) * gam * σ) * inv((gam * -1 + -1) - gam * (ρ - z) * inv(σ * -1 * gam + -1) * gam * σ) * (x * -1 *
- gam - 0)]
+(:((var"##MTKArg#378", var"##MTKArg#379", var"##MTKArg#380", var"##MTKArg#381")->begin
+          if var"##MTKArg#378" isa Array || !(typeof(var"##MTKArg#378") <: StaticArray) && false
+              return @inbounds(begin
+                          let (x, y, z, σ, ρ, β, __MTKWgamma, t) = (var"##MTKArg#378"[1], var"##MTKArg#378"[2], var"##MTKArg#378"[
+3], var"##MTKArg#379"[1], var"##MTKArg#379"[2], var"##MTKArg#379"[3], var"##MTKArg#380", var"##MTKArg#381")
+                              [(getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ)) (getproperty(Base, :*))(__
+MTKWgamma, σ) 0; (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWg
+amma, σ))), __MTKWgamma, (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)) (getproperty(Base, :*))(-1, (getproperty(Base
+, :+))(1, (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ
+))), __MTKWgamma ^ 2, σ, (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma)) (getproperty(Base, :*))(-1, x,
+ __MTKWgamma); (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgam
+ma, σ))), y, __MTKWgamma) (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1,
+ (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MT
+KWgamma ^ 2, σ, (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))), (getproperty(Base, :+))((getproperty(
+Base, :*))(x, __MTKWgamma), (getproperty(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :
+*))(-1, __MTKWgamma, σ))), y, __MTKWgamma ^ 2, σ))) (getproperty(Base, :+))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1,
+ (getproperty(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (getproperty(Base, :
+*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma ^ 2, σ, (getp
+roperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))), x, __MTKWgamma, (getproperty(Base, :+))((getproperty(Base,
+ :*))(x, __MTKWgamma), (getproperty(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-
+1, __MTKWgamma, σ))), y, __MTKWgamma ^ 2, σ))))), (getproperty(Base, :*))(-1, __MTKWgamma, β))]
                           end
                       end)
           else
-              #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:65 =#
-              X = #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:54 =# @inbounds(begin
-                          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:54 =#
-                          let (x, y, z, σ, ρ, β) = (u[1], u[2], u[3], p[1], p[2], p[3])
-                              (σ * -1 * gam + -1, gam * (ρ - z) * inv(σ * -1 * gam + -1), gam * y * inv(σ * -1 * gam + -1), gam * 
-σ, (gam * -1 + -1) - gam * (ρ - z) * inv(σ * -1 * gam + -1) * gam * σ, (gam * x - gam * y * inv(σ * -1 * gam + -1) * gam * σ) * in
-v((gam * -1 + -1) - gam * (ρ - z) * inv(σ * -1 * gam + -1) * gam * σ), 0, x * -1 * gam - 0, ((-1 * β * gam + -1) - 0) - (gam * x -
- gam * y * inv(σ * -1 * gam + -1) * gam * σ) * inv((gam * -1 + -1) - gam * (ρ - z) * inv(σ * -1 * gam + -1) * gam * σ) * (x * -1 *
- gam - 0))
+              X = @inbounds(begin
+                          let (x, y, z, σ, ρ, β, __MTKWgamma, t) = (var"##MTKArg#378"[1], var"##MTKArg#378"[2], var"##MTKArg#378"[
+3], var"##MTKArg#379"[1], var"##MTKArg#379"[2], var"##MTKArg#379"[3], var"##MTKArg#380", var"##MTKArg#381")
+                              ((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ)), (getproperty(Base, :*))((
+getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma, (getproperty(Base
+, :+))((getproperty(Base, :*))(-1, z), ρ)), (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getprop
+erty(Base, :*))(-1, __MTKWgamma, σ))), y, __MTKWgamma), (getproperty(Base, :*))(__MTKWgamma, σ), (getproperty(Base, :*))(-1, (getp
+roperty(Base, :+))(1, (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __
+MTKWgamma, σ))), __MTKWgamma ^ 2, σ, (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma)), (getproperty(Base
+, :*))((getproperty(Base, :inv))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (getproperty(Base, :*))((getproperty(Base,
+ :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma ^ 2, σ, (getproperty(Base, :+))((ge
+tproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))), (getproperty(Base, :+))((getproperty(Base, :*))(x, __MTKWgamma), (getproperty(Ba
+se, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), y, __MTKWgamma ^
+ 2, σ))), 0, (getproperty(Base, :*))(-1, x, __MTKWgamma), (getproperty(Base, :+))((getproperty(Base, :*))(-1, (getproperty(Base, :
++))(1, (getproperty(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (getproperty(B
+ase, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma ^ 2, σ,
+ (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))), x, __MTKWgamma, (getproperty(Base, :+))((getproperty
+(Base, :*))(x, __MTKWgamma), (getproperty(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, 
+:*))(-1, __MTKWgamma, σ))), y, __MTKWgamma ^ 2, σ))))), (getproperty(Base, :*))(-1, __MTKWgamma, β)))
                           end
                       end)
+              construct = (x->begin
+                          A = SMatrix{(3, 3)...}(x)
+                          (getproperty(StaticArrays, :LU))(LowerTriangular(SMatrix{(3, 3)...}(UnitLowerTriangular(A))), UpperTrian
+gular(A), SVector(ntuple((n->begin
+                                              n
+                                          end), max((3, 3)...))))
+                      end)
+              return construct(X)
           end
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:67 =#
-          T = promote_type(map(typeof, X)...)
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:68 =#
-          map(T, X)
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:69 =#
-          construct = (x->begin
-                      #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\systems\diffeqs\diffeqsystem.jl:202 =#
-                      #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\systems\diffeqs\diffeqsystem.jl:203 =#
-                      A = SMatrix{(3, 3)...}(x)
-                      #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\systems\diffeqs\diffeqsystem.jl:204 =#
-                      StaticArrays.LU(LowerTriangular(SMatrix{(3, 3)...}(UnitLowerTriangular(A))), UpperTriangular(A), SVector(ntu
-ple((n->begin
-                                          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\systems\diffeqs\diffeqsystem
-.jl:204 =#
-                                          n
-                                      end), max((3, 3)...))))
-                  end)
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:70 =#
-          construct(X)
-      end), :((var"##MTIIPVar#1286", u, p, gam, t)->begin
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:75 =#
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:76 =#
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:76 =# @inbounds begin
-                  #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:77 =#
-                  #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:56 =# @inbounds begin
-                          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:56 =#
-                          let (x, y, z, σ, ρ, β) = (u[1], u[2], u[3], p[1], p[2], p[3])
-                              var"##MTIIPVar#1286"[1] = σ * -1 * gam + -1
-                              var"##MTIIPVar#1286"[2] = gam * (ρ - z) * inv(σ * -1 * gam + -1)
-                              var"##MTIIPVar#1286"[3] = gam * y * inv(σ * -1 * gam + -1)
-                              var"##MTIIPVar#1286"[4] = gam * σ
-                              var"##MTIIPVar#1286"[5] = (gam * -1 + -1) - gam * (ρ - z) * inv(σ * -1 * gam + -1) * gam * σ
-                              var"##MTIIPVar#1286"[6] = (gam * x - gam * y * inv(σ * -1 * gam + -1) * gam * σ) * inv((gam * -1 + -
-1) - gam * (ρ - z) * inv(σ * -1 * gam + -1) * gam * σ)
-                              var"##MTIIPVar#1286"[7] = 0
-                              var"##MTIIPVar#1286"[8] = x * -1 * gam - 0
-                              var"##MTIIPVar#1286"[9] = ((-1 * β * gam + -1) - 0) - (gam * x - gam * y * inv(σ * -1 * gam + -1) * 
-gam * σ) * inv((gam * -1 + -1) - gam * (ρ - z) * inv(σ * -1 * gam + -1) * gam * σ) * (x * -1 * gam - 0)
-                          end
-                      end
+      end), :((var"##MTIIPVar#383", var"##MTKArg#378", var"##MTKArg#379", var"##MTKArg#380", var"##MTKArg#381")->begin
+          @inbounds begin
+                  let (x, y, z, σ, ρ, β, __MTKWgamma, t) = (var"##MTKArg#378"[1], var"##MTKArg#378"[2], var"##MTKArg#378"[3], var"
+##MTKArg#379"[1], var"##MTKArg#379"[2], var"##MTKArg#379"[3], var"##MTKArg#380", var"##MTKArg#381")
+                      var"##MTIIPVar#383"[1] = (getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))
+                      var"##MTIIPVar#383"[2] = (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getp
+roperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma, (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ))
+                      var"##MTIIPVar#383"[3] = (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getp
+roperty(Base, :*))(-1, __MTKWgamma, σ))), y, __MTKWgamma)
+                      var"##MTIIPVar#383"[4] = (getproperty(Base, :*))(__MTKWgamma, σ)
+                      var"##MTIIPVar#383"[5] = (getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (getproperty(Base, :*))((get
+property(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma ^ 2, σ, (getproperty(
+Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))
+                      var"##MTIIPVar#383"[6] = (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :*))(-1, (getp
+roperty(Base, :+))(1, (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __
+MTKWgamma, σ))), __MTKWgamma ^ 2, σ, (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))), (getproperty(Bas
+e, :+))((getproperty(Base, :*))(x, __MTKWgamma), (getproperty(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :+))(-1,
+ (getproperty(Base, :*))(-1, __MTKWgamma, σ))), y, __MTKWgamma ^ 2, σ)))
+                      var"##MTIIPVar#383"[7] = 0
+                      var"##MTIIPVar#383"[8] = (getproperty(Base, :*))(-1, x, __MTKWgamma)
+                      var"##MTIIPVar#383"[9] = (getproperty(Base, :+))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (get
+property(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (getproperty(Base, :*))((
+getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma ^ 2, σ, (getproper
+ty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))), x, __MTKWgamma, (getproperty(Base, :+))((getproperty(Base, :*))
+(x, __MTKWgamma), (getproperty(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __
+MTKWgamma, σ))), y, __MTKWgamma ^ 2, σ))))), (getproperty(Base, :*))(-1, __MTKWgamma, β))
+                  end
               end
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:79 =#
           nothing
       end))
 ````
@@ -321,56 +314,39 @@ nlsys_func = generate_function(ns)
 
 
 ````
-(:((u, p)->begin
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:61 =#
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:62 =#
-          if u isa Array
-              #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:63 =#
-              return #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:55 =# @inbounds(begin
-                          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:55 =#
-                          let (x, y, z, σ, ρ, β) = (u[1], u[2], u[3], p[1], p[2], p[3])
+(:((var"##MTKArg#393", var"##MTKArg#394")->begin
+          if var"##MTKArg#393" isa Array || !(typeof(var"##MTKArg#393") <: StaticArray) && false
+              return @inbounds(begin
+                          let (x, y, z, σ, ρ, β) = (var"##MTKArg#393"[1], var"##MTKArg#393"[2], var"##MTKArg#393"[3], var"##MTKArg
+#394"[1], var"##MTKArg#394"[2], var"##MTKArg#394"[3])
                               [(*)(σ, (-)(y, x)), (-)((*)(x, (-)(ρ, z)), y), (-)((*)(x, y), (*)(β, z))]
                           end
                       end)
           else
-              #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:65 =#
-              X = #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:54 =# @inbounds(begin
-                          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:54 =#
-                          let (x, y, z, σ, ρ, β) = (u[1], u[2], u[3], p[1], p[2], p[3])
+              X = @inbounds(begin
+                          let (x, y, z, σ, ρ, β) = (var"##MTKArg#393"[1], var"##MTKArg#393"[2], var"##MTKArg#393"[3], var"##MTKArg
+#394"[1], var"##MTKArg#394"[2], var"##MTKArg#394"[3])
                               ((*)(σ, (-)(y, x)), (-)((*)(x, (-)(ρ, z)), y), (-)((*)(x, y), (*)(β, z)))
                           end
                       end)
-          end
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:67 =#
-          T = promote_type(map(typeof, X)...)
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:68 =#
-          map(T, X)
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:69 =#
-          construct = if u isa ModelingToolkit.StaticArrays.StaticArray
-                  ModelingToolkit.StaticArrays.similar_type(typeof(u), eltype(X))
-              else
-                  x->begin
-                          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:69 =#
-                          convert(typeof(u), x)
-                      end
-              end
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:70 =#
-          construct(X)
-      end), :((var"##MTIIPVar#1290", u, p)->begin
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:75 =#
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:76 =#
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:76 =# @inbounds begin
-                  #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:77 =#
-                  #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:56 =# @inbounds begin
-                          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:56 =#
-                          let (x, y, z, σ, ρ, β) = (u[1], u[2], u[3], p[1], p[2], p[3])
-                              var"##MTIIPVar#1290"[1] = (*)(σ, (-)(y, x))
-                              var"##MTIIPVar#1290"[2] = (-)((*)(x, (-)(ρ, z)), y)
-                              var"##MTIIPVar#1290"[3] = (-)((*)(x, y), (*)(β, z))
+              construct = if var"##MTKArg#393" isa ModelingToolkit.StaticArrays.StaticArray
+                      (getproperty(ModelingToolkit.StaticArrays, :similar_type))(typeof(var"##MTKArg#393"), eltype(X))
+                  else
+                      x->begin
+                              convert(typeof(var"##MTKArg#393"), x)
                           end
-                      end
+                  end
+              return construct(X)
+          end
+      end), :((var"##MTIIPVar#396", var"##MTKArg#393", var"##MTKArg#394")->begin
+          @inbounds begin
+                  let (x, y, z, σ, ρ, β) = (var"##MTKArg#393"[1], var"##MTKArg#393"[2], var"##MTKArg#393"[3], var"##MTKArg#394"[1]
+, var"##MTKArg#394"[2], var"##MTKArg#394"[3])
+                      var"##MTIIPVar#396"[1] = (*)(σ, (-)(y, x))
+                      var"##MTIIPVar#396"[2] = (-)((*)(x, (-)(ρ, z)), y)
+                      var"##MTIIPVar#396"[3] = (-)((*)(x, y), (*)(β, z))
+                  end
               end
-          #= C:\Users\accou\.julia\packages\ModelingToolkit\xi418\src\utils.jl:79 =#
           nothing
       end))
 ````
@@ -395,7 +371,7 @@ nlsolve(f2,ones(3))
 Results of Nonlinear Solver Algorithm
  * Algorithm: Trust-region with dogleg and autoscaling
  * Starting Point: [1.0, 1.0, 1.0]
- * Zero: [2.2228042242798023e-10, 2.222804224296743e-10, -9.990339458476605e-11]
+ * Zero: [2.2228042243306243e-10, 2.2228042243645056e-10, -9.990339599422887e-11]
  * Inf-norm of residuals: 0.000000
  * Iterations: 3
  * Convergence: true
@@ -425,10 +401,13 @@ de1 = ode_order_lowering(de)
 
 
 ````
-ODESystem(ModelingToolkit.DiffEq[ModelingToolkit.DiffEq(u_tt, 1, ((2 * u_tt(t) + u_t(t)) + x_t(t)) + 1), ModelingToolkit.DiffEq(x_
-t, 1, x_t(t) + 2), ModelingToolkit.DiffEq(u_t, 1, u_tt(t)), ModelingToolkit.DiffEq(u, 1, u_t(t)), ModelingToolkit.DiffEq(x, 1, x_t
-(t))], t, Variable[u, x, u_tt, u_t, x_t], Variable[], Base.RefValue{Array{Expression,2}}(Array{Expression}(undef,0,0)), Base.RefVa
-lue{Array{Expression,2}}(Array{Expression}(undef,0,0)), Base.RefValue{Array{Expression,2}}(Array{Expression}(undef,0,0)))
+ModelingToolkit.ODESystem(ModelingToolkit.Equation[ModelingToolkit.Equation(derivative(uˍtt(t), t), ((2 * uˍtt(t) + uˍt(t)) + xˍt(
+t)) + 1), ModelingToolkit.Equation(derivative(xˍt(t), t), xˍt(t) + 2), ModelingToolkit.Equation(derivative(uˍt(t), t), uˍtt(t)), M
+odelingToolkit.Equation(derivative(u(t), t), uˍt(t)), ModelingToolkit.Equation(derivative(x(t), t), xˍt(t))], t, ModelingToolkit.V
+ariable[uˍtt, xˍt, uˍt, u, x], ModelingToolkit.Variable[], Base.RefValue{Array{ModelingToolkit.Expression,1}}(ModelingToolkit.Expr
+ession[]), Base.RefValue{Array{ModelingToolkit.Expression,2}}(Array{ModelingToolkit.Expression}(undef,0,0)), Base.RefValue{Array{M
+odelingToolkit.Expression,2}}(Array{ModelingToolkit.Expression}(undef,0,0)), Base.RefValue{Array{ModelingToolkit.Expression,2}}(Ar
+ray{ModelingToolkit.Expression}(undef,0,0)), Symbol("##ODESystem#399"), ModelingToolkit.ODESystem[])
 ````
 
 
@@ -439,12 +418,12 @@ de1.eqs
 
 
 ````
-5-element Array{ModelingToolkit.DiffEq,1}:
- ModelingToolkit.DiffEq(u_tt, 1, ((2 * u_tt(t) + u_t(t)) + x_t(t)) + 1)
- ModelingToolkit.DiffEq(x_t, 1, x_t(t) + 2)                            
- ModelingToolkit.DiffEq(u_t, 1, u_tt(t))                               
- ModelingToolkit.DiffEq(u, 1, u_t(t))                                  
- ModelingToolkit.DiffEq(x, 1, x_t(t))
+5-element Array{ModelingToolkit.Equation,1}:
+ ModelingToolkit.Equation(derivative(uˍtt(t), t), ((2 * uˍtt(t) + uˍt(t)) + xˍt(t)) + 1)
+ ModelingToolkit.Equation(derivative(xˍt(t), t), xˍt(t) + 2)
+ ModelingToolkit.Equation(derivative(uˍt(t), t), uˍtt(t))
+ ModelingToolkit.Equation(derivative(u(t), t), uˍt(t))
+ ModelingToolkit.Equation(derivative(x(t), t), xˍt(t))
 ````
 
 
@@ -471,7 +450,7 @@ J = [Dx(eqs[1].rhs) Dy(eqs[1].rhs) Dz(eqs[1].rhs)
 
 
 ````
-3×3 Array{Operation,2}:
+3×3 Array{ModelingToolkit.Operation,2}:
         derivative(σ * (y(t) - x(t)), x(t))  …         derivative(σ * (y(t) - x(t)), z(t))
  derivative(x(t) * (ρ - z(t)) - y(t), x(t))     derivative(x(t) * (ρ - z(t)) - y(t), z(t))
    derivative(x(t) * y(t) - β * z(t), x(t))       derivative(x(t) * y(t) - β * z(t), z(t))
@@ -489,10 +468,10 @@ J = expand_derivatives.(J)
 
 
 ````
-3×3 Array{Expression,2}:
-   σ * -1             σ  Constant(0)
- ρ - z(t)  Constant(-1)    x(t) * -1
-     y(t)          x(t)          -1β
+3×3 Array{ModelingToolkit.Expression,2}:
+           -1σ             σ  Constant(0)
+ -1 * z(t) + ρ  Constant(-1)    -1 * x(t)
+          y(t)          x(t)          -1β
 ````
 
 
@@ -508,20 +487,20 @@ luJ = lu(J,Val(false))
 
 
 ````
-LU{Expression,Array{Expression,2}}
+LinearAlgebra.LU{ModelingToolkit.Expression,Array{ModelingToolkit.Expression,2}}
 L factor:
-3×3 Array{Expression,2}:
-              Constant(1)  …  Constant(0)
- (ρ - z(t)) * inv(σ * -1)     identity(0)
-       y(t) * inv(σ * -1)     Constant(1)
+3×3 Array{ModelingToolkit.Expression,2}:
+                Constant(1)  …  Constant(0)
+ (-1 * z(t) + ρ) * inv(-1σ)     Constant(0)
+            y(t) * inv(-1σ)     Constant(1)
 U factor:
-3×3 Array{Expression,2}:
-      σ * -1  …                                                                                                                   
-                                    Constant(0)
- identity(0)                                                                                                                      
-     x(t) * -1 - ((ρ - z(t)) * inv(σ * -1)) * 0
- identity(0)     (-1β - (y(t) * inv(σ * -1)) * 0) - ((x(t) - (y(t) * inv(σ * -1)) * σ) * inv(-1 - ((ρ - z(t)) * inv(σ * -1)) * σ))
- * (x(t) * -1 - ((ρ - z(t)) * inv(σ * -1)) * 0)
+3×3 Array{ModelingToolkit.Expression,2}:
+         -1σ  …                                                                                                                   
+                                  Constant(0)
+ Constant(0)                                                                                                                      
+ -1 * x(t) - ((-1 * z(t) + ρ) * inv(-1σ)) * 0
+ Constant(0)     (-1β - (y(t) * inv(-1σ)) * 0) - ((x(t) - (y(t) * inv(-1σ)) * σ) * inv(-1 - ((-1 * z(t) + ρ) * inv(-1σ)) * σ)) * (
+-1 * x(t) - ((-1 * z(t) + ρ) * inv(-1σ)) * 0)
 ````
 
 
@@ -532,10 +511,10 @@ luJ.L
 
 
 ````
-3×3 Array{Expression,2}:
-              Constant(1)  …  Constant(0)
- (ρ - z(t)) * inv(σ * -1)     identity(0)
-       y(t) * inv(σ * -1)     Constant(1)
+3×3 Array{ModelingToolkit.Expression,2}:
+                Constant(1)  …  Constant(0)
+ (-1 * z(t) + ρ) * inv(-1σ)     Constant(0)
+            y(t) * inv(-1σ)     Constant(1)
 ````
 
 
@@ -550,46 +529,46 @@ invJ = inv(luJ)
 
 
 ````
-3×3 Array{Expression,2}:
- (σ * -1) \ ((true - 0 * (((-1β - (y(t) * inv(σ * -1)) * 0) - ((x(t) - (y(t) * inv(σ * -1)) * σ) * inv(-1 - ((ρ - z(t)) * inv(σ * 
--1)) * σ)) * (x(t) * -1 - ((ρ - z(t)) * inv(σ * -1)) * 0)) \ ((0 - (y(t) * inv(σ * -1)) * true) - ((x(t) - (y(t) * inv(σ * -1)) * 
-σ) * inv(-1 - ((ρ - z(t)) * inv(σ * -1)) * σ)) * (0 - ((ρ - z(t)) * inv(σ * -1)) * true)))) - σ * ((-1 - ((ρ - z(t)) * inv(σ * -1)
-) * σ) \ ((0 - ((ρ - z(t)) * inv(σ * -1)) * true) - (x(t) * -1 - ((ρ - z(t)) * inv(σ * -1)) * 0) * (((-1β - (y(t) * inv(σ * -1)) *
- 0) - ((x(t) - (y(t) * inv(σ * -1)) * σ) * inv(-1 - ((ρ - z(t)) * inv(σ * -1)) * σ)) * (x(t) * -1 - ((ρ - z(t)) * inv(σ * -1)) * 0
-)) \ ((0 - (y(t) * inv(σ * -1)) * true) - ((x(t) - (y(t) * inv(σ * -1)) * σ) * inv(-1 - ((ρ - z(t)) * inv(σ * -1)) * σ)) * (0 - ((
-ρ - z(t)) * inv(σ * -1)) * true))))))  …  (σ * -1) \ ((0 - 0 * (((-1β - (y(t) * inv(σ * -1)) * 0) - ((x(t) - (y(t) * inv(σ * -1)) 
-* σ) * inv(-1 - ((ρ - z(t)) * inv(σ * -1)) * σ)) * (x(t) * -1 - ((ρ - z(t)) * inv(σ * -1)) * 0)) \ ((true - (y(t) * inv(σ * -1)) *
- 0) - ((x(t) - (y(t) * inv(σ * -1)) * σ) * inv(-1 - ((ρ - z(t)) * inv(σ * -1)) * σ)) * (0 - ((ρ - z(t)) * inv(σ * -1)) * 0)))) - σ
- * ((-1 - ((ρ - z(t)) * inv(σ * -1)) * σ) \ ((0 - ((ρ - z(t)) * inv(σ * -1)) * 0) - (x(t) * -1 - ((ρ - z(t)) * inv(σ * -1)) * 0) *
- (((-1β - (y(t) * inv(σ * -1)) * 0) - ((x(t) - (y(t) * inv(σ * -1)) * σ) * inv(-1 - ((ρ - z(t)) * inv(σ * -1)) * σ)) * (x(t) * -1 
-- ((ρ - z(t)) * inv(σ * -1)) * 0)) \ ((true - (y(t) * inv(σ * -1)) * 0) - ((x(t) - (y(t) * inv(σ * -1)) * σ) * inv(-1 - ((ρ - z(t)
-) * inv(σ * -1)) * σ)) * (0 - ((ρ - z(t)) * inv(σ * -1)) * 0))))))
+3×3 Array{ModelingToolkit.Expression,2}:
+ (-1σ) \ ((true - 0 * (((-1β - (y(t) * inv(-1σ)) * 0) - ((x(t) - (y(t) * inv(-1σ)) * σ) * inv(-1 - ((-1 * z(t) + ρ) * inv(-1σ)) * 
+σ)) * (-1 * x(t) - ((-1 * z(t) + ρ) * inv(-1σ)) * 0)) \ ((0 - (y(t) * inv(-1σ)) * true) - ((x(t) - (y(t) * inv(-1σ)) * σ) * inv(-1
+ - ((-1 * z(t) + ρ) * inv(-1σ)) * σ)) * (0 - ((-1 * z(t) + ρ) * inv(-1σ)) * true)))) - σ * ((-1 - ((-1 * z(t) + ρ) * inv(-1σ)) * σ
+) \ ((0 - ((-1 * z(t) + ρ) * inv(-1σ)) * true) - (-1 * x(t) - ((-1 * z(t) + ρ) * inv(-1σ)) * 0) * (((-1β - (y(t) * inv(-1σ)) * 0) 
+- ((x(t) - (y(t) * inv(-1σ)) * σ) * inv(-1 - ((-1 * z(t) + ρ) * inv(-1σ)) * σ)) * (-1 * x(t) - ((-1 * z(t) + ρ) * inv(-1σ)) * 0)) 
+\ ((0 - (y(t) * inv(-1σ)) * true) - ((x(t) - (y(t) * inv(-1σ)) * σ) * inv(-1 - ((-1 * z(t) + ρ) * inv(-1σ)) * σ)) * (0 - ((-1 * z(
+t) + ρ) * inv(-1σ)) * true))))))  …  (-1σ) \ ((0 - 0 * (((-1β - (y(t) * inv(-1σ)) * 0) - ((x(t) - (y(t) * inv(-1σ)) * σ) * inv(-1 
+- ((-1 * z(t) + ρ) * inv(-1σ)) * σ)) * (-1 * x(t) - ((-1 * z(t) + ρ) * inv(-1σ)) * 0)) \ ((true - (y(t) * inv(-1σ)) * 0) - ((x(t) 
+- (y(t) * inv(-1σ)) * σ) * inv(-1 - ((-1 * z(t) + ρ) * inv(-1σ)) * σ)) * (0 - ((-1 * z(t) + ρ) * inv(-1σ)) * 0)))) - σ * ((-1 - ((
+-1 * z(t) + ρ) * inv(-1σ)) * σ) \ ((0 - ((-1 * z(t) + ρ) * inv(-1σ)) * 0) - (-1 * x(t) - ((-1 * z(t) + ρ) * inv(-1σ)) * 0) * (((-1
+β - (y(t) * inv(-1σ)) * 0) - ((x(t) - (y(t) * inv(-1σ)) * σ) * inv(-1 - ((-1 * z(t) + ρ) * inv(-1σ)) * σ)) * (-1 * x(t) - ((-1 * z
+(t) + ρ) * inv(-1σ)) * 0)) \ ((true - (y(t) * inv(-1σ)) * 0) - ((x(t) - (y(t) * inv(-1σ)) * σ) * inv(-1 - ((-1 * z(t) + ρ) * inv(-
+1σ)) * σ)) * (0 - ((-1 * z(t) + ρ) * inv(-1σ)) * 0))))))
                                                                                                                                   
                                                                                                                                   
-                                                                                                     (-1 - ((ρ - z(t)) * inv(σ * -
-1)) * σ) \ ((0 - ((ρ - z(t)) * inv(σ * -1)) * true) - (x(t) * -1 - ((ρ - z(t)) * inv(σ * -1)) * 0) * (((-1β - (y(t) * inv(σ * -1))
- * 0) - ((x(t) - (y(t) * inv(σ * -1)) * σ) * inv(-1 - ((ρ - z(t)) * inv(σ * -1)) * σ)) * (x(t) * -1 - ((ρ - z(t)) * inv(σ * -1)) *
- 0)) \ ((0 - (y(t) * inv(σ * -1)) * true) - ((x(t) - (y(t) * inv(σ * -1)) * σ) * inv(-1 - ((ρ - z(t)) * inv(σ * -1)) * σ)) * (0 - 
-((ρ - z(t)) * inv(σ * -1)) * true))))                                                                                             
+                                                                                              (-1 - ((-1 * z(t) + ρ) * inv(-1σ)) *
+ σ) \ ((0 - ((-1 * z(t) + ρ) * inv(-1σ)) * true) - (-1 * x(t) - ((-1 * z(t) + ρ) * inv(-1σ)) * 0) * (((-1β - (y(t) * inv(-1σ)) * 0
+) - ((x(t) - (y(t) * inv(-1σ)) * σ) * inv(-1 - ((-1 * z(t) + ρ) * inv(-1σ)) * σ)) * (-1 * x(t) - ((-1 * z(t) + ρ) * inv(-1σ)) * 0)
+) \ ((0 - (y(t) * inv(-1σ)) * true) - ((x(t) - (y(t) * inv(-1σ)) * σ) * inv(-1 - ((-1 * z(t) + ρ) * inv(-1σ)) * σ)) * (0 - ((-1 * 
+z(t) + ρ) * inv(-1σ)) * true))))                                                                                                  
                                                                                                                                   
-                                                                                                                                  
-      (-1 - ((ρ - z(t)) * inv(σ * -1)) * σ) \ ((0 - ((ρ - z(t)) * inv(σ * -1)) * 0) - (x(t) * -1 - ((ρ - z(t)) * inv(σ * -1)) * 0)
- * (((-1β - (y(t) * inv(σ * -1)) * 0) - ((x(t) - (y(t) * inv(σ * -1)) * σ) * inv(-1 - ((ρ - z(t)) * inv(σ * -1)) * σ)) * (x(t) * -
-1 - ((ρ - z(t)) * inv(σ * -1)) * 0)) \ ((true - (y(t) * inv(σ * -1)) * 0) - ((x(t) - (y(t) * inv(σ * -1)) * σ) * inv(-1 - ((ρ - z(
-t)) * inv(σ * -1)) * σ)) * (0 - ((ρ - z(t)) * inv(σ * -1)) * 0))))
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                        ((-1β - (y(t) * inv(σ * -1
-)) * 0) - ((x(t) - (y(t) * inv(σ * -1)) * σ) * inv(-1 - ((ρ - z(t)) * inv(σ * -1)) * σ)) * (x(t) * -1 - ((ρ - z(t)) * inv(σ * -1))
- * 0)) \ ((0 - (y(t) * inv(σ * -1)) * true) - ((x(t) - (y(t) * inv(σ * -1)) * σ) * inv(-1 - ((ρ - z(t)) * inv(σ * -1)) * σ)) * (0 
-- ((ρ - z(t)) * inv(σ * -1)) * true))                                                                                             
+                                                                                                                            (-1 - 
+((-1 * z(t) + ρ) * inv(-1σ)) * σ) \ ((0 - ((-1 * z(t) + ρ) * inv(-1σ)) * 0) - (-1 * x(t) - ((-1 * z(t) + ρ) * inv(-1σ)) * 0) * (((
+-1β - (y(t) * inv(-1σ)) * 0) - ((x(t) - (y(t) * inv(-1σ)) * σ) * inv(-1 - ((-1 * z(t) + ρ) * inv(-1σ)) * σ)) * (-1 * x(t) - ((-1 *
+ z(t) + ρ) * inv(-1σ)) * 0)) \ ((true - (y(t) * inv(-1σ)) * 0) - ((x(t) - (y(t) * inv(-1σ)) * σ) * inv(-1 - ((-1 * z(t) + ρ) * inv
+(-1σ)) * σ)) * (0 - ((-1 * z(t) + ρ) * inv(-1σ)) * 0))))
                                                                                                                                   
                                                                                                                                   
                                                                                                                                   
-      ((-1β - (y(t) * inv(σ * -1)) * 0) - ((x(t) - (y(t) * inv(σ * -1)) * σ) * inv(-1 - ((ρ - z(t)) * inv(σ * -1)) * σ)) * (x(t) *
- -1 - ((ρ - z(t)) * inv(σ * -1)) * 0)) \ ((true - (y(t) * inv(σ * -1)) * 0) - ((x(t) - (y(t) * inv(σ * -1)) * σ) * inv(-1 - ((ρ - 
-z(t)) * inv(σ * -1)) * σ)) * (0 - ((ρ - z(t)) * inv(σ * -1)) * 0))
+                                                                                                       ((-1β - (y(t) * inv(-1σ)) *
+ 0) - ((x(t) - (y(t) * inv(-1σ)) * σ) * inv(-1 - ((-1 * z(t) + ρ) * inv(-1σ)) * σ)) * (-1 * x(t) - ((-1 * z(t) + ρ) * inv(-1σ)) * 
+0)) \ ((0 - (y(t) * inv(-1σ)) * true) - ((x(t) - (y(t) * inv(-1σ)) * σ) * inv(-1 - ((-1 * z(t) + ρ) * inv(-1σ)) * σ)) * (0 - ((-1 
+* z(t) + ρ) * inv(-1σ)) * true))                                                                                                  
+                                                                                                                                  
+                                                                                                                                  
+                                                                                                                                  
+((-1β - (y(t) * inv(-1σ)) * 0) - ((x(t) - (y(t) * inv(-1σ)) * σ) * inv(-1 - ((-1 * z(t) + ρ) * inv(-1σ)) * σ)) * (-1 * x(t) - ((-1
+ * z(t) + ρ) * inv(-1σ)) * 0)) \ ((true - (y(t) * inv(-1σ)) * 0) - ((x(t) - (y(t) * inv(-1σ)) * σ) * inv(-1 - ((-1 * z(t) + ρ) * i
+nv(-1σ)) * σ)) * (0 - ((-1 * z(t) + ρ) * inv(-1σ)) * 0))
 ````
 
 
@@ -633,7 +612,7 @@ du
 
 
 ````
-3-element Array{Operation,1}:
+3-element Array{ModelingToolkit.Operation,1}:
         σ * (y(t) - x(t))
  x(t) * (ρ - z(t)) - y(t)
    x(t) * y(t) - β * z(t)
@@ -654,10 +633,10 @@ J = expand_derivatives.(J)
 
 
 ````
-3×3 Array{Expression,2}:
-   σ * -1             σ  Constant(0)
- ρ - z(t)  Constant(-1)    x(t) * -1
-     y(t)          x(t)          -1β
+3×3 Array{ModelingToolkit.Expression,2}:
+           -1σ             σ  Constant(0)
+ -1 * z(t) + ρ  Constant(-1)    -1 * x(t)
+          y(t)          x(t)          -1β
 ````
 
 
@@ -682,14 +661,14 @@ sJ = SparseMatrixCSC(J)
 
 
 ````
-3×3 SparseMatrixCSC{Expression,Int64} with 8 stored entries:
-  [1, 1]  =  σ * -1
-  [2, 1]  =  ρ - z(t)
+3×3 SparseArrays.SparseMatrixCSC{ModelingToolkit.Expression,Int64} with 8 stored entries:
+  [1, 1]  =  -1σ
+  [2, 1]  =  -1 * z(t) + ρ
   [3, 1]  =  y(t)
   [1, 2]  =  σ
   [2, 2]  =  Constant(-1)
   [3, 2]  =  x(t)
-  [2, 3]  =  x(t) * -1
+  [2, 3]  =  -1 * x(t)
   [3, 3]  =  -1β
 ````
 
@@ -712,10 +691,10 @@ eqs = [D(x) ~ σ(t-1)*(y-x),
 
 
 ````
-3-element Array{Equation,1}:
- Equation(derivative(x(t), t), σ(t - 1) * (y(t) - x(t)))       
- Equation(derivative(y(t), t), x(t) * (σ(t ^ 2) - z(t)) - y(t))
- Equation(derivative(z(t), t), x(t) * y(t) - β * z(t))
+3-element Array{ModelingToolkit.Equation,1}:
+ ModelingToolkit.Equation(derivative(x(t), t), σ(t - 1) * (y(t) - x(t)))
+ ModelingToolkit.Equation(derivative(y(t), t), x(t) * (σ(t ^ 2) - z(t)) - y(t))
+ ModelingToolkit.Equation(derivative(z(t), t), x(t) * y(t) - β * z(t))
 ````
 
 
@@ -732,7 +711,8 @@ expand_derivatives(Dₜ(x*(σ(t^2)-z)-y))
 
 
 ````
-(σ(t ^ 2) - z(t)) * derivative(x(t), t) + x(t) * (derivative(σ(t ^ 2), t) + -1 * derivative(z(t), t)) + -1 * derivative(y(t), t)
+derivative(x(t), t) * (σ(t ^ 2) + -1 * z(t)) + -1 * derivative(y(t), t) + x(t) * (derivative(σ(t ^ 2), t) + -1 * derivative(z(t), 
+t))
 ````
 
 
@@ -817,16 +797,18 @@ DiffEqTutorials.weave_file("ode_extras","01-ModelingToolkit.jmd")
 
 Computer Information:
 ```
-Julia Version 1.3.0
-Commit 46ce4d7933 (2019-11-26 06:09 UTC)
+Julia Version 1.4.2
+Commit 44fa15b150* (2020-05-23 18:35 UTC)
 Platform Info:
-  OS: Windows (x86_64-w64-mingw32)
-  CPU: Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz
+  OS: Linux (x86_64-pc-linux-gnu)
+  CPU: Intel(R) Core(TM) i7-9700K CPU @ 3.60GHz
   WORD_SIZE: 64
   LIBM: libopenlibm
-  LLVM: libLLVM-6.0.1 (ORCJIT, skylake)
+  LLVM: libLLVM-8.0.1 (ORCJIT, skylake)
 Environment:
-  JULIA_EDITOR = "C:\Users\accou\AppData\Local\atom\app-1.42.0\atom.exe"  -a
+  JULIA_DEPOT_PATH = /builds/JuliaGPU/DiffEqTutorials.jl/.julia
+  JULIA_CUDA_MEMORY_LIMIT = 536870912
+  JULIA_PROJECT = @.
   JULIA_NUM_THREADS = 4
 
 ```
@@ -834,5 +816,11 @@ Environment:
 Package Information:
 
 ```
-Status `~\.julia\dev\DiffEqTutorials\Project.toml`
+Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/ode_extras/Project.toml`
+[961ee093-0014-501f-94e3-6117800e7a78] ModelingToolkit 3.11.0
+[2774e3e8-f4cf-5e23-947b-6d7e65073b56] NLsolve 4.4.0
+[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.41.0
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.5.0
+[37e2e46d-f89d-539d-b4ee-838fcccc9c8e] LinearAlgebra
+[2f01184e-e22b-5df5-ae63-d93ebab69eaf] SparseArrays
 ```
