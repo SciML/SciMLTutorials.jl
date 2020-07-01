@@ -124,18 +124,6 @@ The Order 14 method is awesome, but we need to make sure it's really that awesom
 
 ````julia
 using DiffEqDevTools
-````
-
-
-````
-Error: ArgumentError: Package DiffEqDevTools not found in current path:
-- Run `import Pkg; Pkg.add("DiffEqDevTools")` to install the DiffEqDevTools
- package.
-````
-
-
-
-````julia
 dts = 1.0 ./ 2.0 .^(10:-1:4)
 sim = test_convergence(dts,prob,Feagin14())
 ````
@@ -202,10 +190,13 @@ Package Information:
 
 ```
 Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/ode_extras/Project.toml`
+[f3b72e0c-5b89-59e1-b016-84e28bfd966d] DiffEqDevTools 2.22.0
 [961ee093-0014-501f-94e3-6117800e7a78] ModelingToolkit 3.11.0
+[76087f3c-5699-56af-9a33-bf431cd00edd] NLopt 0.6.0
 [2774e3e8-f4cf-5e23-947b-6d7e65073b56] NLsolve 4.4.0
+[429524aa-4258-5aef-a3af-852621145aeb] Optim 0.22.0
 [1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.41.0
-[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.5.0
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.5.1
 [37e2e46d-f89d-539d-b4ee-838fcccc9c8e] LinearAlgebra
 [2f01184e-e22b-5df5-ae63-d93ebab69eaf] SparseArrays
 ```
