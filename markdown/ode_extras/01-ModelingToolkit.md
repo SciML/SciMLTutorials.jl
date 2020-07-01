@@ -818,6 +818,7 @@ Package Information:
 ```
 Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/ode_extras/Project.toml`
 [f3b72e0c-5b89-59e1-b016-84e28bfd966d] DiffEqDevTools 2.22.0
+[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.14.0
 [961ee093-0014-501f-94e3-6117800e7a78] ModelingToolkit 3.11.0
 [76087f3c-5699-56af-9a33-bf431cd00edd] NLopt 0.6.0
 [2774e3e8-f4cf-5e23-947b-6d7e65073b56] NLsolve 4.4.0
