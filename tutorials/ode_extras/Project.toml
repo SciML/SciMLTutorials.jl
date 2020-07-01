@@ -6,6 +6,8 @@ NLsolve = "2774e3e8-f4cf-5e23-947b-6d7e65073b56"
 OrdinaryDiffEq = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+Optim = "429524aa-4258-5aef-a3af-852621145aeb"
+NLopt = "76087f3c-5699-56af-9a33-bf431cd00edd"
 
 [compat]
 ModelingToolkit = "3.10"
