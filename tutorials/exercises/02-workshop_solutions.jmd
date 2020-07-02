@@ -478,7 +478,7 @@ sol2_2 = @time solve(prob2, CVODE_BDF())
 ```julia
 using SparseDiffTools, SparsityDetection
 
-sparsity_pattern = jacobian_sparsity!(brusselator_2d_loop,similar(u0),u0,p,2.0)
+sparsity_pattern = jacobian_sparsity(brusselator_2d_loop,similar(u0),u0,p,2.0)
 jac_sp = sparse(sparsity_pattern)
 jac = Float64.(jac_sp)
 colors = matrix_colors(jac)
