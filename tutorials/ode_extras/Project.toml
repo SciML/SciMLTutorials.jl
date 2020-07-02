@@ -12,6 +12,7 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
 ModelingToolkit = "3.10"
+NLopt = "0.6"
 NLsolve = "4.4"
 OrdinaryDiffEq = "5.41"
 Plots = "1.4"
