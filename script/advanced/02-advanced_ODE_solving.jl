@@ -108,7 +108,7 @@ p = (3.4, 1., 10., step(xyd_brusselator))
 using SparsityDetection, SparseArrays
 input = rand(32,32,2)
 output = similar(input)
-sparsity_pattern = sparsity!(brusselator_2d_loop,output,input,p,0.0)
+sparsity_pattern = jacobian_sparsity(brusselator_2d_loop,output,input,p,0.0)
 jac_sparsity = Float64.(sparse(sparsity_pattern))
 
 
@@ -197,4 +197,8 @@ prob_mm = ODEProblem(f,[1.0,0.0,0.0],(0.0,1e5),(0.04,3e7,1e4))
 sol = solve(prob_mm,Rodas5())
 
 plot(sol, xscale=:log10, tspan=(1e-6, 1e5), layout=(3,1))
+
+
+using DiffEqTutorials
+DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 
