@@ -9,8 +9,8 @@ Sundials = "c3572dad-4567-51f8-b174-8c6c989267f4"
 
 [compat]
 BenchmarkTools = "0.5"
-Plots = "1.4"
-ParameterizedFunctions = "5.3"
-StaticArrays = "0.12"
 DifferentialEquations = "6.14"
+ParameterizedFunctions = "5.3"
+Plots = "1.4"
+StaticArrays = "0.12"
 Sundials = "4.2"
