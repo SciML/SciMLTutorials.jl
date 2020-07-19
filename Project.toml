@@ -1,7 +1,7 @@
-name = "DiffEqTutorials"
-uuid = "6d1b261a-3be8-11e9-3f2f-0b112a9a8436"
+name = "SciMLTutorials"
+uuid = "30cb0354-2223-46a9-baa0-41bdcfbe0178"
 authors = ["Chris Rackauckas <accounts@chrisrackauckas.com>"]
-version = "0.7.0"
+version = "0.8.0"
 
 [deps]
 IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
