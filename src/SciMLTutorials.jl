@@ -1,4 +1,4 @@
-module DiffEqTutorials
+module SciMLTutorials
 
 using Weave, Pkg, InteractiveUtils, IJulia
 
@@ -73,14 +73,15 @@ function tutorial_footer(folder=nothing, file=nothing; remove_homedir=true)
     display("text/markdown", """
     ## Appendix
 
-     This tutorial is part of the DiffEqTutorials.jl repository, found at: <https://github.com/JuliaDiffEq/DiffEqTutorials.jl>
+     This tutorial is part of the SciMLTutorials.jl repository, found at: <https://github.com/SciMLTutorials/SciMLTutorials.jl>.
+     For more information on doing scientific machine learning (SciML) with open source software, check out <https://sciml.ai/>.
     """)
     if folder !== nothing && file !== nothing
         display("text/markdown", """
         To locally run this tutorial, do the following commands:
         ```
-        using DiffEqTutorials
-        DiffEqTutorials.weave_file("$folder","$file")
+        using SciMLTutorials
+        SciMLTutorials.weave_file("$folder","$file")
         ```
         """)
     end
