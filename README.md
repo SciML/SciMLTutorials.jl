@@ -1,12 +1,11 @@
-# DiffEqTutorials.jl
+# SciMLTutorials.jl: Tutorials for Scientific Machine Learning and Differential Equations
 
 [![Join the chat at https://gitter.im/JuliaDiffEq/Lobby](https://badges.gitter.im/JuliaDiffEq/Lobby.svg)](https://gitter.im/JuliaDiffEq/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-DiffEqTutorials.jl holds PDFs, webpages, and interactive Jupyter notebooks
-showing how to utilize the software in the JuliaDiffEq ecosystem. This set of
-tutorials was made to complement the
-[documentation](http://docs.juliadiffeq.org/dev/) and the
-[devdocs](http://devdocs.juliadiffeq.org/dev/)
+SciMLTutorials.jl holds PDFs, webpages, and interactive Jupyter notebooks
+showing how to utilize the software in the [SciML Scientific Machine Learning ecosystem](https://sciml.ai/). 
+This set of tutorials was made to complement the [documentation](http://docs.sciml.org/dev/) 
+and the [devdocs](http://devdocs.sciml.org/dev/)
 by providing practical examples of the concepts. For more details, please
 consult the docs.
 
@@ -17,9 +16,9 @@ and open the tutorials like:
 
 ```julia
 using Pkg
-pkg"add https://github.com/JuliaDiffEq/DiffEqTutorials.jl"
-using DiffEqTutorials
-DiffEqTutorials.open_notebooks()
+pkg"add https://github.com/SciML/SciMLTutorials.jl"
+using SciMLTutorials
+SciMLTutorials.open_notebooks()
 ```
 
 ## Video Tutorial
@@ -62,22 +61,22 @@ DiffEqTutorials.open_notebooks()
   
 ## Contributing
 
-First of all, make sure that your current directory is `DiffEqTutorials`. All
+First of all, make sure that your current directory is `SciMLTutorials`. All
 of the files are generated from the Weave.jl files in the `tutorials` folder.
 To run the generation process, do for example:
 
 ```julia
-using Pkg, DiffEqTutorials
-cd(joinpath(dirname(pathof(DiffEqTutorials)), ".."))
+using Pkg, SciMLTutorials
+cd(joinpath(dirname(pathof(SciMLTutorials)), ".."))
 Pkg.pkg"activate ."
 Pkg.pkg"instantiate"
-DiffEqTutorials.weave_file("introduction","ode_introduction.jmd")
+SciMLTutorials.weave_file("introduction","ode_introduction.jmd")
 ```
 
 To generate all of the notebooks, do:
 
 ```julia
-DiffEqTutorials.weave_all()
+SciMLTutorials.weave_all()
 ```
 
 If you add new tutorials which require new packages, simply updating your local
