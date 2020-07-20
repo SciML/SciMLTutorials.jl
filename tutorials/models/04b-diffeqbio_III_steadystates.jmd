@@ -180,12 +180,12 @@ If you think you've found a bug in DiffEqBiological, or would like to
 request/discuss new functionality, feel free to open an issue on
 [Github](https://github.com/JuliaDiffEq/DiffEqBiological.jl) (but please check
 there is no related issue already open). If you've found a bug in this tutorial,
-or have a suggestion, feel free to open an issue on the [DiffEqTutorials Github
-site](https://github.com/JuliaDiffEq/DiffEqTutorials.jl). Or, submit a pull
-request to DiffEqTutorials updating the tutorial!
+or have a suggestion, feel free to open an issue on the [SciMLTutorials Github
+site](https://github.com/JuliaDiffEq/SciMLTutorials.jl). Or, submit a pull
+request to SciMLTutorials updating the tutorial!
 
 ---
 ```julia; echo=false; skip="notebook"
-using DiffEqTutorials
-DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file], remove_homedir=true)
+using SciMLTutorials
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file], remove_homedir=true)
 ```
