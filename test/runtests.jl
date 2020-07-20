@@ -1,2 +1,2 @@
-using DiffEqTutorials
-DiffEqTutorials.weave_file(".","test.jmd")
+using SciMLTutorials
+SciMLTutorials.weave_file(".","test.jmd")

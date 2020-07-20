@@ -506,6 +506,6 @@ need to make sure you choose
 [a solver that is compatible with DAEs](https://docs.juliadiffeq.org/latest/solvers/dae_solve/#dae_solve_full-1)
 
 ```{julia; echo=false; skip="notebook"}
-using DiffEqTutorials
-DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+using SciMLTutorials
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```
