@@ -1,0 +1,24 @@
+<!-- 
+using Pkg, SciMLTutorials
+cd(joinpath(dirname(pathof(SciMLTutorials)), ".."))
+Pkg.pkg"activate ."
+Pkg.pkg"instantiate"
+SciMLTutorials.weave_file("DiffEqUncertainty","01-expectation_introduction.jmd") 
+SciMLTutorials.weave_file("DiffEqUncertainty","01-expectation_introduction.jmd",(:github,))
+
+-->
+
+---
+title: Automatic Differentiation and Optimization of Expectation
+author: Adam Gerlach
+---
+
+## Linear Model
+
+First, lets consider the following linear model.
+
+$$u' = p u$$
+
+```julia
+f(u,p,t) = p.*u
+```
