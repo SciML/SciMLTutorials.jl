@@ -179,6 +179,41 @@ plot(t->exp(p[1]*t)*mean(u0_dist[1]),tspan..., xlabel="t", label="analytical")
 scatter!(collect(saveat),mean_koop.u[:],marker=:o, label=nothing)
 ```
 
+### Benefits of Using Vector-Valued Functions
+In the above examples we used vector valued expectation calculations to compute the various expectations required. Alternatively, one could simply compute multiple scalar-valued expectation. However, in most cases it is more efficient to use the vector-valued form. This is especially true when then ODE to be solved is computationally expensive.
+
+To demonstrate this, lets compute the the expectation of $x$, $x^2$, and $x^3$ using both approaches while counting the number of times `g()` is evaluated. This is the same as the number of simulation runs required to arrive at the solution. First consider the scalar-valued approach. Here, we follow the same method as before, but we add a counter to our function evaluation that stores the number of function calls for each expectation calculation to an array.
+
+```julia
+function g(sol, power, counter)
+    counter[power] = counter[power] + 1
+    sol(4.0)[1]^power
+end
+
+counters = [0,0,0]
+x_koop = expectation(s->g(s,1,counters), prob, u0_dist, p, Koopman(), Tsit5())
+x2_koop = expectation(s->g(s,2,counters), prob, u0_dist, p, Koopman(), Tsit5())
+x3_koop = expectation(s->g(s,3,counters), prob, u0_dist, p, Koopman(), Tsit5())
+counters
+```
+
+Leading to a total of `j sum(counters)` function evaluations.
+
+Now, lets compare this to the vector-valued approach
+```julia
+function g(sol, counter) 
+    counter[1] = counter[1] + 1
+    v = sol(4.0)[1]
+    [v, v^2, v^3]
+end
+
+counter = [0]
+expectation(s->g(s,counter), prob, u0_dist, p, Koopman(), Tsit5(); nout = 3)
+counter
+```
+
+This is `j round(counter[1]/sum(counters)*100,digits=2)`% the number of simulations required when using scalar-valued expectations. Note how the number of evaluations used in the vector-valued form is equivelent to maximum number of evaluations for the 3 scalar-valued expectation calls.
+
 ## Higher-Order Moments
 Leveraging this vector-valued capability, we can also efficiently compute higher order moments.
 
@@ -246,41 +281,6 @@ var_koop = koop[2] - mean_koop^2
 ```
 
 As the system is linear, we expect the skewness to be unchanged from the inital distribution. Becasue the distribution is a truncated Normal distribution centered on the mean, the skewness is `0.0`
-
-## Benifits of Using Vector-Valued Functions
-In the above examples we used vector valued expectation calculations to compute the various expectations required to recover variance and skewness. Alternatively, one could simply compute multiple scalar-valued expectation. However, in most cases it is more efficient to use the vector-valued form. This is especially true when then ODE to be solved is computationally expensive.
-
-To demonstrate this, consider lets compute the skewness using both approaches while counting the number of times `g()` is evaluated. This is the same as the number of simulations run required to arive at the solution. First consider the scalar-valued approach. Here, we follow the same method as before, but we add a counter to our function evaluation that store the number of function calls for each expectation calculation to an array.
-
-```julia
-function g(sol, power, counter)
-    counter[power] = counter[power] + 1
-    sol(4.0)[1]^power
-end
-
-counters = [0,0,0]
-x_koop = expectation(s->g(s,1,counters), prob, u0_dist, p, Koopman(), Tsit5())
-x2_koop = expectation(s->g(s,2,counters), prob, u0_dist, p, Koopman(), Tsit5())
-x3_koop = expectation(s->g(s,3,counters), prob, u0_dist, p, Koopman(), Tsit5())
-counters
-```
-
-Leading to a total of `j sum(counters)` function evaluations.
-
-Now, lets compare this to the vector-valued approach
-```julia
-function g(sol, counter) 
-    counter[1] = counter[1] + 1
-    v = sol(4.0)[1]
-    [v, v^2, v^3]
-end
-
-counter = [0]
-expectation(s->g(s,counter), prob, u0_dist, p, Koopman(), Tsit5(); nout = 3)
-counter
-```
-
-This is `j round(counter[1]/sum(counters)*100,digits=2)`% the number of simulations required when using scalar-valued expectations. Note, how the number of evaluations used in the vector-valued form is equivelent to maximum number of evaluations for the 3 scalar-valued expectation calls.
 
 ## Batch-Mode
 It is also possible to solve the various simulation in parallel by using the `batch` kwarg and a batch-mode supported quadrature algorithm via the `quadalg` kwarg. To view the list of batch compatible quadrature algorithms, refer to [Quadrature.jl](https://github.com/SciML/Quadrature.jl). Note: Batch-mode operation is built on top of DifferentialEquation.jl's `EnsembleProblem`. See the [EnsembleProblem documentation](https://diffeq.sciml.ai/stable/features/ensemble/) for additional options.
