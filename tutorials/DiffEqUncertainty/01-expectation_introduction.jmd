@@ -1,10 +1,10 @@
 <!-- 
-using Pkg, DiffEqTutorials
-cd(joinpath(dirname(pathof(DiffEqTutorials)), ".."))
+using Pkg, SciMLTutorials
+cd(joinpath(dirname(pathof(SciMLTutorials)), ".."))
 Pkg.pkg"activate ."
 Pkg.pkg"instantiate"
-DiffEqTutorials.weave_file("DiffEqUncertainty","01-expectation_introduction.jmd") 
-DiffEqTutorials.weave_file("DiffEqUncertainty","01-expectation_introduction.jmd",(:github,))
+SciMLTutorials.weave_file("DiffEqUncertainty","01-expectation_introduction.jmd") 
+SciMLTutorials.weave_file("DiffEqUncertainty","01-expectation_introduction.jmd",(:github,))
 
 -->
 
@@ -20,14 +20,13 @@ First, lets consider the following linear model.
 $$u' = p u$$
 
 ```julia
-f(u,p,t) = p*u;
+f(u,p,t) = p.*u
 ```
 
 We then wish to solve this model on the timespace `t=0.0` to `t=10.0`, with an intial condition `u0=10.0` and parameter `p=-0.3`. We can then setup the differential equations, solve, and plot as follows
 
 ```julia
 using DifferentialEquations, Plots
-f(u,p,t) = p.*u
 u0 = [10.0]
 p = [-0.3]
 tspan = (0.0,10.0)
@@ -283,56 +282,105 @@ counter
 
 This is `j round(counter[1]/sum(counters)*100,digits=2)`% the number of simulations required when using scalar-valued expectations. Note, how the number of evaluations used in the vector-valued form is equivelent to maximum number of evaluations for the 3 scalar-valued expectation calls.
 
+## Batch-Mode
+It is also possible to solve the various simulation in parallel by using the `batch` kwarg and a batch-mode supported quadrature algorithm via the `quadalg` kwarg. To view the list of batch compatible quadrature algorithms, refer to [Quadrature.jl](https://github.com/SciML/Quadrature.jl). Note: Batch-mode operation is built on top of DifferentialEquation.jl's `EnsembleProblem`. See the [EnsembleProblem documentation](https://diffeq.sciml.ai/stable/features/ensemble/) for additional options.
+
+The default quadtrature algorithm used by `expectation()` does not support batch-mode evaluation. So, we first load dependencies for additional quadrature algorithms
+
+```julia
+using Quadrature, Cuba
+```
+
+We then solve our expectation as before using a `batch=10` multi-thread parallelization via `EnsembleThreads()` of Cuba's SUAVE algorithm. However, in this case we introduce additional uncertainty in the model parameter.
+
+```julia
+u0_dist = [truncated(Normal(3.0,2.0),-5,11)]
+p_dist = [truncated(Normal(-.7, .1), -1,0)]
+
+g(sol) = sol(6.0)[1]
+
+expectation(g, prob, u0_dist, p_dist, Koopman(), Tsit5(), EnsembleThreads(); 
+                quadalg = CubaSUAVE(), batch=10)[1]
+```
+
+Now, lets compare the performance of the batch and non-batch modes
+
+```julia
+using BenchmarkTools
+
+@btime expectation(g, prob, u0_dist, p_dist, Koopman(), Tsit5(); 
+                quadalg = CubaSUAVE())[1]
+```
+
+```julia
+@btime expectation(g, prob, u0_dist, p_dist, Koopman(), Tsit5(), EnsembleThreads(); 
+                quadalg = CubaSUAVE(), batch=10)[1]
+```
+
+It is also possible to parallelize across the GPU. However, one must be careful of the limitations of ensemble solutions with the GPU. Please refer to [DiffEqGPU.jl](https://github.com/SciML/DiffEqGPU.jl) for details.
+
+Here we load `DiffEqGPU` and modify our problem to use Float32 and to put the ODE in the required GPU form
+
+```julia
+using DiffEqGPU
+
+function f(du, u,p,t) 
+    @inbounds begin
+        du[1] = p[1]*u[1];
+    end
+    nothing
+end
+
+u0 = Float32[10.0]
+p = Float32[-0.3]
+tspan = (0.0f0,10.0f0)
+prob = ODEProblem(f,u0,tspan,p)
+
+g(sol) = sol(6.0)[1]
+
+u0_dist = [truncated(Normal(3.0f0,2.0f0),-5f0,11f0)]
+p_dist = [truncated(Normal(-.7f0, .1f0), -1f0,0f0)]
+
+@btime expectation(g, prob, u0_dist, p_dist, Koopman(), Tsit5(), EnsembleGPUArray(); 
+                   quadalg = CubaSUAVE(), batch=1000)[1]
+```
+
+The performance gains realized by leveraging batch GPU processing is problem dependent. In this case, the number of batch evaluations required to overcome the overhead of using the GPU exceeds the number of simulations required to converge to the quadratrue solution.
+
 
 
 
 ## Conclusion
 
 ```{julia; echo=false; skip="notebook"}
-using DiffEqTutorials
-DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+using SciMLTutorials
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```
 
 
 <!--
+## Batch + nout
+```julia
+using DiffEqGPU
 
+function f(du, u,p,t) 
+    @inbounds begin
+        du[1] = p[1]*u[1];
+    end
+    nothing
+end
 
-## Vector valued w/ std
-saveat = tspan[1]:.5:tspan[2]
-cost(sol) = [Matrix(sol)'; (Matrix(sol).^2)']
+u0 = Float32[10.0]
+p = Float32[-0.3]
+tspan = (0.0f0,10.0f0)
+prob = ODEProblem(f,u0,tspan,p)
 
-mean_mc = expectation(cost, prob, u0_dist, p, MonteCarlo(), Tsit5(); trajectories=100_000, nout = length(saveat)*2, saveat=saveat)
-mean_koop = expectation(cost, prob, u0_dist, p, Koopman(), Tsit5(); nout = length(saveat)*2, saveat=saveat)
+g(sol) = [sol(4.0)[1], sol(6.0)[1]]
 
-μ = mean_koop.u[1:length(saveat)]
-σ = sqrt.(mean_koop.u[length(saveat)+1:end] - μ.^2)
+u0_dist = [truncated(Normal(3.0f0,2.0f0),-5f0,11f0)]
+p_dist = [truncated(Normal(-.7f0, .1f0), -1f0,0f0)]
 
-plot(t->exp(p[1]*t)*mean(u0_dist[1]),tspan...)
-plot!(t->sqrt(exp(2*p[1]*t)*var(u0_dist[1]))+exp(p[1]*t)*mean(u0_dist[1]),tspan...)
-plot!(t->-sqrt(exp(2*p[1]*t)*var(u0_dist[1]))+exp(p[1]*t)*mean(u0_dist[1]),tspan...)
-scatter!(collect(saveat),μ,marker=:o)
-scatter!(collect(saveat),μ+σ,marker=:o)
-scatter!(collect(saveat),μ-σ,marker=:o)
-
-
-
-#### Random param
-u0_dist = [truncated(Normal(3.0,2.0),-5,11)]
-p_dist = [truncated(Normal(-.7, .1), -1,0)]
-
-saveat = tspan[1]:.5:tspan[2]
-cost(sol) = sol(10.0)[1]
-
-@time mean_mc = expectation(cost, prob, u0_dist, p_dist, MonteCarlo(), Tsit5(); trajectories=100_000, saveat=saveat)
-@time mean_koop = expectation(cost, prob, u0_dist, p_dist, Koopman(), Tsit5(); saveat=saveat, maxiters = 10_000)
-
-
-#### Batch mode
-using Quadrature, Cuba, BenchmarkTools
-@time mean_mc = expectation(cost, prob, u0_dist, p_dist, MonteCarlo(), Tsit5(), EnsembleThreads(); trajectories=100_000, saveat=saveat)
-@time mean_koop = expectation(cost, prob, u0_dist, p_dist, Koopman(), Tsit5(), EnsembleThreads(); saveat=saveat,quadalg = CubaCuhre(), batch=100)[1]
-
-using DiffEqTutorials
-DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
-
+expectation(g, prob, u0_dist, p_dist, Koopman(), Tsit5(), EnsembleGPUArray(); 
+            quadalg = CubaSUAVE(), batch=1000, nout=2)[1]
+```
 -->
