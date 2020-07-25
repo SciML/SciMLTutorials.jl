@@ -1,10 +1,12 @@
 ---
 author: "Chris Rackauckas"
-title: "DifferentialEquations.jl Workshop Exercises"
+title: "SciML Workshop Exercises"
 ---
 
 
-These exercises teach common workflows which involve DifferentialEquations.jl.
+These exercises teach common workflows which involve SciML's tools like
+DifferentialEquations.jl, DiffEqFlux.jl, and the connections to parts like
+stochastic differential equations and Bayesian estimation.
 The designation (B) is for "Beginner", meaning that a user new to the package
 should feel comfortable trying this exercise. An exercise designated (I) is
 for "Intermediate", meaning the user may want to have some previous background
@@ -44,7 +46,7 @@ The exercises are described as follows:
 This exercise worksheet is meant to be a living document leading new users through
 a deep dive of the DifferentialEquations.jl feature set. If you further suggestions
 or want to contribute new problems, please open an issue or PR at the
-DiffEqTutorials.jl repository.
+SciMLTutorials.jl repository.
 
 # Problem 1: Investigating Sources of Randomness and Uncertainty in a Stiff Biological System (B)
 
@@ -451,7 +453,7 @@ at `x=y=0` and see a periodic orbit, e.g., `ts=0:0.05:22; plot(ts, sol1.(ts,
 idxs=1))`.
 
 If you are not familiar with this process, see
-[the Gierer-Meinhardt example from the DiffEqTutorials.](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/03-optimizing_diffeq_code.html)
+[the Gierer-Meinhardt example from the SciMLTutorials.](http://juliadiffeq.org/SciMLTutorials.jl/html/introduction/03-optimizing_diffeq_code.html)
 
 Note: Start by doing the simplest implementation!
 
@@ -459,7 +461,7 @@ Note: Start by doing the simplest implementation!
 
 PDEs are expensive to solve, and so we will go nowhere without some code
 optimizing! Follow the steps described in the
-[the Gierer-Meinhardt example from the DiffEqTutorials](http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/03-optimizing_diffeq_code.html)
+[the Gierer-Meinhardt example from the SciMLTutorials](http://juliadiffeq.org/SciMLTutorials.jl/html/introduction/03-optimizing_diffeq_code.html)
 to optimize your Brusselator code. Try other formulations and see what ends
 up the fastest! Find a trade-off between performance and simplicity that suits
 your needs.
