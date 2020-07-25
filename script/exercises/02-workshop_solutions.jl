@@ -515,6 +515,6 @@ ensprob = EnsembleProblem(prob_gpu, prob_func=prob_func)
 sim = solve(ensprob, Tsit5(), EnsembleGPUArray(), trajectories=length(z0))
 
 
-using DiffEqTutorials
-DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+using SciMLTutorials
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 

@@ -1,6 +1,6 @@
 ---
 author: "Chris Rackauckas"
-title: "DifferentialEquations.jl Workshop Exercise Solutions"
+title: "SciML Workshop Exercise Solutions"
 ---
 ````julia
 using DifferentialEquations
@@ -54,7 +54,7 @@ prob = ODEProblem(orego,[1.0,2.0,3.0],(0.0,50.0),p)
 
 
 ````
-901.921 ms (8723143 allocations: 920.67 MiB)
+893.348 ms (8723143 allocations: 920.67 MiB)
 retcode: Success
 Interpolation: specialized 4th order "free" interpolation
 t: 872306-element Array{Float64,1}:
@@ -109,7 +109,7 @@ u: 872306-element Array{Array{Float64,1},1}:
 
 
 ````
-535.048 μs (1907 allocations: 130.11 KiB)
+534.668 μs (1907 allocations: 130.11 KiB)
 retcode: Success
 Interpolation: 3rd order Hermite
 t: 110-element Array{Float64,1}:
@@ -193,14 +193,22 @@ sol = solve(prob,ImplicitRKMil()); plot(sol)
 ````
 
 
-![](figures/02-workshop_solutions_7_1.png)
+````
+Error: InexactError: Int64(Inf)
+````
+
+
 
 ````julia
 sol = solve(prob,ImplicitRKMil()); plot(sol)
 ````
 
 
-![](figures/02-workshop_solutions_8_1.png)
+````
+Error: InexactError: Int64(Inf)
+````
+
+
 
 
 
@@ -634,7 +642,7 @@ sol1 = @time solve(prob1, TRBDF2(autodiff=false));
 
 
 ````
-9.167884 seconds (8.02 M allocations: 575.347 MiB, 0.55% gc time)
+9.267829 seconds (8.02 M allocations: 575.955 MiB, 0.94% gc time)
 retcode: Success
 Interpolation: 3rd order Hermite
 t: 79-element Array{Float64,1}:
@@ -841,7 +849,7 @@ sol2 = @time solve(prob2, TRBDF2())
 
 
 ````
-8.601443 seconds (9.98 M allocations: 677.558 MiB, 1.12% gc time)
+8.669444 seconds (9.99 M allocations: 678.160 MiB, 0.52% gc time)
 ````
 
 
@@ -852,7 +860,7 @@ sol2_2 = @time solve(prob2, CVODE_BDF())
 
 
 ````
-34.837170 seconds (1.79 M allocations: 117.777 MiB)
+35.178275 seconds (1.79 M allocations: 118.117 MiB)
 retcode: Success
 Interpolation: 3rd order Hermite
 t: 259-element Array{Float64,1}:
@@ -1050,7 +1058,7 @@ sol_trbdf2 = @time solve(prob6, TRBDF2(linsolve=LinSolveGMRES())); # no precondi
 
 
 ````
-11.550826 seconds (12.98 M allocations: 4.894 GiB, 2.89% gc time)
+11.528428 seconds (12.99 M allocations: 4.895 GiB, 2.71% gc time)
 ````
 
 
@@ -1061,7 +1069,7 @@ sol_trbdf2 = @time solve(prob6, TRBDF2(linsolve=LinSolveGMRES(Pl=lu(Wapprox))));
 
 
 ````
-3.477566 seconds (6.14 M allocations: 715.626 MiB, 2.39% gc time)
+3.489017 seconds (6.15 M allocations: 716.016 MiB, 1.73% gc time)
 ````
 
 
@@ -1072,7 +1080,7 @@ sol_trbdf2 = @time solve(prob6, TRBDF2(linsolve=LinSolveGMRES(Pl=precond))); # A
 
 
 ````
-3.025996 seconds (6.18 M allocations: 535.588 MiB, 1.50% gc time)
+3.107065 seconds (6.18 M allocations: 536.155 MiB, 2.83% gc time)
 ````
 
 
@@ -1083,7 +1091,7 @@ sol_cvodebdf = @time solve(prob2, CVODE_BDF(linear_solver=:GMRES));
 
 
 ````
-1.652381 seconds (1.90 M allocations: 204.214 MiB)
+1.651483 seconds (1.90 M allocations: 204.526 MiB)
 retcode: Success
 Interpolation: 3rd order Hermite
 t: 1928-element Array{Float64,1}:
@@ -1282,7 +1290,7 @@ sol7 = @time solve(prob7, KenCarp4())
 
 
 ````
-6.338791 seconds (11.97 M allocations: 782.827 MiB, 1.38% gc time)
+6.407620 seconds (11.98 M allocations: 783.753 MiB, 1.66% gc time)
 ````
 
 
@@ -1295,7 +1303,7 @@ sol7_2 = @time solve(prob7_2, ETDRK4(krylov=true), dt=1)
 
 
 ````
-2.811094 seconds (8.82 M allocations: 560.108 MiB, 1.86% gc time)
+2.917810 seconds (8.83 M allocations: 560.794 MiB, 4.01% gc time)
 ````
 
 
@@ -1633,7 +1641,7 @@ DiffEqBase.ODESolution{Float32,2,Array{SubArray{Float32,1,Array{Float32,2},
 Tuple{Base.Slice{Base.OneTo{Int64}},Int64},true},1},Nothing,Nothing,Array{F
 loat32,1},Nothing,DiffEqBase.ODEProblem{Array{Float32,1},Tuple{Float32,Floa
 t32},true,DiffEqBase.NullParameters,DiffEqBase.ODEFunction{true,typeof(Main
-.##WeaveSandBox#2253.henon_gpu),LinearAlgebra.UniformScaling{Bool},Nothing,
+.##WeaveSandBox#2247.henon_gpu),LinearAlgebra.UniformScaling{Bool},Nothing,
 Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Not
 hing,Nothing},Base.Iterators.Pairs{Union{},Union{},Tuple{},NamedTuple{(),Tu
 ple{}}},DiffEqBase.StandardODEProblem},OrdinaryDiffEq.Tsit5,DiffEqBase.Line
@@ -1661,12 +1669,13 @@ Tuple{Base.Slice{Base.OneTo{Int64}},Int64},true},1}},DiffEqBase.DEStats}
 
 ## Appendix
 
- This tutorial is part of the DiffEqTutorials.jl repository, found at: <https://github.com/JuliaDiffEq/DiffEqTutorials.jl>
+ This tutorial is part of the SciMLTutorials.jl repository, found at: <https://github.com/SciMLTutorials/SciMLTutorials.jl>.
+ For more information on doing scientific machine learning (SciML) with open source software, check out <https://sciml.ai/>.
 
 To locally run this tutorial, do the following commands:
 ```
-using DiffEqTutorials
-DiffEqTutorials.weave_file("exercises","02-workshop_solutions.jmd")
+using SciMLTutorials
+SciMLTutorials.weave_file("exercises","02-workshop_solutions.jmd")
 ```
 
 Computer Information:
@@ -1680,10 +1689,10 @@ Platform Info:
   LIBM: libopenlibm
   LLVM: libLLVM-8.0.1 (ORCJIT, skylake)
 Environment:
+  JULIA_LOAD_PATH = /builds/JuliaGPU/DiffEqTutorials.jl:
   JULIA_DEPOT_PATH = /builds/JuliaGPU/DiffEqTutorials.jl/.julia
-  JULIA_CUDA_MEMORY_LIMIT = 536870912
-  JULIA_PROJECT = @.
-  JULIA_NUM_THREADS = 4
+  JULIA_CUDA_MEMORY_LIMIT = 2147483648
+  JULIA_NUM_THREADS = 8
 
 ```
 
@@ -1693,15 +1702,15 @@ Package Information:
 Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/exercises/Project.toml`
 [2169fc97-5a83-5252-b627-83903c6c433c] AlgebraicMultigrid 0.3.0
 [6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf] BenchmarkTools 0.5.0
-[f3b72e0c-5b89-59e1-b016-84e28bfd966d] DiffEqDevTools 2.22.0
-[aae7a2af-3d4f-5e19-a356-7da93b79d9d0] DiffEqFlux 1.16.0
+[f3b72e0c-5b89-59e1-b016-84e28bfd966d] DiffEqDevTools 2.24.0
+[aae7a2af-3d4f-5e19-a356-7da93b79d9d0] DiffEqFlux 1.17.0
 [071ae1c0-96b5-11e9-1965-c90190d839ea] DiffEqGPU 1.3.0
 [9fdde737-9c7f-55bf-ade8-46b3f136cc48] DiffEqOperators 4.10.0
-[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.14.0
+[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.15.0
 [587475ba-b771-5e3f-ad9e-33799f191a9c] Flux 0.10.4
-[429524aa-4258-5aef-a3af-852621145aeb] Optim 0.21.0
-[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.5.1
-[47a9eef4-7e08-11e9-0b38-333d64bd3804] SparseDiffTools 1.9.0
+[429524aa-4258-5aef-a3af-852621145aeb] Optim 0.22.0
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.5.6
+[47a9eef4-7e08-11e9-0b38-333d64bd3804] SparseDiffTools 1.9.1
 [684fba80-ace3-11e9-3d08-3bc7ed6f96df] SparsityDetection 0.3.3
-[c3572dad-4567-51f8-b174-8c6c989267f4] Sundials 4.2.4
+[c3572dad-4567-51f8-b174-8c6c989267f4] Sundials 4.2.5
 ```
