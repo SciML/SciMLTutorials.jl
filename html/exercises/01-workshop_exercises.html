@@ -3,7 +3,7 @@
 <HEAD>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>DifferentialEquations.jl Workshop Exercises</title>
+  <title>SciML Workshop Exercises</title>
   
 
   <script type="text/x-mathjax-config">
@@ -657,12 +657,12 @@ div.title {text-align: center;}
     <div class = "row">
       <div class = "col-md-12 twelve columns">
         <div class="title">
-          <h1 class="title">DifferentialEquations.jl Workshop Exercises</h1>
+          <h1 class="title">SciML Workshop Exercises</h1>
           <h5>Chris Rackauckas</h5>
           
         </div>
 
-        <p>These exercises teach common workflows which involve DifferentialEquations.jl. The designation &#40;B&#41; is for &quot;Beginner&quot;, meaning that a user new to the package should feel comfortable trying this exercise. An exercise designated &#40;I&#41; is for &quot;Intermediate&quot;, meaning the user may want to have some previous background in DifferentialEquations.jl or try some &#40;B&#41; exercises first. The additional &#40;E&#41; designation is for &quot;Experienced&quot;, which are portions of exercises which may take some work.</p>
+        <p>These exercises teach common workflows which involve SciML&#39;s tools like DifferentialEquations.jl, DiffEqFlux.jl, and the connections to parts like stochastic differential equations and Bayesian estimation. The designation &#40;B&#41; is for &quot;Beginner&quot;, meaning that a user new to the package should feel comfortable trying this exercise. An exercise designated &#40;I&#41; is for &quot;Intermediate&quot;, meaning the user may want to have some previous background in DifferentialEquations.jl or try some &#40;B&#41; exercises first. The additional &#40;E&#41; designation is for &quot;Experienced&quot;, which are portions of exercises which may take some work.</p>
 <p>The exercises are described as follows:</p>
 <ul>
 <li><p>Exercise 1 takes the user through solving a stiff ordinary differential equation and using the ModelingToolkit.jl to automatically convert the function to a symbolic form to derive the analytical Jacobian to speed up the solver. The same biological system is then solved with stochasticity, utilizing EnsembleProblems to understand 95&#37; bounds on the solution. Finally, probabilistic programming is employed to perform Bayesian parameter estimation of the parameters against data.</p>
@@ -678,7 +678,7 @@ div.title {text-align: center;}
 <li><p>Exercise 6 takes the user through training a neural stochastic differential equation, using GPU-accleration and adjoints through Flux.jl&#39;s neural network framework to build efficient training codes.</p>
 </li>
 </ul>
-<p>This exercise worksheet is meant to be a living document leading new users through a deep dive of the DifferentialEquations.jl feature set. If you further suggestions or want to contribute new problems, please open an issue or PR at the DiffEqTutorials.jl repository.</p>
+<p>This exercise worksheet is meant to be a living document leading new users through a deep dive of the DifferentialEquations.jl feature set. If you further suggestions or want to contribute new problems, please open an issue or PR at the SciMLTutorials.jl repository.</p>
 <h1>Problem 1: Investigating Sources of Randomness and Uncertainty in a Stiff Biological System &#40;B&#41;</h1>
 <p>In this problem we will walk through the basics of simulating models with DifferentialEquations.jl. Let&#39;s take the <a href="https://www.radford.edu/~thompson/vodef90web/problems/demosnodislin/Demos_Pitagora/DemoOrego/demoorego.pdf">Oregonator model of the Belousov-Zhabotinskii chemical reaction system</a>. This system describes a classical example in non-equilibrium thermodynmics and is a well-known natural chemical oscillator.</p>
 <h2>Part 1: Simulating the Oregonator ODE model</h2>
@@ -861,10 +861,10 @@ u(x,y+1,t) &= u(x,y,t)\end{align}
 <p>on a timespan of <span class="math">$t \in [0,22]$</span>.</p>
 <p>To solve this PDE, we will discretize it into a system of ODEs with the finite difference method. We discretize <code>u</code> and <code>v</code> into arrays of the values at each time point: <code>u&#91;i,j&#93; &#61; u&#40;i*dx,j*dy&#41;</code> for some choice of <code>dx</code>/<code>dy</code>, and same for <code>v</code>. Then our ODE is defined with <code>U&#91;i,j,k&#93; &#61; &#91;u v&#93;</code>. The second derivative operator, the Laplacian, discretizes to become a tridiagonal matrix with <code>&#91;1 -2 1&#93;</code> and a <code>1</code> in the top right and bottom left corners. The nonlinear functions are then applied at each point in space &#40;they are broadcast&#41;. Use <code>dx&#61;dy&#61;1/32</code>.</p>
 <p>You will know when you have the correct solution when you plot the solution at <code>x&#61;y&#61;0</code> and see a periodic orbit, e.g., <code>ts&#61;0:0.05:22; plot&#40;ts, sol1.&#40;ts, idxs&#61;1&#41;&#41;</code>.</p>
-<p>If you are not familiar with this process, see <a href="http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/03-optimizing_diffeq_code.html">the Gierer-Meinhardt example from the DiffEqTutorials.</a></p>
+<p>If you are not familiar with this process, see <a href="http://juliadiffeq.org/SciMLTutorials.jl/html/introduction/03-optimizing_diffeq_code.html">the Gierer-Meinhardt example from the SciMLTutorials.</a></p>
 <p>Note: Start by doing the simplest implementation&#33;</p>
 <h2>Part 2: Optimizing the BRUSS Code</h2>
-<p>PDEs are expensive to solve, and so we will go nowhere without some code optimizing&#33; Follow the steps described in the <a href="http://juliadiffeq.org/DiffEqTutorials.jl/html/introduction/03-optimizing_diffeq_code.html">the Gierer-Meinhardt example from the DiffEqTutorials</a> to optimize your Brusselator code. Try other formulations and see what ends up the fastest&#33; Find a trade-off between performance and simplicity that suits your needs.</p>
+<p>PDEs are expensive to solve, and so we will go nowhere without some code optimizing&#33; Follow the steps described in the <a href="http://juliadiffeq.org/SciMLTutorials.jl/html/introduction/03-optimizing_diffeq_code.html">the Gierer-Meinhardt example from the SciMLTutorials</a> to optimize your Brusselator code. Try other formulations and see what ends up the fastest&#33; Find a trade-off between performance and simplicity that suits your needs.</p>
 <h2>Part 3: Exploiting Jacobian Sparsity with Color Differentiation</h2>
 <p>Use the <code>sparsity&#33;</code> function from <a href="https://github.com/JuliaDiffEq/SparseDiffTools.jl">SparseDiffTools</a> to generate the sparsity pattern for the Jacobian of this problem. Follow the documentations <a href="https://docs.juliadiffeq.org/dev/features/performance_overloads">on the DiffEqFunction page</a> to specify the sparsity pattern of the Jacobian. Generate an add the color vector to speed up the computation of the Jacobian.</p>
 <h2>&#40;Optional&#41; Part 4: Structured Jacobians</h2>
@@ -992,7 +992,7 @@ H(p,q) = \frac{1}{2}(p_1^2 + p_2^2) + \frac{1}{2}(q_1^2+q_2^2+2q_1^2 q_2 - \frac
         <div class="footer">
           <p>
             Published from <a href="01-workshop_exercises.jmd">01-workshop_exercises.jmd</a>
-            using <a href="http://github.com/JunoLab/Weave.jl">Weave.jl</a> v0.10.2 on 2020-07-01.
+            using <a href="http://github.com/JunoLab/Weave.jl">Weave.jl</a> v0.10.2 on 2020-07-25.
           </p>
         </div>
       </div>
