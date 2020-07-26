@@ -4,8 +4,8 @@
 
 SciMLTutorials.jl holds PDFs, webpages, and interactive Jupyter notebooks
 showing how to utilize the software in the [SciML Scientific Machine Learning ecosystem](https://sciml.ai/). 
-This set of tutorials was made to complement the [documentation](http://docs.sciml.org/dev/) 
-and the [devdocs](http://devdocs.sciml.org/dev/)
+This set of tutorials was made to complement the [documentation](https://sciml.ai/documentation/) 
+and the [devdocs](http://devdocs.sciml.ai/latest/)
 by providing practical examples of the concepts. For more details, please
 consult the docs.
 
