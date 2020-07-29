@@ -91,7 +91,7 @@ u: 999977-element Array{Array{Float64,1},1}:
 
 Here it shows that maximum iterations were reached. Another thing that can happen is that the solution can return that the solver was unstable (exploded to infinity) or that `dt` became too small. If these happen, the first thing to do is to check that your model is correct. It could very well be that you made an error that causes the model to be unstable!
 
-If the model is the problem, then stiffness could be the reason. We can thus hint to the solver to use an appropriate method:
+If the model is not the problem, then stiffness could be the reason. We can thus hint to the solver to use an appropriate method:
 
 ````julia
 sol = solve(prob,alg_hints = [:stiff])

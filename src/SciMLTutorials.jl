@@ -73,7 +73,7 @@ function tutorial_footer(folder=nothing, file=nothing; remove_homedir=true)
     display("text/markdown", """
     ## Appendix
 
-     This tutorial is part of the SciMLTutorials.jl repository, found at: <https://github.com/SciMLTutorials/SciMLTutorials.jl>.
+     This tutorial is part of the SciMLTutorials.jl repository, found at: <https://github.com/SciML/SciMLTutorials.jl>.
      For more information on doing scientific machine learning (SciML) with open source software, check out <https://sciml.ai/>.
     """)
     if folder !== nothing && file !== nothing
