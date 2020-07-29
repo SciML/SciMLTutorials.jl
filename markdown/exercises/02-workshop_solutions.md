@@ -1669,7 +1669,7 @@ Tuple{Base.Slice{Base.OneTo{Int64}},Int64},true},1}},DiffEqBase.DEStats}
 
 ## Appendix
 
- This tutorial is part of the SciMLTutorials.jl repository, found at: <https://github.com/SciML/SciMLTutorials.jl>.
+ This tutorial is part of the SciMLTutorials.jl repository, found at: <https://github.com/SciMLTutorials/SciMLTutorials.jl>.
  For more information on doing scientific machine learning (SciML) with open source software, check out <https://sciml.ai/>.
 
 To locally run this tutorial, do the following commands:
