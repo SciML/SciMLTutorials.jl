@@ -9,7 +9,7 @@ SciMLTutorials.weave_file("DiffEqUncertainty","02-AD_and_optimization.jmd")
 -->
 
 ---
-title: Optimization Under Uncertainty with DiffEqUncertainty
+title: Optimization Under Uncertainty with DiffEqUncertainty.jl
 author: Adam Gerlach
 ---
 

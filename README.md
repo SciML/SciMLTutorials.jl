@@ -54,6 +54,9 @@ SciMLTutorials.open_notebooks()
   - [Solving Equations with Julia-Defined Types](http://tutorials.juliadiffeq.org/html/type_handling/01-number_types.html)
   - [Numbers with Uncertainties](http://tutorials.juliadiffeq.org/html/type_handling/02-uncertainties.html)
   - [Unit Check Arithmetic via Unitful.jl](http://tutorials.juliadiffeq.org/html/type_handling/03-unitful.html)
+- DiffEqUncertainty
+  - [An Intro to Expectations via DiffEqUncertainty.jl](http://tutorials.juliadiffeq.org/html/DiffEqUncertainty/01-expectation_introduction.html)
+  - [Optimization Under Uncertainty with DiffEqUncertainty.jl](http://tutorials.juliadiffeq.org/html/DiffEqUncertainty/02-AD_and_optimization.html)
 - Advanced
   - [A 2D Cardiac Electrophysiology Model (CUDA-accelerated PDE solver)](http://tutorials.juliadiffeq.org/html/advanced/01-beeler_reuter.html)
   - [Solving Stiff Equations](http://tutorials.juliadiffeq.org/html/advanced/02-advanced_ODE_solving.html)
