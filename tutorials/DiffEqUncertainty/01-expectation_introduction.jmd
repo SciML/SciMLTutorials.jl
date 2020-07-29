@@ -12,7 +12,7 @@ title: An Intro to Expectations via DiffEqUncertainty.jl
 author: Adam Gerlach
 ---
 
-## Linear Model
+## System Model
 
 First, lets consider the following linear model.
 
@@ -22,7 +22,7 @@ $$u' = p u$$
 f(u,p,t) = p.*u
 ```
 
-We then wish to solve this model on the timespace `t=0.0` to `t=10.0`, with an intial condition `u0=10.0` and parameter `p=-0.3`. We can then setup the differential equations, solve, and plot as follows
+We then wish to solve this model on the timespan `t=0.0` to `t=10.0`, with an intial condition `u0=10.0` and parameter `p=-0.3`. We can then setup the differential equations, solve, and plot as follows
 
 ```julia
 using DifferentialEquations, Plots
@@ -58,7 +58,7 @@ plot(ensemblesol, vars = (0,1), lw=1,alpha=0.1, label=nothing, idxs = 1:250)
 ```
 
 
-Given the ensemble solution, we could then compute the expectation of a function $g\left(\cdot\right)$ of the system state `u` at any time in the timespan, e.g. the state itself at `t=4.0` as
+Given the ensemble solution, we can then compute the expectation of a function $g\left(\cdot\right)$ of the system state `u` at any time in the timespan, e.g. the state itself at `t=4.0` as
 
 ```julia
 g(sol) = sol(4.0)
@@ -92,7 +92,7 @@ $$e^{pt}\mathbb{E}\left[u_0\right]$$
 exp(p[1]*4.0)*mean(u0_dist[1])
 ```
 
-We see that for this case the `Koopman()` algorithm produces a more accurate solution than `MonteCarlo()`. Not only is is more accurate, but it is also much faster
+We see that for this case the `Koopman()` algorithm produces a more accurate solution than `MonteCarlo()`. Not only is it more accurate, it is also much faster
 
 ```julia
 @time expectation(g, prob, u0_dist, p, MonteCarlo(), Tsit5(); trajectories=100000)
@@ -102,7 +102,7 @@ We see that for this case the `Koopman()` algorithm produces a more accurate sol
 @time expectation(g, prob, u0_dist, p, Koopman(), Tsit5())
 ```
 
-Changing, the distribution, we arrive at
+Changing the distribution, we arrive at
 
 ```julia
 u0_dist = [Uniform(0.0,10.0)]
@@ -117,7 +117,7 @@ where the analytical solution is
 exp(p[1]*4.0)*mean(u0_dist[1])
 ```
 
-Note, that the `Koopman()` algorithm doesn't currently support infinite or semi-infinite integration domains, where the intogration domain is determined by the extrema of the given distributions. So, trying to using a `Normal` distribution will produce `NaN`
+Note that the `Koopman()` algorithm doesn't currently support infinite or semi-infinite integration domains, where the integration domain is determined by the extrema of the given distributions. So, trying to using a `Normal` distribution will produce `NaN`
 
 ```julia
 u0_dist = [Normal(3.0,2.0)]
@@ -130,14 +130,14 @@ Here, the analytical solution is
 exp(p[1]*4.0)*mean(u0_dist[1])
 ```
 
-Using a truncated distribution will aleviate this problem. However, there is another gotcha. If a large majority of the probability mass of the distribution exists in a small region in the support, then the adaptive methods used to solve the expectation can "miss" the non-zero portions of the distribution and errantly return 0.0.
+Using a truncated distribution will alleviate this problem. However, there is another gotcha. If a large majority of the probability mass of the distribution exists in a small region in the support, then the adaptive methods used to solve the expectation can "miss" the non-zero portions of the distribution and errantly return 0.0.
 
 ```julia
 u0_dist = [truncated(Normal(3.0,2.0),-1000,1000)]
 expectation(g, prob, u0_dist, p, Koopman(), Tsit5())
 ```
 
-whereas truncating a $\pm 4\sigma$ produce the correct result
+whereas truncating at $\pm 4\sigma$ produces the correct result
 ```julia
 u0_dist = [truncated(Normal(3.0,2.0),-5,11)]
 expectation(g, prob, u0_dist, p, Koopman(), Tsit5())
@@ -151,7 +151,7 @@ expectation(g, prob, u0_dist, p, Koopman(), Tsit5())
 ```
 
 ## Vector-Valued Functions
-`expectation()` can also handle vector valued functions. Simply pass the vector valued function and set the `nout` kwarg to the length of the vector the function returns.
+`expectation()` can also handle vector-valued functions. Simply pass the vector-valued function and set the `nout` kwarg to the length of the vector the function returns.
 
 Here, we demonstrate this by computing the expectation of `u` at `t=4.0s` and `t=6.0s`
 
@@ -164,7 +164,7 @@ with analytical solution
 exp.(p.*[4.0,6.0])*mean(u0_dist[1])
 ```
 
-this can be used to compute the expectation at a range of times dynamically
+this can be used to compute the expectation at a range of times simultaneously
 ```julia
 saveat = tspan[1]:.5:tspan[2]
 g(sol) = Matrix(sol)
@@ -179,9 +179,9 @@ scatter!(collect(saveat),mean_koop.u[:],marker=:o, label=nothing)
 ```
 
 ### Benefits of Using Vector-Valued Functions
-In the above examples we used vector valued expectation calculations to compute the various expectations required. Alternatively, one could simply compute multiple scalar-valued expectation. However, in most cases it is more efficient to use the vector-valued form. This is especially true when then ODE to be solved is computationally expensive.
+In the above examples we used vector-valued expectation calculations to compute the various expectations required. Alternatively, one could simply compute multiple scalar-valued expectations. However, in most cases it is more efficient to use the vector-valued form. This is especially true when the ODE to be solved is computationally expensive.
 
-To demonstrate this, lets compute the the expectation of $x$, $x^2$, and $x^3$ using both approaches while counting the number of times `g()` is evaluated. This is the same as the number of simulation runs required to arrive at the solution. First consider the scalar-valued approach. Here, we follow the same method as before, but we add a counter to our function evaluation that stores the number of function calls for each expectation calculation to an array.
+To demonstrate this, lets compute the expectation of $x$, $x^2$, and $x^3$ using both approaches while counting the number of times `g()` is evaluated. This is the same as the number of simulation runs required to arrive at the solution. First, consider the scalar-valued approach. Here, we follow the same method as before, but we add a counter to our function evaluation that stores the number of function calls for each expectation calculation to an array.
 
 ```julia
 function g(sol, power, counter)
@@ -211,13 +211,13 @@ expectation(s->g(s,counter), prob, u0_dist, p, Koopman(), Tsit5(); nout = 3)
 counter
 ```
 
-This is `j round(counter[1]/sum(counters)*100,digits=2)`% the number of simulations required when using scalar-valued expectations. Note how the number of evaluations used in the vector-valued form is equivelent to maximum number of evaluations for the 3 scalar-valued expectation calls.
+This is `j round(counter[1]/sum(counters)*100,digits=2)`% the number of simulations required when using scalar-valued expectations. Note how the number of evaluations used in the vector-valued form is equivelent to the maximum number of evaluations for the 3 scalar-valued expectation calls.
 
 ## Higher-Order Moments
-Leveraging this vector-valued capability, we can also efficiently compute higher order moments.
+Leveraging this vector-valued capability, we can also efficiently compute higher-order central moments.
 
 ### Variance
-The variance of a random variable $X$ is defined as
+The variance, or 2nd central moment, of a random variable $X$ is defined as
 
 $$\mathrm{Var}\left(X\right)=\mathbb{E}\left[\left(X-\mu\right)^2\right]$$
 
@@ -250,7 +250,7 @@ $e^{2pt}\mathrm{Var}\left(u_0\right)$
 exp(2*p[1]*4.0)*var(u0_dist[1])
 ```
 
-This can be computed at multiple time instances as
+This can be computed at multiple time instances as well
 
 ```julia
 saveat = tspan[1]:.5:tspan[2]
@@ -279,10 +279,19 @@ var_koop = koop[2] - mean_koop^2
 (koop[3] - 3.0*mean_koop*var_koop - mean_koop^3) / var_koop^(3/2)
 ```
 
-As the system is linear, we expect the skewness to be unchanged from the inital distribution. Becasue the distribution is a truncated Normal distribution centered on the mean, the skewness is `0.0`
+As the system is linear, we expect the skewness to be unchanged from the inital distribution. Becasue the distribution is a truncated Normal distribution centered on the mean, the true skewness is `0.0`.
+
+### nth Central Moment
+DiffEqUncertainty provides a convenience function `centralmoment` around this approach for higher-order central moments. It takes an integer for the number of central moments you wish to compute. While the rest of the arguments are the same as for  `expectation()`. The following will return central moments 1-5.
+
+```julia
+g(sol) = sol(4.0)[1]
+centralmoment(5, g, prob, u0_dist, p, Koopman(), Tsit5(),
+                ireltol = 1e-9, iabstol = 1e-9)
+```
 
 ## Batch-Mode
-It is also possible to solve the various simulation in parallel by using the `batch` kwarg and a batch-mode supported quadrature algorithm via the `quadalg` kwarg. To view the list of batch compatible quadrature algorithms, refer to [Quadrature.jl](https://github.com/SciML/Quadrature.jl). Note: Batch-mode operation is built on top of DifferentialEquation.jl's `EnsembleProblem`. See the [EnsembleProblem documentation](https://diffeq.sciml.ai/stable/features/ensemble/) for additional options.
+It is also possible to solve the various simulations in parallel by using the `batch` kwarg and a batch-mode supported quadrature algorithm via the `quadalg` kwarg. To view the list of batch compatible quadrature algorithms, refer to [Quadrature.jl](https://github.com/SciML/Quadrature.jl). Note: Batch-mode operation is built on top of DifferentialEquation.jl's `EnsembleProblem`. See the [EnsembleProblem documentation](https://diffeq.sciml.ai/stable/features/ensemble/) for additional options.
 
 The default quadtrature algorithm used by `expectation()` does not support batch-mode evaluation. So, we first load dependencies for additional quadrature algorithms
 
@@ -344,12 +353,7 @@ p_dist = [truncated(Normal(-.7f0, .1f0), -1f0,0f0)]
                    quadalg = CubaSUAVE(), batch=1000)[1]
 ```
 
-The performance gains realized by leveraging batch GPU processing is problem dependent. In this case, the number of batch evaluations required to overcome the overhead of using the GPU exceeds the number of simulations required to converge to the quadratrue solution.
-
-
-
-
-## Conclusion
+The performance gains realized by leveraging batch GPU processing is problem dependent. In this case, the number of batch evaluations required to overcome the overhead of using the GPU exceeds the number of simulations required to converge to the quadrature solution.
 
 ```{julia; echo=false; skip="notebook"}
 using SciMLTutorials
