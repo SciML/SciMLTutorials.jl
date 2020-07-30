@@ -8,3 +8,6 @@ Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 NLopt = "76087f3c-5699-56af-9a33-bf431cd00edd"
 OrdinaryDiffEq = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+
+[compat]
+DiffEqUncertainty = "1.5"
