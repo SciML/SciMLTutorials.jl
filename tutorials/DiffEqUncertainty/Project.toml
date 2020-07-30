@@ -11,3 +11,6 @@ Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 
 [compat]
 BenchmarkTools = "0.5"
+DifferentialEquations = "6.15"
+DiffEqUncertainty = "1.5"
+NLopt = "0.6"
