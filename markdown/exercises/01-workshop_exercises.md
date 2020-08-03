@@ -453,7 +453,7 @@ at `x=y=0` and see a periodic orbit, e.g., `ts=0:0.05:22; plot(ts, sol1.(ts,
 idxs=1))`.
 
 If you are not familiar with this process, see
-[the Gierer-Meinhardt example from the SciMLTutorials.](http://juliadiffeq.org/SciMLTutorials.jl/html/introduction/03-optimizing_diffeq_code.html)
+[the Gierer-Meinhardt example from the SciMLTutorials.](http://tutorials.juliadiffeq.org/html/introduction/03-optimizing_diffeq_code.html)
 
 Note: Start by doing the simplest implementation!
 
@@ -461,7 +461,7 @@ Note: Start by doing the simplest implementation!
 
 PDEs are expensive to solve, and so we will go nowhere without some code
 optimizing! Follow the steps described in the
-[the Gierer-Meinhardt example from the SciMLTutorials](http://juliadiffeq.org/SciMLTutorials.jl/html/introduction/03-optimizing_diffeq_code.html)
+[the Gierer-Meinhardt example from the SciMLTutorials](http://tutorials.juliadiffeq.org/html/introduction/03-optimizing_diffeq_code.html)
 to optimize your Brusselator code. Try other formulations and see what ends
 up the fastest! Find a trade-off between performance and simplicity that suits
 your needs.
