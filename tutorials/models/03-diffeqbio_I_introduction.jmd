@@ -7,7 +7,7 @@ DiffEqBiological.jl is a domain specific language (DSL) for writing chemical
 reaction networks in Julia. The generated chemical reaction network model can
 then be translated into a variety of mathematical models which can be solved
 using components of the broader
-[DifferentialEquations.jl](http://juliadiffeq.org/) ecosystem.
+[DifferentialEquations.jl](http://sciml.ai/) ecosystem.
 
 In this tutorial we'll provide an introduction to using DiffEqBiological to
 specify chemical reaction networks, and then to solve ODE, jump, tau-leaping and
@@ -29,7 +29,7 @@ pyplot(fmt=:svg);
 We now construct the reaction network. The basic types of arrows and predefined
 rate laws one can use are discussed in detail within the DiffEqBiological
 [Chemical Reaction Models
-documentation](https://docs.juliadiffeq.org/dev/models/biological). Here
+documentation](https://docs.sciml.ai/dev/models/biological). Here
 we use a mix of first order, zero order and repressive Hill function rate laws.
 Note, $\varnothing$ corresponds to the empty state, and is used for zeroth order
 production and first order degradation reactions:
@@ -119,7 +119,7 @@ plot(sol, fmt=:svg)
 
 We see the well-known oscillatory behavior of the repressilator! For more on
 choices of ODE solvers, see the JuliaDiffEq
-[documentation](https://docs.juliadiffeq.org/dev/solvers/ode_solve).
+[documentation](https://docs.sciml.ai/dev/solvers/ode_solve).
 
 ---
 
@@ -148,7 +148,7 @@ Here we see that oscillations remain, but become much noiser. Note, in
 constructing the `JumpProblem` we could have used any of the SSAs that are part
 of DiffEqJump instead of the `Direct` method, see the list of SSAs (i.e.
 constant rate jump aggregators) in the
-[documentation](https://docs.juliadiffeq.org/latest/types/jump_types/#Constant-Rate-Jump-Aggregators-1).
+[documentation](https://docs.sciml.ai/latest/types/jump_types/#Constant-Rate-Jump-Aggregators-1).
 
 ---
 ## $\tau$-leaping Methods:
@@ -214,7 +214,7 @@ plot(sol, fmt=:svg)
 
 We again have complete freedom to select any of the
 StochasticDifferentialEquations.jl SDE solvers, see the
-[documentation](https://docs.juliadiffeq.org/dev/solvers/sde_solve).
+[documentation](https://docs.sciml.ai/dev/solvers/sde_solve).
 
 ---
 ## What information can be queried from the reaction_network:
@@ -236,14 +236,14 @@ display("text/latex", "$x");
   evaluates and returns the Jacobian, `pJ`, of the ODEs *with respect to the
   parameters*. This allows `reaction_network`s to be used in the
   DifferentialEquations.jl local sensitivity analysis package
-  [DiffEqSensitivity](https://docs.juliadiffeq.org/dev/analysis/sensitivity).
+  [DiffEqSensitivity](https://docs.sciml.ai/dev/analysis/sensitivity).
 
 
 By default, generated `ODEProblems` will be passed the corresponding Jacobian
 function, which will then be used within implicit ODE/SDE methods.
 
 The [DiffEqBiological API
-documentation](https://docs.juliadiffeq.org/dev/apis/diffeqbio) provides
+documentation](https://docs.sciml.ai/dev/apis/diffeqbio) provides
 a thorough description of the many query functions that are provided to access
 network properties and generated functions. In DiffEqBiological Tutorial II
 we'll explore the API.

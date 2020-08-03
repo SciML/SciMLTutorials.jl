@@ -3,7 +3,7 @@ title: Formatting Plots
 author: Chris Rackauckas
 ---
 
-Since the plotting functionality is implemented as a recipe to Plots.jl, [all of the options open to Plots.jl can be used in our plots](https://juliaplots.github.io/supported/). In addition, there are special features specifically for [differential equation plots](https://docs.juliadiffeq.org/dev/basics/plot/). This tutorial will teach some of the most commonly used options. Let's first get the solution to some ODE. Here I will use one of the Lorenz ordinary differential equation. As with all commands in DifferentialEquations.jl, I got a plot of the solution by calling `solve` on the problem, and `plot` on the solution:
+Since the plotting functionality is implemented as a recipe to Plots.jl, [all of the options open to Plots.jl can be used in our plots](https://juliaplots.github.io/supported/). In addition, there are special features specifically for [differential equation plots](https://docs.sciml.ai/dev/basics/plot/). This tutorial will teach some of the most commonly used options. Let's first get the solution to some ODE. Here I will use one of the Lorenz ordinary differential equation. As with all commands in DifferentialEquations.jl, I got a plot of the solution by calling `solve` on the problem, and `plot` on the solution:
 
 ```julia
 using DifferentialEquations, Plots, ParameterizedFunctions
@@ -25,7 +25,7 @@ sol = solve(prob)
 plot(sol)
 ```
 
-Now let's change it to a phase plot. As discussed in the [plot functions page](https://docs.juliadiffeq.org/dev/basics/plot/), we can use the `vars` command to choose the variables to plot. Let's plot variable `x` vs variable `y` vs variable `z`:
+Now let's change it to a phase plot. As discussed in the [plot functions page](https://docs.sciml.ai/dev/basics/plot/), we can use the `vars` command to choose the variables to plot. Let's plot variable `x` vs variable `y` vs variable `z`:
 
 ```julia
 plot(sol,vars=(1, 2, 3))

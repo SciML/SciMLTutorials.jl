@@ -3,7 +3,7 @@ title: Choosing an ODE Algorithm
 author: Chris Rackauckas
 ---
 
-While the default algorithms, along with `alg_hints = [:stiff]`, will suffice in most cases, there are times when you may need to exert more control. The purpose of this part of the tutorial is to introduce you to some of the most widely used algorithm choices and when they should be used. The corresponding page of the documentation is the [ODE Solvers](https://docs.juliadiffeq.org/dev/solvers/ode_solve/) page which goes into more depth.
+While the default algorithms, along with `alg_hints = [:stiff]`, will suffice in most cases, there are times when you may need to exert more control. The purpose of this part of the tutorial is to introduce you to some of the most widely used algorithm choices and when they should be used. The corresponding page of the documentation is the [ODE Solvers](https://docs.sciml.ai/dev/solvers/ode_solve/) page which goes into more depth.
 
 ## Diagnosing Stiffness
 
