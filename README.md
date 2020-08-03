@@ -73,7 +73,7 @@ using Pkg, SciMLTutorials
 cd(joinpath(dirname(pathof(SciMLTutorials)), ".."))
 Pkg.pkg"activate ."
 Pkg.pkg"instantiate"
-SciMLTutorials.weave_file("introduction","ode_introduction.jmd")
+SciMLTutorials.weave_file("introduction","01-ode_introduction.jmd")
 ```
 
 To generate all of the notebooks, do:
