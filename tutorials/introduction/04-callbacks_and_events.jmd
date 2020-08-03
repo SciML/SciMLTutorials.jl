@@ -7,7 +7,7 @@ In working with a differential equation, our system will evolve through many sta
 
 These callbacks allow for a lot more than event handling, however. For example, we can use callbacks to achieve high-level behavior like exactly preserve conservation laws and save the trace of a matrix at pre-defined time points. This extra functionality allows us to use the callback system as a modding system for the DiffEq ecosystem's solvers.
 
-This tutorial is an introduction to the callback and event handling system in DifferentialEquations.jl, documented in the [Event Handling and Callback Functions](https://docs.juliadiffeq.org/dev/features/callback_functions/) page of the documentation. We will also introduce you to some of the most widely used callbacks in the [Callback Library](https://docs.juliadiffeq.org/dev/features/callback_library/), which is a library of pre-built mods.
+This tutorial is an introduction to the callback and event handling system in DifferentialEquations.jl, documented in the [Event Handling and Callback Functions](https://docs.sciml.ai/dev/features/callback_functions/) page of the documentation. We will also introduce you to some of the most widely used callbacks in the [Callback Library](https://docs.sciml.ai/dev/features/callback_library/), which is a library of pre-built mods.
 
 ## Events and Continuous Callbacks
 
@@ -31,7 +31,7 @@ function condition(u,t,integrator)
 end
 ```
 
-Recall that the `condition` will trigger when it evaluates to zero, and here it will evaluate to zero when `u[1] == 0`, which occurs when `v == 0`. *Now we have to say what we want the callback to do.* Callbacks make use of the [Integrator Interface](https://docs.juliadiffeq.org/dev/basics/integrator/). Instead of giving a full description, a quick and usable rundown is:
+Recall that the `condition` will trigger when it evaluates to zero, and here it will evaluate to zero when `u[1] == 0`, which occurs when `v == 0`. *Now we have to say what we want the callback to do.* Callbacks make use of the [Integrator Interface](https://docs.sciml.ai/dev/basics/integrator/). Instead of giving a full description, a quick and usable rundown is:
 
 - Values are strored in `integrator.u`
 - Times are stored in `integrator.t`
@@ -163,7 +163,7 @@ sol = solve(prob)
 plot(sol)
 ```
 
-Let's instead stop the integration when a condition is met. From the [Integrator Interface stepping controls](https://docs.juliadiffeq.org/dev/basics/integrator/#stepping_controls-1) we see that `terminate!(integrator)` will cause the integration to end. So our new `affect!` is simply:
+Let's instead stop the integration when a condition is met. From the [Integrator Interface stepping controls](https://docs.sciml.ai/dev/basics/integrator/#stepping_controls-1) we see that `terminate!(integrator)` will cause the integration to end. So our new `affect!` is simply:
 
 ```julia
 function terminate_affect!(integrator)
@@ -210,7 +210,7 @@ plot(sol)
 
 ## Callback Library
 
-As you can see, callbacks can be very useful and through `CallbackSets` we can merge together various behaviors. Because of this utility, there is a library of pre-built callbacks known as the [Callback Library](http://docs.juliadiffeq.org/dev/features/callback_library/). We will walk through a few examples where these callbacks can come in handy.
+As you can see, callbacks can be very useful and through `CallbackSets` we can merge together various behaviors. Because of this utility, there is a library of pre-built callbacks known as the [Callback Library](http://docs.sciml.ai/dev/features/callback_library/). We will walk through a few examples where these callbacks can come in handy.
 
 ### Manifold Projection
 
@@ -234,7 +234,7 @@ Notice that what's going on is that the numerical solution is drifting from the 
 plot(sol.t,[u[2]^2 + u[1]^2 for u in sol.u]) # Energy ~ x^2 + v^2
 ```
 
-Some integration techniques like [symplectic integrators](https://docs.juliadiffeq.org/dev/solvers/dynamical_solve/#Symplectic-Integrators-1) are designed to mitigate this issue, but instead let's tackle the problem by enforcing conservation of energy. To do so, we define our manifold as the one where energy equals 1 (since that holds in the initial condition), that is:
+Some integration techniques like [symplectic integrators](https://docs.sciml.ai/dev/solvers/dynamical_solve/#Symplectic-Integrators-1) are designed to mitigate this issue, but instead let's tackle the problem by enforcing conservation of energy. To do so, we define our manifold as the one where energy equals 1 (since that holds in the initial condition), that is:
 
 ```julia
 function g(resid,u,p,t)
@@ -262,7 +262,7 @@ u1,u2 = sol[500]
 u2^2 + u1^2
 ```
 
-While choosing different integration schemes and using lower tolerances can achieve this effect as well, this can be a nice way to enforce physical constraints and is thus used in many disciplines like molecular dynamics. Another such domain constraining callback is the [`PositiveCallback()`](https://docs.juliadiffeq.org/dev/features/callback_library/#PositiveDomain-1) which can be used to enforce positivity of the variables.
+While choosing different integration schemes and using lower tolerances can achieve this effect as well, this can be a nice way to enforce physical constraints and is thus used in many disciplines like molecular dynamics. Another such domain constraining callback is the [`PositiveCallback()`](https://docs.sciml.ai/dev/features/callback_library/#PositiveDomain-1) which can be used to enforce positivity of the variables.
 
 ### SavingCallback
 

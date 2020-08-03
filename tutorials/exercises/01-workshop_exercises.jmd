@@ -68,7 +68,7 @@ $$\begin{align}
 
 with parameter values $s=77.27$, $w=0.161$, and $q=8.375 \times 10^{-6}$, and
 initial conditions $x(0)=1$, $y(0)=2$, and $z(0)=3$. Use
-[the tutorial on solving ODEs](https://docs.juliadiffeq.org/dev/tutorials/ode_example)
+[the tutorial on solving ODEs](https://docs.sciml.ai/dev/tutorials/ode_example)
 to solve this differential equation on the
 timespan of $t\in[0,360]$ with the default ODE solver. To investigate the result,
 plot the solution of all components over time, and plot the phase space plot of
@@ -79,7 +79,7 @@ the solution (hint: use `vars=(1,2,3)`). What shape is being drawn in phase spac
 Because the reaction rates of `q` vs `s` is very large, this model has a "fast"
 system and a "slow" system. This is typical of ODEs which exhibit a property
 known as stiffness. Stiffness changes the ODE solvers which can handle the
-equation well. [Take a look at the ODE solver page](https://docs.juliadiffeq.org/dev/solvers/ode_solve)
+equation well. [Take a look at the ODE solver page](https://docs.sciml.ai/dev/solvers/ode_solve)
 and investigate solving the equation using methods for non-stiff equations
 (ex: `Tsit5`) and stiff equations (ex: `Rodas5`).
 
@@ -94,7 +94,7 @@ the Jacobian is costly, and thus it can be beneficial to provide the analytical
 solution.
 
 Use the
-[ODEFunction definition page](https://docs.juliadiffeq.org/dev/features/performance_overloads)
+[ODEFunction definition page](https://docs.sciml.ai/dev/features/performance_overloads)
 to define an `ODEFunction` which holds both the OREGO ODE and its Jacobian, and solve using `Rodas5`.
 
 ## (Optional) Part 4: Automatic Symbolicification and Analytical Jacobian Calculations
@@ -124,9 +124,9 @@ dz &= w(x - z)dt + \sigma_3 z dW_3\end{align}$$
 
 with $\sigma_i = 0.1$ where the `dW` terms describe a Brownian motion, a
 continuous random process with normally distributed increments. Use the
-[tutorial on solving SDEs](https://docs.juliadiffeq.org/dev/tutorials/sde_example)
+[tutorial on solving SDEs](https://docs.sciml.ai/dev/tutorials/sde_example)
 to solve simulate this model. Then,
-[use the `EnsembleProblem`](https://docs.juliadiffeq.org/dev/features/ensemble)
+[use the `EnsembleProblem`](https://docs.sciml.ai/dev/features/ensemble)
 to generate and plot 100 trajectories of the stochastic model, and use
 `EnsembleSummary` to plot the mean and 5%-95% region over time.
 
@@ -156,7 +156,7 @@ B + Z -> Y
 
 where reactions take place at a rate which is propoertional to its components,
 i.e. the first reaction has a rate `k*A*Y` for some `k`.
-Use the [tutorial on Gillespie SSA models](https://docs.juliadiffeq.org/dev/tutorials/discrete_stochastic_example)
+Use the [tutorial on Gillespie SSA models](https://docs.sciml.ai/dev/tutorials/discrete_stochastic_example)
 to implement the `JumpProblem` for this model, and use the `EnsembleProblem`
 and `EnsembleSummary` to characterize the stochastic trajectories.
 
@@ -178,7 +178,7 @@ data = [1.0 2.05224 2.11422 2.1857 2.26827 2.3641 2.47618 2.60869 2.7677 2.96232
         3.0 2.82065 2.68703 2.58974 2.52405 2.48644 2.47449 2.48686 2.52337 2.58526 2.67563 2.80053 2.9713 3.21051 3.5712 4.23706 12.0266 14868.8 24987.8 23453.4 19202.2 15721.6 12872.0 10538.8 8628.66 7064.73 5784.29 4735.96 3877.66 3174.94 2599.6]
 ```
 
-[Follow the exmaples on the parameter estimation page](https://docs.juliadiffeq.org/latest/analysis/parameter_estimation/#Bayesian-Inference-Examples-1)
+[Follow the exmaples on the parameter estimation page](https://docs.sciml.ai/latest/analysis/parameter_estimation/#Bayesian-Inference-Examples-1)
 to perform a Bayesian parameter estimation. What are the most likely parameters
 for the model given the posterior parameter distributions?
 
@@ -192,7 +192,7 @@ parallelism section for details on how to accelerate this.
 DiffEqBiological.jl is a helper library for the DifferentialEquations.jl
 ecosystem for defining chemical reaction systems at a high leevel for easy
 simulation in these various forms. Use the descrption
-[from the Chemical Reaction Networks documentation page](https://docs.juliadiffeq.org/dev/models/biological)
+[from the Chemical Reaction Networks documentation page](https://docs.sciml.ai/dev/models/biological)
 to build a reaction network and generate the ODE/SDE/jump equations, and
 compare the result to your handcoded versions.
 
@@ -225,7 +225,7 @@ $$\begin{align}
 
 with $t \in [0,90]$, $u_0 = [100.0,0]$, and $p=[K_a,K_e]=[2.268,0.07398]$.
 
-With this model, use [the event handling documentation page](https://docs.juliadiffeq.org/dev/features/callback_functions)
+With this model, use [the event handling documentation page](https://docs.sciml.ai/dev/features/callback_functions)
 to define a `DiscreteCallback` which fires at `t ∈ [24,48,72]` and adds a
 dose of 100 into `[Depot]`. (Hint: you'll want to set `tstops=[24,48,72]` to
 force the ODE solver to step at these times).
@@ -243,7 +243,7 @@ $$\begin{align}
 \frac{d[Central]}{dt} &= K_a [Depot](t-\tau) - K_e [Central]\end{align}$$
 
 where the parameter $τ = 6.0$.
-[Use the DDE tutorial](https://docs.juliadiffeq.org/dev/tutorials/dde_example)
+[Use the DDE tutorial](https://docs.sciml.ai/dev/tutorials/dde_example)
 to define and solve this delayed version of the hybrid model.
 
 ## Part 3: Automatic Differentiation (AD) for Optimization (I)
@@ -256,7 +256,7 @@ do this is via Automatic Differentition (AD). For small numbers of parameters
 we will make use of ForwardDiff.jl to use Dual number arithmetic to retrive
 both the solution and its derivative w.r.t. parameters in a single solve.
 
-[Use the information from the page on local sensitvity analysis](https://docs.juliadiffeq.org/dev/analysis/sensitivity)
+[Use the information from the page on local sensitvity analysis](https://docs.sciml.ai/dev/analysis/sensitivity)
 to define the input dual numbers, solve the equation, and plot both the solution
 over time and the derivative of the solution w.r.t. the parameters.
 
@@ -270,7 +270,7 @@ data = [100.0 0.246196 0.000597933 0.24547 0.000596251 0.245275 0.000595453 0.24
         0.0 53.7939 16.8784 58.7789 18.3777 59.1879 18.5003 59.2611]
 ```
 
-Use [the parameter estimation page](https://docs.juliadiffeq.org/dev/analysis/parameter_estimation)
+Use [the parameter estimation page](https://docs.sciml.ai/dev/analysis/parameter_estimation)
 to define a loss function with `build_loss_objective` and optimize the parameters
 against the data. What parameters were used to generate the data?
 
@@ -284,7 +284,7 @@ concentration falls below 25. To model this effect, we will need to use
 `ContinuousCallbacks` to define a callback that triggers when `[Central]` falls
 below the threshold value.
 
-[Use the documentation on the event handling page](https://docs.juliadiffeq.org/dev/features/callback_functions) to define such a callback,
+[Use the documentation on the event handling page](https://docs.sciml.ai/dev/features/callback_functions) to define such a callback,
 and plot the solution over time. How many times does the auto-doser administer
 a dose? How much does this change as you change the delay time $\tau$?
 
@@ -292,7 +292,7 @@ a dose? How much does this change as you change the delay time $\tau$?
 
 To understand how the parameters effect the solution in a global sense, one
 wants to use Global Sensitivity Analysis. Use the
-[GSA documentation page](https://docs.juliadiffeq.org/dev/analysis/global_sensitivity)
+[GSA documentation page](https://docs.sciml.ai/dev/analysis/global_sensitivity)
 perform global sensitivity analysis and quantify the effect of the various
 parameters on the solution.
 
@@ -329,14 +329,14 @@ $$\begin{align}
 
 with $y(0) = [1,0,0]$ and $dy(0) = [-0.04,0.04,0.0]$ using the mass-matrix
 formulation and `Rodas5()`. Use the
-[ODEProblem page](https://docs.juliadiffeq.org/dev/types/ode_types)
+[ODEProblem page](https://docs.sciml.ai/dev/types/ode_types)
 to find out how to declare a mass matrix.
 
 (Hint: what if the last row has all zeros?)
 
 ## Part 2: Solving the Implicit Robertson Equations with IDA
 
-Use the [DAE Tutorial](https://docs.juliadiffeq.org/dev/tutorials/dae_example)
+Use the [DAE Tutorial](https://docs.sciml.ai/dev/tutorials/dae_example)
 to define a DAE in its implicit form and solve the Robertson equation with IDA.
 Why is `differential_vars = [true,true,false]`?
 
@@ -440,7 +440,7 @@ at `x=y=0` and see a periodic orbit, e.g., `ts=0:0.05:22; plot(ts, sol1.(ts,
 idxs=1))`.
 
 If you are not familiar with this process, see
-[the Gierer-Meinhardt example from the SciMLTutorials.](http://tutorials.juliadiffeq.org/html/introduction/03-optimizing_diffeq_code.html)
+[the Gierer-Meinhardt example from the SciMLTutorials.](http://tutorials.sciml.ai/html/introduction/03-optimizing_diffeq_code.html)
 
 Note: Start by doing the simplest implementation!
 
@@ -448,7 +448,7 @@ Note: Start by doing the simplest implementation!
 
 PDEs are expensive to solve, and so we will go nowhere without some code
 optimizing! Follow the steps described in the
-[the Gierer-Meinhardt example from the SciMLTutorials](http://tutorials.juliadiffeq.org/html/introduction/03-optimizing_diffeq_code.html)
+[the Gierer-Meinhardt example from the SciMLTutorials](http://tutorials.sciml.ai/html/introduction/03-optimizing_diffeq_code.html)
 to optimize your Brusselator code. Try other formulations and see what ends
 up the fastest! Find a trade-off between performance and simplicity that suits
 your needs.
@@ -457,7 +457,7 @@ your needs.
 
 Use the `sparsity!` function from [SparseDiffTools](https://github.com/JuliaDiffEq/SparseDiffTools.jl)
 to generate the sparsity pattern for the Jacobian of this problem. Follow
-the documentations [on the DiffEqFunction page](https://docs.juliadiffeq.org/dev/features/performance_overloads)
+the documentations [on the DiffEqFunction page](https://docs.sciml.ai/dev/features/performance_overloads)
 to specify the sparsity pattern of the Jacobian. Generate an add the color
 vector to speed up the computation of the Jacobian.
 
@@ -475,7 +475,7 @@ solve with an analytical sparse Jacobian.
 
 ## Part 6: Utilizing Preconditioned-GMRES Linear Solvers
 
-Use the [linear solver specification page](https://docs.juliadiffeq.org/dev/features/linear_nonlinear)
+Use the [linear solver specification page](https://docs.sciml.ai/dev/features/linear_nonlinear)
 to solve the equation with `TRBDF2` with GMRES. Use the Sundials documentation
 to solve the equation with `CVODE_BDF` with Sundials' special internal GMRES.
 To both of these, use the [AlgebraicMultigrid.jl](https://github.com/JuliaLinearAlgebra/AlgebraicMultigrid.jl)
@@ -483,7 +483,7 @@ to add a preconditioner to the GMRES solver.
 
 ## Part 7: Exploring IMEX and Exponential Integrator Techniques (E)
 
-Instead of using the standard `ODEProblem`, define a [`SplitODEProblem`](https://docs.juliadiffeq.org/dev/types/split_ode_types)
+Instead of using the standard `ODEProblem`, define a [`SplitODEProblem`](https://docs.sciml.ai/dev/types/split_ode_types)
 to move some of the equation to the "non-stiff part". Try different splits
 and solve with `KenCarp4` to see if the solution can be accelerated.
 
@@ -516,7 +516,7 @@ where forward sensitivity analysis (forward-mode automatic differentiation)
 is no longer suitable, and for these cases one uses adjoint sensitivity analysis.
 
 Rewrite the PDE so the constant terms are parameters, and use the
-[adjoint sensitivity analysis](https://docs.juliadiffeq.org/latest/analysis/sensitivity/#Adjoint-Sensitivity-Analysis-1)
+[adjoint sensitivity analysis](https://docs.sciml.ai/latest/analysis/sensitivity/#Adjoint-Sensitivity-Analysis-1)
 documentation to solve for the solution gradient with a cost function being the
 L2 distance of the solution from the value 1. Solve with interpolated and
 checkpointed adjoints. Play with using reverse-mode automatic differentiation
@@ -551,7 +551,7 @@ Solve this system over the timespan $t\in[0,1000]$
 ## (Optional) Part 2: Alternative Dynamical Implmentations of Henon-Heiles (B)
 
 The Henon-Heiles defines a Hamiltonian system with certain structures which
-can be utilized for a more efficient solution. Use [the Dynamical problems page](https://docs.juliadiffeq.org/dev/types/dynamical_types)
+can be utilized for a more efficient solution. Use [the Dynamical problems page](https://docs.sciml.ai/dev/types/dynamical_types)
 to define a `SecondOrderODEProblem` corresponding to the acceleration terms:
 
 $$\begin{align}
@@ -570,7 +570,7 @@ Solve this problem using the `HamiltonianProblem` constructor from DiffEqPhysics
 
 To understand the orbits of the Henon-Heiles system, it can be useful to solve
 the system with many different initial conditions. Use the
-[ensemble interface](https://docs.juliadiffeq.org/dev/features/ensemble)
+[ensemble interface](https://docs.sciml.ai/dev/features/ensemble)
 to solve with randomized initial conditions in parallel using threads with
 `EnsembleThreads()`. Then, use `addprocs()` to add more cores and solve using
 `EnsembleDistributed()`. The former will solve using all of the cores on a
