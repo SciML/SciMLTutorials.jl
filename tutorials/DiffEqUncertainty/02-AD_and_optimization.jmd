@@ -277,7 +277,7 @@ The probability of impacting the wall is now
 ```
 We can check if this is within tolerance by
 ```julia
-λ - 0.01 <= 1e-5
+abs(λ - 0.01) <= 1e-5
 ```
 
 Again, we plot some Monte Carlo simulations from this result as follows
