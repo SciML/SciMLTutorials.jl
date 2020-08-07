@@ -359,31 +359,3 @@ The performance gains realized by leveraging batch GPU processing is problem dep
 using SciMLTutorials
 SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```
-
-
-<!--
-## Batch + nout
-```julia
-using DiffEqGPU
-
-function f(du, u,p,t) 
-    @inbounds begin
-        du[1] = p[1]*u[1];
-    end
-    nothing
-end
-
-u0 = Float32[10.0]
-p = Float32[-0.3]
-tspan = (0.0f0,10.0f0)
-prob = ODEProblem(f,u0,tspan,p)
-
-g(sol) = [sol(4.0)[1], sol(6.0)[1]]
-
-u0_dist = [truncated(Normal(3.0f0,2.0f0),-5f0,11f0)]
-p_dist = [truncated(Normal(-.7f0, .1f0), -1f0,0f0)]
-
-expectation(g, prob, u0_dist, p_dist, Koopman(), Tsit5(), EnsembleGPUArray(); 
-            quadalg = CubaSUAVE(), batch=1000, nout=2)[1]
-```
--->
