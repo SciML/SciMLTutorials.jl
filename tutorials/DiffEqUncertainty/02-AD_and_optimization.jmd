@@ -277,7 +277,7 @@ The probability of impacting the wall is now
 ```
 We can check if this is within tolerance by
 ```julia
-isapprox(λ, 0.01, atol=1e-5)
+λ - 0.01 <= 1e-5
 ```
 
 Again, we plot some Monte Carlo simulations from this result as follows
@@ -301,11 +301,6 @@ begin
     xlims!(minx[1], 27.5)
 end
 ```
-
-
-
-## Conclusion
-
 
 ```{julia; echo=false; skip="notebook"}
 using SciMLTutorials
