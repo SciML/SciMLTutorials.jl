@@ -2,16 +2,6 @@
 author: "Adam Gerlach"
 title: "Optimization Under Uncertainty with DiffEqUncertainty.jl"
 ---
-<!-- 
-using Pkg, SciMLTutorials
-cd(joinpath(dirname(pathof(SciMLTutorials)), ".."))
-Pkg.pkg"activate ."
-Pkg.pkg"instantiate"
-SciMLTutorials.weave_file("DiffEqUncertainty","02-AD_and_optimization.jmd",(:github,))
-SciMLTutorials.weave_file("DiffEqUncertainty","02-AD_and_optimization.jmd") 
-
--->
-
 
 
 This tutorial gives and overview of how to leverage the efficient Koopman expectation method from DiffEqUncertainty to perform optimization under uncertainty. We demonstrate this by using a bouncing ball model with an uncertain model parameter. We also demonstrate its application to problems with probabilistic constraints, in particular a special class of constraints called chance constraints. 
@@ -138,7 +128,7 @@ mean_ensemble = mean([obs(sol) for sol in ensemblesol])
 
 
 ````
-35.986155065108754
+35.70585036601521
 ````
 
 
@@ -171,18 +161,6 @@ First, we load the required packages and define our loss function
 
 ````julia
 using NLopt, DiffEqSensitivity, ForwardDiff
-````
-
-
-````
-Error: ArgumentError: Package ForwardDiff not found in current path:
-- Run `import Pkg; Pkg.add("ForwardDiff")` to install the ForwardDiff packa
-ge.
-````
-
-
-
-````julia
 
 make_u0(θ) = [θ[1],θ[2],θ[3], 0.0]
 
@@ -233,7 +211,8 @@ opt.min_objective = 𝔼_loss_nlopt
 
 
 ````
-(0.0, [-1.0, 2.0, 50.0], :FORCED_STOP)
+(0.0838151729557601, [-0.05713109086715892, 2.4366742783682063, 49.99835957
+072762], :XTOL_REACHED)
 ````
 
 
@@ -274,8 +253,9 @@ using BenchmarkTools
 
 
 ````
-119.826 μs (8 allocations: 448 bytes)
-(0.0, [-1.0, 2.0, 50.0], :FORCED_STOP)
+129.798 ms (851126 allocations: 63.07 MiB)
+(0.0838151729557601, [-0.05713109086715892, 2.4366742783682063, 49.99835957
+072762], :XTOL_REACHED)
 ````
 
 
@@ -363,7 +343,7 @@ expectation(constraint_obs, prob, make_u0(minx), p_uncertain, Koopman(), Tsit5()
 
 
 ````
-0.0028823461332289553
+0.9910305871387488
 ````
 
 
@@ -410,7 +390,8 @@ inequality_constraint!(opt,𝔼_constraint_nlopt, 1e-5)
 
 
 ````
-(0.0, [-1.0, 2.0, 50.0], :FORCED_STOP)
+(40.28996781875263, [-0.8176321801341233, 2.000952669391841, 50.0], :XTOL_R
+EACHED)
 ````
 
 
@@ -425,7 +406,7 @@ The probability of impacting the wall is now
 
 
 ````
-0.0028823461332289553
+0.010004498174330818
 ````
 
 
@@ -433,12 +414,12 @@ The probability of impacting the wall is now
 
 We can check if this is within tolerance by
 ````julia
-isapprox(λ, 0.01, atol=1e-5)
+λ - 0.01 <= 1e-5
 ````
 
 
 ````
-false
+true
 ````
 
 
@@ -469,13 +450,6 @@ end
 
 
 ![](figures/02-AD_and_optimization_21_1.png)
-
-
-
-
-
-## Conclusion
-
 
 
 ## Appendix
@@ -517,7 +491,9 @@ Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/DiffEqUncertainty/Project.
 [ef61062a-5684-51dc-bb67-a0fcdec5c97d] DiffEqUncertainty 1.5.0
 [0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.15.0
 [31c24e10-a181-5473-b8eb-7969acd0382f] Distributions 0.23.8
+[f6369f11-7733-5829-9624-2563aa707210] ForwardDiff 0.10.12
 [76087f3c-5699-56af-9a33-bf431cd00edd] NLopt 0.6.0
 [1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.42.1
 [91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.5.8
+[67601950-bd08-11e9-3c89-fd23fb4432d2] Quadrature 1.3.0
 ```
