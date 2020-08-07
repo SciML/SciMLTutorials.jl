@@ -1,13 +1,3 @@
-<!-- 
-using Pkg, SciMLTutorials
-cd(joinpath(dirname(pathof(SciMLTutorials)), ".."))
-Pkg.pkg"activate ."
-Pkg.pkg"instantiate"
-SciMLTutorials.weave_file("DiffEqUncertainty","02-AD_and_optimization.jmd",(:github,))
-SciMLTutorials.weave_file("DiffEqUncertainty","02-AD_and_optimization.jmd") 
-
--->
-
 ---
 title: Optimization Under Uncertainty with DiffEqUncertainty.jl
 author: Adam Gerlach
@@ -277,7 +267,7 @@ The probability of impacting the wall is now
 ```
 We can check if this is within tolerance by
 ```julia
-abs(λ - 0.01) <= 1e-5
+λ - 0.01 <= 1e-5
 ```
 
 Again, we plot some Monte Carlo simulations from this result as follows
