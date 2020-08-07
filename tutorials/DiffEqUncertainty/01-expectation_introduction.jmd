@@ -1,12 +1,3 @@
-<!-- 
-using Pkg, SciMLTutorials
-cd(joinpath(dirname(pathof(SciMLTutorials)), ".."))
-Pkg.pkg"activate ."
-Pkg.pkg"instantiate"
-SciMLTutorials.weave_file("DiffEqUncertainty","01-expectation_introduction.jmd",(:github,))
-SciMLTutorials.weave_file("DiffEqUncertainty","01-expectation_introduction.jmd") 
--->
-
 ---
 title: An Intro to Expectations via DiffEqUncertainty.jl 
 author: Adam Gerlach
