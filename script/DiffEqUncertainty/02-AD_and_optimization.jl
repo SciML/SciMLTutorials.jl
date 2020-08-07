@@ -186,7 +186,7 @@ inequality_constraint!(opt,𝔼_constraint_nlopt, 1e-5)
 λ = 𝔼_constraint(minx2)
 
 
-isapprox(λ, 0.01, atol=1e-5)
+λ - 0.01 <= 1e-5
 
 
 ensembleprob = EnsembleProblem(remake(prob,u0 = make_u0(minx2)),prob_func=prob_func)

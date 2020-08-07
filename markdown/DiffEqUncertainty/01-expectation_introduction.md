@@ -2,15 +2,6 @@
 author: "Adam Gerlach"
 title: "An Intro to Expectations via DiffEqUncertainty.jl"
 ---
-<!-- 
-using Pkg, SciMLTutorials
-cd(joinpath(dirname(pathof(SciMLTutorials)), ".."))
-Pkg.pkg"activate ."
-Pkg.pkg"instantiate"
-SciMLTutorials.weave_file("DiffEqUncertainty","01-expectation_introduction.jmd",(:github,))
-SciMLTutorials.weave_file("DiffEqUncertainty","01-expectation_introduction.jmd") 
--->
-
 
 
 ## System Model
@@ -120,7 +111,7 @@ mean([g(sol) for sol in ensemblesol])
 
 ````
 1-element Array{Float64,1}:
- -0.003406754846664461
+ 0.005073268080398201
 ````
 
 
@@ -137,7 +128,7 @@ expectation(g, prob, u0_dist, p, MonteCarlo(), Tsit5(); trajectories=100000)
 
 ````
 1-element Array{Float64,1}:
- 0.007225918038175185
+ 0.005772652448278111
 ````
 
 
@@ -191,9 +182,9 @@ We see that for this case the `Koopman()` algorithm produces a more accurate sol
 
 
 ````
-2.078746 seconds (79.60 M allocations: 7.168 GiB, 71.29% gc time)
+2.215703 seconds (79.60 M allocations: 7.168 GiB, 73.13% gc time)
 1-element Array{Float64,1}:
- 0.0002649264693847175
+ 0.00412338430030202
 ````
 
 
@@ -204,7 +195,7 @@ We see that for this case the `Koopman()` algorithm produces a more accurate sol
 
 
 ````
-0.000824 seconds (12.28 k allocations: 1.112 MiB)
+0.000801 seconds (12.28 k allocations: 1.112 MiB)
 u: 1-element Array{Float64,1}:
  0.0
 ````
@@ -222,9 +213,9 @@ u0_dist = [Uniform(0.0,10.0)]
 
 
 ````
-1.082617 seconds (79.59 M allocations: 7.168 GiB, 45.45% gc time)
+0.653305 seconds (79.60 M allocations: 7.168 GiB)
 1-element Array{Float64,1}:
- 1.5058180695041825
+ 1.504424534047735
 ````
 
 
@@ -237,7 +228,7 @@ and
 
 
 ````
-0.004236 seconds (14.04 k allocations: 1.221 MiB)
+0.004519 seconds (14.04 k allocations: 1.221 MiB)
 1.5059722133001539
 ````
 
@@ -596,9 +587,8 @@ using Quadrature, Cuba
 
 
 ````
-Error: ArgumentError: Package Quadrature not found in current path:
-- Run `import Pkg; Pkg.add("Quadrature")` to install the Quadrature package
-.
+Error: ArgumentError: Package Cuba not found in current path:
+- Run `import Pkg; Pkg.add("Cuba")` to install the Cuba package.
 ````
 
 
@@ -847,74 +837,9 @@ Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/DiffEqUncertainty/Project.
 [ef61062a-5684-51dc-bb67-a0fcdec5c97d] DiffEqUncertainty 1.5.0
 [0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.15.0
 [31c24e10-a181-5473-b8eb-7969acd0382f] Distributions 0.23.8
+[f6369f11-7733-5829-9624-2563aa707210] ForwardDiff 0.10.12
 [76087f3c-5699-56af-9a33-bf431cd00edd] NLopt 0.6.0
 [1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.42.1
 [91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.5.8
+[67601950-bd08-11e9-3c89-fd23fb4432d2] Quadrature 1.3.0
 ```
-
-
-
-
-<!--
-## Batch + nout
-````julia
-using DiffEqGPU
-
-function f(du, u,p,t) 
-    @inbounds begin
-        du[1] = p[1]*u[1];
-    end
-    nothing
-end
-
-u0 = Float32[10.0]
-p = Float32[-0.3]
-tspan = (0.0f0,10.0f0)
-prob = ODEProblem(f,u0,tspan,p)
-
-g(sol) = [sol(4.0)[1], sol(6.0)[1]]
-
-u0_dist = [truncated(Normal(3.0f0,2.0f0),-5f0,11f0)]
-p_dist = [truncated(Normal(-.7f0, .1f0), -1f0,0f0)]
-
-expectation(g, prob, u0_dist, p_dist, Koopman(), Tsit5(), EnsembleGPUArray(); 
-            quadalg = CubaSUAVE(), batch=1000, nout=2)[1]
-````
-
-
-````
-Error: MethodError: no method matching __solvebp_call(::DiffEqBase.Quadratu
-reProblem{true,Array{Float32,1},DiffEqUncertainty.var"#13#26"{DiffEqUncerta
-inty.var"#20#33",DiffEqUncertainty.var"#21#34",Base.Iterators.Pairs{Union{}
-,Union{},Tuple{},NamedTuple{(),Tuple{}}},typeof(Main.##WeaveSandBox#496.g),
-DiffEqBase.ODEProblem{Array{Float32,1},Tuple{Float32,Float32},true,Array{Fl
-oat32,1},DiffEqBase.ODEFunction{true,typeof(Main.##WeaveSandBox#496.f),Line
-arAlgebra.UniformScaling{Bool},Nothing,Nothing,Nothing,Nothing,Nothing,Noth
-ing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing},Base.Iterators.Pairs{U
-nion{},Union{},Tuple{},NamedTuple{(),Tuple{}}},DiffEqBase.StandardODEProble
-m},Tuple{OrdinaryDiffEq.Tsit5,DiffEqGPU.EnsembleGPUArray},Int64,Array{Bool,
-1},Array{Distributions.Truncated{Distributions.Normal{Float32},Distribution
-s.Continuous,Float32},1},Array{Float32,1}},Array{Float32,1},Array{Float32,1
-},Base.Iterators.Pairs{Union{},Union{},Tuple{},NamedTuple{(),Tuple{}}}}, ::
-Quadrature.CubaSUAVE, ::Quadrature.ReCallVJP{Quadrature.ZygoteVJP}, ::Array
-{Float32,1}, ::Array{Float32,1}, ::Array{Float32,1}; reltol=0.01, abstol=0.
-01, maxiters=1000000)
-Closest candidates are:
-  __solvebp_call(::DiffEqBase.QuadratureProblem, !Matched::Quadrature.QuadG
-KJL, ::Any, ::Any, ::Any, ::Any, !Matched::Any...; reltol, abstol, maxiters
-, kwargs...) at /builds/JuliaGPU/DiffEqTutorials.jl/.julia/packages/Quadrat
-ure/L8aMP/src/Quadrature.jl:70
-  __solvebp_call(::DiffEqBase.QuadratureProblem, !Matched::Quadrature.HCuba
-tureJL, ::Any, ::Any, ::Any, ::Any, !Matched::Any...; reltol, abstol, maxit
-ers, kwargs...) at /builds/JuliaGPU/DiffEqTutorials.jl/.julia/packages/Quad
-rature/L8aMP/src/Quadrature.jl:87
-  __solvebp_call(::DiffEqBase.QuadratureProblem, !Matched::Quadrature.VEGAS
-, ::Any, ::Any, ::Any, ::Any, !Matched::Any...; reltol, abstol, maxiters, k
-wargs...) at /builds/JuliaGPU/DiffEqTutorials.jl/.julia/packages/Quadrature
-/L8aMP/src/Quadrature.jl:113
-````
-
-
-
-
--->
