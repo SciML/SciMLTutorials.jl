@@ -73,12 +73,12 @@ EnsembleSolution Solution of length 100000 with uType:
 DiffEqBase.ODESolution{Float64,2,Array{Array{Float64,1},1},Nothing,Nothing,
 Array{Float64,1},Array{Array{Array{Float64,1},1},1},DiffEqBase.ODEProblem{A
 rray{Float64,1},Tuple{Float64,Float64},false,Array{Float64,1},DiffEqBase.OD
-EFunction{false,typeof(Main.##WeaveSandBox#496.f),LinearAlgebra.UniformScal
+EFunction{false,typeof(Main.##WeaveSandBox#775.f),LinearAlgebra.UniformScal
 ing{Bool},Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,N
 othing,Nothing,Nothing,Nothing},Base.Iterators.Pairs{Union{},Union{},Tuple{
 },NamedTuple{(),Tuple{}}},DiffEqBase.StandardODEProblem},OrdinaryDiffEq.Tsi
 t5,OrdinaryDiffEq.InterpolationData{DiffEqBase.ODEFunction{false,typeof(Mai
-n.##WeaveSandBox#496.f),LinearAlgebra.UniformScaling{Bool},Nothing,Nothing,
+n.##WeaveSandBox#775.f),LinearAlgebra.UniformScaling{Bool},Nothing,Nothing,
 Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Not
 hing},Array{Array{Float64,1},1},Array{Float64,1},Array{Array{Array{Float64,
 1},1},1},OrdinaryDiffEq.Tsit5ConstantCache{Float64,Float64}},DiffEqBase.DES
@@ -111,7 +111,7 @@ mean([g(sol) for sol in ensemblesol])
 
 ````
 1-element Array{Float64,1}:
- 0.005073268080398201
+ 0.006688298329460279
 ````
 
 
@@ -128,7 +128,7 @@ expectation(g, prob, u0_dist, p, MonteCarlo(), Tsit5(); trajectories=100000)
 
 ````
 1-element Array{Float64,1}:
- 0.005772652448278111
+ 0.0033551972364124806
 ````
 
 
@@ -182,9 +182,9 @@ We see that for this case the `Koopman()` algorithm produces a more accurate sol
 
 
 ````
-2.215703 seconds (79.60 M allocations: 7.168 GiB, 73.13% gc time)
+2.402257 seconds (79.64 M allocations: 7.169 GiB, 68.84% gc time)
 1-element Array{Float64,1}:
- 0.00412338430030202
+ 0.007739904690189942
 ````
 
 
@@ -195,7 +195,7 @@ We see that for this case the `Koopman()` algorithm produces a more accurate sol
 
 
 ````
-0.000801 seconds (12.28 k allocations: 1.112 MiB)
+0.000805 seconds (12.28 k allocations: 1.112 MiB)
 u: 1-element Array{Float64,1}:
  0.0
 ````
@@ -213,9 +213,9 @@ u0_dist = [Uniform(0.0,10.0)]
 
 
 ````
-0.653305 seconds (79.60 M allocations: 7.168 GiB)
+1.116741 seconds (79.60 M allocations: 7.168 GiB, 47.15% gc time)
 1-element Array{Float64,1}:
- 1.504424534047735
+ 1.5074176871866485
 ````
 
 
@@ -228,7 +228,7 @@ and
 
 
 ````
-0.004519 seconds (14.04 k allocations: 1.221 MiB)
+0.004349 seconds (14.04 k allocations: 1.221 MiB)
 1.5059722133001539
 ````
 
@@ -586,12 +586,6 @@ using Quadrature, Cuba
 ````
 
 
-````
-Error: ArgumentError: Package Cuba not found in current path:
-- Run `import Pkg; Pkg.add("Cuba")` to install the Cuba package.
-````
-
-
 
 
 
@@ -609,35 +603,7 @@ expectation(g, prob, u0_dist, p_dist, Koopman(), Tsit5(), EnsembleThreads();
 
 
 ````
-Error: MethodError: no method matching __solvebp_call(::DiffEqBase.Quadratu
-reProblem{true,Array{Float64,1},DiffEqUncertainty.var"#13#26"{DiffEqUncerta
-inty.var"#20#33",DiffEqUncertainty.var"#21#34",Base.Iterators.Pairs{Union{}
-,Union{},Tuple{},NamedTuple{(),Tuple{}}},typeof(Main.##WeaveSandBox#496.g),
-DiffEqBase.ODEProblem{Array{Float64,1},Tuple{Float64,Float64},false,Array{F
-loat64,1},DiffEqBase.ODEFunction{false,typeof(Main.##WeaveSandBox#496.f),Li
-nearAlgebra.UniformScaling{Bool},Nothing,Nothing,Nothing,Nothing,Nothing,No
-thing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing},Base.Iterators.Pairs
-{Union{},Union{},Tuple{},NamedTuple{(),Tuple{}}},DiffEqBase.StandardODEProb
-lem},Tuple{OrdinaryDiffEq.Tsit5,DiffEqBase.EnsembleThreads},Int64,Array{Boo
-l,1},Array{Distributions.Truncated{Distributions.Normal{Float64},Distributi
-ons.Continuous,Float64},1},Array{Float64,1}},Array{Float64,1},Array{Float64
-,1},Base.Iterators.Pairs{Union{},Union{},Tuple{},NamedTuple{(),Tuple{}}}}, 
-::Quadrature.CubaSUAVE, ::Quadrature.ReCallVJP{Quadrature.ZygoteVJP}, ::Arr
-ay{Float64,1}, ::Array{Float64,1}, ::Array{Float64,1}; reltol=0.01, abstol=
-0.01, maxiters=1000000)
-Closest candidates are:
-  __solvebp_call(::DiffEqBase.QuadratureProblem, !Matched::Quadrature.QuadG
-KJL, ::Any, ::Any, ::Any, ::Any, !Matched::Any...; reltol, abstol, maxiters
-, kwargs...) at /builds/JuliaGPU/DiffEqTutorials.jl/.julia/packages/Quadrat
-ure/L8aMP/src/Quadrature.jl:70
-  __solvebp_call(::DiffEqBase.QuadratureProblem, !Matched::Quadrature.HCuba
-tureJL, ::Any, ::Any, ::Any, ::Any, !Matched::Any...; reltol, abstol, maxit
-ers, kwargs...) at /builds/JuliaGPU/DiffEqTutorials.jl/.julia/packages/Quad
-rature/L8aMP/src/Quadrature.jl:87
-  __solvebp_call(::DiffEqBase.QuadratureProblem, !Matched::Quadrature.VEGAS
-, ::Any, ::Any, ::Any, ::Any, !Matched::Any...; reltol, abstol, maxiters, k
-wargs...) at /builds/JuliaGPU/DiffEqTutorials.jl/.julia/packages/Quadrature
-/L8aMP/src/Quadrature.jl:113
+0.05397860786456136
 ````
 
 
@@ -655,35 +621,8 @@ using BenchmarkTools
 
 
 ````
-Error: MethodError: no method matching __solvebp_call(::DiffEqBase.Quadratu
-reProblem{false,Array{Float64,1},DiffEqUncertainty.var"#10#23"{DiffEqUncert
-ainty.var"#20#33",DiffEqUncertainty.var"#21#34",typeof(Main.##WeaveSandBox#
-496.g),Int64,Array{Bool,1},Array{Distributions.Truncated{Distributions.Norm
-al{Float64},Distributions.Continuous,Float64},1},Array{Float64,1},DiffEqUnc
-ertainty.var"#6#7"{Base.Iterators.Pairs{Union{},Union{},Tuple{},NamedTuple{
-(),Tuple{}}},DiffEqBase.ODEProblem{Array{Float64,1},Tuple{Float64,Float64},
-false,Array{Float64,1},DiffEqBase.ODEFunction{false,typeof(Main.##WeaveSand
-Box#496.f),LinearAlgebra.UniformScaling{Bool},Nothing,Nothing,Nothing,Nothi
-ng,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing},Base.It
-erators.Pairs{Union{},Union{},Tuple{},NamedTuple{(),Tuple{}}},DiffEqBase.St
-andardODEProblem},Tuple{OrdinaryDiffEq.Tsit5}}},Array{Float64,1},Array{Floa
-t64,1},Base.Iterators.Pairs{Union{},Union{},Tuple{},NamedTuple{(),Tuple{}}}
-}, ::Quadrature.CubaSUAVE, ::Quadrature.ReCallVJP{Quadrature.ZygoteVJP}, ::
-Array{Float64,1}, ::Array{Float64,1}, ::Array{Float64,1}; reltol=0.01, abst
-ol=0.01, maxiters=1000000)
-Closest candidates are:
-  __solvebp_call(::DiffEqBase.QuadratureProblem, !Matched::Quadrature.QuadG
-KJL, ::Any, ::Any, ::Any, ::Any, !Matched::Any...; reltol, abstol, maxiters
-, kwargs...) at /builds/JuliaGPU/DiffEqTutorials.jl/.julia/packages/Quadrat
-ure/L8aMP/src/Quadrature.jl:70
-  __solvebp_call(::DiffEqBase.QuadratureProblem, !Matched::Quadrature.HCuba
-tureJL, ::Any, ::Any, ::Any, ::Any, !Matched::Any...; reltol, abstol, maxit
-ers, kwargs...) at /builds/JuliaGPU/DiffEqTutorials.jl/.julia/packages/Quad
-rature/L8aMP/src/Quadrature.jl:87
-  __solvebp_call(::DiffEqBase.QuadratureProblem, !Matched::Quadrature.VEGAS
-, ::Any, ::Any, ::Any, ::Any, !Matched::Any...; reltol, abstol, maxiters, k
-wargs...) at /builds/JuliaGPU/DiffEqTutorials.jl/.julia/packages/Quadrature
-/L8aMP/src/Quadrature.jl:113
+45.163 ms (1007188 allocations: 91.57 MiB)
+0.05397860786456136
 ````
 
 
@@ -695,35 +634,8 @@ wargs...) at /builds/JuliaGPU/DiffEqTutorials.jl/.julia/packages/Quadrature
 
 
 ````
-Error: MethodError: no method matching __solvebp_call(::DiffEqBase.Quadratu
-reProblem{true,Array{Float64,1},DiffEqUncertainty.var"#13#26"{DiffEqUncerta
-inty.var"#20#33",DiffEqUncertainty.var"#21#34",Base.Iterators.Pairs{Union{}
-,Union{},Tuple{},NamedTuple{(),Tuple{}}},typeof(Main.##WeaveSandBox#496.g),
-DiffEqBase.ODEProblem{Array{Float64,1},Tuple{Float64,Float64},false,Array{F
-loat64,1},DiffEqBase.ODEFunction{false,typeof(Main.##WeaveSandBox#496.f),Li
-nearAlgebra.UniformScaling{Bool},Nothing,Nothing,Nothing,Nothing,Nothing,No
-thing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing},Base.Iterators.Pairs
-{Union{},Union{},Tuple{},NamedTuple{(),Tuple{}}},DiffEqBase.StandardODEProb
-lem},Tuple{OrdinaryDiffEq.Tsit5,DiffEqBase.EnsembleThreads},Int64,Array{Boo
-l,1},Array{Distributions.Truncated{Distributions.Normal{Float64},Distributi
-ons.Continuous,Float64},1},Array{Float64,1}},Array{Float64,1},Array{Float64
-,1},Base.Iterators.Pairs{Union{},Union{},Tuple{},NamedTuple{(),Tuple{}}}}, 
-::Quadrature.CubaSUAVE, ::Quadrature.ReCallVJP{Quadrature.ZygoteVJP}, ::Arr
-ay{Float64,1}, ::Array{Float64,1}, ::Array{Float64,1}; reltol=0.01, abstol=
-0.01, maxiters=1000000)
-Closest candidates are:
-  __solvebp_call(::DiffEqBase.QuadratureProblem, !Matched::Quadrature.QuadG
-KJL, ::Any, ::Any, ::Any, ::Any, !Matched::Any...; reltol, abstol, maxiters
-, kwargs...) at /builds/JuliaGPU/DiffEqTutorials.jl/.julia/packages/Quadrat
-ure/L8aMP/src/Quadrature.jl:70
-  __solvebp_call(::DiffEqBase.QuadratureProblem, !Matched::Quadrature.HCuba
-tureJL, ::Any, ::Any, ::Any, ::Any, !Matched::Any...; reltol, abstol, maxit
-ers, kwargs...) at /builds/JuliaGPU/DiffEqTutorials.jl/.julia/packages/Quad
-rature/L8aMP/src/Quadrature.jl:87
-  __solvebp_call(::DiffEqBase.QuadratureProblem, !Matched::Quadrature.VEGAS
-, ::Any, ::Any, ::Any, ::Any, !Matched::Any...; reltol, abstol, maxiters, k
-wargs...) at /builds/JuliaGPU/DiffEqTutorials.jl/.julia/packages/Quadrature
-/L8aMP/src/Quadrature.jl:113
+20.111 ms (1019142 allocations: 92.96 MiB)
+0.05397860786456136
 ````
 
 
@@ -760,35 +672,8 @@ p_dist = [truncated(Normal(-.7f0, .1f0), -1f0,0f0)]
 
 
 ````
-Error: MethodError: no method matching __solvebp_call(::DiffEqBase.Quadratu
-reProblem{true,Array{Float32,1},DiffEqUncertainty.var"#13#26"{DiffEqUncerta
-inty.var"#20#33",DiffEqUncertainty.var"#21#34",Base.Iterators.Pairs{Union{}
-,Union{},Tuple{},NamedTuple{(),Tuple{}}},typeof(Main.##WeaveSandBox#496.g),
-DiffEqBase.ODEProblem{Array{Float32,1},Tuple{Float32,Float32},true,Array{Fl
-oat32,1},DiffEqBase.ODEFunction{true,typeof(Main.##WeaveSandBox#496.f),Line
-arAlgebra.UniformScaling{Bool},Nothing,Nothing,Nothing,Nothing,Nothing,Noth
-ing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing},Base.Iterators.Pairs{U
-nion{},Union{},Tuple{},NamedTuple{(),Tuple{}}},DiffEqBase.StandardODEProble
-m},Tuple{OrdinaryDiffEq.Tsit5,DiffEqGPU.EnsembleGPUArray},Int64,Array{Bool,
-1},Array{Distributions.Truncated{Distributions.Normal{Float32},Distribution
-s.Continuous,Float32},1},Array{Float32,1}},Array{Float32,1},Array{Float32,1
-},Base.Iterators.Pairs{Union{},Union{},Tuple{},NamedTuple{(),Tuple{}}}}, ::
-Quadrature.CubaSUAVE, ::Quadrature.ReCallVJP{Quadrature.ZygoteVJP}, ::Array
-{Float32,1}, ::Array{Float32,1}, ::Array{Float32,1}; reltol=0.01, abstol=0.
-01, maxiters=1000000)
-Closest candidates are:
-  __solvebp_call(::DiffEqBase.QuadratureProblem, !Matched::Quadrature.QuadG
-KJL, ::Any, ::Any, ::Any, ::Any, !Matched::Any...; reltol, abstol, maxiters
-, kwargs...) at /builds/JuliaGPU/DiffEqTutorials.jl/.julia/packages/Quadrat
-ure/L8aMP/src/Quadrature.jl:70
-  __solvebp_call(::DiffEqBase.QuadratureProblem, !Matched::Quadrature.HCuba
-tureJL, ::Any, ::Any, ::Any, ::Any, !Matched::Any...; reltol, abstol, maxit
-ers, kwargs...) at /builds/JuliaGPU/DiffEqTutorials.jl/.julia/packages/Quad
-rature/L8aMP/src/Quadrature.jl:87
-  __solvebp_call(::DiffEqBase.QuadratureProblem, !Matched::Quadrature.VEGAS
-, ::Any, ::Any, ::Any, ::Any, !Matched::Any...; reltol, abstol, maxiters, k
-wargs...) at /builds/JuliaGPU/DiffEqTutorials.jl/.julia/packages/Quadrature
-/L8aMP/src/Quadrature.jl:113
+7.164 ms (69734 allocations: 3.59 MiB)
+0.056093966910433016
 ````
 
 
@@ -832,6 +717,7 @@ Package Information:
 ```
 Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/DiffEqUncertainty/Project.toml`
 [6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf] BenchmarkTools 0.5.0
+[8a292aeb-7a57-582c-b821-06e4c11590b1] Cuba 2.1.0
 [071ae1c0-96b5-11e9-1965-c90190d839ea] DiffEqGPU 1.5.0
 [41bf760c-e81c-5289-8e54-58b1f1f8abe2] DiffEqSensitivity 6.28.0
 [ef61062a-5684-51dc-bb67-a0fcdec5c97d] DiffEqUncertainty 1.5.0
