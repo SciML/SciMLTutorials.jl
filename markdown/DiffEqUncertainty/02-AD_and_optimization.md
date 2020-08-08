@@ -128,7 +128,7 @@ mean_ensemble = mean([obs(sol) for sol in ensemblesol])
 
 
 ````
-35.70585036601521
+36.003264051459894
 ````
 
 
@@ -253,7 +253,7 @@ using BenchmarkTools
 
 
 ````
-129.798 ms (851126 allocations: 63.07 MiB)
+131.701 ms (851126 allocations: 63.07 MiB)
 (0.0838151729557601, [-0.05713109086715892, 2.4366742783682063, 49.99835957
 072762], :XTOL_REACHED)
 ````
@@ -486,6 +486,7 @@ Package Information:
 ```
 Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/DiffEqUncertainty/Project.toml`
 [6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf] BenchmarkTools 0.5.0
+[8a292aeb-7a57-582c-b821-06e4c11590b1] Cuba 2.1.0
 [071ae1c0-96b5-11e9-1965-c90190d839ea] DiffEqGPU 1.5.0
 [41bf760c-e81c-5289-8e54-58b1f1f8abe2] DiffEqSensitivity 6.28.0
 [ef61062a-5684-51dc-bb67-a0fcdec5c97d] DiffEqUncertainty 1.5.0
