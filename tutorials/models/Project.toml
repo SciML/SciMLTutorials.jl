@@ -1,5 +1,6 @@
 [deps]
 DiffEqBiological = "eb300fae-53e8-50a0-950c-e21f52c2b7e0"
+DiffEqCallbacks = "459566f4-90b8-5000-8ac3-15dfb0a30def"
 DiffEqDevTools = "f3b72e0c-5b89-59e1-b016-84e28bfd966d"
 DiffEqPhysics = "055956cb-9e8b-5191-98cc-73ae4a59e68a"
 DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
@@ -20,6 +21,7 @@ StochasticDiffEq = "789caeaf-c7a9-5a7d-9973-96adeb23e2a0"
 
 [compat]
 DiffEqBiological = "4.3"
+DiffEqCallbacks = "2.13"
 DiffEqDevTools = "2.22"
 DiffEqPhysics = "3.5"
 DifferentialEquations = "6.14"
