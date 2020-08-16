@@ -17,13 +17,13 @@ SDEs, DDEs, DAEs, etc.
 
 For a detailed tutorial on how to optimize one's DifferentialEquations.jl code,
 please see the
-[Optimizing DiffEq Code tutorial](http://tutorials.juliadiffeq.org/html/introduction/03-optimizing_diffeq_code.html).
+[Optimizing DiffEq Code tutorial](http://tutorials.sciml.ai/html/introduction/03-optimizing_diffeq_code.html).
 
 ### Choosing a Good Solver
 
 Choosing a good solver is required for getting top notch speed. General
 recommendations can be found on the solver page (for example, the
-[ODE Solver Recommendations](https://docs.juliadiffeq.org/dev/solvers/ode_solve)).
+[ODE Solver Recommendations](https://docs.sciml.ai/dev/solvers/ode_solve)).
 The current recommendations can be simplified to a Rosenbrock method
 (`Rosenbrock23` or `Rodas5`) for smaller (<50 ODEs) problems, ESDIRK methods
 for slightly larger (`TRBDF2` or `KenCarp4` for <2000 ODEs), and Sundials
@@ -36,7 +36,7 @@ compare many solvers on many problems.
 
 ### Check Out the Speed FAQ
 
-See [this FAQ](https://docs.juliadiffeq.org/latest/basics/faq/#faq_performance-1)
+See [this FAQ](https://docs.sciml.ai/latest/basics/faq/#faq_performance-1)
 for information on common pitfalls and how to improve performance.
 
 ### Setting Up Your Julia Installation for Speed
@@ -83,7 +83,7 @@ the linear algebra routines. Please see the package for the limitations.
 
 When possible, use GPUs. If your ODE system is small and you need to solve it
 with very many different parameters, see the
-[ensembles interface](https://docs.juliadiffeq.org/dev/features/ensemble)
+[ensembles interface](https://docs.sciml.ai/dev/features/ensemble)
 and [DiffEqGPU.jl](https://github.com/JuliaDiffEq/DiffEqGPU.jl). If your problem
 is large, consider using a [CuArray](https://github.com/JuliaGPU/CuArrays.jl)
 for the state to allow for GPU-parallelism of the internal linear algebra.
@@ -158,9 +158,9 @@ using BenchmarkTools
 
 
 ````
-310.245 μs (2779 allocations: 156.72 KiB)
+324.317 μs (2780 allocations: 156.73 KiB)
 retcode: Success
-Interpolation: Automatic order switching interpolation
+Interpolation: automatic order switching interpolation
 t: 115-element Array{Float64,1}:
       0.0
       0.0014148468219250373
@@ -235,9 +235,9 @@ prob_jac = ODEProblem(f,[1.0,0.0,0.0],(0.0,1e5),(0.04,3e7,1e4))
 
 
 ````
-235.800 μs (2312 allocations: 147.88 KiB)
+239.289 μs (2313 allocations: 147.89 KiB)
 retcode: Success
-Interpolation: Automatic order switching interpolation
+Interpolation: automatic order switching interpolation
 t: 115-element Array{Float64,1}:
       0.0
       0.0014148468219250373
@@ -561,7 +561,7 @@ f = ODEFunction(brusselator_2d_loop;jac_prototype=jac_sparsity)
 
 
 ````
-(::DiffEqBase.ODEFunction{true,typeof(Main.##WeaveSandBox#1647.brusselator_
+(::DiffEqBase.ODEFunction{true,typeof(Main.##WeaveSandBox#1646.brusselator_
 2d_loop),LinearAlgebra.UniformScaling{Bool},Nothing,Nothing,Nothing,Nothing
 ,Nothing,SparseArrays.SparseMatrixCSC{Float64,Int64},SparseArrays.SparseMat
 rixCSC{Float64,Int64},Nothing,Nothing,Nothing,Nothing,Nothing}) (generic fu
@@ -619,7 +619,7 @@ Now let's see how the version with sparsity compares to the version without:
 
 
 ````
-16.903 s (6967 allocations: 70.11 MiB)
+16.388 s (6968 allocations: 70.11 MiB)
 ````
 
 
@@ -630,7 +630,7 @@ Now let's see how the version with sparsity compares to the version without:
 
 
 ````
-1.735 s (55514 allocations: 885.09 MiB)
+1.742 s (55529 allocations: 885.09 MiB)
 retcode: Success
 Interpolation: 1st order linear
 t: 2-element Array{Float64,1}:
@@ -704,7 +704,7 @@ prob_ode_brusselator_2d_sparse = ODEProblem(f,
 
 
 ````
-1.731 s (18646 allocations: 881.06 MiB)
+1.742 s (18659 allocations: 881.06 MiB)
 retcode: Success
 Interpolation: 1st order linear
 t: 2-element Array{Float64,1}:
@@ -755,7 +755,7 @@ GMRES linear solver.
 
 
 ````
-135.205 s (3643100 allocations: 238.68 MiB)
+136.948 s (3643102 allocations: 238.68 MiB)
 ````
 
 
@@ -766,7 +766,7 @@ GMRES linear solver.
 
 
 ````
-6.504 s (2475960 allocations: 110.74 MiB)
+6.511 s (2475962 allocations: 110.74 MiB)
 retcode: Success
 Interpolation: 1st order linear
 t: 2-element Array{Float64,1}:
@@ -798,7 +798,7 @@ u: 2-element Array{Array{Float64,3},1}:
 
 
 For more information on linear solver choices, see the
-[linear solver documentation](https://docs.juliadiffeq.org/dev/features/linear_nonlinear).
+[linear solver documentation](https://docs.sciml.ai/dev/features/linear_nonlinear).
 
 On this problem, handling the sparsity correctly seemed to give much more of a
 speedup than going to a Krylov approach, but that can be dependent on the problem
@@ -817,10 +817,10 @@ Jv = JacVecOperator(brusselator_2d_loop,u0,p,0.0)
 
 
 ````
-DiffEqOperators.JacVecOperator{Float64,typeof(Main.##WeaveSandBox#1647.brus
+DiffEqOperators.JacVecOperator{Float64,typeof(Main.##WeaveSandBox#1646.brus
 selator_2d_loop),Array{ForwardDiff.Dual{DiffEqOperators.JacVecTag,Float64,1
 },3},Array{ForwardDiff.Dual{DiffEqOperators.JacVecTag,Float64,1},3},Array{F
-loat64,3},NTuple{4,Float64},Float64,Bool}(Main.##WeaveSandBox#1647.brussela
+loat64,3},NTuple{4,Float64},Float64,Bool}(Main.##WeaveSandBox#1646.brussela
 tor_2d_loop, ForwardDiff.Dual{DiffEqOperators.JacVecTag,Float64,1}[Dual{Dif
 fEqOperators.JacVecTag}(0.0,0.0) Dual{DiffEqOperators.JacVecTag}(0.12134432
 813715873,0.12134432813715873) … Dual{DiffEqOperators.JacVecTag}(0.12134432
@@ -901,7 +901,7 @@ prob_ode_brusselator_2d_jacfree = ODEProblem(f,u0,(0.,11.5),p)
 
 
 ````
-4.723 s (4160636 allocations: 2.31 GiB)
+4.715 s (4160638 allocations: 2.31 GiB)
 retcode: Success
 Interpolation: 1st order linear
 t: 2-element Array{Float64,1}:
@@ -934,7 +934,7 @@ u: 2-element Array{Array{Float64,3},1}:
 
 ### Adding a Preconditioner
 
-The [linear solver documentation](https://docs.juliadiffeq.org/latest/features/linear_nonlinear/#iterativesolvers-jl-1)
+The [linear solver documentation](https://docs.sciml.ai/latest/features/linear_nonlinear/#iterativesolvers-jl-1)
 shows how you can add a preconditioner to the GMRES. For example, you can
 use packages like [AlgebraicMultigrid.jl](https://github.com/JuliaLinearAlgebra/AlgebraicMultigrid.jl)
 to add an algebraic multigrid (AMG) or [IncompleteLU.jl](https://github.com/haampie/IncompleteLU.jl)
@@ -948,7 +948,7 @@ pc = aspreconditioner(ruge_stuben(jac_sparsity))
 
 
 ````
-392.980 ms (28395 allocations: 32.79 MiB)
+354.730 ms (28397 allocations: 32.79 MiB)
 retcode: Success
 Interpolation: 1st order linear
 t: 2-element Array{Float64,1}:
@@ -1006,7 +1006,7 @@ be given (otherwise it will default to attempting an LU-decomposition).
 While much of the setup makes the transition to using Sundials automatic, there
 are some differences between the pure Julia implementations and the Sundials
 implementations which must be taken note of. These are all detailed in the
-[Sundials solver documentation](https://docs.juliadiffeq.org/latest/solvers/ode_solve/#ode_solve_sundials-1),
+[Sundials solver documentation](https://docs.sciml.ai/latest/solvers/ode_solve/#ode_solve_sundials-1),
 but here we will highlight the main details which one should make note of.
 
 Defining a sparse matrix and a Jacobian for Sundials works just like any other
@@ -1025,7 +1025,7 @@ using Sundials
 
 
 ````
-23.746 s (51627 allocations: 3.20 MiB)
+20.861 s (51627 allocations: 3.20 MiB)
 ````
 
 
@@ -1037,7 +1037,7 @@ using Sundials
 
 
 ````
-331.856 ms (51827 allocations: 3.06 MiB)
+332.648 ms (51827 allocations: 3.06 MiB)
 retcode: Success
 Interpolation: 1st order linear
 t: 2-element Array{Float64,1}:
@@ -1069,7 +1069,7 @@ u: 2-element Array{Array{Float64,3},1}:
 
 
 Details for setting up a preconditioner with Sundials can be found at the
-[Sundials solver page](https://docs.juliadiffeq.org/latest/solvers/ode_solve/#ode_solve_sundials-1).
+[Sundials solver page](https://docs.sciml.ai/latest/solvers/ode_solve/#ode_solve_sundials-1).
 
 ## Handling Mass Matrices
 
@@ -1126,17 +1126,18 @@ plot(sol, xscale=:log10, tspan=(1e-6, 1e5), layout=(3,1))
 
 Note that if your mass matrix is singular, i.e. your system is a DAE, then you
 need to make sure you choose
-[a solver that is compatible with DAEs](https://docs.juliadiffeq.org/latest/solvers/dae_solve/#dae_solve_full-1)
+[a solver that is compatible with DAEs](https://docs.sciml.ai/latest/solvers/dae_solve/#dae_solve_full-1)
 
 
 ## Appendix
 
- This tutorial is part of the DiffEqTutorials.jl repository, found at: <https://github.com/JuliaDiffEq/DiffEqTutorials.jl>
+ This tutorial is part of the SciMLTutorials.jl repository, found at: <https://github.com/SciML/SciMLTutorials.jl>.
+ For more information on doing scientific machine learning (SciML) with open source software, check out <https://sciml.ai/>.
 
 To locally run this tutorial, do the following commands:
 ```
-using DiffEqTutorials
-DiffEqTutorials.weave_file("advanced","02-advanced_ODE_solving.jmd")
+using SciMLTutorials
+SciMLTutorials.weave_file("advanced","02-advanced_ODE_solving.jmd")
 ```
 
 Computer Information:
@@ -1150,10 +1151,10 @@ Platform Info:
   LIBM: libopenlibm
   LLVM: libLLVM-8.0.1 (ORCJIT, skylake)
 Environment:
+  JULIA_LOAD_PATH = /builds/JuliaGPU/DiffEqTutorials.jl:
   JULIA_DEPOT_PATH = /builds/JuliaGPU/DiffEqTutorials.jl/.julia
   JULIA_CUDA_MEMORY_LIMIT = 2147483648
-  JULIA_PROJECT = @.
-  JULIA_NUM_THREADS = 4
+  JULIA_NUM_THREADS = 8
 
 ```
 
@@ -1165,17 +1166,17 @@ Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/advanced/Project.toml`
 [6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf] BenchmarkTools 0.5.0
 [be33ccc6-a3ff-5ff2-a52e-74243cff1e17] CUDAnative 3.2.0
 [3a865a2d-5b23-5a0f-bc46-62713ec82fae] CuArrays 2.2.2
-[9fdde737-9c7f-55bf-ade8-46b3f136cc48] DiffEqOperators 4.10.0
+[9fdde737-9c7f-55bf-ade8-46b3f136cc48] DiffEqOperators 4.12.0
 [0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.15.0
 [587475ba-b771-5e3f-ad9e-33799f191a9c] Flux 0.10.4
-[961ee093-0014-501f-94e3-6117800e7a78] ModelingToolkit 3.11.0
-[2774e3e8-f4cf-5e23-947b-6d7e65073b56] NLsolve 4.4.0
+[961ee093-0014-501f-94e3-6117800e7a78] ModelingToolkit 3.16.0
+[2774e3e8-f4cf-5e23-947b-6d7e65073b56] NLsolve 4.4.1
 [8faf48c0-8b73-11e9-0e63-2155955bfa4d] NeuralNetDiffEq 1.6.0
-[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.41.0
-[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.5.2
-[47a9eef4-7e08-11e9-0b38-333d64bd3804] SparseDiffTools 1.9.0
+[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.42.2
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.5.9
+[47a9eef4-7e08-11e9-0b38-333d64bd3804] SparseDiffTools 1.9.1
 [684fba80-ace3-11e9-3d08-3bc7ed6f96df] SparsityDetection 0.3.3
-[789caeaf-c7a9-5a7d-9973-96adeb23e2a0] StochasticDiffEq 6.24.0
+[789caeaf-c7a9-5a7d-9973-96adeb23e2a0] StochasticDiffEq 6.25.0
 [c3572dad-4567-51f8-b174-8c6c989267f4] Sundials 4.2.5
 [37e2e46d-f89d-539d-b4ee-838fcccc9c8e] LinearAlgebra
 [2f01184e-e22b-5df5-ae63-d93ebab69eaf] SparseArrays
