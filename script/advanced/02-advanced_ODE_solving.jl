@@ -199,6 +199,6 @@ sol = solve(prob_mm,Rodas5())
 plot(sol, xscale=:log10, tspan=(1e-6, 1e5), layout=(3,1))
 
 
-using DiffEqTutorials
-DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+using SciMLTutorials
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 
