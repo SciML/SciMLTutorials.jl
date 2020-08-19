@@ -15,6 +15,7 @@ After building our third modeling interface, we realized that this problem can b
 Let's explore the IR itself. ModelingToolkit.jl is friendly to use, and can used as a symbolic DSL in its own right. Let's define and solve the Lorenz differential equation system using ModelingToolkit to generate the functions:
 
 ````julia
+
 using ModelingToolkit
 
 ### Define a differential equation system
@@ -55,39 +56,46 @@ DifferentialEquations.jl wants a function `f(u,p,t)` or `f(du,u,p,t)` for defini
 so ModelingToolkit.jl builds both. First the out of place version:
 
 ````julia
+
 generate_function(de)[1]
 ````
 
 
 ````
-:((var"##MTKArg#361", var"##MTKArg#362", var"##MTKArg#363")->begin
-          if var"##MTKArg#361" isa Array || !(typeof(var"##MTKArg#361") <: StaticArray) && false
-              return @inbounds(begin
-                          let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#361"[1], var"##MTKArg#361"[2], var"##MTKArg#361"[3], var"##MTK
-Arg#362"[1], var"##MTKArg#362"[2], var"##MTKArg#362"[3], var"##MTKArg#363")
-                              [(getproperty(Base, :*))(σ, (getproperty(Base, :-))(y, x)), (getproperty(Base, :-))((getproperty(Bas
-e, :*))(x, (getproperty(Base, :-))(ρ, z)), y), (getproperty(Base, :-))((getproperty(Base, :*))(x, y), (getproperty(Base, :*))(β, z
-))]
+:((var"##MTKArg#487", var"##MTKArg#488", var"##MTKArg#489")->begin
+          @inbounds begin
+                  let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#487"[1], var"##MTKArg#487"[2], var"##MTKArg#487"[3], var"##MTKArg#488"
+[1], var"##MTKArg#488"[2], var"##MTKArg#488"[3], var"##MTKArg#489")
+                      if false || typeof(var"##MTKArg#487") <: Union{ModelingToolkit.StaticArrays.SArray, ModelingToolkit.Labelled
+Arrays.SLArray}
+                          var"##MTK#492" = ModelingToolkit.StaticArrays.@SArray([(getproperty(Base, :*))(σ, (getproperty(Base, :-)
+)(y, x)), (getproperty(Base, :-))((getproperty(Base, :*))(x, (getproperty(Base, :-))(ρ, z)), y), (getproperty(Base, :-))((getprope
+rty(Base, :*))(x, y), (getproperty(Base, :*))(β, z))])
+                          if true && (!(typeof(var"##MTKArg#487") <: Number) && true)
+                              return (similar_type(var"##MTKArg#487", eltype(var"##MTK#492")))(var"##MTK#492")
+                          else
+                              return var"##MTK#492"
                           end
-                      end)
-          else
-              X = @inbounds(begin
-                          let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#361"[1], var"##MTKArg#361"[2], var"##MTKArg#361"[3], var"##MTK
-Arg#362"[1], var"##MTKArg#362"[2], var"##MTKArg#362"[3], var"##MTKArg#363")
-                              ((getproperty(Base, :*))(σ, (getproperty(Base, :-))(y, x)), (getproperty(Base, :-))((getproperty(Bas
-e, :*))(x, (getproperty(Base, :-))(ρ, z)), y), (getproperty(Base, :-))((getproperty(Base, :*))(x, y), (getproperty(Base, :*))(β, z
-)))
+                      else
+                          var"##MTK#492" = [(getproperty(Base, :*))(σ, (getproperty(Base, :-))(y, x)), (getproperty(Base, :-))((ge
+tproperty(Base, :*))(x, (getproperty(Base, :-))(ρ, z)), y), (getproperty(Base, :-))((getproperty(Base, :*))(x, y), (getproperty(Ba
+se, :*))(β, z))]
+                          if true && true
+                              if !(typeof(var"##MTKArg#487") <: Array) && (!(typeof(var"##MTKArg#487") <: Number) && eltype(var"##
+MTKArg#487") <: eltype(var"##MTK#492"))
+                                  return convert(typeof(var"##MTKArg#487"), var"##MTK#492")
+                              elseif typeof(var"##MTKArg#487") <: ModelingToolkit.LabelledArrays.LArray
+                                  return ModelingToolkit.LabelledArrays.LArray{(getproperty(ModelingToolkit.LabelledArrays, :symna
+mes))(typeof(var"##MTKArg#487"))}(var"##MTK#492")
+                              else
+                                  return var"##MTK#492"
+                              end
+                          else
+                              return var"##MTK#492"
                           end
-                      end)
-              construct = if var"##MTKArg#361" isa ModelingToolkit.StaticArrays.StaticArray
-                      (getproperty(ModelingToolkit.StaticArrays, :similar_type))(typeof(var"##MTKArg#361"), eltype(X))
-                  else
-                      x->begin
-                              convert(typeof(var"##MTKArg#361"), x)
-                          end
+                      end
                   end
-              return construct(X)
-          end
+              end
       end)
 ````
 
@@ -98,20 +106,24 @@ e, :*))(x, (getproperty(Base, :-))(ρ, z)), y), (getproperty(Base, :-))((getprop
 and the in-place:
 
 ````julia
+
 generate_function(de)[2]
 ````
 
 
 ````
-:((var"##MTIIPVar#371", var"##MTKArg#367", var"##MTKArg#368", var"##MTKArg#369")->begin
+:((var"##MTIIPVar#498", var"##MTKArg#494", var"##MTKArg#495", var"##MTKArg#496")->begin
           @inbounds begin
-                  let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#367"[1], var"##MTKArg#367"[2], var"##MTKArg#367"[3], var"##MTKArg#368"
-[1], var"##MTKArg#368"[2], var"##MTKArg#368"[3], var"##MTKArg#369")
-                      var"##MTIIPVar#371"[1] = (getproperty(Base, :*))(σ, (getproperty(Base, :-))(y, x))
-                      var"##MTIIPVar#371"[2] = (getproperty(Base, :-))((getproperty(Base, :*))(x, (getproperty(Base, :-))(ρ, z)), 
-y)
-                      var"##MTIIPVar#371"[3] = (getproperty(Base, :-))((getproperty(Base, :*))(x, y), (getproperty(Base, :*))(β, z
-))
+                  begin
+                      (ModelingToolkit.fill_array_with_zero!)(var"##MTIIPVar#498")
+                      let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#494"[1], var"##MTKArg#494"[2], var"##MTKArg#494"[3], var"##MTKArg#
+495"[1], var"##MTKArg#495"[2], var"##MTKArg#495"[3], var"##MTKArg#496")
+                          var"##MTIIPVar#498"[1] = (getproperty(Base, :*))(σ, (getproperty(Base, :-))(y, x))
+                          var"##MTIIPVar#498"[2] = (getproperty(Base, :-))((getproperty(Base, :*))(x, (getproperty(Base, :-))(ρ, z
+)), y)
+                          var"##MTIIPVar#498"[3] = (getproperty(Base, :-))((getproperty(Base, :*))(x, y), (getproperty(Base, :*))(
+β, z))
+                      end
                   end
               end
           nothing
@@ -125,6 +137,7 @@ y)
 ModelingToolkit.jl can be used to calculate the Jacobian of the differential equation system:
 
 ````julia
+
 jac = calculate_jacobian(de)
 ````
 
@@ -143,51 +156,59 @@ jac = calculate_jacobian(de)
 It will automatically generate functions for using this Jacobian within the stiff ODE solvers for faster solving:
 
 ````julia
+
 jac_expr = generate_jacobian(de)
 ````
 
 
 ````
-(:((var"##MTKArg#373", var"##MTKArg#374", var"##MTKArg#375")->begin
-          if var"##MTKArg#373" isa Array || !(typeof(var"##MTKArg#373") <: StaticArray) && false
-              return @inbounds(begin
-                          let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#373"[1], var"##MTKArg#373"[2], var"##MTKArg#373"[3], var"##MTK
-Arg#374"[1], var"##MTKArg#374"[2], var"##MTKArg#374"[3], var"##MTKArg#375")
-                              [(getproperty(Base, :*))(-1, σ) σ 0; (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ) -1 (
-getproperty(Base, :*))(-1, x); y x (getproperty(Base, :*))(-1, β)]
-                          end
-                      end)
-          else
-              X = @inbounds(begin
-                          let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#373"[1], var"##MTKArg#373"[2], var"##MTKArg#373"[3], var"##MTK
-Arg#374"[1], var"##MTKArg#374"[2], var"##MTKArg#374"[3], var"##MTKArg#375")
-                              ((getproperty(Base, :*))(-1, σ), (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ), y, σ, -
-1, x, 0, (getproperty(Base, :*))(-1, x), (getproperty(Base, :*))(-1, β))
-                          end
-                      end)
-              construct = if var"##MTKArg#373" isa ModelingToolkit.StaticArrays.StaticArray
-                      ModelingToolkit.StaticArrays.SMatrix{3, 3}
-                  else
-                      x->begin
-                              out = similar(typeof(var"##MTKArg#373"), 3, 3)
-                              out .= x
-                          end
-                  end
-              return construct(X)
-          end
-      end), :((var"##MTIIPVar#377", var"##MTKArg#373", var"##MTKArg#374", var"##MTKArg#375")->begin
+(:((var"##MTKArg#501", var"##MTKArg#502", var"##MTKArg#503")->begin
           @inbounds begin
-                  let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#373"[1], var"##MTKArg#373"[2], var"##MTKArg#373"[3], var"##MTKArg#374"
-[1], var"##MTKArg#374"[2], var"##MTKArg#374"[3], var"##MTKArg#375")
-                      var"##MTIIPVar#377"[1] = (getproperty(Base, :*))(-1, σ)
-                      var"##MTIIPVar#377"[2] = (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)
-                      var"##MTIIPVar#377"[3] = y
-                      var"##MTIIPVar#377"[4] = σ
-                      var"##MTIIPVar#377"[5] = -1
-                      var"##MTIIPVar#377"[6] = x
-                      var"##MTIIPVar#377"[7] = 0
-                      var"##MTIIPVar#377"[8] = (getproperty(Base, :*))(-1, x)
-                      var"##MTIIPVar#377"[9] = (getproperty(Base, :*))(-1, β)
+                  let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#501"[1], var"##MTKArg#501"[2], var"##MTKArg#501"[3], var"##MTKArg#502"
+[1], var"##MTKArg#502"[2], var"##MTKArg#502"[3], var"##MTKArg#503")
+                      if false || typeof(var"##MTKArg#501") <: Union{ModelingToolkit.StaticArrays.SArray, ModelingToolkit.Labelled
+Arrays.SLArray}
+                          var"##MTK#506" = ModelingToolkit.StaticArrays.@SArray([(getproperty(Base, :*))(-1, σ) σ 0; (getproperty(
+Base, :+))((getproperty(Base, :*))(-1, z), ρ) -1 (getproperty(Base, :*))(-1, x); y x (getproperty(Base, :*))(-1, β)])
+                          if true && (!(typeof(var"##MTKArg#501") <: Number) && false)
+                              return (similar_type(var"##MTKArg#501", eltype(var"##MTK#506")))(var"##MTK#506")
+                          else
+                              return var"##MTK#506"
+                          end
+                      else
+                          var"##MTK#506" = [(getproperty(Base, :*))(-1, σ) σ 0; (getproperty(Base, :+))((getproperty(Base, :*))(-1
+, z), ρ) -1 (getproperty(Base, :*))(-1, x); y x (getproperty(Base, :*))(-1, β)]
+                          if true && false
+                              if !(typeof(var"##MTKArg#501") <: Array) && (!(typeof(var"##MTKArg#501") <: Number) && eltype(var"##
+MTKArg#501") <: eltype(var"##MTK#506"))
+                                  return convert(typeof(var"##MTKArg#501"), var"##MTK#506")
+                              elseif typeof(var"##MTKArg#501") <: ModelingToolkit.LabelledArrays.LArray
+                                  return ModelingToolkit.LabelledArrays.LArray{(getproperty(ModelingToolkit.LabelledArrays, :symna
+mes))(typeof(var"##MTKArg#501"))}(var"##MTK#506")
+                              else
+                                  return var"##MTK#506"
+                              end
+                          else
+                              return var"##MTK#506"
+                          end
+                      end
+                  end
+              end
+      end), :((var"##MTIIPVar#505", var"##MTKArg#501", var"##MTKArg#502", var"##MTKArg#503")->begin
+          @inbounds begin
+                  begin
+                      (ModelingToolkit.fill_array_with_zero!)(var"##MTIIPVar#505")
+                      let (x, y, z, σ, ρ, β, t) = (var"##MTKArg#501"[1], var"##MTKArg#501"[2], var"##MTKArg#501"[3], var"##MTKArg#
+502"[1], var"##MTKArg#502"[2], var"##MTKArg#502"[3], var"##MTKArg#503")
+                          var"##MTIIPVar#505"[1] = (getproperty(Base, :*))(-1, σ)
+                          var"##MTIIPVar#505"[2] = (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)
+                          var"##MTIIPVar#505"[3] = y
+                          var"##MTIIPVar#505"[4] = σ
+                          var"##MTIIPVar#505"[5] = -1
+                          var"##MTIIPVar#505"[6] = x
+                          var"##MTIIPVar#505"[8] = (getproperty(Base, :*))(-1, x)
+                          var"##MTIIPVar#505"[9] = (getproperty(Base, :*))(-1, β)
+                      end
                   end
               end
           nothing
@@ -201,95 +222,13 @@ Arg#374"[1], var"##MTKArg#374"[2], var"##MTKArg#374"[3], var"##MTKArg#375")
 It can even do fancy linear algebra. Stiff ODE solvers need to perform an LU-factorization which is their most expensive part. But ModelingToolkit.jl can skip this operation and instead generate the analytical solution to a matrix factorization, and build a Julia function for directly computing the factorization, which is then optimized in LLVM compiler passes.
 
 ````julia
+
 ModelingToolkit.generate_factorized_W(de)[1]
 ````
 
 
 ````
-(:((var"##MTKArg#379", var"##MTKArg#380", var"##MTKArg#381", var"##MTKArg#382")->begin
-          if var"##MTKArg#379" isa Array || !(typeof(var"##MTKArg#379") <: StaticArray) && false
-              return @inbounds(begin
-                          let (x, y, z, σ, ρ, β, __MTKWgamma, t) = (var"##MTKArg#379"[1], var"##MTKArg#379"[2], var"##MTKArg#379"[
-3], var"##MTKArg#380"[1], var"##MTKArg#380"[2], var"##MTKArg#380"[3], var"##MTKArg#381", var"##MTKArg#382")
-                              [(getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ)) (getproperty(Base, :*))(__
-MTKWgamma, σ) 0; (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWg
-amma, σ))), __MTKWgamma, (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)) (getproperty(Base, :*))(-1, (getproperty(Base
-, :+))(1, (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ
-))), __MTKWgamma ^ 2, σ, (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma)) (getproperty(Base, :*))(-1, x,
- __MTKWgamma); (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgam
-ma, σ))), y, __MTKWgamma) (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1,
- (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MT
-KWgamma ^ 2, σ, (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))), (getproperty(Base, :+))((getproperty(
-Base, :*))(x, __MTKWgamma), (getproperty(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :
-*))(-1, __MTKWgamma, σ))), y, __MTKWgamma ^ 2, σ))) (getproperty(Base, :+))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1,
- (getproperty(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (getproperty(Base, :
-*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma ^ 2, σ, (getp
-roperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))), x, __MTKWgamma, (getproperty(Base, :+))((getproperty(Base,
- :*))(x, __MTKWgamma), (getproperty(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-
-1, __MTKWgamma, σ))), y, __MTKWgamma ^ 2, σ))))), (getproperty(Base, :*))(-1, __MTKWgamma, β))]
-                          end
-                      end)
-          else
-              X = @inbounds(begin
-                          let (x, y, z, σ, ρ, β, __MTKWgamma, t) = (var"##MTKArg#379"[1], var"##MTKArg#379"[2], var"##MTKArg#379"[
-3], var"##MTKArg#380"[1], var"##MTKArg#380"[2], var"##MTKArg#380"[3], var"##MTKArg#381", var"##MTKArg#382")
-                              ((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ)), (getproperty(Base, :*))((
-getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma, (getproperty(Base
-, :+))((getproperty(Base, :*))(-1, z), ρ)), (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getprop
-erty(Base, :*))(-1, __MTKWgamma, σ))), y, __MTKWgamma), (getproperty(Base, :*))(__MTKWgamma, σ), (getproperty(Base, :*))(-1, (getp
-roperty(Base, :+))(1, (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __
-MTKWgamma, σ))), __MTKWgamma ^ 2, σ, (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma)), (getproperty(Base
-, :*))((getproperty(Base, :inv))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (getproperty(Base, :*))((getproperty(Base,
- :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma ^ 2, σ, (getproperty(Base, :+))((ge
-tproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))), (getproperty(Base, :+))((getproperty(Base, :*))(x, __MTKWgamma), (getproperty(Ba
-se, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), y, __MTKWgamma ^
- 2, σ))), 0, (getproperty(Base, :*))(-1, x, __MTKWgamma), (getproperty(Base, :+))((getproperty(Base, :*))(-1, (getproperty(Base, :
-+))(1, (getproperty(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (getproperty(B
-ase, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma ^ 2, σ,
- (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))), x, __MTKWgamma, (getproperty(Base, :+))((getproperty
-(Base, :*))(x, __MTKWgamma), (getproperty(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, 
-:*))(-1, __MTKWgamma, σ))), y, __MTKWgamma ^ 2, σ))))), (getproperty(Base, :*))(-1, __MTKWgamma, β)))
-                          end
-                      end)
-              construct = (x->begin
-                          A = SMatrix{(3, 3)...}(x)
-                          (getproperty(StaticArrays, :LU))(LowerTriangular(SMatrix{(3, 3)...}(UnitLowerTriangular(A))), UpperTrian
-gular(A), SVector(ntuple((n->begin
-                                              n
-                                          end), max((3, 3)...))))
-                      end)
-              return construct(X)
-          end
-      end), :((var"##MTIIPVar#384", var"##MTKArg#379", var"##MTKArg#380", var"##MTKArg#381", var"##MTKArg#382")->begin
-          @inbounds begin
-                  let (x, y, z, σ, ρ, β, __MTKWgamma, t) = (var"##MTKArg#379"[1], var"##MTKArg#379"[2], var"##MTKArg#379"[3], var"
-##MTKArg#380"[1], var"##MTKArg#380"[2], var"##MTKArg#380"[3], var"##MTKArg#381", var"##MTKArg#382")
-                      var"##MTIIPVar#384"[1] = (getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))
-                      var"##MTIIPVar#384"[2] = (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getp
-roperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma, (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ))
-                      var"##MTIIPVar#384"[3] = (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getp
-roperty(Base, :*))(-1, __MTKWgamma, σ))), y, __MTKWgamma)
-                      var"##MTIIPVar#384"[4] = (getproperty(Base, :*))(__MTKWgamma, σ)
-                      var"##MTIIPVar#384"[5] = (getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (getproperty(Base, :*))((get
-property(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma ^ 2, σ, (getproperty(
-Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))
-                      var"##MTIIPVar#384"[6] = (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :*))(-1, (getp
-roperty(Base, :+))(1, (getproperty(Base, :*))((getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __
-MTKWgamma, σ))), __MTKWgamma ^ 2, σ, (getproperty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))), (getproperty(Bas
-e, :+))((getproperty(Base, :*))(x, __MTKWgamma), (getproperty(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :+))(-1,
- (getproperty(Base, :*))(-1, __MTKWgamma, σ))), y, __MTKWgamma ^ 2, σ)))
-                      var"##MTIIPVar#384"[7] = 0
-                      var"##MTIIPVar#384"[8] = (getproperty(Base, :*))(-1, x, __MTKWgamma)
-                      var"##MTIIPVar#384"[9] = (getproperty(Base, :+))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (get
-property(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :*))(-1, (getproperty(Base, :+))(1, (getproperty(Base, :*))((
-getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __MTKWgamma, σ))), __MTKWgamma ^ 2, σ, (getproper
-ty(Base, :+))((getproperty(Base, :*))(-1, z), ρ)), __MTKWgamma))), x, __MTKWgamma, (getproperty(Base, :+))((getproperty(Base, :*))
-(x, __MTKWgamma), (getproperty(Base, :*))(-1, (getproperty(Base, :inv))((getproperty(Base, :+))(-1, (getproperty(Base, :*))(-1, __
-MTKWgamma, σ))), y, __MTKWgamma ^ 2, σ))))), (getproperty(Base, :*))(-1, __MTKWgamma, β))
-                  end
-              end
-          nothing
-      end))
+Error: MethodError: no method matching generate_factorized_W(::ModelingToolkit.ODESystem)
 ````
 
 
@@ -301,6 +240,7 @@ MTKWgamma, σ))), y, __MTKWgamma ^ 2, σ))))), (getproperty(Base, :*))(-1, __MTK
 ModelingToolkit.jl is not just for differential equations. It can be used for any mathematical target that is representable by its IR. For example, let's solve a rootfinding problem `F(x)=0`. What we do is define a nonlinear system and generate a function for use in NLsolve.jl
 
 ````julia
+
 @variables x y z
 @parameters σ ρ β
 
@@ -314,37 +254,47 @@ nlsys_func = generate_function(ns)
 
 
 ````
-(:((var"##MTKArg#394", var"##MTKArg#395")->begin
-          if var"##MTKArg#394" isa Array || !(typeof(var"##MTKArg#394") <: StaticArray) && false
-              return @inbounds(begin
-                          let (x, y, z, σ, ρ, β) = (var"##MTKArg#394"[1], var"##MTKArg#394"[2], var"##MTKArg#394"[3], var"##MTKArg
-#395"[1], var"##MTKArg#395"[2], var"##MTKArg#395"[3])
-                              [(*)(σ, (-)(y, x)), (-)((*)(x, (-)(ρ, z)), y), (-)((*)(x, y), (*)(β, z))]
-                          end
-                      end)
-          else
-              X = @inbounds(begin
-                          let (x, y, z, σ, ρ, β) = (var"##MTKArg#394"[1], var"##MTKArg#394"[2], var"##MTKArg#394"[3], var"##MTKArg
-#395"[1], var"##MTKArg#395"[2], var"##MTKArg#395"[3])
-                              ((*)(σ, (-)(y, x)), (-)((*)(x, (-)(ρ, z)), y), (-)((*)(x, y), (*)(β, z)))
-                          end
-                      end)
-              construct = if var"##MTKArg#394" isa ModelingToolkit.StaticArrays.StaticArray
-                      (getproperty(ModelingToolkit.StaticArrays, :similar_type))(typeof(var"##MTKArg#394"), eltype(X))
-                  else
-                      x->begin
-                              convert(typeof(var"##MTKArg#394"), x)
-                          end
-                  end
-              return construct(X)
-          end
-      end), :((var"##MTIIPVar#397", var"##MTKArg#394", var"##MTKArg#395")->begin
+(:((var"##MTKArg#509", var"##MTKArg#510")->begin
           @inbounds begin
-                  let (x, y, z, σ, ρ, β) = (var"##MTKArg#394"[1], var"##MTKArg#394"[2], var"##MTKArg#394"[3], var"##MTKArg#395"[1]
-, var"##MTKArg#395"[2], var"##MTKArg#395"[3])
-                      var"##MTIIPVar#397"[1] = (*)(σ, (-)(y, x))
-                      var"##MTIIPVar#397"[2] = (-)((*)(x, (-)(ρ, z)), y)
-                      var"##MTIIPVar#397"[3] = (-)((*)(x, y), (*)(β, z))
+                  let (x, y, z, σ, ρ, β) = (var"##MTKArg#509"[1], var"##MTKArg#509"[2], var"##MTKArg#509"[3], var"##MTKArg#510"[1]
+, var"##MTKArg#510"[2], var"##MTKArg#510"[3])
+                      if false || typeof(var"##MTKArg#509") <: Union{ModelingToolkit.StaticArrays.SArray, ModelingToolkit.Labelled
+Arrays.SLArray}
+                          var"##MTK#513" = ModelingToolkit.StaticArrays.@SArray([(*)(σ, (-)(y, x)), (-)((*)(x, (-)(ρ, z)), y), (-)
+((*)(x, y), (*)(β, z))])
+                          if true && (!(typeof(var"##MTKArg#509") <: Number) && true)
+                              return (similar_type(var"##MTKArg#509", eltype(var"##MTK#513")))(var"##MTK#513")
+                          else
+                              return var"##MTK#513"
+                          end
+                      else
+                          var"##MTK#513" = [(*)(σ, (-)(y, x)), (-)((*)(x, (-)(ρ, z)), y), (-)((*)(x, y), (*)(β, z))]
+                          if true && true
+                              if !(typeof(var"##MTKArg#509") <: Array) && (!(typeof(var"##MTKArg#509") <: Number) && eltype(var"##
+MTKArg#509") <: eltype(var"##MTK#513"))
+                                  return convert(typeof(var"##MTKArg#509"), var"##MTK#513")
+                              elseif typeof(var"##MTKArg#509") <: ModelingToolkit.LabelledArrays.LArray
+                                  return ModelingToolkit.LabelledArrays.LArray{(getproperty(ModelingToolkit.LabelledArrays, :symna
+mes))(typeof(var"##MTKArg#509"))}(var"##MTK#513")
+                              else
+                                  return var"##MTK#513"
+                              end
+                          else
+                              return var"##MTK#513"
+                          end
+                      end
+                  end
+              end
+      end), :((var"##MTIIPVar#512", var"##MTKArg#509", var"##MTKArg#510")->begin
+          @inbounds begin
+                  begin
+                      (ModelingToolkit.fill_array_with_zero!)(var"##MTIIPVar#512")
+                      let (x, y, z, σ, ρ, β) = (var"##MTKArg#509"[1], var"##MTKArg#509"[2], var"##MTKArg#509"[3], var"##MTKArg#510
+"[1], var"##MTKArg#510"[2], var"##MTKArg#510"[3])
+                          var"##MTIIPVar#512"[1] = (*)(σ, (-)(y, x))
+                          var"##MTIIPVar#512"[2] = (-)((*)(x, (-)(ρ, z)), y)
+                          var"##MTIIPVar#512"[3] = (-)((*)(x, y), (*)(β, z))
+                      end
                   end
               end
           nothing
@@ -358,6 +308,7 @@ nlsys_func = generate_function(ns)
 We can then tell ModelingToolkit.jl to compile this function for use in NLsolve.jl, and then numerically solve the rootfinding problem:
 
 ````julia
+
 nl_f = @eval eval(nlsys_func[2])
 # Make a closure over the parameters for for NLsolve.jl
 f2 = (du,u) -> nl_f(du,u,(10.0,26.0,2.33))
@@ -390,6 +341,7 @@ Results of Nonlinear Solver Algorithm
 The reason for using ModelingToolkit is not just for defining performant Julia functions for solving systems, but also for performing mathematical transformations which may be required in order to numerically solve the system. For example, let's solve a third order ODE. The way this is done is by transforming the third order ODE into a first order ODE, and then solving the resulting ODE. This transformation is given by the `ode_order_lowering` function.
 
 ````julia
+
 @derivatives D3'''~t
 @derivatives D2''~t
 @variables u(t), x(t)
@@ -404,15 +356,16 @@ de1 = ode_order_lowering(de)
 ModelingToolkit.ODESystem(ModelingToolkit.Equation[ModelingToolkit.Equation(derivative(uˍtt(t), t), ((2 * uˍtt(t) + uˍt(t)) + xˍt(
 t)) + 1), ModelingToolkit.Equation(derivative(xˍt(t), t), xˍt(t) + 2), ModelingToolkit.Equation(derivative(uˍt(t), t), uˍtt(t)), M
 odelingToolkit.Equation(derivative(u(t), t), uˍt(t)), ModelingToolkit.Equation(derivative(x(t), t), xˍt(t))], t, ModelingToolkit.V
-ariable[uˍtt, xˍt, uˍt, u, x], ModelingToolkit.Variable[], Base.RefValue{Array{ModelingToolkit.Expression,1}}(ModelingToolkit.Expr
-ession[]), Base.RefValue{Array{ModelingToolkit.Expression,2}}(Array{ModelingToolkit.Expression}(undef,0,0)), Base.RefValue{Array{M
-odelingToolkit.Expression,2}}(Array{ModelingToolkit.Expression}(undef,0,0)), Base.RefValue{Array{ModelingToolkit.Expression,2}}(Ar
-ray{ModelingToolkit.Expression}(undef,0,0)), Symbol("##ODESystem#400"), ModelingToolkit.ODESystem[])
+ariable[uˍtt, xˍt, uˍt, u, x], ModelingToolkit.Variable[], ModelingToolkit.Variable[], ModelingToolkit.Equation[], Base.RefValue{A
+rray{ModelingToolkit.Expression,1}}(ModelingToolkit.Expression[]), Base.RefValue{Any}(Array{ModelingToolkit.Expression}(undef,0,0)
+), Base.RefValue{Array{ModelingToolkit.Expression,2}}(Array{ModelingToolkit.Expression}(undef,0,0)), Base.RefValue{Array{ModelingT
+oolkit.Expression,2}}(Array{ModelingToolkit.Expression}(undef,0,0)), Symbol("##ODESystem#516"), ModelingToolkit.ODESystem[])
 ````
 
 
 
 ````julia
+
 de1.eqs
 ````
 
@@ -437,6 +390,7 @@ This has generated a system of 5 first order ODE systems which can now be used i
 Let's take a look at how to extend ModelingToolkit.jl in new directions. Let's define a Jacobian just by using the derivative primatives by hand:
 
 ````julia
+
 @parameters t σ ρ β
 @variables x(t) y(t) z(t)
 @derivatives D'~t Dx'~x Dy'~y Dz'~z
@@ -463,6 +417,7 @@ J = [Dx(eqs[1].rhs) Dy(eqs[1].rhs) Dz(eqs[1].rhs)
 Notice that this writes the derivatives in a "lazy" manner. If we want to actually compute the derivatives, we can expand out those expressions:
 
 ````julia
+
 J = expand_derivatives.(J)
 ````
 
@@ -481,6 +436,7 @@ J = expand_derivatives.(J)
 Here's the magic of ModelingToolkit.jl: **Julia treats ModelingToolkit expressions like a Number, and so generic numerical functions are directly usable on ModelingToolkit expressions!** Let's compute the LU-factorization of this Jacobian we defined using Julia's Base linear algebra library.
 
 ````julia
+
 using LinearAlgebra
 luJ = lu(J,Val(false))
 ````
@@ -506,6 +462,7 @@ U factor:
 
 
 ````julia
+
 luJ.L
 ````
 
@@ -524,6 +481,7 @@ luJ.L
 and the inverse?
 
 ````julia
+
 invJ = inv(luJ)
 ````
 
@@ -584,6 +542,7 @@ Let's follow this thread a little deeper.
 Let's take someone's code written to numerically solve the Lorenz equation:
 
 ````julia
+
 function lorenz(du,u,p,t)
  du[1] = p[1]*(u[2]-u[1])
  du[2] = u[1]*(p[2]-u[3]) - u[2]
@@ -603,6 +562,7 @@ lorenz (generic function with 1 method)
 Since ModelingToolkit can trace generic numerical functions in Julia, let's trace it with Operations. When we do this, it'll spit out a symbolic representation of their numerical code:
 
 ````julia
+
 u = [x,y,z]
 du = similar(u)
 p = [σ,ρ,β]
@@ -625,6 +585,7 @@ du
 We can then perform symbolic manipulations on their numerical code, and build a new numerical code that optimizes/fixes their original function!
 
 ````julia
+
 J = [Dx(du[1]) Dy(du[1]) Dz(du[1])
      Dx(du[2]) Dy(du[2]) Dz(du[2])
      Dx(du[3]) Dy(du[3]) Dz(du[3])]
@@ -648,6 +609,7 @@ J = expand_derivatives.(J)
 In many cases one has to speed up large modeling frameworks by taking into account sparsity. While ModelingToolkit.jl can be used to compute Jacobians, we can write a standard Julia function in order to get a spase matrix of expressions which automatically detects and utilizes the sparsity of their function.
 
 ````julia
+
 using SparseArrays
 function SparseArrays.SparseMatrixCSC(M::Matrix{T}) where {T<:ModelingToolkit.Expression}
     idxs = findall(!iszero, M)
@@ -683,6 +645,7 @@ sJ = SparseMatrixCSC(J)
 We can utilize this idea to have parameters that are also functions. For example, we can have a parameter σ which acts as a function of 1 argument, and then utilize this function within our differential equations:
 
 ````julia
+
 @parameters σ(..)
 eqs = [D(x) ~ σ(t-1)*(y-x),
        D(y) ~ x*(σ(t^2)-z)-y,
@@ -704,6 +667,7 @@ eqs = [D(x) ~ σ(t-1)*(y-x),
 Notice that when we calculate the derivative with respect to `t`, the chain rule is automatically handled:
 
 ````julia
+
 @derivatives Dₜ'~t
 Dₜ(x*(σ(t^2)-z)-y)
 expand_derivatives(Dₜ(x*(σ(t^2)-z)-y))
@@ -724,6 +688,7 @@ t))
 ModelingToolkit.jl is written in Julia, and thus it can be directly extended from Julia itself. Let's define a normal Julia function and call it with a variable:
 
 ````julia
+
 _f(x) = 2x + x^2
 _f(x)
 ````
@@ -740,6 +705,7 @@ _f(x)
 Recall that when we do that, it will automatically trace this function and then build a symbolic expression. But what if we wanted our function to be a primative in the symbolic framework? This can be done by registering the function.
 
 ````julia
+
 f(x) = 2x + x^2
 @register f(x)
 ````
@@ -756,6 +722,7 @@ f (generic function with 2 methods)
 Now this function is a new primitive:
 
 ````julia
+
 f(x)
 ````
 
@@ -771,6 +738,7 @@ f(x(t))
 and we can now define derivatives of our function:
 
 ````julia
+
 function ModelingToolkit.derivative(::typeof(f), args::NTuple{1,Any}, ::Val{1})
     2 + 2args[1]
 end
@@ -787,12 +755,13 @@ expand_derivatives(Dx(f(x)))
 
 ## Appendix
 
- This tutorial is part of the DiffEqTutorials.jl repository, found at: <https://github.com/JuliaDiffEq/DiffEqTutorials.jl>
+ This tutorial is part of the SciMLTutorials.jl repository, found at: <https://github.com/SciML/SciMLTutorials.jl>.
+ For more information on doing scientific machine learning (SciML) with open source software, check out <https://sciml.ai/>.
 
 To locally run this tutorial, do the following commands:
 ```
-using DiffEqTutorials
-DiffEqTutorials.weave_file("ode_extras","01-ModelingToolkit.jmd")
+using SciMLTutorials
+SciMLTutorials.weave_file("ode_extras","01-ModelingToolkit.jmd")
 ```
 
 Computer Information:
@@ -806,10 +775,10 @@ Platform Info:
   LIBM: libopenlibm
   LLVM: libLLVM-8.0.1 (ORCJIT, skylake)
 Environment:
+  JULIA_LOAD_PATH = /builds/JuliaGPU/DiffEqTutorials.jl:
   JULIA_DEPOT_PATH = /builds/JuliaGPU/DiffEqTutorials.jl/.julia
-  JULIA_CUDA_MEMORY_LIMIT = 536870912
-  JULIA_PROJECT = @.
-  JULIA_NUM_THREADS = 4
+  JULIA_CUDA_MEMORY_LIMIT = 2147483648
+  JULIA_NUM_THREADS = 8
 
 ```
 
@@ -817,14 +786,14 @@ Package Information:
 
 ```
 Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/ode_extras/Project.toml`
-[f3b72e0c-5b89-59e1-b016-84e28bfd966d] DiffEqDevTools 2.22.0
-[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.14.0
-[961ee093-0014-501f-94e3-6117800e7a78] ModelingToolkit 3.11.0
+[f3b72e0c-5b89-59e1-b016-84e28bfd966d] DiffEqDevTools 2.27.0
+[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.15.0
+[961ee093-0014-501f-94e3-6117800e7a78] ModelingToolkit 3.16.0
 [76087f3c-5699-56af-9a33-bf431cd00edd] NLopt 0.6.0
-[2774e3e8-f4cf-5e23-947b-6d7e65073b56] NLsolve 4.4.0
+[2774e3e8-f4cf-5e23-947b-6d7e65073b56] NLsolve 4.4.1
 [429524aa-4258-5aef-a3af-852621145aeb] Optim 0.22.0
-[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.41.0
-[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.5.1
+[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.42.3
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.6.0
 [37e2e46d-f89d-539d-b4ee-838fcccc9c8e] LinearAlgebra
 [2f01184e-e22b-5df5-ae63-d93ebab69eaf] SparseArrays
 ```
