@@ -14,6 +14,7 @@ Also, we know that
 $${\displaystyle {\frac {\mathrm {d} {\boldsymbol {p}}}{\mathrm {d} t}}=-{\frac {\partial {\mathcal {H}}}{\partial {\boldsymbol {q}}}}\quad ,\quad {\frac {\mathrm {d} {\boldsymbol {q}}}{\mathrm {d} t}}=+{\frac {\partial {\mathcal {H}}}{\partial {\boldsymbol {p}}}}}$$
 
 ````julia
+
 using OrdinaryDiffEq, LinearAlgebra, ForwardDiff, Plots; gr()
 H(q,p) = norm(p)^2/2 - inv(norm(q))
 L(q,p) = q[1]*p[2] - p[1]*q[2]
@@ -104,6 +105,7 @@ u: 201-element Array{RecursiveArrayTools.ArrayPartition{Float64,Tuple{Array
 Let's plot the orbit and check the energy and angular momentum variation. We know that energy and angular momentum should be constant, and they are also called first integrals.
 
 ````julia
+
 plot_orbit(sol) = plot(sol,vars=(3,4), lab="Orbit", title="Kepler Problem Solution")
 
 function plot_first_integrals(sol, H, L)
@@ -121,6 +123,7 @@ analysis_plot (generic function with 1 method)
 
 
 ````julia
+
 analysis_plot(sol, H, L)
 ````
 
@@ -132,20 +135,16 @@ analysis_plot(sol, H, L)
 Let's try to use a Runge-Kutta-Nyström solver to solve this problem and check the first integrals' variation.
 
 ````julia
+
 sol2 = solve(prob, DPRKN6())  # dt is not necessary, because unlike symplectic
                               # integrators DPRKN6 is adaptive
 @show sol2.u |> length
+analysis_plot(sol2, H, L)
 ````
 
 
 ````
 sol2.u |> length = 80
-````
-
-
-
-````julia
-analysis_plot(sol2, H, L)
 ````
 
 
@@ -156,20 +155,16 @@ analysis_plot(sol2, H, L)
 Let's then try to solve the same problem by the `ERKN4` solver, which is specialized for sinusoid-like periodic function
 
 ````julia
+
 sol3 = solve(prob, ERKN4()) # dt is not necessary, because unlike symplectic
                             # integrators ERKN4 is adaptive
 @show sol3.u |> length
+analysis_plot(sol3, H, L)
 ````
 
 
 ````
 sol3.u |> length = 54
-````
-
-
-
-````julia
-analysis_plot(sol3, H, L)
 ````
 
 
@@ -182,19 +177,15 @@ We can see that `ERKN4` does a bad job for this problem, because this problem is
 One advantage of using `DynamicalODEProblem` is that it can implicitly convert the second order ODE problem to a *normal* system of first order ODEs, which is solvable for other ODE solvers. Let's use the `Tsit5` solver for the next example.
 
 ````julia
+
 sol4 = solve(prob, Tsit5())
 @show sol4.u |> length
+analysis_plot(sol4, H, L)
 ````
 
 
 ````
 sol4.u |> length = 56
-````
-
-
-
-````julia
-analysis_plot(sol4, H, L)
 ````
 
 
@@ -219,19 +210,8 @@ Both Runge-Kutta-Nyström and Runge-Kutta integrator do not conserve energy nor 
 In this example, we know that energy and angular momentum should be conserved. We can achieve this through mainfold projection. As the name implies, it is a procedure to project the ODE solution to a manifold. Let's start with a base case, where mainfold projection isn't being used.
 
 ````julia
+
 using DiffEqCallbacks
-````
-
-
-````
-Error: ArgumentError: Package DiffEqCallbacks not found in current path:
-- Run `import Pkg; Pkg.add("DiffEqCallbacks")` to install the DiffEqCallbac
-ks package.
-````
-
-
-
-````julia
 
 plot_orbit2(sol) = plot(sol,vars=(1,2), lab="Orbit", title="Kepler Problem Solution")
 
@@ -261,124 +241,55 @@ analysis_plot2(sol_, H, L)
 There is a significant fluctuation in the first integrals, when there is no mainfold projection.
 
 ````julia
+
 function first_integrals_manifold(residual,u)
     residual[1:2] .= initial_first_integrals[1] - H(u[1:2], u[3:4])
     residual[3:4] .= initial_first_integrals[2] - L(u[1:2], u[3:4])
 end
 
 cb = ManifoldProjection(first_integrals_manifold)
-````
-
-
-````
-Error: UndefVarError: ManifoldProjection not defined
-````
-
-
-
-````julia
 sol5 = solve(prob2, RK4(), dt=1//5, adaptive=false, callback=cb)
-````
-
-
-````
-Error: UndefVarError: cb not defined
-````
-
-
-
-````julia
 analysis_plot2(sol5, H, L)
 ````
 
 
-````
-Error: UndefVarError: sol5 not defined
-````
-
-
+![](figures/05-kepler_problem_8_1.png)
 
 
 
 We can see that thanks to the manifold projection, the first integrals' variation is very small, although we are using `RK4` which is not symplectic. But wait, what if we only project to the energy conservation manifold?
 
 ````julia
+
 function energy_manifold(residual,u)
     residual[1:2] .= initial_first_integrals[1] - H(u[1:2], u[3:4])
     residual[3:4] .= 0
 end
 energy_cb = ManifoldProjection(energy_manifold)
-````
-
-
-````
-Error: UndefVarError: ManifoldProjection not defined
-````
-
-
-
-````julia
 sol6 = solve(prob2, RK4(), dt=1//5, adaptive=false, callback=energy_cb)
-````
-
-
-````
-Error: UndefVarError: energy_cb not defined
-````
-
-
-
-````julia
 analysis_plot2(sol6, H, L)
 ````
 
 
-````
-Error: UndefVarError: sol6 not defined
-````
-
-
+![](figures/05-kepler_problem_9_1.png)
 
 
 
 There is almost no energy variation but angular momentum varies quite bit. How about only project to the angular momentum conservation manifold?
 
 ````julia
+
 function angular_manifold(residual,u)
     residual[1:2] .= initial_first_integrals[2] - L(u[1:2], u[3:4])
     residual[3:4] .= 0
 end
 angular_cb = ManifoldProjection(angular_manifold)
-````
-
-
-````
-Error: UndefVarError: ManifoldProjection not defined
-````
-
-
-
-````julia
 sol7 = solve(prob2, RK4(), dt=1//5, adaptive=false, callback=angular_cb)
-````
-
-
-````
-Error: UndefVarError: angular_cb not defined
-````
-
-
-
-````julia
 analysis_plot2(sol7, H, L)
 ````
 
 
-````
-Error: UndefVarError: sol7 not defined
-````
-
-
+![](figures/05-kepler_problem_10_1.png)
 
 
 
@@ -387,12 +298,13 @@ Again, we see what we expect.
 
 ## Appendix
 
- This tutorial is part of the DiffEqTutorials.jl repository, found at: <https://github.com/JuliaDiffEq/DiffEqTutorials.jl>
+ This tutorial is part of the SciMLTutorials.jl repository, found at: <https://github.com/SciML/SciMLTutorials.jl>.
+ For more information on doing scientific machine learning (SciML) with open source software, check out <https://sciml.ai/>.
 
 To locally run this tutorial, do the following commands:
 ```
-using DiffEqTutorials
-DiffEqTutorials.weave_file("models","05-kepler_problem.jmd")
+using SciMLTutorials
+SciMLTutorials.weave_file("models","05-kepler_problem.jmd")
 ```
 
 Computer Information:
@@ -406,10 +318,10 @@ Platform Info:
   LIBM: libopenlibm
   LLVM: libLLVM-8.0.1 (ORCJIT, skylake)
 Environment:
+  JULIA_LOAD_PATH = /builds/JuliaGPU/DiffEqTutorials.jl:
   JULIA_DEPOT_PATH = /builds/JuliaGPU/DiffEqTutorials.jl/.julia
-  JULIA_CUDA_MEMORY_LIMIT = 536870912
-  JULIA_PROJECT = @.
-  JULIA_NUM_THREADS = 4
+  JULIA_CUDA_MEMORY_LIMIT = 2147483648
+  JULIA_NUM_THREADS = 8
 
 ```
 
@@ -418,21 +330,22 @@ Package Information:
 ```
 Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/models/Project.toml`
 [eb300fae-53e8-50a0-950c-e21f52c2b7e0] DiffEqBiological 4.3.0
-[f3b72e0c-5b89-59e1-b016-84e28bfd966d] DiffEqDevTools 2.22.0
-[055956cb-9e8b-5191-98cc-73ae4a59e68a] DiffEqPhysics 3.2.0
-[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.14.0
-[31c24e10-a181-5473-b8eb-7969acd0382f] Distributions 0.23.4
+[459566f4-90b8-5000-8ac3-15dfb0a30def] DiffEqCallbacks 2.13.5
+[f3b72e0c-5b89-59e1-b016-84e28bfd966d] DiffEqDevTools 2.27.0
+[055956cb-9e8b-5191-98cc-73ae4a59e68a] DiffEqPhysics 3.6.0
+[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.15.0
+[31c24e10-a181-5473-b8eb-7969acd0382f] Distributions 0.23.8
 [587475ba-b771-5e3f-ad9e-33799f191a9c] Flux 0.10.4
-[f6369f11-7733-5829-9624-2563aa707210] ForwardDiff 0.10.11
+[f6369f11-7733-5829-9624-2563aa707210] ForwardDiff 0.10.12
 [23fbe1c1-3f47-55db-b15f-69d7ec21a316] Latexify 0.13.5
-[961ee093-0014-501f-94e3-6117800e7a78] ModelingToolkit 3.11.0
-[2774e3e8-f4cf-5e23-947b-6d7e65073b56] NLsolve 4.4.0
+[961ee093-0014-501f-94e3-6117800e7a78] ModelingToolkit 3.17.0
+[2774e3e8-f4cf-5e23-947b-6d7e65073b56] NLsolve 4.4.1
 [8faf48c0-8b73-11e9-0e63-2155955bfa4d] NeuralNetDiffEq 1.6.0
 [429524aa-4258-5aef-a3af-852621145aeb] Optim 0.21.0
-[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.41.0
-[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.4.4
-[731186ca-8d62-57ce-b412-fbd966d074cd] RecursiveArrayTools 2.5.0
-[789caeaf-c7a9-5a7d-9973-96adeb23e2a0] StochasticDiffEq 6.23.1
+[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.42.3
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.6.0
+[731186ca-8d62-57ce-b412-fbd966d074cd] RecursiveArrayTools 2.6.0
+[789caeaf-c7a9-5a7d-9973-96adeb23e2a0] StochasticDiffEq 6.25.0
 [37e2e46d-f89d-539d-b4ee-838fcccc9c8e] LinearAlgebra
 [2f01184e-e22b-5df5-ae63-d93ebab69eaf] SparseArrays
 ```

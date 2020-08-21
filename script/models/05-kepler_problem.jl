@@ -94,6 +94,6 @@ sol7 = solve(prob2, RK4(), dt=1//5, adaptive=false, callback=angular_cb)
 analysis_plot2(sol7, H, L)
 
 
-using DiffEqTutorials
-DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+using SciMLTutorials
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 
