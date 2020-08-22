@@ -320,6 +320,6 @@ prob = ODEProblem(fast_gm!,r0,(0.0,500.0),p)
 @benchmark solve(prob,CVODE_BDF(linear_solver=:GMRES),save_everystep=false)
 
 
-using DiffEqTutorials
-DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+using SciMLTutorials
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 
