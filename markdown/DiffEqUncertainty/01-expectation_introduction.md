@@ -11,6 +11,7 @@ First, lets consider the following linear model.
 $$u' = p u$$
 
 ````julia
+
 f(u,p,t) = p.*u
 ````
 
@@ -26,6 +27,7 @@ f (generic function with 1 method)
 We then wish to solve this model on the timespan `t=0.0` to `t=10.0`, with an intial condition `u0=10.0` and parameter `p=-0.3`. We can then setup the differential equations, solve, and plot as follows
 
 ````julia
+
 using DifferentialEquations, Plots
 u0 = [10.0]
 p = [-0.3]
@@ -44,6 +46,7 @@ ylims!(0.0,10.0)
 However, what if we wish to consider a random initial condition? Assume `u0` is distributed uniformly from `-10.0` to `10.0`, i.e.,
 
 ````julia
+
 using Distributions
 u0_dist = [Uniform(-10.0,10.0)]
 ````
@@ -61,6 +64,7 @@ u0_dist = [Uniform(-10.0,10.0)]
 We can then run a Monte Carlo simulation of 100,000 trajectories by solving an `EnsembleProblem`. 
 
 ````julia
+
 prob_func(prob,i,repeat) = remake(prob, u0 = rand.(u0_dist))
 ensemble_prob = EnsembleProblem(prob,prob_func=prob_func)
 
@@ -73,12 +77,12 @@ EnsembleSolution Solution of length 100000 with uType:
 DiffEqBase.ODESolution{Float64,2,Array{Array{Float64,1},1},Nothing,Nothing,
 Array{Float64,1},Array{Array{Array{Float64,1},1},1},DiffEqBase.ODEProblem{A
 rray{Float64,1},Tuple{Float64,Float64},false,Array{Float64,1},DiffEqBase.OD
-EFunction{false,typeof(Main.##WeaveSandBox#775.f),LinearAlgebra.UniformScal
+EFunction{false,typeof(Main.##WeaveSandBox#751.f),LinearAlgebra.UniformScal
 ing{Bool},Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,N
 othing,Nothing,Nothing,Nothing},Base.Iterators.Pairs{Union{},Union{},Tuple{
 },NamedTuple{(),Tuple{}}},DiffEqBase.StandardODEProblem},OrdinaryDiffEq.Tsi
 t5,OrdinaryDiffEq.InterpolationData{DiffEqBase.ODEFunction{false,typeof(Mai
-n.##WeaveSandBox#775.f),LinearAlgebra.UniformScaling{Bool},Nothing,Nothing,
+n.##WeaveSandBox#751.f),LinearAlgebra.UniformScaling{Bool},Nothing,Nothing,
 Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,Not
 hing},Array{Array{Float64,1},1},Array{Float64,1},Array{Array{Array{Float64,
 1},1},1},OrdinaryDiffEq.Tsit5ConstantCache{Float64,Float64}},DiffEqBase.DES
@@ -92,6 +96,7 @@ tats}
 Plotting the first 250 trajectories produces
 
 ````julia
+
 plot(ensemblesol, vars = (0,1), lw=1,alpha=0.1, label=nothing, idxs = 1:250)
 ````
 
@@ -104,6 +109,7 @@ plot(ensemblesol, vars = (0,1), lw=1,alpha=0.1, label=nothing, idxs = 1:250)
 Given the ensemble solution, we can then compute the expectation of a function $g\left(\cdot\right)$ of the system state `u` at any time in the timespan, e.g. the state itself at `t=4.0` as
 
 ````julia
+
 g(sol) = sol(4.0)
 mean([g(sol) for sol in ensemblesol])
 ````
@@ -111,7 +117,7 @@ mean([g(sol) for sol in ensemblesol])
 
 ````
 1-element Array{Float64,1}:
- 0.006688298329460279
+ -0.007573120887912955
 ````
 
 
@@ -121,6 +127,7 @@ mean([g(sol) for sol in ensemblesol])
 Alternatively, DiffEqUncertainty.jl offers a convenient interface for this type of calculation, `expectation()`.
 
 ````julia
+
 using DiffEqUncertainty
 expectation(g, prob, u0_dist, p, MonteCarlo(), Tsit5(); trajectories=100000)
 ````
@@ -128,7 +135,7 @@ expectation(g, prob, u0_dist, p, MonteCarlo(), Tsit5(); trajectories=100000)
 
 ````
 1-element Array{Float64,1}:
- 0.0033551972364124806
+ -0.0037433989352062547
 ````
 
 
@@ -144,6 +151,7 @@ where $Pf$ is the "push-forward" density of the initial joint pdf $f$ on initial
 Alternatively, we could solve the same problem using the `Koopman()` algorithm. 
 
 ````julia
+
 expectation(g, prob, u0_dist, p, Koopman(), Tsit5())
 ````
 
@@ -162,6 +170,7 @@ Being that this system is linear, we can analytically compute the solution as a 
 $$e^{pt}\mathbb{E}\left[u_0\right]$$
 
 ````julia
+
 exp(p[1]*4.0)*mean(u0_dist[1])
 ````
 
@@ -177,25 +186,27 @@ exp(p[1]*4.0)*mean(u0_dist[1])
 We see that for this case the `Koopman()` algorithm produces a more accurate solution than `MonteCarlo()`. Not only is it more accurate, it is also much faster
 
 ````julia
+
 @time expectation(g, prob, u0_dist, p, MonteCarlo(), Tsit5(); trajectories=100000)
 ````
 
 
 ````
-2.402257 seconds (79.64 M allocations: 7.169 GiB, 68.84% gc time)
+2.280767 seconds (79.32 M allocations: 7.160 GiB, 71.23% gc time)
 1-element Array{Float64,1}:
- 0.007739904690189942
+ -0.0050382269528445305
 ````
 
 
 
 ````julia
+
 @time expectation(g, prob, u0_dist, p, Koopman(), Tsit5())
 ````
 
 
 ````
-0.000805 seconds (12.28 k allocations: 1.112 MiB)
+0.000798 seconds (12.26 k allocations: 1.111 MiB)
 u: 1-element Array{Float64,1}:
  0.0
 ````
@@ -207,15 +218,16 @@ u: 1-element Array{Float64,1}:
 Changing the distribution, we arrive at
 
 ````julia
+
 u0_dist = [Uniform(0.0,10.0)]
 @time expectation(g, prob, u0_dist, p, MonteCarlo(), Tsit5(); trajectories=100_000)
 ````
 
 
 ````
-1.116741 seconds (79.60 M allocations: 7.168 GiB, 47.15% gc time)
+1.027060 seconds (79.30 M allocations: 7.160 GiB, 44.15% gc time)
 1-element Array{Float64,1}:
- 1.5074176871866485
+ 1.5059653813564504
 ````
 
 
@@ -223,12 +235,13 @@ u0_dist = [Uniform(0.0,10.0)]
 
 and
 ````julia
+
 @time expectation(g, prob, u0_dist, p, Koopman(), Tsit5())[1]
 ````
 
 
 ````
-0.004349 seconds (14.04 k allocations: 1.221 MiB)
+0.004259 seconds (14.02 k allocations: 1.221 MiB)
 1.5059722133001539
 ````
 
@@ -237,6 +250,7 @@ and
 
 where the analytical solution is 
 ````julia
+
 exp(p[1]*4.0)*mean(u0_dist[1])
 ````
 
@@ -252,6 +266,7 @@ exp(p[1]*4.0)*mean(u0_dist[1])
 Note that the `Koopman()` algorithm doesn't currently support infinite or semi-infinite integration domains, where the integration domain is determined by the extrema of the given distributions. So, trying to using a `Normal` distribution will produce `NaN`
 
 ````julia
+
 u0_dist = [Normal(3.0,2.0)]
 expectation(g, prob, u0_dist, p, Koopman(), Tsit5())
 ````
@@ -269,6 +284,7 @@ u: 1-element Array{Float64,1}:
 Here, the analytical solution is 
 
 ````julia
+
 exp(p[1]*4.0)*mean(u0_dist[1])
 ````
 
@@ -284,6 +300,7 @@ exp(p[1]*4.0)*mean(u0_dist[1])
 Using a truncated distribution will alleviate this problem. However, there is another gotcha. If a large majority of the probability mass of the distribution exists in a small region in the support, then the adaptive methods used to solve the expectation can "miss" the non-zero portions of the distribution and errantly return 0.0.
 
 ````julia
+
 u0_dist = [truncated(Normal(3.0,2.0),-1000,1000)]
 expectation(g, prob, u0_dist, p, Koopman(), Tsit5())
 ````
@@ -300,6 +317,7 @@ u: 1-element Array{Float64,1}:
 
 whereas truncating at $\pm 4\sigma$ produces the correct result
 ````julia
+
 u0_dist = [truncated(Normal(3.0,2.0),-5,11)]
 expectation(g, prob, u0_dist, p, Koopman(), Tsit5())
 ````
@@ -317,6 +335,7 @@ u: 1-element Array{Float64,1}:
 If a large truncation is required, it is best practice to center the distribution on the truncated interval. This is because many of the underlying quadrature algorithms use the center of the interval as an evaluation point.
 
 ````julia
+
 u0_dist = [truncated(Normal(3.0,2.0),3-1000,3+1000)]
 expectation(g, prob, u0_dist, p, Koopman(), Tsit5())
 ````
@@ -337,6 +356,7 @@ u: 1-element Array{Float64,1}:
 Here, we demonstrate this by computing the expectation of `u` at `t=4.0s` and `t=6.0s`
 
 ````julia
+
 g(sol) = [sol(4.0)[1], sol(6.0)[1]]
 expectation(g, prob, u0_dist, p, Koopman(), Tsit5(); nout = 2)
 ````
@@ -353,6 +373,7 @@ u: 2-element Array{Float64,1}:
 
 with analytical solution
 ````julia
+
 exp.(p.*[4.0,6.0])*mean(u0_dist[1])
 ````
 
@@ -369,6 +390,7 @@ exp.(p.*[4.0,6.0])*mean(u0_dist[1])
 
 this can be used to compute the expectation at a range of times simultaneously
 ````julia
+
 saveat = tspan[1]:.5:tspan[2]
 g(sol) = Matrix(sol)
 mean_koop = expectation(g, prob, u0_dist, p, Koopman(), Tsit5(); nout = length(saveat), saveat=saveat)
@@ -387,6 +409,7 @@ u: 1×21 Array{Float64,2}:
 We can then plot these values along with the analytical solution
 
 ````julia
+
 plot(t->exp(p[1]*t)*mean(u0_dist[1]),tspan..., xlabel="t", label="analytical")
 scatter!(collect(saveat),mean_koop.u[:],marker=:o, label=nothing)
 ````
@@ -402,6 +425,7 @@ In the above examples we used vector-valued expectation calculations to compute 
 To demonstrate this, lets compute the expectation of $x$, $x^2$, and $x^3$ using both approaches while counting the number of times `g()` is evaluated. This is the same as the number of simulation runs required to arrive at the solution. First, consider the scalar-valued approach. Here, we follow the same method as before, but we add a counter to our function evaluation that stores the number of function calls for each expectation calculation to an array.
 
 ````julia
+
 function g(sol, power, counter)
     counter[power] = counter[power] + 1
     sol(4.0)[1]^power
@@ -430,6 +454,7 @@ Leading to a total of 1155 function evaluations.
 
 Now, lets compare this to the vector-valued approach
 ````julia
+
 function g(sol, counter) 
     counter[1] = counter[1] + 1
     v = sol(4.0)[1]
@@ -472,6 +497,7 @@ $$\mathrm{Var}\left(X\right)=\mathbb{E}\left[X^2\right]-\mathbb{E}\left[X\right]
 Using this, we define a function that returns the expectations of $X$ and $X^2$ as a vector-valued function and then compute the variance from these
 
 ````julia
+
 function g(sol) 
     x = sol(4.0)[1]
     [x, x^2]
@@ -496,6 +522,7 @@ For a linear system, we can propagate the variance analytically as
 $e^{2pt}\mathrm{Var}\left(u_0\right)$
 
 ````julia
+
 exp(2*p[1]*4.0)*var(u0_dist[1])
 ````
 
@@ -511,6 +538,7 @@ exp(2*p[1]*4.0)*var(u0_dist[1])
 This can be computed at multiple time instances as well
 
 ````julia
+
 saveat = tspan[1]:.5:tspan[2]
 g(sol) = [Matrix(sol)'; (Matrix(sol).^2)']
 
@@ -531,6 +559,7 @@ scatter!(collect(saveat),μ,marker=:x, yerror = σ, c=:black, label = "Koopman M
 A similar approach can be used to compute skewness
 
 ````julia
+
 function g(sol) 
     v = sol(4.0)[1]
     [v, v^2, v^3]
@@ -557,6 +586,7 @@ As the system is linear, we expect the skewness to be unchanged from the inital 
 DiffEqUncertainty provides a convenience function `centralmoment` around this approach for higher-order central moments. It takes an integer for the number of central moments you wish to compute. While the rest of the arguments are the same as for  `expectation()`. The following will return central moments 1-5.
 
 ````julia
+
 g(sol) = sol(4.0)[1]
 centralmoment(5, g, prob, u0_dist, p, Koopman(), Tsit5(),
                 ireltol = 1e-9, iabstol = 1e-9)
@@ -592,6 +622,7 @@ using Quadrature, Cuba
 We then solve our expectation as before using a `batch=10` multi-thread parallelization via `EnsembleThreads()` of Cuba's SUAVE algorithm. However, in this case we introduce additional uncertainty in the model parameter.
 
 ````julia
+
 u0_dist = [truncated(Normal(3.0,2.0),-5,11)]
 p_dist = [truncated(Normal(-.7, .1), -1,0)]
 
@@ -613,6 +644,7 @@ expectation(g, prob, u0_dist, p_dist, Koopman(), Tsit5(), EnsembleThreads();
 Now, lets compare the performance of the batch and non-batch modes
 
 ````julia
+
 using BenchmarkTools
 
 @btime expectation(g, prob, u0_dist, p_dist, Koopman(), Tsit5(); 
@@ -621,20 +653,21 @@ using BenchmarkTools
 
 
 ````
-45.163 ms (1007188 allocations: 91.57 MiB)
+44.556 ms (1006187 allocations: 91.55 MiB)
 0.05397860786456136
 ````
 
 
 
 ````julia
+
 @btime expectation(g, prob, u0_dist, p_dist, Koopman(), Tsit5(), EnsembleThreads(); 
                 quadalg = CubaSUAVE(), batch=10)[1]
 ````
 
 
 ````
-20.111 ms (1019142 allocations: 92.96 MiB)
+21.936 ms (1019426 allocations: 93.00 MiB)
 0.05397860786456136
 ````
 
@@ -647,6 +680,7 @@ It is also possible to parallelize across the GPU. However, one must be careful 
 Here we load `DiffEqGPU` and modify our problem to use Float32 and to put the ODE in the required GPU form
 
 ````julia
+
 using DiffEqGPU
 
 function f(du, u,p,t) 
@@ -672,7 +706,7 @@ p_dist = [truncated(Normal(-.7f0, .1f0), -1f0,0f0)]
 
 
 ````
-7.164 ms (69734 allocations: 3.59 MiB)
+6.861 ms (76204 allocations: 3.71 MiB)
 0.056093966910433016
 ````
 
@@ -718,14 +752,14 @@ Package Information:
 Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/DiffEqUncertainty/Project.toml`
 [6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf] BenchmarkTools 0.5.0
 [8a292aeb-7a57-582c-b821-06e4c11590b1] Cuba 2.1.0
-[071ae1c0-96b5-11e9-1965-c90190d839ea] DiffEqGPU 1.5.0
-[41bf760c-e81c-5289-8e54-58b1f1f8abe2] DiffEqSensitivity 6.28.0
+[071ae1c0-96b5-11e9-1965-c90190d839ea] DiffEqGPU 1.6.0
+[41bf760c-e81c-5289-8e54-58b1f1f8abe2] DiffEqSensitivity 6.31.1
 [ef61062a-5684-51dc-bb67-a0fcdec5c97d] DiffEqUncertainty 1.5.0
 [0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.15.0
 [31c24e10-a181-5473-b8eb-7969acd0382f] Distributions 0.23.8
 [f6369f11-7733-5829-9624-2563aa707210] ForwardDiff 0.10.12
 [76087f3c-5699-56af-9a33-bf431cd00edd] NLopt 0.6.0
-[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.42.1
-[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.5.8
+[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.42.3
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.6.0
 [67601950-bd08-11e9-3c89-fd23fb4432d2] Quadrature 1.3.0
 ```
