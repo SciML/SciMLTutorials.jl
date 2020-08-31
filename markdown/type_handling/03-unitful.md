@@ -13,6 +13,7 @@ DifferentialEquations.jl allows for one to use Unitful.jl to have unit-checked a
 To use Unitful, you need to have the package installed. Then you can add units to your variables. For example:
 
 ````julia
+
 using Unitful
 t = 1.0u"s"
 ````
@@ -29,6 +30,7 @@ t = 1.0u"s"
 Notice that `t` is a variable with units in seconds. If we make another value with seconds, they can add
 
 ````julia
+
 t2 = 1.02u"s"
 t+t2
 ````
@@ -45,6 +47,7 @@ t+t2
 and they can multiply:
 
 ````julia
+
 t*t2
 ````
 
@@ -60,6 +63,7 @@ t*t2
 You can even do rational roots:
 
 ````julia
+
 sqrt(t)
 ````
 
@@ -75,6 +79,7 @@ sqrt(t)
 Many operations work. These operations will check to make sure units are correct, and will throw an error for incorrect operations:
 
 ````julia
+
 t + sqrt(t)
 ````
 
@@ -92,6 +97,7 @@ Error: DimensionError: 1.0 s and 1.0 s^1/2 are not dimensionally compatible.
 Just like with other number systems, you can choose the units for your numbers by simply specifying the units of the initial condition and the timestep. For example, to solve the linear ODE where the variable has units of Newton's and `t` is in Seconds, we would use:
 
 ````julia
+
 using DifferentialEquations
 f = (y,p,t) -> 0.5*y
 u0 = 1.5u"N"
@@ -115,6 +121,7 @@ $$\frac{dy}{dt} = f(t,y)$$
 we must have that `f` is a rate, i.e. `f` is a change in `y` per unit time. So we need to fix the units of `f` in our example to be `N/s`. Notice that we then do not receive an error if we do the following:
 
 ````julia
+
 f = (y,p,t) -> 0.5*y/3.0u"s"
 prob = ODEProblem(f,u0,(0.0u"s",1.0u"s"))
 sol = solve(prob,Tsit5())
@@ -141,6 +148,7 @@ u: 3-element Array{Unitful.Quantity{Float64,𝐋 𝐌 𝐓^-2,Unitful.FreeUnits{
 This gives a a normal solution object. Notice that the values are all with the correct units:
 
 ````julia
+
 print(sol[:])
 ````
 
@@ -156,6 +164,7 @@ Unitful.Quantity{Float64,𝐋 𝐌 𝐓^-2,Unitful.FreeUnits{(N,),𝐋 𝐌 𝐓
 We can plot the solution by removing the units:
 
 ````julia
+
 using Plots
 gr()
 plot(ustrip(sol.t),ustrip(sol[:]),lw=3)
@@ -167,12 +176,13 @@ plot(ustrip(sol.t),ustrip(sol[:]),lw=3)
 
 ## Appendix
 
- This tutorial is part of the DiffEqTutorials.jl repository, found at: <https://github.com/JuliaDiffEq/DiffEqTutorials.jl>
+ This tutorial is part of the SciMLTutorials.jl repository, found at: <https://github.com/SciML/SciMLTutorials.jl>.
+ For more information on doing scientific machine learning (SciML) with open source software, check out <https://sciml.ai/>.
 
 To locally run this tutorial, do the following commands:
 ```
-using DiffEqTutorials
-DiffEqTutorials.weave_file("type_handling","03-unitful.jmd")
+using SciMLTutorials
+SciMLTutorials.weave_file("type_handling","03-unitful.jmd")
 ```
 
 Computer Information:
@@ -186,10 +196,10 @@ Platform Info:
   LIBM: libopenlibm
   LLVM: libLLVM-8.0.1 (ORCJIT, skylake)
 Environment:
+  JULIA_LOAD_PATH = /builds/JuliaGPU/DiffEqTutorials.jl:
   JULIA_DEPOT_PATH = /builds/JuliaGPU/DiffEqTutorials.jl/.julia
-  JULIA_CUDA_MEMORY_LIMIT = 536870912
-  JULIA_PROJECT = @.
-  JULIA_NUM_THREADS = 4
+  JULIA_CUDA_MEMORY_LIMIT = 2147483648
+  JULIA_NUM_THREADS = 8
 
 ```
 
@@ -197,13 +207,13 @@ Package Information:
 
 ```
 Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/type_handling/Project.toml`
-[7e558dbc-694d-5a72-987c-6f4ebed21442] ArbNumerics 1.0.5
+[7e558dbc-694d-5a72-987c-6f4ebed21442] ArbNumerics 1.2.1
 [55939f99-70c6-5e9b-8bb0-5071ed7d61fd] DecFP 1.0.0
 [abce61dc-4473-55a0-ba07-351d65e31d42] Decimals 0.4.1
-[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.14.0
-[497a8b3b-efae-58df-a0af-a86822472b78] DoubleFloats 1.1.12
+[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.15.0
+[497a8b3b-efae-58df-a0af-a86822472b78] DoubleFloats 1.1.13
 [eff96d63-e80a-5855-80a2-b1b0885c5ab7] Measurements 2.2.1
-[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.41.0
-[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.5.0
-[1986cc42-f94f-5a68-af5c-568840ba703d] Unitful 1.3.0
+[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.42.5
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.6.0
+[1986cc42-f94f-5a68-af5c-568840ba703d] Unitful 1.4.0
 ```
