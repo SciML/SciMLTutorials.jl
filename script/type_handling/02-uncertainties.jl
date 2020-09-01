@@ -102,6 +102,6 @@ sol = solve(prob, Tsit5(), reltol = 1e-6)
 plot(sol.t, getindex.(sol.u, 2), label = "Numerical")
 
 
-using DiffEqTutorials
-DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+using SciMLTutorials
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 
