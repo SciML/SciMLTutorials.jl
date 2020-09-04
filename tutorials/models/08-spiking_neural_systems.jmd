@@ -3,7 +3,7 @@ title: Spiking Neural Systems
 author: Daniel Müller-Komorowska
 ---
 
-This is an introduction to spiking neural systems with Julias DifferentialEquations package.
+This is an introduction to spiking neural systems with Julia's DifferentialEquations package.
 We will cover four different models: leaky integrate-and-fire, Izhikevich, adaptive exponential
  integrate-and-fire and Hodgkin-Huxley model. Let's get started with the leaky integrate-and-fire (LIF) model.
 
