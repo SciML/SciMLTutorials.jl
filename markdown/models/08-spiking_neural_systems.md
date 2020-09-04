@@ -4,7 +4,7 @@ title: "Spiking Neural Systems"
 ---
 
 
-This is an introduction to spiking neural systems with Julias DifferentialEquations package.
+This is an introduction to spiking neural systems with Julia's DifferentialEquations package.
 We will cover four different models: leaky integrate-and-fire, Izhikevich, adaptive exponential
  integrate-and-fire and Hodgkin-Huxley model. Let's get started with the leaky integrate-and-fire (LIF) model.
 
@@ -82,23 +82,24 @@ cb = CallbackSet(current_step,threshold)
 
 
 ````
-CallbackSet{Tuple{},Tuple{DiscreteCallback{DiffEqCallbacks.var"#61#64"{Arra
-y{Int64,1}},DiffEqCallbacks.var"#62#65"{Main.##WeaveSandBox#333.var"#1#2"},
-DiffEqCallbacks.var"#63#66"{typeof(DiffEqBase.INITIALIZE_DEFAULT),Bool,Arra
-y{Int64,1},Main.##WeaveSandBox#333.var"#1#2"}},DiscreteCallback{typeof(Main
-.##WeaveSandBox#333.thr),typeof(Main.##WeaveSandBox#333.reset!),typeof(Diff
-EqBase.INITIALIZE_DEFAULT)}}}((), (DiscreteCallback{DiffEqCallbacks.var"#61
-#64"{Array{Int64,1}},DiffEqCallbacks.var"#62#65"{Main.##WeaveSandBox#333.va
-r"#1#2"},DiffEqCallbacks.var"#63#66"{typeof(DiffEqBase.INITIALIZE_DEFAULT),
-Bool,Array{Int64,1},Main.##WeaveSandBox#333.var"#1#2"}}(DiffEqCallbacks.var
-"#61#64"{Array{Int64,1}}([2, 15]), DiffEqCallbacks.var"#62#65"{Main.##Weave
-SandBox#333.var"#1#2"}(Main.##WeaveSandBox#333.var"#1#2"()), DiffEqCallback
-s.var"#63#66"{typeof(DiffEqBase.INITIALIZE_DEFAULT),Bool,Array{Int64,1},Mai
-n.##WeaveSandBox#333.var"#1#2"}(DiffEqBase.INITIALIZE_DEFAULT, true, [2, 15
-], Main.##WeaveSandBox#333.var"#1#2"()), Bool[1, 1]), DiscreteCallback{type
-of(Main.##WeaveSandBox#333.thr),typeof(Main.##WeaveSandBox#333.reset!),type
-of(DiffEqBase.INITIALIZE_DEFAULT)}(Main.##WeaveSandBox#333.thr, Main.##Weav
-eSandBox#333.reset!, DiffEqBase.INITIALIZE_DEFAULT, Bool[1, 1])))
+DiffEqBase.CallbackSet{Tuple{},Tuple{DiffEqBase.DiscreteCallback{DiffEqCall
+backs.var"#61#64"{Array{Int64,1}},DiffEqCallbacks.var"#62#65"{Main.##WeaveS
+andBox#321.var"#1#2"},DiffEqCallbacks.var"#63#66"{typeof(DiffEqBase.INITIAL
+IZE_DEFAULT),Bool,Array{Int64,1},Main.##WeaveSandBox#321.var"#1#2"}},DiffEq
+Base.DiscreteCallback{typeof(Main.##WeaveSandBox#321.thr),typeof(Main.##Wea
+veSandBox#321.reset!),typeof(DiffEqBase.INITIALIZE_DEFAULT)}}}((), (DiffEqB
+ase.DiscreteCallback{DiffEqCallbacks.var"#61#64"{Array{Int64,1}},DiffEqCall
+backs.var"#62#65"{Main.##WeaveSandBox#321.var"#1#2"},DiffEqCallbacks.var"#6
+3#66"{typeof(DiffEqBase.INITIALIZE_DEFAULT),Bool,Array{Int64,1},Main.##Weav
+eSandBox#321.var"#1#2"}}(DiffEqCallbacks.var"#61#64"{Array{Int64,1}}([2, 15
+]), DiffEqCallbacks.var"#62#65"{Main.##WeaveSandBox#321.var"#1#2"}(Main.##W
+eaveSandBox#321.var"#1#2"()), DiffEqCallbacks.var"#63#66"{typeof(DiffEqBase
+.INITIALIZE_DEFAULT),Bool,Array{Int64,1},Main.##WeaveSandBox#321.var"#1#2"}
+(DiffEqBase.INITIALIZE_DEFAULT, true, [2, 15], Main.##WeaveSandBox#321.var"
+#1#2"()), Bool[1, 1]), DiffEqBase.DiscreteCallback{typeof(Main.##WeaveSandB
+ox#321.thr),typeof(Main.##WeaveSandBox#321.reset!),typeof(DiffEqBase.INITIA
+LIZE_DEFAULT)}(Main.##WeaveSandBox#321.thr, Main.##WeaveSandBox#321.reset!,
+ DiffEqBase.INITIALIZE_DEFAULT, Bool[1, 1])))
 ````
 
 
@@ -247,23 +248,23 @@ cb = CallbackSet(current_step,threshold)
 
 
 ````
-CallbackSet{Tuple{},Tuple{DiscreteCallback{DiffEqCallbacks.var"#61#64"{Int6
-4},DiffEqCallbacks.var"#62#65"{Main.##WeaveSandBox#333.var"#3#4"},DiffEqCal
-lbacks.var"#63#66"{typeof(DiffEqBase.INITIALIZE_DEFAULT),Bool,Int64,Main.##
-WeaveSandBox#333.var"#3#4"}},DiscreteCallback{typeof(Main.##WeaveSandBox#33
-3.thr),typeof(Main.##WeaveSandBox#333.reset!),typeof(DiffEqBase.INITIALIZE_
-DEFAULT)}}}((), (DiscreteCallback{DiffEqCallbacks.var"#61#64"{Int64},DiffEq
-Callbacks.var"#62#65"{Main.##WeaveSandBox#333.var"#3#4"},DiffEqCallbacks.va
-r"#63#66"{typeof(DiffEqBase.INITIALIZE_DEFAULT),Bool,Int64,Main.##WeaveSand
-Box#333.var"#3#4"}}(DiffEqCallbacks.var"#61#64"{Int64}(50), DiffEqCallbacks
-.var"#62#65"{Main.##WeaveSandBox#333.var"#3#4"}(Main.##WeaveSandBox#333.var
-"#3#4"()), DiffEqCallbacks.var"#63#66"{typeof(DiffEqBase.INITIALIZE_DEFAULT
-),Bool,Int64,Main.##WeaveSandBox#333.var"#3#4"}(DiffEqBase.INITIALIZE_DEFAU
-LT, true, 50, Main.##WeaveSandBox#333.var"#3#4"()), Bool[1, 1]), DiscreteCa
-llback{typeof(Main.##WeaveSandBox#333.thr),typeof(Main.##WeaveSandBox#333.r
-eset!),typeof(DiffEqBase.INITIALIZE_DEFAULT)}(Main.##WeaveSandBox#333.thr, 
-Main.##WeaveSandBox#333.reset!, DiffEqBase.INITIALIZE_DEFAULT, Bool[1, 1]))
-)
+DiffEqBase.CallbackSet{Tuple{},Tuple{DiffEqBase.DiscreteCallback{DiffEqCall
+backs.var"#61#64"{Int64},DiffEqCallbacks.var"#62#65"{Main.##WeaveSandBox#32
+1.var"#3#4"},DiffEqCallbacks.var"#63#66"{typeof(DiffEqBase.INITIALIZE_DEFAU
+LT),Bool,Int64,Main.##WeaveSandBox#321.var"#3#4"}},DiffEqBase.DiscreteCallb
+ack{typeof(Main.##WeaveSandBox#321.thr),typeof(Main.##WeaveSandBox#321.rese
+t!),typeof(DiffEqBase.INITIALIZE_DEFAULT)}}}((), (DiffEqBase.DiscreteCallba
+ck{DiffEqCallbacks.var"#61#64"{Int64},DiffEqCallbacks.var"#62#65"{Main.##We
+aveSandBox#321.var"#3#4"},DiffEqCallbacks.var"#63#66"{typeof(DiffEqBase.INI
+TIALIZE_DEFAULT),Bool,Int64,Main.##WeaveSandBox#321.var"#3#4"}}(DiffEqCallb
+acks.var"#61#64"{Int64}(50), DiffEqCallbacks.var"#62#65"{Main.##WeaveSandBo
+x#321.var"#3#4"}(Main.##WeaveSandBox#321.var"#3#4"()), DiffEqCallbacks.var"
+#63#66"{typeof(DiffEqBase.INITIALIZE_DEFAULT),Bool,Int64,Main.##WeaveSandBo
+x#321.var"#3#4"}(DiffEqBase.INITIALIZE_DEFAULT, true, 50, Main.##WeaveSandB
+ox#321.var"#3#4"()), Bool[1, 1]), DiffEqBase.DiscreteCallback{typeof(Main.#
+#WeaveSandBox#321.thr),typeof(Main.##WeaveSandBox#321.reset!),typeof(DiffEq
+Base.INITIALIZE_DEFAULT)}(Main.##WeaveSandBox#321.thr, Main.##WeaveSandBox#
+321.reset!, DiffEqBase.INITIALIZE_DEFAULT, Bool[1, 1])))
 ````
 
 
