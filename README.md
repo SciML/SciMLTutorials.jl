@@ -43,6 +43,7 @@ SciMLTutorials.open_notebooks()
   - [DiffEqBiological Tutorial II: Network Properties API](http://tutorials.juliadiffeq.org/html/models/04-diffeqbio_II_networkproperties.html)
   - [DiffEqBiological Tutorial III: Steady-States and Bifurcations](http://tutorials.juliadiffeq.org/html/models/04b-diffeqbio_III_steadystates.html)
   - [Kepler Problem Orbit](http://tutorials.juliadiffeq.org/html/models/05-kepler_problem.html)
+  - [Spiking Neural Systems](http://tutorials.juliadiffeq.org/html/models/08-spiking_neural_systems.jmd)
 - Advanced ODE Features
   - [ModelingToolkit.jl, An IR and Compiler for Scientific Models](http://tutorials.juliadiffeq.org/html/ode_extras/01-ModelingToolkit.html)
   - [Feagin's Order 10, 12, and 14 Methods](http://tutorials.juliadiffeq.org/html/ode_extras/02-feagin.html)
