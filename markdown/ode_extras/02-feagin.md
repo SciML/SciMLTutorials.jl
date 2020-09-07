@@ -11,6 +11,7 @@ DifferentialEquations.jl includes Feagin's explicit Runge-Kutta methods of order
 We can use Feagin's order 16 method as follows. Let's use a two-dimensional linear ODE. Like in the Solving Equations in With Chosen Number Types notebook, we change the initial condition to BigFloats to tell the solver to use BigFloat types.
 
 ````julia
+
 using DifferentialEquations
 const linear_bigα = big(1.01)
 f(u,p,t) = (linear_bigα*u)
@@ -83,6 +84,7 @@ u: 17-element Array{BigFloat,1}:
 
 
 ````julia
+
 println(sol.errors)
 ````
 
@@ -102,6 +104,7 @@ Dict{Symbol,BigFloat}(:l∞ => 2.19751040342660991781470263264956056068365936
 Compare that to machine $\epsilon$ for Float64:
 
 ````julia
+
 eps(Float64)
 ````
 
@@ -117,6 +120,7 @@ eps(Float64)
 The error for Feagin's method when the stepsize is 1/16 is 8 orders of magnitude below machine $\epsilon$! However, that is dependent on the stepsize. If we instead use adaptive timestepping with the default tolerances, we get
 
 ````julia
+
 sol =solve(prob,Feagin14());
 println(sol.errors); print("The length was $(length(sol))")
 ````
@@ -142,6 +146,7 @@ Notice that when the stepsize is much higher, the error goes up quickly as well.
 The Order 14 method is awesome, but we need to make sure it's really that awesome. The following convergence test is used in the package tests in order to make sure the implementation is correct. Note that all methods have such tests in place.
 
 ````julia
+
 using DiffEqDevTools
 dts = 1.0 ./ 2.0 .^(10:-1:4)
 sim = test_convergence(dts,prob,Feagin14())
@@ -153,26 +158,26 @@ DiffEqDevTools.ConvergenceSimulation{DiffEqBase.ODESolution{BigFloat,1,Arra
 y{BigFloat,1},Array{BigFloat,1},Dict{Symbol,BigFloat},Array{Float64,1},Arra
 y{Array{BigFloat,1},1},DiffEqBase.ODEProblem{BigFloat,Tuple{Float64,Float64
 },false,DiffEqBase.NullParameters,DiffEqBase.ODEFunction{false,typeof(Main.
-##WeaveSandBox#258.f),LinearAlgebra.UniformScaling{Bool},typeof(Main.##Weav
-eSandBox#258.f_analytic),Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,No
+##WeaveSandBox#257.f),LinearAlgebra.UniformScaling{Bool},typeof(Main.##Weav
+eSandBox#257.f_analytic),Nothing,Nothing,Nothing,Nothing,Nothing,Nothing,No
 thing,Nothing,Nothing,Nothing,Nothing},Base.Iterators.Pairs{Union{},Union{}
 ,Tuple{},NamedTuple{(),Tuple{}}},DiffEqBase.StandardODEProblem},OrdinaryDif
 fEq.Feagin14,OrdinaryDiffEq.InterpolationData{DiffEqBase.ODEFunction{false,
-typeof(Main.##WeaveSandBox#258.f),LinearAlgebra.UniformScaling{Bool},typeof
-(Main.##WeaveSandBox#258.f_analytic),Nothing,Nothing,Nothing,Nothing,Nothin
+typeof(Main.##WeaveSandBox#257.f),LinearAlgebra.UniformScaling{Bool},typeof
+(Main.##WeaveSandBox#257.f_analytic),Nothing,Nothing,Nothing,Nothing,Nothin
 g,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing},Array{BigFloat,1},Array{
 Float64,1},Array{Array{BigFloat,1},1},OrdinaryDiffEq.Feagin14ConstantCache{
 BigFloat,Float64}},DiffEqBase.DEStats}}(DiffEqBase.ODESolution{BigFloat,1,A
 rray{BigFloat,1},Array{BigFloat,1},Dict{Symbol,BigFloat},Array{Float64,1},A
 rray{Array{BigFloat,1},1},DiffEqBase.ODEProblem{BigFloat,Tuple{Float64,Floa
 t64},false,DiffEqBase.NullParameters,DiffEqBase.ODEFunction{false,typeof(Ma
-in.##WeaveSandBox#258.f),LinearAlgebra.UniformScaling{Bool},typeof(Main.##W
-eaveSandBox#258.f_analytic),Nothing,Nothing,Nothing,Nothing,Nothing,Nothing
+in.##WeaveSandBox#257.f),LinearAlgebra.UniformScaling{Bool},typeof(Main.##W
+eaveSandBox#257.f_analytic),Nothing,Nothing,Nothing,Nothing,Nothing,Nothing
 ,Nothing,Nothing,Nothing,Nothing,Nothing},Base.Iterators.Pairs{Union{},Unio
 n{},Tuple{},NamedTuple{(),Tuple{}}},DiffEqBase.StandardODEProblem},Ordinary
 DiffEq.Feagin14,OrdinaryDiffEq.InterpolationData{DiffEqBase.ODEFunction{fal
-se,typeof(Main.##WeaveSandBox#258.f),LinearAlgebra.UniformScaling{Bool},typ
-eof(Main.##WeaveSandBox#258.f_analytic),Nothing,Nothing,Nothing,Nothing,Not
+se,typeof(Main.##WeaveSandBox#257.f),LinearAlgebra.UniformScaling{Bool},typ
+eof(Main.##WeaveSandBox#257.f_analytic),Nothing,Nothing,Nothing,Nothing,Not
 hing,Nothing,Nothing,Nothing,Nothing,Nothing,Nothing},Array{BigFloat,1},Arr
 ay{Float64,1},Array{Array{BigFloat,1},1},OrdinaryDiffEq.Feagin14ConstantCac
 he{BigFloat,Float64}},DiffEqBase.DEStats}[retcode: Success
@@ -395,6 +400,7 @@ e-37, 2.7616046742578991765834973429055265111070658679880654574554903808257
 For a view of what's going on, let's plot the simulation results.
 
 ````julia
+
 using Plots
 gr()
 plot(sim)
@@ -411,12 +417,13 @@ is the estimated slope.
 
 ## Appendix
 
- This tutorial is part of the DiffEqTutorials.jl repository, found at: <https://github.com/JuliaDiffEq/DiffEqTutorials.jl>
+ This tutorial is part of the SciMLTutorials.jl repository, found at: <https://github.com/SciML/SciMLTutorials.jl>.
+ For more information on doing scientific machine learning (SciML) with open source software, check out <https://sciml.ai/>.
 
 To locally run this tutorial, do the following commands:
 ```
-using DiffEqTutorials
-DiffEqTutorials.weave_file("ode_extras","02-feagin.jmd")
+using SciMLTutorials
+SciMLTutorials.weave_file("ode_extras","02-feagin.jmd")
 ```
 
 Computer Information:
@@ -430,10 +437,10 @@ Platform Info:
   LIBM: libopenlibm
   LLVM: libLLVM-8.0.1 (ORCJIT, skylake)
 Environment:
+  JULIA_LOAD_PATH = /builds/JuliaGPU/DiffEqTutorials.jl:
   JULIA_DEPOT_PATH = /builds/JuliaGPU/DiffEqTutorials.jl/.julia
-  JULIA_CUDA_MEMORY_LIMIT = 536870912
-  JULIA_PROJECT = @.
-  JULIA_NUM_THREADS = 4
+  JULIA_CUDA_MEMORY_LIMIT = 2147483648
+  JULIA_NUM_THREADS = 8
 
 ```
 
@@ -441,14 +448,14 @@ Package Information:
 
 ```
 Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/ode_extras/Project.toml`
-[f3b72e0c-5b89-59e1-b016-84e28bfd966d] DiffEqDevTools 2.22.0
-[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.14.0
-[961ee093-0014-501f-94e3-6117800e7a78] ModelingToolkit 3.11.0
+[f3b72e0c-5b89-59e1-b016-84e28bfd966d] DiffEqDevTools 2.27.0
+[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.15.0
+[961ee093-0014-501f-94e3-6117800e7a78] ModelingToolkit 3.20.0
 [76087f3c-5699-56af-9a33-bf431cd00edd] NLopt 0.6.0
-[2774e3e8-f4cf-5e23-947b-6d7e65073b56] NLsolve 4.4.0
-[429524aa-4258-5aef-a3af-852621145aeb] Optim 0.22.0
-[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.41.0
-[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.5.1
+[2774e3e8-f4cf-5e23-947b-6d7e65073b56] NLsolve 4.4.1
+[429524aa-4258-5aef-a3af-852621145aeb] Optim 1.0.0
+[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.42.7
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.6.3
 [37e2e46d-f89d-539d-b4ee-838fcccc9c8e] LinearAlgebra
 [2f01184e-e22b-5df5-ae63-d93ebab69eaf] SparseArrays
 ```
