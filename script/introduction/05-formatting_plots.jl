@@ -52,6 +52,6 @@ scatter!(p,sol,vars=(1,2,3),plotdensity=100)
 title!("I added a title")
 
 
-using DiffEqTutorials
-DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+using SciMLTutorials
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 
