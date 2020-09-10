@@ -4,9 +4,10 @@ title: "Formatting Plots"
 ---
 
 
-Since the plotting functionality is implemented as a recipe to Plots.jl, [all of the options open to Plots.jl can be used in our plots](https://juliaplots.github.io/supported/). In addition, there are special features specifically for [differential equation plots](https://docs.juliadiffeq.org/dev/basics/plot/). This tutorial will teach some of the most commonly used options. Let's first get the solution to some ODE. Here I will use one of the Lorenz ordinary differential equation. As with all commands in DifferentialEquations.jl, I got a plot of the solution by calling `solve` on the problem, and `plot` on the solution:
+Since the plotting functionality is implemented as a recipe to Plots.jl, [all of the options open to Plots.jl can be used in our plots](https://juliaplots.github.io/supported/). In addition, there are special features specifically for [differential equation plots](https://docs.sciml.ai/dev/basics/plot/). This tutorial will teach some of the most commonly used options. Let's first get the solution to some ODE. Here I will use one of the Lorenz ordinary differential equation. As with all commands in DifferentialEquations.jl, I got a plot of the solution by calling `solve` on the problem, and `plot` on the solution:
 
 ````julia
+
 using DifferentialEquations, Plots, ParameterizedFunctions
 gr()
 lorenz = @ode_def Lorenz begin
@@ -25,7 +26,7 @@ sol = solve(prob)
 
 ````
 retcode: Success
-Interpolation: Automatic order switching interpolation
+Interpolation: automatic order switching interpolation
 t: 1341-element Array{Float64,1}:
    0.0
    0.0354861341350177
@@ -73,6 +74,7 @@ u: 1341-element Array{Array{Float64,1},1}:
 
 
 ````julia
+
 plot(sol)
 ````
 
@@ -81,9 +83,10 @@ plot(sol)
 
 
 
-Now let's change it to a phase plot. As discussed in the [plot functions page](https://docs.juliadiffeq.org/dev/basics/plot/), we can use the `vars` command to choose the variables to plot. Let's plot variable `x` vs variable `y` vs variable `z`:
+Now let's change it to a phase plot. As discussed in the [plot functions page](https://docs.sciml.ai/dev/basics/plot/), we can use the `vars` command to choose the variables to plot. Let's plot variable `x` vs variable `y` vs variable `z`:
 
 ````julia
+
 plot(sol,vars=(1, 2, 3))
 ````
 
@@ -95,6 +98,7 @@ plot(sol,vars=(1, 2, 3))
 We can also choose to plot the timeseries for a single variable:
 
 ````julia
+
 plot(sol,vars=[:x])
 ````
 
@@ -106,6 +110,7 @@ plot(sol,vars=[:x])
 Notice that we were able to use the variable names because we had defined the problem with the macro. But in general, we can use the indices. The previous plots would be:
 
 ````julia
+
 plot(sol,vars=(1,2,3))
 plot(sol,vars=[1])
 ````
@@ -118,6 +123,7 @@ plot(sol,vars=[1])
 Common options are to add titles, axis, and labels. For example:
 
 ````julia
+
 plot(sol,linewidth=5,title="Solution to the linear ODE with a thick line",
 xaxis="Time (t)",yaxis="u(t) (in mm)",label=["X","Y","Z"])
 ````
@@ -130,6 +136,7 @@ xaxis="Time (t)",yaxis="u(t) (in mm)",label=["X","Y","Z"])
 Notice that series recipes apply to the solution type as well. For example, we can use a scatter plot on the timeseries:
 
 ````julia
+
 scatter(sol,vars=[:x])
 ````
 
@@ -141,6 +148,7 @@ scatter(sol,vars=[:x])
 This shows that the recipe is using the interpolation to smooth the plot. It becomes abundantly clear when we turn it off using `denseplot=false`:
 
 ````julia
+
 plot(sol,vars=(1,2,3),denseplot=false)
 ````
 
@@ -152,6 +160,7 @@ plot(sol,vars=(1,2,3),denseplot=false)
 When this is done, only the values the timestep hits are plotted. Using the interpolation usually results in a much nicer looking plot so it's recommended, and since the interpolations have similar orders to the numerical methods, their results are trustworthy on the full interval. We can control the number of points used in the interpolation's plot using the `plotdensity` command:
 
 ````julia
+
 plot(sol,vars=(1,2,3),plotdensity=100)
 ````
 
@@ -163,6 +172,7 @@ plot(sol,vars=(1,2,3),plotdensity=100)
 That's plotting the entire solution using 100 points spaced evenly in time.
 
 ````julia
+
 plot(sol,vars=(1,2,3),plotdensity=10000)
 ````
 
@@ -176,6 +186,7 @@ That's more like it! By default it uses `100*length(sol)`, where the length is t
 Lastly notice that we can compose plots. Let's show where the 100 points are using a scatter plot:
 
 ````julia
+
 plot(sol,vars=(1,2,3))
 scatter!(sol,vars=(1,2,3),plotdensity=100)
 ````
@@ -188,6 +199,7 @@ scatter!(sol,vars=(1,2,3),plotdensity=100)
 We can instead work with an explicit plot object. This form can be better for building a complex plot in a loop.
 
 ````julia
+
 p = plot(sol,vars=(1,2,3))
 scatter!(p,sol,vars=(1,2,3),plotdensity=100)
 title!("I added a title")
@@ -203,12 +215,13 @@ You can do all sorts of things. Have fun!
 
 ## Appendix
 
- This tutorial is part of the DiffEqTutorials.jl repository, found at: <https://github.com/JuliaDiffEq/DiffEqTutorials.jl>
+ This tutorial is part of the SciMLTutorials.jl repository, found at: <https://github.com/SciML/SciMLTutorials.jl>.
+ For more information on doing scientific machine learning (SciML) with open source software, check out <https://sciml.ai/>.
 
 To locally run this tutorial, do the following commands:
 ```
-using DiffEqTutorials
-DiffEqTutorials.weave_file("introduction","05-formatting_plots.jmd")
+using SciMLTutorials
+SciMLTutorials.weave_file("introduction","05-formatting_plots.jmd")
 ```
 
 Computer Information:
@@ -222,10 +235,10 @@ Platform Info:
   LIBM: libopenlibm
   LLVM: libLLVM-8.0.1 (ORCJIT, skylake)
 Environment:
+  JULIA_LOAD_PATH = /builds/JuliaGPU/DiffEqTutorials.jl:
   JULIA_DEPOT_PATH = /builds/JuliaGPU/DiffEqTutorials.jl/.julia
-  JULIA_CUDA_MEMORY_LIMIT = 536870912
-  JULIA_PROJECT = @.
-  JULIA_NUM_THREADS = 4
+  JULIA_CUDA_MEMORY_LIMIT = 2147483648
+  JULIA_NUM_THREADS = 8
 
 ```
 
@@ -234,10 +247,10 @@ Package Information:
 ```
 Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/introduction/Project.toml`
 [6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf] BenchmarkTools 0.5.0
-[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.14.0
-[65888b18-ceab-5e60-b2b9-181511a3b968] ParameterizedFunctions 5.3.0
-[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.4.3
-[90137ffa-7385-5640-81b9-e52037218182] StaticArrays 0.12.3
-[c3572dad-4567-51f8-b174-8c6c989267f4] Sundials 4.2.3
+[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.15.0
+[65888b18-ceab-5e60-b2b9-181511a3b968] ParameterizedFunctions 5.6.0
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.6.3
+[90137ffa-7385-5640-81b9-e52037218182] StaticArrays 0.12.4
+[c3572dad-4567-51f8-b174-8c6c989267f4] Sundials 4.3.0
 [37e2e46d-f89d-539d-b4ee-838fcccc9c8e] LinearAlgebra
 ```
