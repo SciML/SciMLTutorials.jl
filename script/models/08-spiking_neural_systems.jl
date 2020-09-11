@@ -103,7 +103,7 @@ function HH!(du,u,p,t);
     gK, gNa, gL, EK, ENa, EL, C, I = p
     v, n, m, h = u
 
-    du[1] = ((gK * (n^4.0) * (EK - v)) + (gNa * (m ^ 3.0) * h * (ENa - v)) + (gL * (EL - v)) + I) / C
+    du[1] = (-(gK * (n^4.0) * (v - EK)) - (gNa * (m ^ 3.0) * h * (v - ENa)) - (gL * (v - EL)) + I) / C
     du[2] = (alpha_n(v) * (1.0 - n)) - (beta_n(v) * n)
     du[3] = (alpha_m(v) * (1.0 - m)) - (beta_m(v) * m)
     du[4] = (alpha_h(v) * (1.0 - h)) - (beta_h(v) * h)
@@ -129,4 +129,102 @@ plot(sol, vars=1)
 
 
 plot(sol, vars=[2,3,4], tspan=(105.0,130.0))
+
+
+function gSyn(max_gsyn, tau, tf, t);
+    if t-tf >= 0
+        return max_gsyn * exp(-(t-tf)/tau)
+    else
+        return 0.0
+    end
+end
+function HH!(du,u,p,t);
+    gK, gNa, gL, EK, ENa, EL, C, I, max_gSyn, ESyn, tau, tf = p
+    v, n, m, h = u
+
+    ISyn = gSyn(max_gSyn, tau, tf, t) * (v - ESyn)
+
+    du[1] = (-(gK * (n^4.0) * (v - EK)) - (gNa * (m ^ 3.0) * h * (v - ENa)) - (gL * (v - EL)) + I - ISyn) / C
+    du[2] = (alpha_n(v) * (1.0 - n)) - (beta_n(v) * n)
+    du[3] = (alpha_m(v) * (1.0 - m)) - (beta_m(v) * m)
+    du[4] = (alpha_h(v) * (1.0 - h)) - (beta_h(v) * h)
+end
+
+
+p = [35.0, 40.0, 0.3, -77.0, 55.0, -65.0, 1, 0, 0.008, 0, 20, 100]
+tspan = (0.0, 200)
+prob = ODEProblem(HH!, u0, tspan, p)
+sol = solve(prob);
+plot(sol, vars=1)
+
+
+p = [35.0, 40.0, 0.3, -77.0, 55.0, -65.0, 1, 0, 0.01, 0, 20, 100]
+tspan = (0.0, 200)
+prob = ODEProblem(HH!, u0, tspan, p)
+sol = solve(prob);
+plot!(sol, vars=1)
+
+
+function HH!(du,u,p,t);
+    gK, gNa, gL, EK, ENa, EL, C, I, tau, tau_u, tau_R, u0, gmax, Esyn  = p
+    v, n, m, h, u, R, gsyn = u
+
+    du[1] = ((gK * (n^4.0) * (EK - v)) + (gNa * (m ^ 3.0) * h * (ENa - v)) + (gL * (EL - v)) + I + gsyn * (Esyn - v)) / C
+    du[2] = (alpha_n(v) * (1.0 - n)) - (beta_n(v) * n)
+    du[3] = (alpha_m(v) * (1.0 - m)) - (beta_m(v) * m)
+    du[4] = (alpha_h(v) * (1.0 - h)) - (beta_h(v) * h)
+
+    # Synaptic variables
+    du[5] = -(u/tau_u)
+    du[6] = (1-R)/tau_R
+    du[7] = -(gsyn/tau)
+end
+
+function epsp!(integrator);
+    integrator.u[5] += integrator.p[12] * (1 - integrator.u[5])
+    integrator.u[7] += integrator.p[13] * integrator.u[5] * integrator.u[6]
+    integrator.u[6] -= integrator.u[5] * integrator.u[6]
+
+end
+
+epsp_ts= PresetTimeCallback(100:100:500, epsp!)
+
+p = [35.0, 40.0, 0.3, -77.0, 55.0, -65.0, 1, 0, 30, 1000, 50, 0.5, 0.005, 0]
+u0 = [-60, n_inf(-60), m_inf(-60), h_inf(-60), 0.0, 1.0, 0.0]
+tspan = (0.0, 700)
+prob = ODEProblem(HH!, u0, tspan, p, callback=epsp_ts)
+sol = solve(prob);
+plot(sol, vars=1)
+
+
+plot(sol, vars=7)
+
+
+plot(sol, vars=[5,6])
+
+
+epsp_ts= PresetTimeCallback(100:1000:5100, epsp!)
+
+p = [35.0, 40.0, 0.3, -77.0, 55.0, -65.0, 1, 0, 30, 500, 50, 0.5, 0.005, 0]
+u0 = [-60, n_inf(-60), m_inf(-60), h_inf(-60), 0.0, 1.0, 0.0]
+tspan = (0.0, 5300)
+prob = ODEProblem(HH!, u0, tspan, p, callback=epsp_ts)
+sol = solve(prob);
+plot(sol, vars=7)
+
+
+plot(sol, vars=[5,6])
+
+
+epsp_ts= PresetTimeCallback(100:100:500, epsp!)
+
+p = [35.0, 40.0, 0.3, -77.0, 55.0, -65.0, 1, 0, 30, 100, 1000, 0.5, 0.005, 0]
+u0 = [-60, n_inf(-60), m_inf(-60), h_inf(-60), 0.0, 1.0, 0.0]
+tspan = (0.0, 700)
+prob = ODEProblem(HH!, u0, tspan, p, callback=epsp_ts)
+sol = solve(prob);
+plot(sol, vars=7)
+
+
+plot(sol, vars=[5,6])
 
