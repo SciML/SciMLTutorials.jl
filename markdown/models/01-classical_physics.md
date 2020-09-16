@@ -15,6 +15,7 @@ $$f(t,u) = \frac{du}{dt}$$
 The Radioactive decay problem is the first order linear ODE problem of an exponential with a negative coefficient, which represents the half-life of the process in question. Should the coefficient be positive, this would represent a population growth equation.
 
 ````julia
+
 using OrdinaryDiffEq, Plots
 gr()
 
@@ -68,6 +69,7 @@ Instead of transforming this to a system of ODEs to solve with `ODEProblem`,
 we can use `SecondOrderODEProblem` as follows.
 
 ````julia
+
 # Simple Harmonic Oscillator Problem
 using OrdinaryDiffEq, Plots
 
@@ -129,6 +131,7 @@ $$
 $$
 
 ````julia
+
 # Simple Pendulum Problem
 using OrdinaryDiffEq, Plots
 
@@ -164,6 +167,7 @@ plot(sol,linewidth=2,title ="Simple Pendulum Problem", xaxis = "Time", yaxis = "
 So now we know that behaviour of the position versus time. However, it will be useful to us to look at the phase space of the pendulum, i.e., and representation of all possible states of the system in question (the pendulum) by looking at its velocity and position. Phase space analysis is ubiquitous in the analysis of dynamical systems, and thus we will provide a few facilities for it.
 
 ````julia
+
 p = plot(sol,vars = (1,2), xlims = (-9,9), title = "Phase Space Plot", xaxis = "Velocity", yaxis = "Position", leg=false)
 function phase_plot(prob, u0, p, tspan=2pi)
     _prob = ODEProblem(prob.f,u0,(0.0,tspan))
@@ -200,6 +204,7 @@ $$\frac{d}{dt}
 \end{pmatrix}$$
 
 ````julia
+
 #Double Pendulum Problem
 using OrdinaryDiffEq, Plots
 
@@ -303,6 +308,7 @@ u: 302-element Array{Array{Float64,1},1}:
 
 
 ````julia
+
 #Obtain coordinates in Cartesian Geometry
 ts, ps = polar2cart(sol, l1=L₁, l2=L₂, dt=0.01)
 plot(ps...)
@@ -323,6 +329,7 @@ This helps to understand the dynamics of interactions and is wonderfully pretty.
 The Poincaré section in this is given by the collection of $(β,l_β)$ when $α=0$ and $\frac{dα}{dt}>0$.
 
 ````julia
+
 #Constants and setup
 using OrdinaryDiffEq
 initial2 = [0.01, 0.005, 0.01, 0.01]
@@ -366,6 +373,7 @@ poincare_map (generic function with 1 method)
 
 
 ````julia
+
 lβrange = -0.02:0.0025:0.02
 p = scatter(sol2, vars=(3,4), leg=false, markersize = 3, msw=0)
 for lβ in lβrange
@@ -405,6 +413,7 @@ $$E = T+V = V(x,y)+\frac{1}{2}(\dot{x}^2+\dot{y}^2).$$
 The total energy should conserve as this system evolves.
 
 ````julia
+
 using OrdinaryDiffEq, Plots
 
 #Setup
@@ -502,6 +511,7 @@ u: 92-element Array{Array{Float64,1},1}:
 
 
 ````julia
+
 # Plot the orbit
 plot(sol, vars=(1,2), title = "The orbit of the Hénon-Heiles system", xaxis = "x", yaxis = "y", leg=false)
 ````
@@ -510,8 +520,13 @@ plot(sol, vars=(1,2), title = "The orbit of the Hénon-Heiles system", xaxis = "
 ![](figures/01-classical_physics_10_1.png)
 
 ````julia
+
 #Optional Sanity check - what do you think this returns and why?
 @show sol.retcode
+
+#Plot -
+plot(sol, vars=(1,3), title = "Phase space for the Hénon-Heiles system", xaxis = "Position", yaxis = "Velocity")
+plot!(sol, vars=(2,4), leg = false)
 ````
 
 
@@ -520,37 +535,24 @@ sol.retcode = :Success
 ````
 
 
-
-````julia
-
-#Plot -
-plot(sol, vars=(1,3), title = "Phase space for the Hénon-Heiles system", xaxis = "Position", yaxis = "Velocity")
-plot!(sol, vars=(2,4), leg = false)
-````
-
-
 ![](figures/01-classical_physics_11_1.png)
 
 ````julia
+
 #We map the Total energies during the time intervals of the solution (sol.u here) to a new vector
 #pass it to the plotter a bit more conveniently
 energy = map(x->E(x...), sol.u)
 
 #We use @show here to easily spot erratic behaviour in our system by seeing if the loss in energy was too great.
 @show ΔE = energy[1]-energy[end]
+
+#Plot
+plot(sol.t, energy .- energy[1], title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
 ````
 
 
 ````
 ΔE = energy[1] - energy[end] = -3.0986034517260785e-5
-````
-
-
-
-````julia
-
-#Plot
-plot(sol.t, energy .- energy[1], title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
 ````
 
 
@@ -563,6 +565,7 @@ plot(sol.t, energy .- energy[1], title = "Change in Energy over Time", xaxis = "
 To prevent energy drift, we can instead use a symplectic integrator. We can directly define and solve the `SecondOrderODEProblem`:
 
 ````julia
+
 function HH_acceleration!(dv,v,u,p,t)
     x,y  = u
     dx,dy = dv
@@ -649,6 +652,7 @@ y{Float64,1},Array{Float64,1}}},1}:
 Notice that we get the same results:
 
 ````julia
+
 # Plot the orbit
 plot(sol2, vars=(3,4), title = "The orbit of the Hénon-Heiles system", xaxis = "x", yaxis = "y", leg=false)
 ````
@@ -657,6 +661,7 @@ plot(sol2, vars=(3,4), title = "The orbit of the Hénon-Heiles system", xaxis = 
 ![](figures/01-classical_physics_14_1.png)
 
 ````julia
+
 plot(sol2, vars=(3,1), title = "Phase space for the Hénon-Heiles system", xaxis = "Position", yaxis = "Velocity")
 plot!(sol2, vars=(4,2), leg = false)
 ````
@@ -669,22 +674,18 @@ plot!(sol2, vars=(4,2), leg = false)
 but now the energy change is essentially zero:
 
 ````julia
+
 energy = map(x->E(x[3], x[4], x[1], x[2]), sol2.u)
 #We use @show here to easily spot erratic behaviour in our system by seeing if the loss in energy was too great.
 @show ΔE = energy[1]-energy[end]
+
+#Plot
+plot(sol2.t, energy .- energy[1], title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
 ````
 
 
 ````
 ΔE = energy[1] - energy[end] = 9.020562075079397e-15
-````
-
-
-
-````julia
-
-#Plot
-plot(sol2.t, energy .- energy[1], title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
 ````
 
 
@@ -695,21 +696,17 @@ plot(sol2.t, energy .- energy[1], title = "Change in Energy over Time", xaxis = 
 And let's try to use a Runge-Kutta-Nyström solver to solve this. Note that Runge-Kutta-Nyström isn't symplectic.
 
 ````julia
+
 sol3 = solve(prob, DPRKN6());
 energy = map(x->E(x[3], x[4], x[1], x[2]), sol3.u)
 @show ΔE = energy[1]-energy[end]
+gr()
+plot(sol3.t, energy .- energy[1], title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
 ````
 
 
 ````
 ΔE = energy[1] - energy[end] = -8.836874152734486e-6
-````
-
-
-
-````julia
-gr()
-plot(sol3.t, energy .- energy[1], title = "Change in Energy over Time", xaxis = "Time in iterations", yaxis = "Change in Energy")
 ````
 
 
@@ -722,12 +719,13 @@ Note that we are using the `DPRKN6` sovler at `reltol=1e-3` (the default), yet i
 
 ## Appendix
 
- This tutorial is part of the DiffEqTutorials.jl repository, found at: <https://github.com/JuliaDiffEq/DiffEqTutorials.jl>
+ This tutorial is part of the SciMLTutorials.jl repository, found at: <https://github.com/SciML/SciMLTutorials.jl>.
+ For more information on doing scientific machine learning (SciML) with open source software, check out <https://sciml.ai/>.
 
 To locally run this tutorial, do the following commands:
 ```
-using DiffEqTutorials
-DiffEqTutorials.weave_file("models","01-classical_physics.jmd")
+using SciMLTutorials
+SciMLTutorials.weave_file("models","01-classical_physics.jmd")
 ```
 
 Computer Information:
@@ -741,10 +739,10 @@ Platform Info:
   LIBM: libopenlibm
   LLVM: libLLVM-8.0.1 (ORCJIT, skylake)
 Environment:
+  JULIA_LOAD_PATH = /builds/JuliaGPU/DiffEqTutorials.jl:
   JULIA_DEPOT_PATH = /builds/JuliaGPU/DiffEqTutorials.jl/.julia
-  JULIA_CUDA_MEMORY_LIMIT = 536870912
-  JULIA_PROJECT = @.
-  JULIA_NUM_THREADS = 4
+  JULIA_CUDA_MEMORY_LIMIT = 2147483648
+  JULIA_NUM_THREADS = 8
 
 ```
 
@@ -753,21 +751,22 @@ Package Information:
 ```
 Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/models/Project.toml`
 [eb300fae-53e8-50a0-950c-e21f52c2b7e0] DiffEqBiological 4.3.0
-[f3b72e0c-5b89-59e1-b016-84e28bfd966d] DiffEqDevTools 2.22.0
-[055956cb-9e8b-5191-98cc-73ae4a59e68a] DiffEqPhysics 3.2.0
-[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.14.0
-[31c24e10-a181-5473-b8eb-7969acd0382f] Distributions 0.23.4
+[459566f4-90b8-5000-8ac3-15dfb0a30def] DiffEqCallbacks 2.13.5
+[f3b72e0c-5b89-59e1-b016-84e28bfd966d] DiffEqDevTools 2.27.0
+[055956cb-9e8b-5191-98cc-73ae4a59e68a] DiffEqPhysics 3.6.0
+[0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.15.0
+[31c24e10-a181-5473-b8eb-7969acd0382f] Distributions 0.23.8
 [587475ba-b771-5e3f-ad9e-33799f191a9c] Flux 0.10.4
-[f6369f11-7733-5829-9624-2563aa707210] ForwardDiff 0.10.11
+[f6369f11-7733-5829-9624-2563aa707210] ForwardDiff 0.10.12
 [23fbe1c1-3f47-55db-b15f-69d7ec21a316] Latexify 0.13.5
-[961ee093-0014-501f-94e3-6117800e7a78] ModelingToolkit 3.11.0
-[2774e3e8-f4cf-5e23-947b-6d7e65073b56] NLsolve 4.4.0
+[961ee093-0014-501f-94e3-6117800e7a78] ModelingToolkit 3.20.0
+[2774e3e8-f4cf-5e23-947b-6d7e65073b56] NLsolve 4.4.1
 [8faf48c0-8b73-11e9-0e63-2155955bfa4d] NeuralNetDiffEq 1.6.0
 [429524aa-4258-5aef-a3af-852621145aeb] Optim 0.21.0
-[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.41.0
-[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.4.4
-[731186ca-8d62-57ce-b412-fbd966d074cd] RecursiveArrayTools 2.5.0
-[789caeaf-c7a9-5a7d-9973-96adeb23e2a0] StochasticDiffEq 6.23.1
+[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.42.3
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.6.4
+[731186ca-8d62-57ce-b412-fbd966d074cd] RecursiveArrayTools 2.7.0
+[789caeaf-c7a9-5a7d-9973-96adeb23e2a0] StochasticDiffEq 6.25.0
 [37e2e46d-f89d-539d-b4ee-838fcccc9c8e] LinearAlgebra
 [2f01184e-e22b-5df5-ae63-d93ebab69eaf] SparseArrays
 ```
