@@ -48,6 +48,6 @@ sol =solve(prob_ode_decimallinear,RK4(),dt=1/2^(6)) #Fails
 println(sol[end]); println(typeof(sol[end]))
 
 
-using DiffEqTutorials
-DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+using SciMLTutorials
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 
