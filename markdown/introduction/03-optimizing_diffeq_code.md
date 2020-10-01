@@ -20,7 +20,7 @@ We'll discuss these strategies in the context of small and large systems. Let's 
 
 Let's take the classic Lorenz system from before. Let's start by naively writing the system in its out-of-place form:
 
-````julia
+```julia
 
 function lorenz(u,p,t)
  dx = 10.0*(u[2]-u[1])
@@ -28,12 +28,12 @@ function lorenz(u,p,t)
  dz = u[1]*u[2] - (8/3)*u[3]
  [dx,dy,dz]
 end
-````
+```
 
 
-````
+```
 lorenz (generic function with 1 method)
-````
+```
 
 
 
@@ -43,29 +43,29 @@ Here, `lorenz` returns an object, `[dx,dy,dz]`, which is created within the body
 
 This is a common code pattern from high-level languages like MATLAB, SciPy, or R's deSolve. However, the issue with this form is that it allocates a vector, `[dx,dy,dz]`, at each step. Let's benchmark the solution process with this choice of function:
 
-````julia
+```julia
 
 using DifferentialEquations, BenchmarkTools
 u0 = [1.0;0.0;0.0]
 tspan = (0.0,100.0)
 prob = ODEProblem(lorenz,u0,tspan)
 @benchmark solve(prob,Tsit5())
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  10.83 MiB
   allocs estimate:  101434
   --------------
-  minimum time:     3.322 ms (0.00% GC)
-  median time:      3.380 ms (0.00% GC)
-  mean time:        4.098 ms (16.57% GC)
-  maximum time:     8.086 ms (57.83% GC)
+  minimum time:     3.349 ms (0.00% GC)
+  median time:      3.439 ms (0.00% GC)
+  mean time:        4.139 ms (16.55% GC)
+  maximum time:     8.662 ms (53.54% GC)
   --------------
-  samples:          1219
+  samples:          1207
   evals/sample:     1
-````
+```
 
 
 
@@ -73,25 +73,25 @@ BenchmarkTools.Trial:
 
 The BenchmarkTools package's `@benchmark` runs the code multiple times to get an accurate measurement. The minimum time is the time it takes when your OS and other background processes aren't getting in the way. Notice that in this case it takes about 5ms to solve and allocates around 11.11 MiB. However, if we were to use this inside of a real user code we'd see a lot of time spent doing garbage collection (GC) to clean up all of the arrays we made. Even if we turn off saving we have these allocations.
 
-````julia
+```julia
 
 @benchmark solve(prob,Tsit5(),save_everystep=false)
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  9.47 MiB
   allocs estimate:  88652
   --------------
-  minimum time:     2.909 ms (0.00% GC)
-  median time:      2.918 ms (0.00% GC)
-  mean time:        3.473 ms (14.64% GC)
-  maximum time:     9.309 ms (42.15% GC)
+  minimum time:     2.911 ms (0.00% GC)
+  median time:      2.919 ms (0.00% GC)
+  mean time:        3.475 ms (14.76% GC)
+  maximum time:     7.222 ms (56.45% GC)
   --------------
-  samples:          1439
+  samples:          1438
   evals/sample:     1
-````
+```
 
 
 
@@ -99,19 +99,19 @@ BenchmarkTools.Trial:
 
 The problem of course is that arrays are created every time our derivative function is called. This function is called multiple times per step and is thus the main source of memory usage. To fix this, we can use the in-place form to ***make our code non-allocating***:
 
-````julia
+```julia
 
 function lorenz!(du,u,p,t)
  du[1] = 10.0*(u[2]-u[1])
  du[2] = u[1]*(28.0-u[3]) - u[2]
  du[3] = u[1]*u[2] - (8/3)*u[3]
 end
-````
+```
 
 
-````
+```
 lorenz! (generic function with 1 method)
-````
+```
 
 
 
@@ -119,50 +119,50 @@ lorenz! (generic function with 1 method)
 
 Here, instead of creating an array each time, we utilized the cache array `du`. When the inplace form is used, DifferentialEquations.jl takes a different internal route that minimizes the internal allocations as well. When we benchmark this function, we will see quite a difference.
 
-````julia
+```julia
 
 u0 = [1.0;0.0;0.0]
 tspan = (0.0,100.0)
 prob = ODEProblem(lorenz!,u0,tspan)
 @benchmark solve(prob,Tsit5())
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  1.38 MiB
   allocs estimate:  12996
   --------------
-  minimum time:     779.737 μs (0.00% GC)
-  median time:      787.289 μs (0.00% GC)
-  mean time:        877.040 μs (9.46% GC)
-  maximum time:     5.730 ms (82.03% GC)
+  minimum time:     780.183 μs (0.00% GC)
+  median time:      786.882 μs (0.00% GC)
+  mean time:        876.801 μs (9.55% GC)
+  maximum time:     5.902 ms (81.34% GC)
   --------------
-  samples:          5688
+  samples:          5690
   evals/sample:     1
-````
+```
 
 
 
-````julia
+```julia
 
 @benchmark solve(prob,Tsit5(),save_everystep=false)
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  5.22 KiB
   allocs estimate:  54
   --------------
-  minimum time:     347.439 μs (0.00% GC)
-  median time:      349.758 μs (0.00% GC)
-  mean time:        350.122 μs (0.00% GC)
-  maximum time:     379.235 μs (0.00% GC)
+  minimum time:     345.404 μs (0.00% GC)
+  median time:      348.122 μs (0.00% GC)
+  mean time:        348.437 μs (0.00% GC)
+  maximum time:     374.122 μs (0.00% GC)
   --------------
   samples:          10000
   evals/sample:     1
-````
+```
 
 
 
@@ -170,27 +170,27 @@ BenchmarkTools.Trial:
 
 There is a 4x time difference just from that change! Notice there are still some allocations and this is due to the construction of the integration cache. But this doesn't scale with the problem size:
 
-````julia
+```julia
 
 tspan = (0.0,500.0) # 5x longer than before
 prob = ODEProblem(lorenz!,u0,tspan)
 @benchmark solve(prob,Tsit5(),save_everystep=false)
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  5.22 KiB
   allocs estimate:  54
   --------------
-  minimum time:     1.744 ms (0.00% GC)
-  median time:      1.751 ms (0.00% GC)
-  mean time:        1.752 ms (0.00% GC)
-  maximum time:     1.925 ms (0.00% GC)
+  minimum time:     1.734 ms (0.00% GC)
+  median time:      1.741 ms (0.00% GC)
+  mean time:        1.743 ms (0.00% GC)
+  maximum time:     1.896 ms (0.00% GC)
   --------------
-  samples:          2853
+  samples:          2867
   evals/sample:     1
-````
+```
 
 
 
@@ -206,19 +206,19 @@ However, there's an alternative to heap allocations, known as stack allocations.
 
 Arrays have to be heap allocated because their size (and thus the amount of memory they take up) is determined at runtime. But there are structures in Julia which are stack-allocated. `struct`s for example are stack-allocated "value-type"s. `Tuple`s are a stack-allocated collection. The most useful data structure for DiffEq though is the `StaticArray` from the package [StaticArrays.jl](https://github.com/JuliaArrays/StaticArrays.jl). These arrays have their length determined at compile-time. They are created using macros attached to normal array expressions, for example:
 
-````julia
+```julia
 
 using StaticArrays
 A = @SVector [2.0,3.0,5.0]
-````
+```
 
 
-````
+```
 3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
  2.0
  3.0
  5.0
-````
+```
 
 
 
@@ -230,7 +230,7 @@ Unfortunately static arrays can only be used for sufficiently small arrays. Afte
 
 Let's ***optimize `lorenz` using static arrays***. Note that in this case, we want to use the out-of-place allocating form, but this time we want to output a static array:
 
-````julia
+```julia
 
 function lorenz_static(u,p,t)
  dx = 10.0*(u[2]-u[1])
@@ -238,12 +238,12 @@ function lorenz_static(u,p,t)
  dz = u[1]*u[2] - (8/3)*u[3]
  @SVector [dx,dy,dz]
 end
-````
+```
 
 
-````
+```
 lorenz_static (generic function with 1 method)
-````
+```
 
 
 
@@ -251,50 +251,50 @@ lorenz_static (generic function with 1 method)
 
 To make the solver internally use static arrays, we simply give it a static array as the initial condition:
 
-````julia
+```julia
 
 u0 = @SVector [1.0,0.0,0.0]
 tspan = (0.0,100.0)
 prob = ODEProblem(lorenz_static,u0,tspan)
 @benchmark solve(prob,Tsit5())
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  466.28 KiB
   allocs estimate:  2595
   --------------
-  minimum time:     339.108 μs (0.00% GC)
-  median time:      344.099 μs (0.00% GC)
-  mean time:        367.080 μs (4.54% GC)
-  maximum time:     3.126 ms (85.50% GC)
+  minimum time:     338.227 μs (0.00% GC)
+  median time:      342.915 μs (0.00% GC)
+  mean time:        368.412 μs (4.75% GC)
+  maximum time:     3.288 ms (86.15% GC)
   --------------
   samples:          10000
   evals/sample:     1
-````
+```
 
 
 
-````julia
+```julia
 
 @benchmark solve(prob,Tsit5(),save_everystep=false)
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  3.33 KiB
   allocs estimate:  28
   --------------
-  minimum time:     238.155 μs (0.00% GC)
-  median time:      242.173 μs (0.00% GC)
-  mean time:        242.458 μs (0.00% GC)
-  maximum time:     254.103 μs (0.00% GC)
+  minimum time:     236.345 μs (0.00% GC)
+  median time:      239.987 μs (0.00% GC)
+  mean time:        240.294 μs (0.00% GC)
+  maximum time:     253.074 μs (0.00% GC)
   --------------
   samples:          10000
   evals/sample:     1
-````
+```
 
 
 
@@ -312,53 +312,53 @@ Implement the out-of-place array, in-place array, and out-of-place static array 
 
 When your system is sufficiently large, or you have to make use of a non-native Julia algorithm, you have to make use of `Array`s. In order to use arrays in the most efficient manner, you need to be careful about temporary allocations. Vectorized calculations naturally have plenty of temporary array allocations. This is because a vectorized calculation outputs a vector. Thus:
 
-````julia
+```julia
 
 A = rand(1000,1000); B = rand(1000,1000); C = rand(1000,1000)
 test(A,B,C) = A + B + C
 @benchmark test(A,B,C)
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  7.63 MiB
   allocs estimate:  2
   --------------
-  minimum time:     1.127 ms (0.00% GC)
-  median time:      1.144 ms (0.00% GC)
-  mean time:        1.286 ms (10.93% GC)
-  maximum time:     2.874 ms (58.91% GC)
+  minimum time:     1.132 ms (0.00% GC)
+  median time:      1.156 ms (0.00% GC)
+  mean time:        1.305 ms (11.25% GC)
+  maximum time:     2.961 ms (59.89% GC)
   --------------
-  samples:          3870
+  samples:          3814
   evals/sample:     1
-````
+```
 
 
 
 
 That expression `A + B + C` creates 2 arrays. It first creates one for the output of `A + B`, then uses that result array to `+ C` to get the final result. 2 arrays! We don't want that! The first thing to do to fix this is to use broadcast fusion. [Broadcast fusion](https://julialang.org/blog/2017/01/moredots) puts expressions together. For example, instead of doing the `+` operations separately, if we were to add them all at the same time, then we would only have a single array that's created. For example:
 
-````julia
+```julia
 
 test2(A,B,C) = map((a,b,c)->a+b+c,A,B,C)
 @benchmark test2(A,B,C)
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  7.63 MiB
   allocs estimate:  8
   --------------
-  minimum time:     2.161 ms (0.00% GC)
-  median time:      2.181 ms (0.00% GC)
-  mean time:        2.317 ms (5.76% GC)
-  maximum time:     3.892 ms (43.03% GC)
+  minimum time:     2.813 ms (0.00% GC)
+  median time:      2.837 ms (0.00% GC)
+  mean time:        2.973 ms (4.49% GC)
+  maximum time:     4.549 ms (37.07% GC)
   --------------
-  samples:          2155
+  samples:          1680
   evals/sample:     1
-````
+```
 
 
 
@@ -366,7 +366,7 @@ BenchmarkTools.Trial:
 
 Puts the whole expression into a single function call, and thus only one array is required to store output. This is the same as writing the loop:
 
-````julia
+```julia
 
 function test3(A,B,C)
     D = similar(A)
@@ -376,22 +376,22 @@ function test3(A,B,C)
     D
 end
 @benchmark test3(A,B,C)
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  7.63 MiB
   allocs estimate:  2
   --------------
-  minimum time:     1.119 ms (0.00% GC)
-  median time:      1.136 ms (0.00% GC)
-  mean time:        1.278 ms (11.03% GC)
-  maximum time:     2.887 ms (58.91% GC)
+  minimum time:     1.124 ms (0.00% GC)
+  median time:      1.148 ms (0.00% GC)
+  mean time:        1.297 ms (11.34% GC)
+  maximum time:     3.000 ms (59.89% GC)
   --------------
-  samples:          3893
+  samples:          3837
   evals/sample:     1
-````
+```
 
 
 
@@ -399,26 +399,26 @@ BenchmarkTools.Trial:
 
 However, Julia's broadcast is syntactic sugar for this. If multiple expressions have a `.`, then it will put those vectorized operations together. Thus:
 
-````julia
+```julia
 
 test4(A,B,C) = A .+ B .+ C
 @benchmark test4(A,B,C)
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  7.63 MiB
   allocs estimate:  2
   --------------
-  minimum time:     1.125 ms (0.00% GC)
-  median time:      1.142 ms (0.00% GC)
-  mean time:        1.285 ms (11.01% GC)
-  maximum time:     2.896 ms (58.69% GC)
+  minimum time:     1.127 ms (0.00% GC)
+  median time:      1.153 ms (0.00% GC)
+  mean time:        1.302 ms (11.31% GC)
+  maximum time:     2.967 ms (60.42% GC)
   --------------
-  samples:          3873
+  samples:          3821
   evals/sample:     1
-````
+```
 
 
 
@@ -426,35 +426,35 @@ BenchmarkTools.Trial:
 
 is a version with only 1 array created (the output). Note that `.`s can be used with function calls as well:
 
-````julia
+```julia
 
 sin.(A) .+ sin.(B)
-````
+```
 
 
-````
+```
 1000×1000 Array{Float64,2}:
- 1.2388    1.41513   0.825184  0.684338  …  1.03022   0.903516  0.919432
- 0.935848  1.41325   1.15855   0.66745      0.751003  0.740019  1.29074
- 1.17537   0.624358  0.67162   1.18344      1.52807   0.432042  1.00956
- 0.315796  0.974054  0.828845  0.670297     0.751043  0.72027   0.869817
- 0.845337  0.198323  1.49027   0.267141     1.13      0.995075  1.2713
- 0.837456  0.707822  0.974418  0.57887   …  0.545189  0.715829  0.448977
- 0.835951  0.354875  0.697689  0.667826     1.12269   0.354541  0.61862
- 1.02046   0.751293  0.374965  0.236353     1.51837   0.452702  1.1251
- 0.830699  1.53825   1.00132   0.416744     1.15397   0.531013  0.877233
- 1.15496   1.38332   0.574787  1.23524      1.32058   0.817474  0.873181
+ 1.14822   0.653106  0.400998  0.161702  …  0.931953  1.06832   0.900178
+ 1.29987   1.60977   0.59406   0.802195     0.696662  0.720217  0.151015
+ 0.724521  0.291946  1.15396   0.741696     1.11365   1.16862   0.713377
+ 0.261441  1.08603   0.838485  1.09141      0.542798  0.848069  0.780998
+ 1.28902   1.06844   0.896085  0.353321     1.49491   1.26847   0.775937
+ 0.931985  0.597447  1.54438   0.346974  …  0.571503  1.59248   0.920396
+ 0.64776   1.07941   1.22177   1.19306      1.23698   0.921395  0.91717
+ 1.36254   0.920541  1.1556    1.10763      0.308959  0.457159  0.971354
+ 1.56507   0.851284  0.786668  0.904077     0.638127  1.17275   1.33017
+ 0.802636  0.749744  0.780183  0.636848     0.750101  1.15993   0.953158
  ⋮                                       ⋱                      
- 0.723825  0.870301  1.02896   0.552645     0.416689  0.846559  1.25242
- 0.51322   1.47282   0.864779  1.28543      0.494454  0.845209  0.662671
- 0.85684   0.250664  1.10721   0.881086     1.00813   0.720992  0.770827
- 0.79262   1.21874   0.909082  0.913685     0.905118  0.722929  0.989027
- 0.636977  1.39185   1.40671   1.36158   …  0.393586  0.18446   1.00398
- 0.867397  0.866348  0.723996  0.945988     0.668774  0.424788  0.728806
- 1.35527   0.50219   1.2381    0.593546     1.0524    1.27604   1.17906
- 1.36164   0.866749  0.979153  1.33223      0.569173  1.34703   1.34828
- 0.378669  0.95068   1.39278   0.611847     1.35866   0.93213   0.11251
-````
+ 0.733594  1.36478   0.340724  0.340201     0.843932  0.680601  1.04149
+ 0.994858  0.887994  1.27176   1.42426      0.566199  0.829179  1.28069
+ 1.17642   1.14502   0.785152  1.24175      0.969501  1.47033   0.873622
+ 1.31984   0.857059  1.13175   1.38851      0.851331  0.486896  0.42976
+ 0.929718  0.832845  0.848255  0.978073  …  1.20457   1.1796    1.42254
+ 0.640584  0.627328  1.11305   1.19686      1.01449   0.659512  1.1893
+ 1.083     1.00496   1.17      0.190102     0.832462  1.18698   0.342249
+ 0.383132  1.20826   0.836149  0.807005     1.47502   1.10737   0.358481
+ 1.47624   1.11963   1.00009   1.23959      1.60455   0.426289  1.00275
+```
 
 
 
@@ -462,26 +462,26 @@ sin.(A) .+ sin.(B)
 
 Also, the `@.` macro applys a dot to every operator:
 
-````julia
+```julia
 
 test5(A,B,C) = @. A + B + C #only one array allocated
 @benchmark test5(A,B,C)
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  7.63 MiB
   allocs estimate:  2
   --------------
-  minimum time:     1.125 ms (0.00% GC)
-  median time:      1.144 ms (0.00% GC)
-  mean time:        1.287 ms (11.03% GC)
-  maximum time:     2.896 ms (59.59% GC)
+  minimum time:     1.131 ms (0.00% GC)
+  median time:      1.156 ms (0.00% GC)
+  mean time:        1.305 ms (11.30% GC)
+  maximum time:     2.983 ms (60.39% GC)
   --------------
-  samples:          3867
+  samples:          3813
   evals/sample:     1
-````
+```
 
 
 
@@ -489,54 +489,9 @@ BenchmarkTools.Trial:
 
 Using these tools we can get rid of our intermediate array allocations for many vectorized function calls. But we are still allocating the output array. To get rid of that allocation, we can instead use mutation. Mutating broadcast is done via `.=`. For example, if we pre-allocate the output:
 
-````julia
-
+```julia
 D = zeros(1000,1000);
-````
-
-
-````
-1000×1000 Array{Float64,2}:
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  …  0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0     0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0     0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0     0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0     0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  …  0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0     0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0     0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0     0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0     0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- ⋮                        ⋮              ⋱            ⋮                   
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0     0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0     0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0     0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0     0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  …  0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0     0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0     0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0     0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
- 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0     0.0  0.0  0.0  0.0  0.0  0.0  0
-.0
-````
+```
 
 
 
@@ -544,26 +499,26 @@ D = zeros(1000,1000);
 
 Then we can keep re-using this cache for subsequent calculations. The mutating broadcasting form is:
 
-````julia
+```julia
 
 test6!(D,A,B,C) = D .= A .+ B .+ C #only one array allocated
 @benchmark test6!(D,A,B,C)
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  0 bytes
   allocs estimate:  0
   --------------
-  minimum time:     1.046 ms (0.00% GC)
-  median time:      1.054 ms (0.00% GC)
-  mean time:        1.056 ms (0.00% GC)
-  maximum time:     1.337 ms (0.00% GC)
+  minimum time:     1.060 ms (0.00% GC)
+  median time:      1.067 ms (0.00% GC)
+  mean time:        1.069 ms (0.00% GC)
+  maximum time:     1.319 ms (0.00% GC)
   --------------
-  samples:          4714
+  samples:          4649
   evals/sample:     1
-````
+```
 
 
 
@@ -571,26 +526,26 @@ BenchmarkTools.Trial:
 
 If we use `@.` before the `=`, then it will turn it into `.=`:
 
-````julia
+```julia
 
 test7!(D,A,B,C) = @. D = A + B + C #only one array allocated
 @benchmark test7!(D,A,B,C)
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  0 bytes
   allocs estimate:  0
   --------------
-  minimum time:     1.046 ms (0.00% GC)
-  median time:      1.054 ms (0.00% GC)
-  mean time:        1.056 ms (0.00% GC)
-  maximum time:     1.341 ms (0.00% GC)
+  minimum time:     1.062 ms (0.00% GC)
+  median time:      1.069 ms (0.00% GC)
+  mean time:        1.071 ms (0.00% GC)
+  maximum time:     1.328 ms (0.00% GC)
   --------------
-  samples:          4712
+  samples:          4638
   evals/sample:     1
-````
+```
 
 
 
@@ -598,26 +553,26 @@ BenchmarkTools.Trial:
 
 Notice that in this case, there is no "output", and instead the values inside of `D` are what are changed (like with the DiffEq inplace function). Many Julia functions have a mutating form which is denoted with a `!`. For example, the mutating form of the `map` is `map!`:
 
-````julia
+```julia
 
 test8!(D,A,B,C) = map!((a,b,c)->a+b+c,D,A,B,C)
 @benchmark test8!(D,A,B,C)
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  32 bytes
   allocs estimate:  1
   --------------
-  minimum time:     2.285 ms (0.00% GC)
-  median time:      2.296 ms (0.00% GC)
-  mean time:        2.300 ms (0.00% GC)
-  maximum time:     2.546 ms (0.00% GC)
+  minimum time:     2.338 ms (0.00% GC)
+  median time:      2.348 ms (0.00% GC)
+  mean time:        2.353 ms (0.00% GC)
+  maximum time:     3.030 ms (0.00% GC)
   --------------
-  samples:          2170
+  samples:          2121
   evals/sample:     1
-````
+```
 
 
 
@@ -625,25 +580,25 @@ BenchmarkTools.Trial:
 
 Some operations require using an alternate mutating form in order to be fast. For example, matrix multiplication via `*` allocates a temporary:
 
-````julia
+```julia
 
 @benchmark A*B
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  7.63 MiB
   allocs estimate:  2
   --------------
-  minimum time:     6.383 ms (0.00% GC)
-  median time:      6.536 ms (0.00% GC)
-  mean time:        6.667 ms (2.16% GC)
-  maximum time:     8.375 ms (20.76% GC)
+  minimum time:     6.391 ms (0.00% GC)
+  median time:      6.505 ms (0.00% GC)
+  mean time:        6.669 ms (2.26% GC)
+  maximum time:     8.716 ms (20.84% GC)
   --------------
   samples:          749
   evals/sample:     1
-````
+```
 
 
 
@@ -651,26 +606,26 @@ BenchmarkTools.Trial:
 
 Instead, we can use the mutating form `mul!` into a cache array to avoid allocating the output:
 
-````julia
+```julia
 
 using LinearAlgebra
 @benchmark mul!(D,A,B) # same as D = A * B
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  0 bytes
   allocs estimate:  0
   --------------
-  minimum time:     5.989 ms (0.00% GC)
-  median time:      6.026 ms (0.00% GC)
-  mean time:        6.029 ms (0.00% GC)
-  maximum time:     6.632 ms (0.00% GC)
+  minimum time:     5.961 ms (0.00% GC)
+  median time:      6.011 ms (0.00% GC)
+  mean time:        6.015 ms (0.00% GC)
+  maximum time:     6.647 ms (0.00% GC)
   --------------
-  samples:          829
+  samples:          831
   evals/sample:     1
-````
+```
 
 
 
@@ -691,7 +646,7 @@ $$
 
 where $u$, $v$, and $A$ are matrices. Here, we will use the simplified version where $A$ is the tridiagonal stencil $[1,-2,1]$, i.e. it's the 2D discretization of the LaPlacian. The native code would be something along the lines of:
 
-````julia
+```julia
 
 # Generate the constants
 p = (1.0,1.0,1.0,10.0,0.001,100.0) # a,α,ubar,β,D1,D2
@@ -721,24 +676,24 @@ r0[:,:,1] .= uss.+0.1.*rand.()
 r0[:,:,2] .= vss
 
 prob = ODEProblem(basic_version!,r0,(0.0,0.1),p)
-````
+```
 
 
-````
+```
 ODEProblem with uType Array{Float64,3} and tType Float64. In-place: true
 timespan: (0.0, 0.1)
-u0: [11.089535703017127 11.089326405886345 … 11.076815346236364 11.02834843
-4664354; 11.033858153684816 11.095684502552745 … 11.032726270307096 11.0058
-60098766169; … ; 11.079670299499869 11.071173242340546 … 11.010143779198497
- 11.089981638242831; 11.055739622485541 11.01541898609977 … 11.040318675980
-556 11.016552924094812]
+u0: [11.042756953924554 11.072858222058855 … 11.049539261990668 11.07123915
+5670655; 11.026783271064723 11.00785249711271 … 11.061663284438994 11.02660
+7567528439; … ; 11.055715295076121 11.04035895317539 … 11.079236661294487 1
+1.055839497187407; 11.096194292032463 11.05546331683075 … 11.08225337132605
+8 11.0034864004305]
 
 [12.100000000000001 12.100000000000001 … 12.100000000000001 12.100000000000
 001; 12.100000000000001 12.100000000000001 … 12.100000000000001 12.10000000
 0000001; … ; 12.100000000000001 12.100000000000001 … 12.100000000000001 12.
 100000000000001; 12.100000000000001 12.100000000000001 … 12.100000000000001
  12.100000000000001]
-````
+```
 
 
 
@@ -746,25 +701,25 @@ u0: [11.089535703017127 11.089326405886345 … 11.076815346236364 11.02834843
 
 In this version we have encoded our initial condition to be a 3-dimensional array, with `u[:,:,1]` being the `A` part and `u[:,:,2]` being the `B` part.
 
-````julia
+```julia
 
 @benchmark solve(prob,Tsit5())
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  186.88 MiB
   allocs estimate:  8551
   --------------
-  minimum time:     48.903 ms (4.27% GC)
-  median time:      51.182 ms (8.16% GC)
-  mean time:        50.797 ms (7.49% GC)
-  maximum time:     51.454 ms (7.88% GC)
+  minimum time:     49.219 ms (4.41% GC)
+  median time:      51.664 ms (8.32% GC)
+  mean time:        51.201 ms (7.60% GC)
+  maximum time:     51.823 ms (8.33% GC)
   --------------
-  samples:          99
+  samples:          98
   evals/sample:     1
-````
+```
 
 
 
@@ -776,26 +731,26 @@ While this version isn't very efficient,
 
 The first thing that we can do is get rid of the slicing allocations. The operation `r[:,:,1]` creates a temporary array instead of a "view", i.e. a pointer to the already existing memory. To make it a view, add `@view`. Note that we have to be careful with views because they point to the same memory, and thus changing a view changes the original values:
 
-````julia
+```julia
 
 A = rand(4)
 @show A
 B = @view A[1:3]
 B[2] = 2
 @show A
-````
+```
 
 
-````
-A = [0.4590460193898438, 0.82022856535457, 0.9550488620296065, 0.9927184811
-395207]
-A = [0.4590460193898438, 2.0, 0.9550488620296065, 0.9927184811395207]
+```
+A = [0.547441153831203, 0.4889157576611225, 0.06710977826513576, 0.14941164
+720627875]
+A = [0.547441153831203, 2.0, 0.06710977826513576, 0.14941164720627875]
 4-element Array{Float64,1}:
- 0.4590460193898438
+ 0.547441153831203
  2.0
- 0.9550488620296065
- 0.9927184811395207
-````
+ 0.06710977826513576
+ 0.14941164720627875
+```
 
 
 
@@ -803,7 +758,7 @@ A = [0.4590460193898438, 2.0, 0.9550488620296065, 0.9927184811395207]
 
 Notice that changing `B` changed `A`. This is something to be careful of, but at the same time we want to use this since we want to modify the output `dr`. Additionally, the last statement is a purely element-wise operation, and thus we can make use of broadcast fusion there. Let's rewrite `basic_version!` to ***avoid slicing allocations*** and to ***use broadcast fusion***:
 
-````julia
+```julia
 
 function gm2!(dr,r,p,t)
   a,α,ubar,β,D1,D2 = p
@@ -818,22 +773,22 @@ function gm2!(dr,r,p,t)
 end
 prob = ODEProblem(gm2!,r0,(0.0,0.1),p)
 @benchmark solve(prob,Tsit5())
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  119.55 MiB
   allocs estimate:  7081
   --------------
-  minimum time:     38.975 ms (5.39% GC)
-  median time:      39.159 ms (5.43% GC)
-  mean time:        39.681 ms (6.64% GC)
-  maximum time:     41.431 ms (10.12% GC)
+  minimum time:     39.356 ms (5.58% GC)
+  median time:      39.533 ms (5.57% GC)
+  mean time:        40.047 ms (6.73% GC)
+  maximum time:     41.897 ms (10.35% GC)
   --------------
-  samples:          126
+  samples:          125
   evals/sample:     1
-````
+```
 
 
 
@@ -841,7 +796,7 @@ BenchmarkTools.Trial:
 
 Now, most of the allocations are taking place in `Du = D1*(Ay*u + u*Ax)` since those operations are vectorized and not mutating. We should instead replace the matrix multiplications with `mul!`. When doing so, we will need to have cache variables to write into. This looks like:
 
-````julia
+```julia
 
 Ayu = zeros(N,N)
 uAx = zeros(N,N)
@@ -866,22 +821,22 @@ function gm3!(dr,r,p,t)
 end
 prob = ODEProblem(gm3!,r0,(0.0,0.1),p)
 @benchmark solve(prob,Tsit5())
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  29.75 MiB
   allocs estimate:  5317
   --------------
-  minimum time:     33.786 ms (0.00% GC)
-  median time:      34.159 ms (0.00% GC)
-  mean time:        34.751 ms (1.82% GC)
-  maximum time:     36.410 ms (5.67% GC)
+  minimum time:     33.887 ms (0.00% GC)
+  median time:      34.208 ms (0.00% GC)
+  mean time:        34.773 ms (1.82% GC)
+  maximum time:     36.550 ms (5.81% GC)
   --------------
   samples:          144
   evals/sample:     1
-````
+```
 
 
 
@@ -889,7 +844,7 @@ BenchmarkTools.Trial:
 
 But our temporary variables are global variables. We need to either declare the caches as `const` or localize them. We can localize them by adding them to the parameters, `p`. It's easier for the compiler to reason about local variables than global variables. ***Localizing variables helps to ensure type stability***.
 
-````julia
+```julia
 
 p = (1.0,1.0,1.0,10.0,0.001,100.0,Ayu,uAx,Du,Ayv,vAx,Dv) # a,α,ubar,β,D1,D2
 function gm4!(dr,r,p,t)
@@ -909,22 +864,22 @@ function gm4!(dr,r,p,t)
 end
 prob = ODEProblem(gm4!,r0,(0.0,0.1),p)
 @benchmark solve(prob,Tsit5())
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  29.66 MiB
   allocs estimate:  1053
   --------------
-  minimum time:     27.257 ms (0.00% GC)
-  median time:      27.568 ms (0.00% GC)
-  mean time:        28.110 ms (2.21% GC)
-  maximum time:     29.881 ms (6.77% GC)
+  minimum time:     27.394 ms (0.00% GC)
+  median time:      27.715 ms (0.00% GC)
+  mean time:        28.289 ms (2.23% GC)
+  maximum time:     30.058 ms (7.15% GC)
   --------------
-  samples:          178
+  samples:          177
   evals/sample:     1
-````
+```
 
 
 
@@ -932,7 +887,7 @@ BenchmarkTools.Trial:
 
 We could then use the BLAS `gemmv` to optimize the matrix multiplications some more, but instead let's devectorize the stencil.
 
-````julia
+```julia
 
 p = (1.0,1.0,1.0,10.0,0.001,100.0,N)
 function fast_gm!(du,u,p,t)
@@ -1018,22 +973,22 @@ function fast_gm!(du,u,p,t)
 end
 prob = ODEProblem(fast_gm!,r0,(0.0,0.1),p)
 @benchmark solve(prob,Tsit5())
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  29.62 MiB
   allocs estimate:  466
   --------------
-  minimum time:     8.364 ms (0.00% GC)
-  median time:      8.476 ms (0.00% GC)
-  mean time:        9.077 ms (6.65% GC)
-  maximum time:     10.743 ms (18.87% GC)
+  minimum time:     8.368 ms (0.00% GC)
+  median time:      8.490 ms (0.00% GC)
+  mean time:        9.109 ms (6.77% GC)
+  maximum time:     10.770 ms (19.44% GC)
   --------------
-  samples:          551
+  samples:          549
   evals/sample:     1
-````
+```
 
 
 
@@ -1045,95 +1000,95 @@ This gets us to about 8x faster than our original MATLAB/SciPy/R vectorized styl
 
 The last thing to do is then ***optimize our algorithm choice***. We have been using `Tsit5()` as our test algorithm, but in reality this problem is a stiff PDE discretization and thus one recommendation is to use `CVODE_BDF()`. However, instead of using the default dense Jacobian, we should make use of the sparse Jacobian afforded by the problem. The Jacobian is the matrix $\frac{df_i}{dr_j}$, where $r$ is read by the linear index (i.e. down columns). But since the $u$ variables depend on the $v$, the band size here is large, and thus this will not do well with a Banded Jacobian solver. Instead, we utilize sparse Jacobian algorithms. `CVODE_BDF` allows us to use a sparse Newton-Krylov solver by setting `linear_solver = :GMRES` (see [the solver documentation](https://docs.sciml.ai/dev/solvers/ode_solve/#ode_solve_sundials-1), and thus we can solve this problem efficiently. Let's see how this scales as we increase the integration time.
 
-````julia
+```julia
 
 prob = ODEProblem(fast_gm!,r0,(0.0,10.0),p)
 @benchmark solve(prob,Tsit5())
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  2.76 GiB
   allocs estimate:  41632
   --------------
-  minimum time:     1.316 s (39.50% GC)
-  median time:      1.398 s (42.88% GC)
-  mean time:        1.424 s (43.98% GC)
-  maximum time:     1.586 s (49.64% GC)
+  minimum time:     1.342 s (41.01% GC)
+  median time:      1.550 s (39.28% GC)
+  mean time:        1.571 s (41.38% GC)
+  maximum time:     1.840 s (46.42% GC)
   --------------
   samples:          4
   evals/sample:     1
-````
+```
 
 
 
-````julia
+```julia
 
 using Sundials
 @benchmark solve(prob,CVODE_BDF(linear_solver=:GMRES))
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
-  memory estimate:  41.70 MiB
-  allocs estimate:  6503
+  memory estimate:  51.87 MiB
+  allocs estimate:  8371
   --------------
-  minimum time:     257.688 ms (0.00% GC)
-  median time:      258.362 ms (0.00% GC)
-  mean time:        258.847 ms (0.34% GC)
-  maximum time:     260.470 ms (0.86% GC)
+  minimum time:     335.117 ms (0.00% GC)
+  median time:      337.471 ms (0.64% GC)
+  mean time:        337.130 ms (0.37% GC)
+  maximum time:     338.900 ms (0.68% GC)
   --------------
-  samples:          20
+  samples:          15
   evals/sample:     1
-````
+```
 
 
 
-````julia
+```julia
 
 prob = ODEProblem(fast_gm!,r0,(0.0,100.0),p)
 # Will go out of memory if we don't turn off `save_everystep`!
 @benchmark solve(prob,Tsit5(),save_everystep=false)
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
   memory estimate:  2.90 MiB
   allocs estimate:  74
   --------------
-  minimum time:     6.036 s (0.00% GC)
-  median time:      6.036 s (0.00% GC)
-  mean time:        6.036 s (0.00% GC)
-  maximum time:     6.036 s (0.00% GC)
+  minimum time:     5.886 s (0.00% GC)
+  median time:      5.886 s (0.00% GC)
+  mean time:        5.886 s (0.00% GC)
+  maximum time:     5.886 s (0.00% GC)
   --------------
   samples:          1
   evals/sample:     1
-````
+```
 
 
 
-````julia
+```julia
 
 @benchmark solve(prob,CVODE_BDF(linear_solver=:GMRES))
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
-  memory estimate:  329.82 MiB
-  allocs estimate:  59952
+  memory estimate:  302.02 MiB
+  allocs estimate:  53934
   --------------
-  minimum time:     2.510 s (1.21% GC)
-  median time:      2.555 s (3.10% GC)
-  mean time:        2.555 s (3.10% GC)
-  maximum time:     2.600 s (4.92% GC)
+  minimum time:     2.211 s (0.00% GC)
+  median time:      2.253 s (1.36% GC)
+  mean time:        2.272 s (2.36% GC)
+  maximum time:     2.353 s (5.53% GC)
   --------------
-  samples:          2
+  samples:          3
   evals/sample:     1
-````
+```
 
 
 
@@ -1141,48 +1096,48 @@ BenchmarkTools.Trial:
 
 Now let's check the allocation growth.
 
-````julia
+```julia
 
 @benchmark solve(prob,CVODE_BDF(linear_solver=:GMRES),save_everystep=false)
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
-  memory estimate:  3.78 MiB
-  allocs estimate:  49969
+  memory estimate:  3.48 MiB
+  allocs estimate:  44791
   --------------
-  minimum time:     2.433 s (0.00% GC)
-  median time:      2.441 s (0.00% GC)
-  mean time:        2.439 s (0.00% GC)
-  maximum time:     2.443 s (0.00% GC)
+  minimum time:     2.185 s (0.00% GC)
+  median time:      2.194 s (0.00% GC)
+  mean time:        2.192 s (0.00% GC)
+  maximum time:     2.198 s (0.00% GC)
   --------------
   samples:          3
   evals/sample:     1
-````
+```
 
 
 
-````julia
+```julia
 
 prob = ODEProblem(fast_gm!,r0,(0.0,500.0),p)
 @benchmark solve(prob,CVODE_BDF(linear_solver=:GMRES),save_everystep=false)
-````
+```
 
 
-````
+```
 BenchmarkTools.Trial: 
-  memory estimate:  4.09 MiB
-  allocs estimate:  55297
+  memory estimate:  4.93 MiB
+  allocs estimate:  69991
   --------------
-  minimum time:     2.700 s (0.00% GC)
-  median time:      2.701 s (0.00% GC)
-  mean time:        2.701 s (0.00% GC)
-  maximum time:     2.702 s (0.00% GC)
+  minimum time:     3.421 s (0.00% GC)
+  median time:      3.422 s (0.00% GC)
+  mean time:        3.422 s (0.00% GC)
+  maximum time:     3.423 s (0.00% GC)
   --------------
   samples:          2
   evals/sample:     1
-````
+```
 
 
 
@@ -1232,8 +1187,8 @@ Package Information:
 Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/introduction/Project.toml`
 [6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf] BenchmarkTools 0.5.0
 [0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.15.0
-[65888b18-ceab-5e60-b2b9-181511a3b968] ParameterizedFunctions 5.5.0
-[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.6.3
+[65888b18-ceab-5e60-b2b9-181511a3b968] ParameterizedFunctions 5.6.0
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.6.7
 [90137ffa-7385-5640-81b9-e52037218182] StaticArrays 0.12.4
 [c3572dad-4567-51f8-b174-8c6c989267f4] Sundials 4.3.0
 [37e2e46d-f89d-539d-b4ee-838fcccc9c8e] LinearAlgebra
