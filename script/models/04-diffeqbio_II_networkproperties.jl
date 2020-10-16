@@ -185,6 +185,6 @@ end
 plot(plts...)
 
 
-using DiffEqTutorials
-DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file], remove_homedir=true)
+using SciMLTutorials
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file], remove_homedir=true)
 
