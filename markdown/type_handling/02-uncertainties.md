@@ -14,41 +14,35 @@ This notebook will cover some of the examples from the tutorial about classical 
 
 Before going on with the tutorial, we must point up a subtlety of `Measurements.jl` that you should be aware of:
 
-````julia
-
+```julia
 using Measurements
 
 5.23 ± 0.14 === 5.23 ± 0.14
-````
+```
 
-
-````
+```
 false
-````
+```
 
 
 
-````julia
-
+```julia
 (5.23± 0.14) - (5.23 ± 0.14)
-````
+```
 
-
-````
+```
 0.0 ± 0.2
-````
+```
 
 
 
-````julia
-
+```julia
 (5.23 ± 0.14) / (5.23 ± 0.14)
-````
+```
 
-
-````
+```
 1.0 ± 0.038
-````
+```
 
 
 
@@ -58,40 +52,34 @@ The two numbers above, even though have the same nominal value and the same unce
 
 Instead, if you have *one measurement* and want to perform some operations involving it, you have to assign it to a variable:
 
-````julia
-
+```julia
 x = 5.23 ± 0.14
 x === x
-````
+```
 
-
-````
+```
 true
-````
+```
 
 
 
-````julia
-
+```julia
 x - x
-````
+```
 
-
-````
+```
 0.0 ± 0.0
-````
+```
 
 
 
-````julia
-
+```julia
 x / x
-````
+```
 
-
-````
+```
 1.0 ± 0.0
-````
+```
 
 
 
@@ -105,8 +93,7 @@ $$\frac{\mathrm{d}u(t)}{\mathrm{d}t} = -\frac{u(t)}{\tau}$$
 
 where $\tau$ is the mean lifetime of carbon-14, which is related to the half-life $t_{1/2} = (5730 \pm 40)$ years by the relation $\tau = t_{1/2}/\ln(2)$.
 
-````julia
-
+```julia
 using DifferentialEquations, Measurements, Plots
 
 # Half-life and mean lifetime of radiocarbon, in years
@@ -129,8 +116,7 @@ u = exp.(- sol.t / τ)
 
 plot(sol.t, sol.u, label = "Numerical", xlabel = "Years", ylabel = "Fraction of Carbon-14")
 plot!(sol.t, u, label = "Analytic")
-````
-
+```
 
 ![](figures/02-uncertainties_7_1.png)
 
@@ -138,19 +124,17 @@ plot!(sol.t, u, label = "Analytic")
 
 The two curves are perfectly superimposed, indicating that the numerical solution matches the analytic one.  We can check that also the uncertainties are correctly propagated in the numerical solution:
 
-````julia
-
+```julia
 println("Quantity of carbon-14 after ",  sol.t[11], " years:")
 println("Numerical: ", sol[11])
 println("Analytic:  ", u[11])
-````
+```
 
-
-````
+```
 Quantity of carbon-14 after 5207.541347908455 years:
 Numerical: 0.5326 ± 0.0023
 Analytic:  0.5326 ± 0.0023
-````
+```
 
 
 
@@ -172,8 +156,7 @@ where $g = (9.79 \pm 0.02)~\mathrm{m}/\mathrm{s}^2$ is the gravitational acceler
 
 When you set up the problem for `DifferentialEquations.jl` remember to define the measurements as variables, as seen above.
 
-````julia
-
+```julia
 using DifferentialEquations, Measurements, Plots
 
 g = 9.79 ± 0.02; # Gravitational constants
@@ -200,8 +183,7 @@ u = u₀[2] .* cos.(sqrt(g / L) .* sol.t)
 
 plot(sol.t, getindex.(sol.u, 2), label = "Numerical")
 plot!(sol.t, u, label = "Analytic")
-````
-
+```
 
 ![](figures/02-uncertainties_9_1.png)
 
@@ -211,11 +193,9 @@ Also in this case there is a perfect superimposition between the two curves, inc
 
 We can also have a look at the difference between the two solutions:
 
-````julia
-
+```julia
 plot(sol.t, getindex.(sol.u, 2) .- u, label = "")
-````
-
+```
 
 ![](figures/02-uncertainties_10_1.png)
 
@@ -227,8 +207,7 @@ Now that we know how to solve differential equations involving numbers with unce
 
 $$\ddot{\theta} + \frac{g}{L} \sin(\theta) = 0$$
 
-````julia
-
+```julia
 g = 9.79 ± 0.02; # Gravitational constants
 L = 1.00 ± 0.01; # Length of the pendulum
 
@@ -249,8 +228,7 @@ prob = ODEProblem(simplependulum, u₀, tspan)
 sol = solve(prob, Tsit5(), reltol = 1e-6)
 
 plot(sol.t, getindex.(sol.u, 2), label = "Numerical")
-````
-
+```
 
 ![](figures/02-uncertainties_11_1.png)
 
@@ -297,8 +275,8 @@ Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/type_handling/Project.toml
 [abce61dc-4473-55a0-ba07-351d65e31d42] Decimals 0.4.1
 [0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.15.0
 [497a8b3b-efae-58df-a0af-a86822472b78] DoubleFloats 1.1.13
-[eff96d63-e80a-5855-80a2-b1b0885c5ab7] Measurements 2.2.1
-[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.42.5
-[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.6.1
-[1986cc42-f94f-5a68-af5c-568840ba703d] Unitful 1.4.0
+[eff96d63-e80a-5855-80a2-b1b0885c5ab7] Measurements 2.3.0
+[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.43.0
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.6.12
+[1986cc42-f94f-5a68-af5c-568840ba703d] Unitful 1.4.1
 ```
