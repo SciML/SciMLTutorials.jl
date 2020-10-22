@@ -6,8 +6,7 @@ title: "Formatting Plots"
 
 Since the plotting functionality is implemented as a recipe to Plots.jl, [all of the options open to Plots.jl can be used in our plots](https://juliaplots.github.io/supported/). In addition, there are special features specifically for [differential equation plots](https://docs.sciml.ai/dev/basics/plot/). This tutorial will teach some of the most commonly used options. Let's first get the solution to some ODE. Here I will use one of the Lorenz ordinary differential equation. As with all commands in DifferentialEquations.jl, I got a plot of the solution by calling `solve` on the problem, and `plot` on the solution:
 
-````julia
-
+```julia
 using DifferentialEquations, Plots, ParameterizedFunctions
 gr()
 lorenz = @ode_def Lorenz begin
@@ -21,10 +20,9 @@ u0 = [1., 5., 10.]
 tspan = (0., 100.)
 prob = ODEProblem(lorenz, u0, tspan, p)
 sol = solve(prob)
-````
+```
 
-
-````
+```
 retcode: Success
 Interpolation: automatic order switching interpolation
 t: 1341-element Array{Float64,1}:
@@ -69,15 +67,13 @@ u: 1341-element Array{Array{Float64,1},1}:
  [4.528555141302391, 1.9195182135779243, 26.403651898710038]
  [3.35872786591478, 2.855562241006029, 22.042971594934365]
  [3.3579402595045926, 3.829807498655525, 19.879219936458707]
-````
+```
 
 
 
-````julia
-
+```julia
 plot(sol)
-````
-
+```
 
 ![](figures/05-formatting_plots_2_1.png)
 
@@ -85,11 +81,9 @@ plot(sol)
 
 Now let's change it to a phase plot. As discussed in the [plot functions page](https://docs.sciml.ai/dev/basics/plot/), we can use the `vars` command to choose the variables to plot. Let's plot variable `x` vs variable `y` vs variable `z`:
 
-````julia
-
+```julia
 plot(sol,vars=(1, 2, 3))
-````
-
+```
 
 ![](figures/05-formatting_plots_3_1.png)
 
@@ -97,11 +91,9 @@ plot(sol,vars=(1, 2, 3))
 
 We can also choose to plot the timeseries for a single variable:
 
-````julia
-
+```julia
 plot(sol,vars=[:x])
-````
-
+```
 
 ![](figures/05-formatting_plots_4_1.png)
 
@@ -109,12 +101,10 @@ plot(sol,vars=[:x])
 
 Notice that we were able to use the variable names because we had defined the problem with the macro. But in general, we can use the indices. The previous plots would be:
 
-````julia
-
+```julia
 plot(sol,vars=(1,2,3))
 plot(sol,vars=[1])
-````
-
+```
 
 ![](figures/05-formatting_plots_5_1.png)
 
@@ -122,12 +112,10 @@ plot(sol,vars=[1])
 
 Common options are to add titles, axis, and labels. For example:
 
-````julia
-
+```julia
 plot(sol,linewidth=5,title="Solution to the linear ODE with a thick line",
 xaxis="Time (t)",yaxis="u(t) (in mm)",label=["X","Y","Z"])
-````
-
+```
 
 ![](figures/05-formatting_plots_6_1.png)
 
@@ -135,11 +123,9 @@ xaxis="Time (t)",yaxis="u(t) (in mm)",label=["X","Y","Z"])
 
 Notice that series recipes apply to the solution type as well. For example, we can use a scatter plot on the timeseries:
 
-````julia
-
+```julia
 scatter(sol,vars=[:x])
-````
-
+```
 
 ![](figures/05-formatting_plots_7_1.png)
 
@@ -147,11 +133,9 @@ scatter(sol,vars=[:x])
 
 This shows that the recipe is using the interpolation to smooth the plot. It becomes abundantly clear when we turn it off using `denseplot=false`:
 
-````julia
-
+```julia
 plot(sol,vars=(1,2,3),denseplot=false)
-````
-
+```
 
 ![](figures/05-formatting_plots_8_1.png)
 
@@ -159,11 +143,9 @@ plot(sol,vars=(1,2,3),denseplot=false)
 
 When this is done, only the values the timestep hits are plotted. Using the interpolation usually results in a much nicer looking plot so it's recommended, and since the interpolations have similar orders to the numerical methods, their results are trustworthy on the full interval. We can control the number of points used in the interpolation's plot using the `plotdensity` command:
 
-````julia
-
+```julia
 plot(sol,vars=(1,2,3),plotdensity=100)
-````
-
+```
 
 ![](figures/05-formatting_plots_9_1.png)
 
@@ -171,11 +153,9 @@ plot(sol,vars=(1,2,3),plotdensity=100)
 
 That's plotting the entire solution using 100 points spaced evenly in time.
 
-````julia
-
+```julia
 plot(sol,vars=(1,2,3),plotdensity=10000)
-````
-
+```
 
 ![](figures/05-formatting_plots_10_1.png)
 
@@ -185,12 +165,10 @@ That's more like it! By default it uses `100*length(sol)`, where the length is t
 
 Lastly notice that we can compose plots. Let's show where the 100 points are using a scatter plot:
 
-````julia
-
+```julia
 plot(sol,vars=(1,2,3))
 scatter!(sol,vars=(1,2,3),plotdensity=100)
-````
-
+```
 
 ![](figures/05-formatting_plots_11_1.png)
 
@@ -198,13 +176,11 @@ scatter!(sol,vars=(1,2,3),plotdensity=100)
 
 We can instead work with an explicit plot object. This form can be better for building a complex plot in a loop.
 
-````julia
-
+```julia
 p = plot(sol,vars=(1,2,3))
 scatter!(p,sol,vars=(1,2,3),plotdensity=100)
 title!("I added a title")
-````
-
+```
 
 ![](figures/05-formatting_plots_12_1.png)
 
@@ -249,7 +225,7 @@ Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/introduction/Project.toml`
 [6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf] BenchmarkTools 0.5.0
 [0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.15.0
 [65888b18-ceab-5e60-b2b9-181511a3b968] ParameterizedFunctions 5.6.0
-[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.6.3
+[91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.6.12
 [90137ffa-7385-5640-81b9-e52037218182] StaticArrays 0.12.4
 [c3572dad-4567-51f8-b174-8c6c989267f4] Sundials 4.3.0
 [37e2e46d-f89d-539d-b4ee-838fcccc9c8e] LinearAlgebra
