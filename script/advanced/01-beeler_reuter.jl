@@ -450,6 +450,6 @@ prob = ODEProblem(deriv_gpu, u0, (0.0, 50.0));
 heatmap(sol.u[end])
 
 
-using DiffEqTutorials
-DiffEqTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+using SciMLTutorials
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 
