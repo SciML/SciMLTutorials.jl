@@ -195,7 +195,7 @@ Status `/builds/JuliaGPU/DiffEqTutorials.jl/tutorials/type_handling/Project.toml
 [0c46a032-eb83-5123-abaf-570d42b7fbaa] DifferentialEquations 6.15.0
 [497a8b3b-efae-58df-a0af-a86822472b78] DoubleFloats 1.1.13
 [eff96d63-e80a-5855-80a2-b1b0885c5ab7] Measurements 2.3.0
-[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.43.0
+[1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] OrdinaryDiffEq 5.45.0
 [91a5bcdd-55d7-5caf-9e0b-520d859cae80] Plots 1.6.12
 [1986cc42-f94f-5a68-af5c-568840ba703d] Unitful 1.5.0
 ```
