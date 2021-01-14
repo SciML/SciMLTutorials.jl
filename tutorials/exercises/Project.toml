@@ -14,7 +14,7 @@ SparsityDetection = "684fba80-ace3-11e9-3d08-3bc7ed6f96df"
 Sundials = "c3572dad-4567-51f8-b174-8c6c989267f4"
 
 [compat]
-AlgebraicMultigrid = "0.3"
+AlgebraicMultigrid = "0.3, 0.4"
 BenchmarkTools = "0.5"
 DiffEqDevTools = "2.22"
 DiffEqFlux = "1.16"
