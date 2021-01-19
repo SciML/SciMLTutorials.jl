@@ -131,7 +131,7 @@ Well it's hard to tell, and even then, the convergence of this approach is slow.
 This is the Monte Carlo approach and it converges to the correct answer by
 `sqrt(N)`. Slow.
 
-However, the [Koopman expectation](https://arxiv.org/abs/2008.087370) can converge
+However, the [Koopman expectation](https://arxiv.org/abs/2008.08737) can converge
 with much fewer points, allowing the use of higher order quadrature methods to
 converge exponentially faster in many cases. To use the Koopman expectation
 functionality provided by [DiffEqUncertainty.jl](https://github.com/SciML/DiffEqUncertainty.jl),
