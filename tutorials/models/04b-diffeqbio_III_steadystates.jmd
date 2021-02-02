@@ -1,5 +1,5 @@
 ---
-title: "DiffEqBiological Tutorial III: Bifurcation Analysis"
+title: "Catalyst Tutorial III: Bifurcation Analysis"
 author: Torkel Loman and Samuel Isaacson
 ---
 
@@ -91,10 +91,10 @@ Have a question related to Catalyst or this tutorial? Feel free to ask
 in the DifferentialEquations.jl [Gitter](https://gitter.im/JuliaDiffEq/Lobby).
 If you think you've found a bug in Catalyst, or would like to
 request/discuss new functionality, feel free to open an issue on
-[Github](https://github.com/JuliaDiffEq/Catalyst.jl) (but please check
+[Github](https://github.com/SciML/Catalyst.jl) (but please check
 there is no related issue already open). If you've found a bug in this tutorial,
 or have a suggestion, feel free to open an issue on the [SciMLTutorials Github
-site](https://github.com/JuliaDiffEq/SciMLTutorials.jl). Or, submit a pull
+site](https://github.com/JuliaSciML/SciMLTutorials.jl). Or, submit a pull
 request to SciMLTutorials updating the tutorial!
 
 ---
