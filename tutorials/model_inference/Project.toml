@@ -14,7 +14,7 @@ StatsPlots = "f3b207a7-027a-5e70-b257-86293d7955fd"
 TransformVariables = "84d833dd-6860-57f9-a1a7-6da5db126cff"
 
 [compat]
-BenchmarkTools = "0.5"
+BenchmarkTools = "0.5, 0.6"
 CmdStan = "6.0"
 DiffEqBayes = "2.15"
 DiffEqParamEstim = "1.15"
