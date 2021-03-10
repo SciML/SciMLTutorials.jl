@@ -20,7 +20,7 @@ Sundials = "c3572dad-4567-51f8-b174-8c6c989267f4"
 
 [compat]
 AlgebraicMultigrid = "0.3, 0.4"
-BenchmarkTools = "0.5"
+BenchmarkTools = "0.5, 0.6"
 CUDAnative = "3.1"
 CuArrays = "2.2"
 DiffEqOperators = "4.10"
