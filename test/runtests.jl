@@ -1,2 +1,2 @@
 using SciMLTutorials
-SciMLTutorials.weave_file(".","test.jmd")
+SciMLTutorials.weave_file("Testing","test.jmd")

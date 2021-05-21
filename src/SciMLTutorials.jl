@@ -92,27 +92,20 @@ function tutorial_footer(folder=nothing, file=nothing; remove_homedir=true)
     $(vinfo)
     ```
     """)
+    proj = sprint(io -> Pkg.status(io=io))
+    mani = sprint(io -> Pkg.status(io=io, mode = Pkg.PKGMODE_MANIFEST))
 
-    ctx = Pkg.API.Context()
-    pkgs = Pkg.Display.status(Pkg.API.Context(), use_as_api=true);
-    projfile = ctx.env.project_file
-    remove_homedir && (projfile = replace(projfile, homedir() => "~"))
+    md = """
+    ```
+    $(chomp(proj))
+    ```
 
-    display("text/markdown","""
-    Package Information:
-    """)
+    And the full manifest:
 
-    md = ""
-    md *= "```\nStatus `$(projfile)`\n"
-
-    for pkg in pkgs
-        if !isnothing(pkg.old) && pkg.old.ver !== nothing
-          md *= "[$(string(pkg.uuid))] $(string(pkg.name)) $(string(pkg.old.ver))\n"
-        else
-          md *= "[$(string(pkg.uuid))] $(string(pkg.name))\n"
-        end
-    end
-    md *= "```"
+    ```
+    $(chomp(mani))
+    ```
+    """
     display("text/markdown", md)
 end
 
