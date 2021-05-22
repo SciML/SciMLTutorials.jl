@@ -65,6 +65,10 @@ SciMLTutorials.open_notebooks()
   - [A 2D Cardiac Electrophysiology Model (CUDA-accelerated PDE solver)](http://tutorials.juliadiffeq.org/html/advanced/01-beeler_reuter.html)
   - [Solving Stiff Equations](http://tutorials.juliadiffeq.org/html/advanced/02-advanced_ODE_solving.html)
   - [Kolmogorov Backward Equations](http://tutorials.juliadiffeq.org/html/advanced/03-kolmogorov_equations.html)
+- Perturbation Theory
+  - [Mixed Symbolic/Numerical Methods for Perturbation Theory - Algebraic Equations](http://tutorials.juliadiffeq.org/html/perturbation/01-perturbation_algebraic.html)
+  - [Mixed Symbolic/Numerical Methods for Perturbation Theory - Differential Equations](http://tutorials.juliadiffeq.org/html/perturbation/02-perturbation_differential.html)
+
 
 ## Contributing
 
