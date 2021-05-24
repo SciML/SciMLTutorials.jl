@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# When a `.jmd` file is modified, it gets rewritten by itself; but when a `.toml` file
+# (such as a `Project.toml` or a `Manifest.toml`) gets modified, we rebuild the entire
+# directory.  To avoid double-building, we coalesce all changes here, by converting
+# changed files that end in `.toml` to their directory, then dropping all other files
+# within that folder.
+
+# This will hold all files that need to be rebuilt, keyed by path and pointing to their
+# containing project
+declare -A FILES
+
+# This will hold all projects that need to be rebuilt, and will allow us to suppress
+# values from FILES_TO_RUN
+declare -A PROJECTS
+
+# Helper function to find the directory that contains the `Project.toml` for this file
+function find_project() {
+    d="${1}"
+    # We define a basecase, that the path must begin with `tutorials` and is not allowed
+    # to move outside of that subtree.
+    while [[ "${d}" =~ tutorials/.* ]]; do
+        if [[ -f "${d}/Project.toml" ]]; then
+            echo "${d}"
+            return
+        fi
+        d="$(dirname "${d}")"
+    done
+}
+
+# For each file, find its project, then if its a `.jmd` file, we add it to `FILES`
+# If it's a `.toml` file, we add it to `PROJECTS`.
+for f in "$@"; do
+    proj=$(find_project "${f}")
+    if [[ -z "${proj}" ]]; then
+        buildkite-agent annotate "Unable to find project for ${f}" --style "error"
+        continue
+    fi
+
+    if [[ "${f}" == *.jmd ]]; then
+        FILES["${f}"]="${proj}"
+    elif [[ "${f}" == *.toml ]]; then
+        PROJECTS["${proj}"]=1
+    else
+        buildkite-agent annotate "Unknown weave type for file ${f}" --style "error"
+    fi
+done
+
+# We're going to emit the project directories first:
+BUILD_TARGETS="${!PROJECTS[@]}"
+
+# But we're also going to emit any single files whose projects are _not_ contained
+# in the projects we're already building
+for f in "${!FILES[@]}"; do
+    proj=${FILES[$f]}
+    if ! [ ${PROJECTS[$proj]+x} ]; then
+        BUILD_TARGETS="${BUILD_TARGETS} ${f}"
+    fi
+done
+
+# Output the build targets
+echo "${BUILD_TARGETS}"

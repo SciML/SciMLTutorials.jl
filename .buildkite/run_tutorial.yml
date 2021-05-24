@@ -1,0 +1,73 @@
+# This is a pipeline that weaves a tutorial, then uploads the resultant
+# .PDF and other reports as (buildkite, not Julia) artifacts.  The `coppermind`
+# configuration memoizes the result, so that identical inputs don't get
+# weavd multiple times.
+
+env:
+  # Encrypted credentials to allow uploading to our S3 bucket that coppermind caches to
+  SECRET_BUILDKITE_S3_ACCESS_KEY_ID: "WTTuQqw0HjdHmvlwRzeQyFz/3QOl2lVn9ZhAr+zGGh3JBNIlMKWiXQlIZdvh5d0BOIXH+hNi7t62nfltP6rZwuaPKK4G1erIkwFsr4s9H/UQLmyZRrYZsNzaXxYm34mhQe9pEvK7Ewv3RI3wEPZSs4vOXFfTMlPMllMHPOAJCTg3OJuuhLD/qMmBjmAPClpE/ZKzwhzdRvB3kRGt63NRHDia5170gNOpBYcpbt7dDonkeWtn5Ri0YFSGpfTPdMONamLq5zKLqNJcmbbU5B1lFJXpm+msckPCfI4iuY0kF27JoWDALU+X6ZoSDcdLc/qsSYvVEC5HXjJARPOevofkjA==;U2FsdGVkX18msUyQ0k4CYDnHKj7/SzHYIVaSkPu68Lw0Nf0Pg+rjiig35VTXQo1u"
+  SECRET_BUILDKITE_S3_SECRET_ACCESS_KEY: "PZ/yImpWOe8AXhkHVd/AQWZv6YpNxEkJIklEVXBhOZG/MbFI75R7bNAGFgkjfB3ataZiZbeQnQha0CWnrk/62lQlnfDo7q+71Cg1SheCZxw+pHAumDUUqd6OEvHbs9wf66PNNB/lAPBZZrb/v+0E3LKxoe+Bf7WAz7DiXLsB9jdbvely3CX/xIgzUI4B5Vsg5rQ5H9UnYFoEHgiZNhUGdD+plZnJ2qNN8x4OZIMEwyBNLwpmkAmRMxjQzD3IoyGFcHuOhEr4igZ1D+XtQ5sTfW4KTKjewn7mHUldSGiBsgEhpmy6kpodsIDhhC8Ittd/DbfPS3cQknCvfj++fU/WvQ==;U2FsdGVkX19e3zOwkCXS7ceL8n+wE8Jy0ywueT/N/lu5BL0XSEB3OoseNjzLwR6iSQrx//e5N+TkVRcOIDTW3Q=="
+  BUILDKITE_S3_DEFAULT_REGION: "us-east-1"
+
+  # Encrypted SSH deploy key that allows us to deploy to SciMLTutorialsOutput
+  SECRET_SSH_DEPLOY_KEY: "UGz8Ovo5mXevfgi3KkF8PUUP3hKru98t9tUUvPDHawqIJdlEu2/6LmPo+nN1DFMUn8ahnxkxNy7QA6wJMgi19kD5QHAxkYjEY+xtWJw9su04ZPBiIsUWcOb+sEaTyhV3iibQBXbTmsbiWdLuvX2p9JN3ho8GoFHIODYY7BvBcXrpYedbylIaAqL1XfUmcmKk/mOoIPiRyrM+CFcGYj+fZ67mZNJuuAY+10WSbANwOfg/AsEQEVvgWU5H0KjLI0VOKvKjSzU4dlabI7o2LAf6YE6EFLpokqwwlGQpYAPDXhts5YlOFgJBol3wwbgAjaCvIFlb0/JD06Zy3inA55jqPw==;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"
+
+steps:
+  - label: ":hammer: {PATH}"
+    key: "tutorial-{SANITIZED_PATH}"
+    plugins:
+      - JuliaCI/julia#v1:
+          version: 1.6
+      - staticfloat/coppermind:
+          inputs:
+            # We are sensitive to the actual tutorial changing
+            - {PATH}
+            # We are sensitive to the source code of this package changing
+            - src/**/*.jl
+            # We are sensitive to our overall dependencies changing
+            - ./*.toml
+          outputs:
+            - html/**/*.html
+            - markdown/**/*.md
+            - notebook/**/*.ipynb
+            - pdf/**/*.pdf
+            - script/**/*.jl
+          s3_prefix: s3://julialang-buildkite-artifacts/scimltutorials
+    timeout_in_minutes: 360
+    commands: |
+      # Instantiate, to install the overall project dependencies
+      echo "--- Instantiate"
+      julia --project=. -e 'using Pkg; Pkg.instantiate()'
+
+      # Run tutorial
+      echo "+++ Run tutorial for {PATH}"
+      julia --project=. weave_tutorials.jl "{PATH}"
+    agents:
+      queue: "juliacpu"
+      exclusive: true
+
+  - label: ":rocket: Publish {PATH}"
+    plugins:
+      # Use coppermind to download the tutorial results that were calculated in the
+      # weaving job above.  Note we still list `outputs` here, since we have the
+      # option to extract only a subset of them here.
+      - staticfloat/coppermind:
+          input_from: "tutorial-{SANITIZED_PATH}"
+          outputs:
+            - html/**/*.html
+            - markdown/**/*.md
+            - notebook/**/*.ipynb
+            - pdf/**/*.pdf
+            - script/**/*.jl
+          s3_prefix: s3://julialang-buildkite-artifacts/scimltutorials
+      - staticfloat/ssh-agent:
+          keyvars:
+            - "SSH_DEPLOY_KEY"
+    agents:
+      queue: "juliacpu"
+      exclusive: true
+    commands: .buildkite/publish_tutorials_output.sh
+    # Don't run this unless we're on the master branch, and not until the actual weave
+    # command has had a chance to run.
+    depends_on: "tutorial-{SANITIZED_PATH}"
+    branches: "master"
