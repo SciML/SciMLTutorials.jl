@@ -44,7 +44,7 @@ steps:
       julia --project=. weave_tutorials.jl "{PATH}"
     agents:
       queue: "juliacpu"
-      exclusive: true
+      fastcpu: true
 
   - label: ":rocket: Publish {PATH}"
     plugins:
@@ -65,7 +65,7 @@ steps:
             - "SSH_DEPLOY_KEY"
     agents:
       queue: "juliacpu"
-      exclusive: true
+      fastcpu: true
     commands: .buildkite/publish_tutorials_output.sh
     # Don't run this unless we're on the master branch, and not until the actual weave
     # command has had a chance to run.

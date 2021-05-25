@@ -17,4 +17,4 @@ steps:
           target: .buildkite/test_sciml.yml
     agents:
       queue: "juliacpu"
-      exclusive: true
+      fastcpu: true
