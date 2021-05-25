@@ -486,7 +486,7 @@ Why is `CVODE_BDF` doing well? What's happening is that, because the problem is 
 
 Julia gives you the tools to optimize the solver "all the way", but you need to make use of it. The main thing to avoid is temporary allocations. For small systems, this is effectively done via static arrays. For large systems, this is done via in-place operations and cache arrays. Either way, the resulting solution can be immensely sped up over vectorized formulations by using these principles.
 
-```{julia; echo=false; skip="notebook"}
+```julia, echo = false, skip="notebook"
 using SciMLTutorials
 SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```

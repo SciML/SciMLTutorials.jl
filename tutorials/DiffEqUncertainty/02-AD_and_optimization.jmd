@@ -292,7 +292,7 @@ begin
 end
 ```
 
-```{julia; echo=false; skip="notebook"}
+```julia, echo = false, skip="notebook"
 using SciMLTutorials
 SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```

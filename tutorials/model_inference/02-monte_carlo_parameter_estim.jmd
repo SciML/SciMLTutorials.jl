@@ -119,7 +119,7 @@ result
 
 if you suspect error is the problem. However, if you're having problems it's most likely not the ODE solver tolerance and mostly because parameter inference is a very hard optimization problem.
 
-```{julia; echo=false; skip="notebook"}
+```julia, echo = false, skip="notebook"
 using SciMLTutorials
 SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```

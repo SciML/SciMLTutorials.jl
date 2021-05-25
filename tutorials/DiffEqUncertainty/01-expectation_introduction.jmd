@@ -346,7 +346,7 @@ p_dist = [truncated(Normal(-.7f0, .1f0), -1f0,0f0)]
 
 The performance gains realized by leveraging batch GPU processing is problem dependent. In this case, the number of batch evaluations required to overcome the overhead of using the GPU exceeds the number of simulations required to converge to the quadrature solution.
 
-```{julia; echo=false; skip="notebook"}
+```julia, echo = false, skip="notebook"
 using SciMLTutorials
 SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```

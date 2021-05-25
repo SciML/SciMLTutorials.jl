@@ -405,7 +405,7 @@ plot(sol3.t, energy .- energy[1], title = "Change in Energy over Time", xaxis = 
 
 Note that we are using the `DPRKN6` sovler at `reltol=1e-3` (the default), yet it has a smaller energy variation than `Vern9` at `abs_tol=1e-16, rel_tol=1e-16`. Therefore, using specialized solvers to solve its particular problem is very efficient.
 
-```{julia; echo=false; skip="notebook"}
+```julia, echo = false, skip="notebook"
 using SciMLTutorials
 SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```

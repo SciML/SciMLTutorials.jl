@@ -125,7 +125,7 @@ scatter!([minx],[minf],label="Global Min")
 scatter!([maxx],[maxf],label="Global Max")
 ```
 
-```{julia; echo=false; skip="notebook"}
+```julia, echo = false, skip="notebook"
 using SciMLTutorials
 SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```

@@ -79,7 +79,7 @@ gr()
 plot(ustrip(sol.t),ustrip(sol[:]),lw=3)
 ```
 
-```{julia; echo=false; skip="notebook"}
+```julia, echo = false, skip="notebook"
 using SciMLTutorials
 SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```

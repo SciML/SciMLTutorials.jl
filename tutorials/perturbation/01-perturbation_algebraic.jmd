@@ -265,7 +265,7 @@ X(0.01671, π/2)
 The result is 1.5876, compared to the numerical value of 1.5875. It is customary to order `X` based on the powers of `𝑀` instead of `𝜀`. We can calculate this series as `collect_powers(sol, M, 0:3)
 `. The result (after manual cleanup) is
 
-```  
+```
 (1 + 𝜀 + 𝜀^2 + 𝜀^3)*𝑀
 - (𝜀 + 4*𝜀^2 + 10*𝜀^3)*𝑀^3/6
 + (𝜀 + 16*𝜀^2 + 91*𝜀^3)*𝑀^5/120
@@ -280,3 +280,8 @@ $$
 $$
 
 The first deviation is in the coefficient of $\epsilon^3 M^5$.
+
+```julia, echo = false, skip="notebook"
+using SciMLTutorials
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+```

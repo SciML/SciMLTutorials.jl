@@ -505,7 +505,7 @@ Note that if your mass matrix is singular, i.e. your system is a DAE, then you
 need to make sure you choose
 [a solver that is compatible with DAEs](https://docs.sciml.ai/latest/solvers/dae_solve/#dae_solve_full-1)
 
-```{julia; echo=false; skip="notebook"}
+```julia, echo = false, skip="notebook"
 using SciMLTutorials
 SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```
