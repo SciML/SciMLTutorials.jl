@@ -12,7 +12,7 @@ Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
 
 [compat]
-DSP = "0.6"
+DSP = "0.6, 0.7"
 IJulia = "1.20"
 Plots = "1.6"
 Weave = "0.9, 0.10"
