@@ -5,10 +5,9 @@ author: Ashutosh Bharambe
 
 ```julia
 using Flux, StochasticDiffEq
-using NeuralNetDiffEq
+using NeuralPDE
 using Plots
-using CuArrays
-using CUDAnative
+using CUDA
 ```
 ## Introduction on Backward Kolmogorov Equations
 

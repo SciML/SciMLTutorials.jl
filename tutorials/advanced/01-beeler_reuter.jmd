@@ -5,7 +5,7 @@ author: Shahriar Iravanian
 
 ## Background
 
-[SciML](https://github.com/SciML) is a suite of optimized Julia libraries to solve ordinary differential equations (ODE). *SciML* provides a large number of explicit and implicit solvers suited for different types of ODE problems. It is possible to reduce a system of partial differential equations into an ODE problem by employing the [method of lines (MOL)](https://en.wikipedia.org/wiki/Method_of_lines). The essence of MOL is to discretize the spatial derivatives (by finite difference, finite volume or finite element methods) into algebraic equations and to keep the time derivatives as is. The resulting differential equations are left with only one independent variable (time) and can be solved with an ODE solver. [Solving Systems of Stochastic PDEs and using GPUs in Julia](http://www.stochasticlifestyle.com/solving-systems-stochastic-pdes-using-gpus-julia/) is a brief introduction to MOL and using GPUs to accelerate PDE solving in *JuliaDiffEq*. Here we expand on this introduction by developing an implicit/explicit (IMEX) solver for a 2D cardiac electrophysiology model and show how to use [CuArray](https://github.com/JuliaGPU/CuArrays.jl) and [CUDAnative](https://github.com/JuliaGPU/CUDAnative.jl) libraries to run the explicit part of the model on a GPU.
+[SciML](https://github.com/SciML) is a suite of optimized Julia libraries to solve ordinary differential equations (ODE). *SciML* provides a large number of explicit and implicit solvers suited for different types of ODE problems. It is possible to reduce a system of partial differential equations into an ODE problem by employing the [method of lines (MOL)](https://en.wikipedia.org/wiki/Method_of_lines). The essence of MOL is to discretize the spatial derivatives (by finite difference, finite volume or finite element methods) into algebraic equations and to keep the time derivatives as is. The resulting differential equations are left with only one independent variable (time) and can be solved with an ODE solver. [Solving Systems of Stochastic PDEs and using GPUs in Julia](http://www.stochasticlifestyle.com/solving-systems-stochastic-pdes-using-gpus-julia/) is a brief introduction to MOL and using GPUs to accelerate PDE solving in *JuliaDiffEq*. Here we expand on this introduction by developing an implicit/explicit (IMEX) solver for a 2D cardiac electrophysiology model and show how to use [CUDA](https://github.com/JuliaGPU/CUDA.jl) libraries to run the explicit part of the model on a GPU.
 
 Note that this tutorial does not use the [higher order IMEX methods built into DifferentialEquations.jl](https://docs.sciml.ai/latest/solvers/split_ode_solve/#Implicit-Explicit-(IMEX)-ODE-1) but instead shows how to hand-split an equation when the explicit portion has an analytical solution (or approxiate), which is common in many scenarios.
 
@@ -392,7 +392,7 @@ A typical CUDA application has the following flow:
 6. Process tensors on CPU.
 7. Repeat steps 3-6 as needed.
 
-Some libraries, such as [ArrayFire](https://github.com/arrayfire/arrayfire), hide the complexicities of steps 2-5 behind a higher level of abstraction. However, here we take a lower level route. By using [CuArray](https://github.com/JuliaGPU/CuArrays.jl) and [CUDAnative](https://github.com/JuliaGPU/CUDAnative.jl), we achieve a finer-grained control and higher performance. In return, we need to implement each step manually.
+Some libraries, such as [ArrayFire](https://github.com/arrayfire/arrayfire), hide the complexicities of steps 2-5 behind a higher level of abstraction. However, here we take a lower level route. By using [CUDA](https://github.com/JuliaGPU/CUDA.jl), we achieve a finer-grained control and higher performance. In return, we need to implement each step manually.
 
 *CuArray* is a thin abstraction layer over the CUDA API and allows us to define GPU-side tensors and copy data to and from them but does not provide for operations on tensors. *CUDAnative* is a compiler that translates Julia functions designated as CUDA kernels into ptx (a high-level CUDA assembly language).
 
@@ -403,7 +403,7 @@ The key to fast CUDA programs is to minimize CPU/GPU memory transfers and global
 We modify ``BeelerReuterCpu`` into ``BeelerReuterGpu`` by defining the state variables as *CuArray*s instead of standard Julia *Array*s. The name of each variable defined on GPU is prefixed by *d_* for clarity. Note that $\Delta{v}$ is a temporary storage for the Laplacian and stays on the CPU side.
 
 ```julia
-using CUDAnative, CuArrays
+using CUDA
 
 mutable struct BeelerReuterGpu <: Function
     t::Float64                  # the last timestep time to calculate Δt
