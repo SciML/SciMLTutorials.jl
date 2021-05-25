@@ -13,6 +13,7 @@ for d in html markdown notebook pdf script; do
 done
 
 # Commit the result up to output
+set -e
 git -C "${temp_dir}" add .
 git -C "${temp_dir}" commit -m "Automatic build\nPublished by build of: ${BUILDKITE_REPO%.git}/commit/${BUILDKITE_COMMIT}"
 git -C "${temp_dir}" push
