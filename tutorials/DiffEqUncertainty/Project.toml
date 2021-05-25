@@ -15,6 +15,7 @@ Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 Quadrature = "67601950-bd08-11e9-3c89-fd23fb4432d2"
 StatsPlots = "f3b207a7-027a-5e70-b257-86293d7955fd"
 Turing = "fce5fe82-541a-59a6-adf8-730c64b5f9a0"
+SciMLTutorials = "30cb0354-2223-46a9-baa0-41bdcfbe0178"
 
 [compat]
 BenchmarkTools = "0.5, 0.6, 0.7, 1.0"

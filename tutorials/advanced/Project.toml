@@ -17,6 +17,7 @@ SparseDiffTools = "47a9eef4-7e08-11e9-0b38-333d64bd3804"
 SparsityDetection = "684fba80-ace3-11e9-3d08-3bc7ed6f96df"
 StochasticDiffEq = "789caeaf-c7a9-5a7d-9973-96adeb23e2a0"
 Sundials = "c3572dad-4567-51f8-b174-8c6c989267f4"
+SciMLTutorials = "30cb0354-2223-46a9-baa0-41bdcfbe0178"
 
 [compat]
 AlgebraicMultigrid = "0.3, 0.4"

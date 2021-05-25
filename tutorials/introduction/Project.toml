@@ -6,6 +6,7 @@ ParameterizedFunctions = "65888b18-ceab-5e60-b2b9-181511a3b968"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Sundials = "c3572dad-4567-51f8-b174-8c6c989267f4"
+SciMLTutorials = "30cb0354-2223-46a9-baa0-41bdcfbe0178"
 
 [compat]
 BenchmarkTools = "0.5, 0.6, 0.7, 1.0"
