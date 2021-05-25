@@ -343,5 +343,5 @@ These are the basic controls in DifferentialEquations.jl. All equations are defi
 
 ```julia, echo = false, skip="notebook"
 using SciMLTutorials
-SciMLTutorials.bench_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```
