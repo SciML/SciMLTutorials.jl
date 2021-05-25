@@ -209,3 +209,8 @@ of the solution:
 ```julia
 expectation(g, prob1, u0, p_kde, Koopman(), Tsit5(), EnsembleGPUArray(), batch=100, quadalg = CubaCuhre())
 ```
+
+```julia, echo = false, skip="notebook"
+using SciMLTutorials
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+```

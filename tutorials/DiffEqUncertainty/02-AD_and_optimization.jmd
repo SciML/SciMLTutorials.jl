@@ -3,7 +3,7 @@ title: Optimization Under Uncertainty with DiffEqUncertainty.jl
 author: Adam Gerlach
 ---
 
-This tutorial gives and overview of how to leverage the efficient Koopman expectation method from DiffEqUncertainty to perform optimization under uncertainty. We demonstrate this by using a bouncing ball model with an uncertain model parameter. We also demonstrate its application to problems with probabilistic constraints, in particular a special class of constraints called chance constraints. 
+This tutorial gives and overview of how to leverage the efficient Koopman expectation method from DiffEqUncertainty to perform optimization under uncertainty. We demonstrate this by using a bouncing ball model with an uncertain model parameter. We also demonstrate its application to problems with probabilistic constraints, in particular a special class of constraints called chance constraints.
 
 ## System Model
 First lets consider a 2D bouncing ball, where the states are the horizontal position $x$, horizontal velocity $\dot{x}$, vertical position $y$, and vertical velocity $\dot{y}$. This model has two system parameters, acceleration due to gravity and coefficient of restitution (models energy loss when the ball impacts the ground). We can simulate such a system using `ContinuousCallback` as
@@ -11,7 +11,7 @@ First lets consider a 2D bouncing ball, where the states are the horizontal posi
 ```julia
 using OrdinaryDiffEq, Plots
 
-function ball!(du,u,p,t) 
+function ball!(du,u,p,t)
     du[1] = u[2]
     du[2] = 0.0
     du[3] = u[4]
@@ -31,7 +31,7 @@ sol = solve(prob,Tsit5(),callback=ground_cb)
 plot(sol, vars=(1,3), label = nothing, xlabel="x", ylabel="y")
 ```
 
-For this particular problem, we wish to measure the impact distance from a point $y=25$ on a wall at $x=25$. So, we introduce an additional callback that terminates the simulation on wall impact. 
+For this particular problem, we wish to measure the impact distance from a point $y=25$ on a wall at $x=25$. So, we introduce an additional callback that terminates the simulation on wall impact.
 
 ```julia; results = "hidden"
 stop_condition(u,t,integrator) = u[1] - 25.0
@@ -83,7 +83,7 @@ end
 
 Here, we plot the first 350 Monte Carlo simulations along with the trajectory corrresponding to the mean of the distribution (dashed line).
 
-We now wish to compute the expected squared impact distance from the star. This is called an "observation" of our system or an "observable" of interest. 
+We now wish to compute the expected squared impact distance from the star. This is called an "observation" of our system or an "observable" of interest.
 
 We define this observable as
 
@@ -124,7 +124,7 @@ function 𝔼_loss(θ)   # \bbE
 end
 ```
 
-NLopt requires that this loss function return the loss as above, but also do an inplace update of the gradient. So, we wrap this function to put it in the form required by NLopt. 
+NLopt requires that this loss function return the loss as above, but also do an inplace update of the gradient. So, we wrap this function to put it in the form required by NLopt.
 
 ```julia
 function 𝔼_loss_nlopt(x,∇)
@@ -152,7 +152,7 @@ ensemblesol = solve(ensembleprob,Tsit5(),EnsembleThreads(), trajectories=100_000
 
 begin
     plot(ensemblesol, vars = (1,3), lw=1,alpha=0.1, label=nothing, idxs = 1:350)
-    plot!(solve(remake(prob, u0=make_u0(minx)),Tsit5(), callback=cbs), 
+    plot!(solve(remake(prob, u0=make_u0(minx)),Tsit5(), callback=cbs),
             vars=(1,3),label = nothing, c=:black, lw=3,ls=:dash)
     xlabel!("x [m]")
     ylabel!("y [m]")
@@ -189,7 +189,7 @@ begin
 end
 ```
 
-We now wish to minimize the same loss function as before, but introduce an inequality constraint such that the solution must have less than a 1% chance of colliding with the wall at $x=20$. This class of probabilistic constraints is called a chance constraint. 
+We now wish to minimize the same loss function as before, but introduce an inequality constraint such that the solution must have less than a 1% chance of colliding with the wall at $x=20$. This class of probabilistic constraints is called a chance constraint.
 
 To do this, we first introduce a new callback and solve the system using the previous optimal solution
 
@@ -203,7 +203,7 @@ ensemblesol = solve(ensembleprob,Tsit5(),EnsembleThreads(), trajectories=350, ca
 
 begin
     plot(ensemblesol, vars = (1,3), lw=1,alpha=0.1, label=nothing)
-    plot!(solve(remake(prob, u0=make_u0(minx)),Tsit5(), callback=constraint_cbs), 
+    plot!(solve(remake(prob, u0=make_u0(minx)),Tsit5(), callback=constraint_cbs),
             vars=(1,3),label = nothing, c=:black, lw=3, ls=:dash)
 
     xlabel!("x [m]")
@@ -216,7 +216,7 @@ begin
 end
 ```
 
-That doesn't look good! 
+That doesn't look good!
 
 We now need a second observable for the system. In order to compute a probability of impact, we use an indicator function for if a trajectory impacts the wall. In other words, this functions returns 1 if the trajectory hits the wall and 0 otherwise.
 
@@ -231,7 +231,7 @@ expectation(constraint_obs, prob, make_u0(minx), p_uncertain, Koopman(), Tsit5()
             ireltol= 1e-9, iabstol = 1e-9, callback=constraint_cbs)[1]
 ```
 
-We then setup the constraint function for NLopt just as before. 
+We then setup the constraint function for NLopt just as before.
 
 ```julia
 function 𝔼_constraint(θ)
@@ -274,12 +274,12 @@ Again, we plot some Monte Carlo simulations from this result as follows
 
 ```julia
 ensembleprob = EnsembleProblem(remake(prob,u0 = make_u0(minx2)),prob_func=prob_func)
-ensemblesol = solve(ensembleprob,Tsit5(),EnsembleThreads(), 
+ensemblesol = solve(ensembleprob,Tsit5(),EnsembleThreads(),
                     trajectories=350, callback=constraint_cbs)
 
 begin
     plot(ensemblesol, vars = (1,3), lw=1,alpha=0.1, label=nothing)
-    plot!(solve(remake(prob, u0=make_u0(minx2)),Tsit5(), callback=constraint_cbs), 
+    plot!(solve(remake(prob, u0=make_u0(minx2)),Tsit5(), callback=constraint_cbs),
             vars=(1,3),label = nothing, c=:black, lw=3, ls=:dash)
     plot!([constraint[1], constraint[1]],[0.0,constraint[2]], lw=5, c=:black)
 
