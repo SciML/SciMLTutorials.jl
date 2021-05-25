@@ -1,54 +1,56 @@
 module SciMLTutorials
 
-using Weave, Pkg, InteractiveUtils, IJulia
+using Weave, Pkg, IJulia, InteractiveUtils, Markdown
 
 repo_directory = joinpath(@__DIR__,"..")
 cssfile = joinpath(@__DIR__, "..", "templates", "skeleton_css.css")
 latexfile = joinpath(@__DIR__, "..", "templates", "julia_tex.tpl")
 
-function weave_file(folder,file,build_list=(:script,:html,:pdf,:github,:notebook); kwargs...)
-  tmp = joinpath(repo_directory,"tutorials",folder,file)
-  Pkg.activate(dirname(tmp))
-  Pkg.instantiate()
+function weave_file(folder,file,build_list=(:script,:html,:pdf,:github,:notebook))
+  target = joinpath(folder, file)
+  @info("Weaving $(target)")
+
+  if isfile(joinpath(folder, "Project.toml"))
+    @info("Instantiating", folder)
+    Pkg.activate(folder)
+    Pkg.instantiate()
+    Pkg.build()
+  end
+
   args = Dict{Symbol,String}(:folder=>folder,:file=>file)
   if :script ∈ build_list
     println("Building Script")
-    dir = joinpath(repo_directory,"script",folder)
+    dir = joinpath(repo_directory,"script",basename(folder))
     mkpath(dir)
-    args[:doctype] = "script"
-    tangle(tmp;out_path=dir)
+    tangle(target; out_path=dir)
   end
   if :html ∈ build_list
     println("Building HTML")
-    dir = joinpath(repo_directory,"html",folder)
+    dir = joinpath(repo_directory,"html",basename(folder))
     mkpath(dir)
-    args[:doctype] = "html"
-    weave(tmp,doctype = "md2html",out_path=dir,args=args; fig_ext=".svg", css=cssfile, kwargs...)
+    weave(target,doctype = "md2html",out_path=dir,args=args,css=cssfile,fig_ext=".svg")
   end
   if :pdf ∈ build_list
     println("Building PDF")
-    dir = joinpath(repo_directory,"pdf",folder)
+    dir = joinpath(repo_directory,"pdf",basename(folder))
     mkpath(dir)
-    args[:doctype] = "pdf"
     try
-      weave(tmp,doctype="md2pdf",out_path=dir,args=args; template=latexfile, kwargs...)
+      weave(target,doctype="md2pdf",out_path=dir,template=latexfile,args=args)
     catch ex
       @warn "PDF generation failed" exception=(ex, catch_backtrace())
     end
   end
   if :github ∈ build_list
     println("Building Github Markdown")
-    dir = joinpath(repo_directory,"markdown",folder)
+    dir = joinpath(repo_directory,"markdown",basename(folder))
     mkpath(dir)
-    args[:doctype] = "github"
-    weave(tmp,doctype = "github",out_path=dir,args=args; kwargs...)
+    weave(target,doctype = "github",out_path=dir,args=args)
   end
   if :notebook ∈ build_list
     println("Building Notebook")
-    dir = joinpath(repo_directory,"notebook",folder)
+    dir = joinpath(repo_directory,"notebook",basename(folder))
     mkpath(dir)
-    args[:doctype] = "notebook"
-    Weave.convert_doc(tmp,joinpath(dir,file[1:end-4]*".ipynb"))
+    Weave.convert_doc(target,joinpath(dir,file[1:end-4]*".ipynb"))
   end
 end
 
@@ -60,38 +62,49 @@ function weave_all()
 end
 
 function weave_folder(folder)
-  for file in readdir(joinpath(repo_directory,"tutorials",folder))
-    println("Building $(joinpath(folder,file)))")
+  for file in readdir(folder)
+    # Skip non-`.jmd` files
+    if !endswith(file, ".jmd")
+      continue
+    end
+
     try
       weave_file(folder,file)
-    catch
+    catch e
+      @error(e)
     end
   end
 end
 
-function tutorial_footer(folder=nothing, file=nothing; remove_homedir=true)
-    display("text/markdown", """
+function tutorial_footer(folder=nothing, file=nothing)
+    display(md"""
     ## Appendix
 
-     This tutorial is part of the SciMLTutorials.jl repository, found at: <https://github.com/SciML/SciMLTutorials.jl>.
-     For more information on doing scientific machine learning (SciML) with open source software, check out <https://sciml.ai/>.
+    These tutorials are a part of the SciMLTutorials.jl repository, found at: <https://github.com/SciML/SciMLTutorials.jl>.
+    For more information on high-performance scientific machine learning, check out the SciML Open Source Software Organization <https://sciml.ai>.
+
     """)
     if folder !== nothing && file !== nothing
-        display("text/markdown", """
+        display(Markdown.parse("""
         To locally run this tutorial, do the following commands:
         ```
         using SciMLTutorials
         SciMLTutorials.weave_file("$folder","$file")
         ```
-        """)
+        """))
     end
-    display("text/markdown", "Computer Information:")
+    display(md"Computer Information:")
     vinfo = sprint(InteractiveUtils.versioninfo)
-    display("text/markdown",  """
+    display(Markdown.parse("""
     ```
     $(vinfo)
     ```
+    """))
+
+    display(md"""
+    Package Information:
     """)
+
     proj = sprint(io -> Pkg.status(io=io))
     mani = sprint(io -> Pkg.status(io=io, mode = Pkg.PKGMODE_MANIFEST))
 
@@ -106,7 +119,7 @@ function tutorial_footer(folder=nothing, file=nothing; remove_homedir=true)
     $(chomp(mani))
     ```
     """
-    display("text/markdown", md)
+    display(Markdown.parse(md))
 end
 
 function open_notebooks()
