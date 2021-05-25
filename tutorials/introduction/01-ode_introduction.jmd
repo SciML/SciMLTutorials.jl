@@ -36,7 +36,7 @@ and $u(0) = 1.0$. We encode this into Julia by noticing that, in this setup, we 
 f(u,p,t) = 0.98u
 ```
 
-with $ u_0 = 1.0 $. If we want to solve this model on a time span from `t=0.0` to `t=1.0`, then we define an `ODEProblem` by specifying this function `f`, this initial condition `u0`, and this time span as follows:
+with $u_0 = 1.0$. If we want to solve this model on a time span from `t=0.0` to `t=1.0`, then we define an `ODEProblem` by specifying this function `f`, this initial condition `u0`, and this time span as follows:
 
 ```julia
 using DifferentialEquations
