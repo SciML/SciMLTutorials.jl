@@ -8,3 +8,4 @@ Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
 [compat]
 SciMLTutorials = "0.9"
 SymbolicUtils = "0.11"
+Symbolics = "0.1"
