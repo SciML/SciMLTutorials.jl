@@ -21,7 +21,7 @@ A 5 by 5 Cartesian grid:
 | . | . | . | . | . |
 | A | . | . | . | . |
 
-Suppose we have a reversible binding system described by $A+B \xleftrightarrow[k_2]{k_1} C$, where $k_1$ is the forward rate and $k_2$ is the backward rate. Further suppose that all $A$ molecules start in the lower left corner, while all $B$ molecules start in the upper right corner of a 5 by 5 grid. There are no $C$ molecules at the start.
+Suppose we have a reversible binding system described by $$A+B \to C$$ at rate $$k_1$$ and $$C \to A+B$$ at rate $$k_2$$. Further suppose that all $$A$$ molecules start in the lower left corner, while all $$B$$ molecules start in the upper right corner of a 5 by 5 grid. There are no $$C$$ molecules at the start.
 
 We first create the grid:
 
@@ -32,20 +32,21 @@ num_nodes = prod(dims) # number of sites
 grid = CartesianGrid(dims) # or use LightGraphs.grid(dims)
 ```
 
-Now we set the initial state of the simulation. It has to be a matrix with entry $(s,i)$ being the number of species $s$ at site $i$ (with the standard column-major ordering of the grid).
+Now we set the initial state of the simulation. It has to be a matrix with entry $$(s,i)$$ being the number of species $$s$$ at site $$i$$ (with the standard column-major ordering of the grid).
 
 ```julia
 num_species = 3
 starting_state = zeros(Int, num_species, num_nodes)
 starting_state[1,1] = 25
-starting_state[1,2] = 25
+starting_state[2,end] = 25
+starting_state
 ```
 
 We now set the time-span of the simulation and the reaction rates. These can be chosen arbitrarily.
 
 ```julia
-tspan = (0.0, 2.0)
-rates = [3.0, 0.05] # k_1 = rates[1], k_2 = rates[2]
+tspan = (0.0, 3.0)
+rates = [6.0, 0.05] # k_1 = rates[1], k_2 = rates[2]
 ```
 
 Now we can create the `DiscreteProblem`:
@@ -62,18 +63,19 @@ reactstoch = [[1 => 1, 2 => 1],[3 => 1]]
 majumps = MassActionJump(rates, reactstoch, netstoch)
 ```
 
-The last thing to set up is the hopping constants -- the probability per time of an individual molecule of each species hopping from one site to another site. In practice this parameter, as well as reaction rates, are obtained empirically. Suppose that molecule $C$ cannot diffuse, while molecules $A$ and $B$ diffuse at probability per time 1 (i.e. the time of the diffusive hop is exponentially distributed with mean 1). Entry $(s,i)$ of `hopping_constants` is the hopping rate of species $s$ at site $i$ to any of its neighboring sites (diagonal hops are not allowed). 
+The last thing to set up is the hopping constants -- the probability per time of an individual molecule of each species hopping from one site to another site. In practice this parameter, as well as reaction rates, are obtained empirically. Suppose that molecule $$C$$ cannot diffuse, while molecules $$A$$ and $$B$$ diffuse at probability per time 1 (i.e. the time of the diffusive hop is exponentially distributed with mean 1). Entry $$(s,i)$$ of `hopping_constants` is the hopping rate of species $$s$$ at site $$i$$ to any of its neighboring sites (diagonal hops are not allowed). 
 
 ```julia
 hopping_constants = ones(num_species, num_nodes)
 hopping_constants[3, :] .= 0.0
+hopping_constants
 ```
 
 We are now ready to set up the `JumpProblem` with the Next Subvolume Method. 
 
 ```julia
 alg = NSM()
-jump_prob = JumpProblem(prob, alg, majumps, hopping_constants=hopping_constants, spatial_system = grid, save_positions=(true, false)) 
+jump_prob = JumpProblem(prob, alg, majumps, hopping_constants=hopping_constants, spatial_system = grid, save_positions=(true, false))
 ```
 
 The `save_positions` keyword tells the solver to save the positions just before the jumps. To solve the jump problem do
@@ -85,14 +87,6 @@ solution = solve(jump_prob, SSAStepper())
 ## Animation
 
 Visualizing solutions of spatial jump problems is best done with animations.
-
-~~~
-<figure>
-  <img src="/assets/ABC_anim_275frames_5fps.gif" width="100%" />
-</figure>
-~~~
-
-This animation was produced by the following script.
 
 ```julia
 using Plots
@@ -123,8 +117,8 @@ function get_frame(k, sol, linear_size, labels, title)
             randsy = zeros(num_molecules)
         end
         for k in 1:num_molecules
-            push!(species_seriess_x[species], x*h - h/2 + h*randsx[k])
-            push!(species_seriess_y[species], y*h - h/2 + h*randsy[k])
+            push!(species_seriess_x[species], x*h - h/4 + 0.5h*randsx[k])
+            push!(species_seriess_y[species], y*h - h/4 + 0.5h*randsy[k])
         end
     end
     for species in 1:num_species
@@ -149,14 +143,12 @@ end
 # animate
 anim=animate_2d(solution, 5, species_labels = ["A", "B", "C"], title = "A + B <--> C", verbose = false)
 fps = 5
-name = "ABC_anim_$(length(solution.u))frames_$(fps)fps.gif"
-path = joinpath(name)
-gif(anim, path, fps = fps)
+gif(anim, fps = fps)
 ```
 
 ## Making changes to the model
 
-Now suppose we want to make some changes to the reversible binding model above. There are three "dimensions" that can be changed: the topology of the system, the structure of hopping rates and the solver. The supported topologies are `CartesianGrid` -- used above, and any `AbstractGraph` from `LightGraphs`. The supported forms of hopping rates are $D_{s,i}, D_{s,i,j}, D_s * L_{i,j}$, and $D_{s,i} * L_{i,j}$, where $s$ denotes the species, $i$ -- the source site, and $j$ -- the destination. The supported solvers are `NSM`, `DirectCRDirect` and any of the standard non-spatial solvers.
+Now suppose we want to make some changes to the reversible binding model above. There are three "dimensions" that can be changed: the topology of the system, the structure of hopping rates and the solver. The supported topologies are `CartesianGrid` -- used above, and any `AbstractGraph` from `LightGraphs`. The supported forms of hopping rates are $$D_{s,i}, D_{s,i,j}, D_s * L_{i,j}$$, and $$D_{s,i} * L_{i,j}$$, where $$s$$ denotes the species, $$i$$ -- the source site, and $$j$$ -- the destination. The supported solvers are `NSM`, `DirectCRDirect` and any of the standard non-spatial solvers.
 
 ### Topology
 
@@ -164,6 +156,7 @@ If our mesh is a grid (1D, 2D and 3D are supported), we can create the mesh as f
 
 ```julia
 dims = (2,3,4) # can pass in a 1-Tuple, a 2-Tuple or a 3-Tuple
+num_nodes = prod(dims)
 grid = CartesianGrid(dims)
 ```
 
@@ -178,7 +171,7 @@ Now either `graph` or `grid` can be used as `spatial_system` in creation of the 
 
 ### Hopping rates
 
-The most general form of hopping rates that is supported is $D_{s,i,j}$ -- each (species, source, destination) triple gets its own independent hopping rate. To use this, `hopping_constants` must be of type `Matrix{Vector{F}} where F <: Number` (usually `F` is `Float64`) with `hopping_constants[s,i][j]` being the hopping rate of species $s$ at site $i$ to neighbor at index $j$. Note that neighbors are in ascending order, like in `LightGraphs`. Here is an example where only hopping up and left is allowed.
+The most general form of hopping rates that is supported is $$D_{s,i,j}$$ -- each (species, source, destination) triple gets its own independent hopping rate. To use this, `hopping_constants` must be of type `Matrix{Vector{F}} where F <: Number` (usually `F` is `Float64`) with `hopping_constants[s,i][j]` being the hopping rate of species $$s$$ at site $$i$$ to neighbor at index $$j$$. Note that neighbors are in ascending order, like in `LightGraphs`. Here is an example where only hopping up and left is allowed.
 
 ```julia
 hopping_constants = Matrix{Vector{Float64}}(undef, num_species, num_nodes)
@@ -193,26 +186,26 @@ for ci in CartesianIndices(hopping_constants)
 end
 ```
 
-To pass in `hopping_constants` of form $D_s * L_{i,j}$ we need two vectors -- one for $D_s$ and one for $L_{i,j}$. Here is an example.
+To pass in `hopping_constants` of form $$D_s * L_{i,j}$$ we need two vectors -- one for $$D_s$$ and one for $$L_{i,j}$$. Here is an example.
 
 ```julia
 species_hop_constants = ones(num_species)
 site_hop_constants = Vector{Vector{Float64}}(undef, num_nodes)
 for site in 1:num_nodes
-    site_hop_constants[site] = ones(outdegree(grids[1], site))
+    site_hop_constants[site] = ones(outdegree(grid, site))
 end
 hopping_constants=Pair(species_hop_constants, site_hop_constants)
 ```
 
 We must combine both vectors into a pair as in the last line above.
 
-Finally, to use in `hopping_constants` of form $D_{s,i} * L_{i,j}$ we construct a matrix instead of a vector for $D_{s,j}$.
+Finally, to use in `hopping_constants` of form $$D_{s,i} * L_{i,j}$$ we construct a matrix instead of a vector for $$D_{s,j}$$.
 
 ```julia
 species_hop_constants = ones(num_species, num_nodes)
 site_hop_constants = Vector{Vector{Float64}}(undef, num_nodes)
 for site in 1:num_nodes
-    site_hop_constants[site] = ones(outdegree(grids[1], site))
+    site_hop_constants[site] = ones(outdegree(grid, site))
 end
 hopping_constants=Pair(species_hop_constants, site_hop_constants)
 ```
@@ -221,9 +214,9 @@ We can use either of the four versions of `hopping_constants` to construct a `Ju
 
 ### Solvers
 
-There are currently two specialized "spatial" solvers: `NSM` and `DirectCRDirect`. The former stands for Next Subvolume Method \citep{elf2004spontaneous}. The latter employs Composition-Rejection to sample the next site to fire, similar to the ordinary DirectCR method. For larger networks `DirectCRDirect` is expected to be faster. Both methods can be used interchangeably.
+There are currently two specialized "spatial" solvers: `NSM` and `DirectCRDirect`. The former stands for Next Subvolume Method [^1]. The latter employs Composition-Rejection to sample the next site to fire, similar to the ordinary DirectCR method. For larger networks `DirectCRDirect` is expected to be faster. Both methods can be used interchangeably.
 
 Additionally, all standard solvers are supported as well, although they are expected to use more memory and be slower. They "flatten" the problem, i.e. turn all hops into reactions, resulting in a much larger system. For example, to use the Next Reaction Method (`NRM`), simply pass in `NRM()` instead of `NSM()` in the construction of the `JumpProblem`. Importantly, you *must* pass in `hopping_constants` in the `D_{s,i,j}` or `D_{s,i}` form to use any of the non-specialized solvers.
 
 ## References
-* \biblabel{elf2004spontaneous}{Elf and Ehrenberg (2004)} Elf, Johan and Ehrenberg, Mäns. “Spontaneous separation of bi-stable biochemical systems into spatial domains of opposite phases”. In: _Systems biology_ 1.2 (2004), pp. 230–236.
+[^1]: Elf, Johan and Ehrenberg, Mäns. “Spontaneous separation of bi-stable biochemical systems into spatial domains of opposite phases”. In: _Systems biology_ 1.2 (2004), pp. 230–236.
