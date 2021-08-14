@@ -44,6 +44,7 @@ SciMLTutorials.open_notebooks()
   - [DiffEqBiological Tutorial I: Introduction](http://tutorials.juliadiffeq.org/html/models/03-diffeqbio_I_introduction.html)
   - [DiffEqBiological Tutorial II: Network Properties API](http://tutorials.juliadiffeq.org/html/models/04-diffeqbio_II_networkproperties.html)
   - [DiffEqBiological Tutorial III: Steady-States and Bifurcations](http://tutorials.juliadiffeq.org/html/models/04b-diffeqbio_III_steadystates.html)
+  - [Tutorial on using spatial SSAs in DiffEqJump](http://tutorials.juliadiffeq.org/html/jumps/spatial.html)
   - [Kepler Problem Orbit](http://tutorials.juliadiffeq.org/html/models/05-kepler_problem.html)
   - [Spiking Neural Systems](http://tutorials.juliadiffeq.org/html/models/08-spiking_neural_systems.html)
 - Advanced ODE Features
