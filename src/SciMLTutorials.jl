@@ -5,8 +5,9 @@ using Weave, Pkg, IJulia, InteractiveUtils, Markdown
 repo_directory = joinpath(@__DIR__,"..")
 cssfile = joinpath(@__DIR__, "..", "templates", "skeleton_css.css")
 latexfile = joinpath(@__DIR__, "..", "templates", "julia_tex.tpl")
+default_builds = (:script,:html,:github)
 
-function weave_file(folder,file,build_list=(:script,:html,:pdf,:github,:notebook))
+function weave_file(folder,file,build_list=default_builds)
   target = joinpath(repo_directory, "tutorials", folder, file)
   @info("Weaving $(target)")
 
@@ -54,14 +55,14 @@ function weave_file(folder,file,build_list=(:script,:html,:pdf,:github,:notebook
   end
 end
 
-function weave_all(build_list=(:script,:html,:pdf,:github,:notebook))
+function weave_all(build_list=default_builds)
   for folder in readdir(joinpath(repo_directory,"tutorials"))
     folder == "test.jmd" && continue
     weave_folder(folder,build_list)
   end
 end
 
-function weave_folder(folder,build_list=(:script,:html,:pdf,:github,:notebook))
+function weave_folder(folder,build_list=default_builds)
   for file in readdir(joinpath(repo_directory,"tutorials",folder))
     # Skip non-`.jmd` files
     if !endswith(file, ".jmd")
