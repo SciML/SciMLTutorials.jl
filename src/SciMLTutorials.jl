@@ -7,10 +7,10 @@ cssfile = joinpath(@__DIR__, "..", "templates", "skeleton_css.css")
 latexfile = joinpath(@__DIR__, "..", "templates", "julia_tex.tpl")
 
 function weave_file(folder,file,build_list=(:script,:html,:pdf,:github,:notebook))
-  target = joinpath(folder, file)
+  target = joinpath(repo_directory, "tutorials", folder, file)
   @info("Weaving $(target)")
 
-  if isfile(joinpath(folder, "Project.toml"))
+  if isfile(joinpath(repo_directory, folder, "Project.toml"))
     @info("Instantiating", folder)
     Pkg.activate(folder)
     Pkg.instantiate()
@@ -54,22 +54,22 @@ function weave_file(folder,file,build_list=(:script,:html,:pdf,:github,:notebook
   end
 end
 
-function weave_all()
+function weave_all(build_list=(:script,:html,:pdf,:github,:notebook))
   for folder in readdir(joinpath(repo_directory,"tutorials"))
     folder == "test.jmd" && continue
-    weave_folder(folder)
+    weave_folder(folder,build_list)
   end
 end
 
-function weave_folder(folder)
-  for file in readdir(folder)
+function weave_folder(folder,build_list=(:script,:html,:pdf,:github,:notebook))
+  for file in readdir(joinpath(repo_directory,"tutorials",folder))
     # Skip non-`.jmd` files
     if !endswith(file, ".jmd")
       continue
     end
 
     try
-      weave_file(folder,file)
+      weave_file(folder,file,build_list)
     catch e
       @error(e)
     end
@@ -124,6 +124,7 @@ end
 
 function open_notebooks()
   Base.eval(Main, Meta.parse("import IJulia"))
+  weave_all((:notebook,))
   path = joinpath(repo_directory,"notebook")
   IJulia.notebook(;dir=path)
 end
