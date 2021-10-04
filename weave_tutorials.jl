@@ -9,8 +9,6 @@ if isdir(target)
 elseif isfile(target)
     folder = dirname(target)[11:end] # remove the tutorials/
     file = basename(target)
-    println(folder)
-    println(file)
     println("Weaving $(folder)/$(file)")
     SciMLTutorials.weave_file(folder, file)
 else
