@@ -16,6 +16,9 @@ function weave_file(folder,file,build_list=default_builds)
     Pkg.activate(folder)
     Pkg.instantiate()
     Pkg.build()
+    
+    @info("Printing out `Pkg.status()`")
+    Pkg.status()
   end
 
   args = Dict{Symbol,String}(:folder=>folder,:file=>file)
