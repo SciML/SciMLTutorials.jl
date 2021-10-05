@@ -13,7 +13,7 @@ function weave_file(folder,file,build_list=default_builds)
   
   if isfile(joinpath(repo_directory, "tutorials", folder, "Project.toml"))
     @info("Instantiating", folder)
-    Pkg.activate(folder)
+    Pkg.activate(joinpath(repo_directory,"tutorials", folder))
     Pkg.instantiate()
     Pkg.build()
     
