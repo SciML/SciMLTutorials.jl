@@ -6,7 +6,6 @@ author: Chris Rackauckas
 
 ## Basic Introduction Via Ordinary Differential Equations
 
-
 This notebook will get you started with DifferentialEquations.jl by introducing you to the functionality for solving ordinary differential equations (ODEs). The corresponding documentation page is the [ODE tutorial](https://docs.sciml.ai/dev/tutorials/ode_example/). While some of the syntax may be different for other types of equations, the same general principles hold in each case. Our goal is to give a gentle and thorough introduction that highlights these principles in a way that will help you generalize what you have learned.
 
 ### Background
@@ -346,3 +345,4 @@ These are the basic controls in DifferentialEquations.jl. All equations are defi
 using SciMLTutorials
 SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
 ```
+
