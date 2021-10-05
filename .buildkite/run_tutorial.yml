@@ -37,7 +37,7 @@ steps:
     commands: |
       # Instantiate, to install the overall project dependencies
       echo "--- Instantiate"
-      julia --project=. -e 'using Pkg; Pkg.instantiate()'
+      julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.build()'
 
       # Run tutorial
       echo "+++ Run tutorial for {PATH}"

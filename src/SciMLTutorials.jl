@@ -11,11 +11,7 @@ function weave_file(folder,file,build_list=default_builds)
   target = joinpath(repo_directory, "tutorials", folder, file)
   @info("Weaving $(target)")
   
-  
-  
-    @show joinpath(repo_directory, folder, "Project.toml")
-
-  if isfile(joinpath(repo_directory, folder, "Project.toml"))
+  if isfile(joinpath(repo_directory, "tutorials", folder, "Project.toml"))
     @info("Instantiating", folder)
     Pkg.activate(folder)
     Pkg.instantiate()
