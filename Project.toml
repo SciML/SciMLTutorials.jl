@@ -1,7 +1,7 @@
 name = "SciMLTutorials"
 uuid = "30cb0354-2223-46a9-baa0-41bdcfbe0178"
 authors = ["Chris Rackauckas <accounts@chrisrackauckas.com>"]
-version = "0.9.0"
+version = "1.0.0"
 
 [deps]
 IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
