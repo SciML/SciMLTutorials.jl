@@ -2,4 +2,4 @@
 SciMLTutorials = "30cb0354-2223-46a9-baa0-41bdcfbe0178"
 
 [compat]
-SciMLTutorials = "0.9"
+SciMLTutorials = "0.9, 1"
