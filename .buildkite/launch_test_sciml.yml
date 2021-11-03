@@ -1,0 +1,16 @@
+agents:
+  queue: "juliaecosystem"
+  sandbox.jl: true
+
+steps:
+  - label: ":runner: Dynamically launch test_sciml"
+    branches: "!gh-pages"
+    plugins:
+      - staticfloat/forerunner:
+          # This will create one job overall, throwing all path information away
+          watch:
+            - "src/**/*.jl"
+            - "src/*.jl"
+            - "**/*.toml"
+          target: .buildkite/test_sciml.yml
+          target_type: simple

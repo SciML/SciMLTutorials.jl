@@ -1,3 +1,6 @@
+agents:
+  queue: "juliaecosystem"
+
 steps:
   - label: ":julia: Run tests on 1.6"
     plugins:
@@ -17,8 +20,4 @@ steps:
       # Upload Julia script
       - "script/Testing/*.jl"
     agents:
-      queue: "juliacpu"
-      fastcpu: true
-    env:
-      SECRET_BUILDKITE_S3_ACCESS_KEY_ID: "KUQ9aTfZGaherfjpIVbaRcFLr8KYDxYBkbj3GESYDUQlSOcbX3Yl1nt467QVyGYI/ymLq+ryHlzh+0RMTMBkoj6dfh1OSubGw5Z6eYpSTRJ6PCcJa1L2HUMpBMHM84pAWUw9VtrUJ8XclNmZVN3OmYYRyGrl8RipP9hw7FQzk+TslAiciBuXYXrMaxReBC+lfnyDK0FWY52PzFr47+C1CkSnvG69uuJh6psIrlRpTO9OtHuhxprq9hAN21MlMwlRIOtkQyRX0zml6DdZOfeWmXyEdU+LP4QgZhHqCSo1ERulSr3LBwT2TtGdszFunmF2rRJnWiuLJheuxYTcnmak2Q==;U2FsdGVkX1+5nR8Dn6gwe40OV6pdTcn2Q8N2mUm2rkTcXIVgXcXuedLT3gJJOkVQ"
-      SECRET_BUILDKITE_S3_SECRET_ACCESS_KEY: "p3pz0WyMPIlBGJMI9z0tsWnPMmrr9CyqlPFhZxAgcfZXvh2AhQYgSQbdjC5kMOxar+qoYW18FOleER064d8xLM8fq0jfNVVXS8K1hsyqeDBVX0vhrCGxuOZ23hbsuL0lI9y+W9wu2CbkxHfTuhwV1twZ0w/ybYpDesiit8Wj/34Yq2lbCqefVdTMImKv9PqLtVDDzLgPMGTrFoaZCLhFKLR8Lwv9Pz5oe/RmGjzrdXEon43jVMj6spVyCWFkDnM+ePn8bvdirVvqUCuAUQoMeZBl/jFagEuru6sY2nx6t1qvqlccJYb1QMMcLk08vu7cyRq6FLaMkX9N1Dj7MsSKUQ==;U2FsdGVkX1/X8mjJqSXb7qs1efGkEwNCkx+/6dr/pCUx4AMey9DGXLHZS0tH2pfM8Pv5XyDmSvMXodyc1KZeCw=="
+      queue: "juliaecosystem"

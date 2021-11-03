@@ -1,0 +1,27 @@
+agents:
+  queue: "juliaecosystem"
+  sandbox.jl: true
+
+steps:
+  - label: ":unlock: Launch tutorials build if hash check successful"
+    branches: "!gh-pages"
+    plugins:
+      - staticfloat/cryptic#7134d550fb10e1782e77c3d9993443e1a702b0cc:
+          signed_pipelines:
+            - pipeline: .buildkite/launch_tutorials.yml
+              signature_file: .buildkite/launch_tutorials.yml.signature
+              inputs:
+                - .buildkite/run_tutorial.yml
+              allow_hash_override: true
+    command: "true"
+
+  - label: ":runner: Dynamically launch test suite"
+    plugins:
+      - staticfloat/forerunner:
+          # This will create one job overall, throwing all path information away
+          watch:
+            - "src/**/*.jl"
+            - "src/*.jl"
+            - "**/*.toml"
+          target: .buildkite/test_sciml.yml
+          target_type: simple
