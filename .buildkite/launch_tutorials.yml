@@ -1,0 +1,19 @@
+agents:
+  queue: "juliaecosystem"
+  sandbox.jl: true
+
+steps:
+  - label: ":runner: Dynamically launch run_tutorial.yml"
+    branches: "!gh-pages"
+    env:
+      BUILDKITE_PLUGIN_CRYPTIC_BASE64_SIGNED_JOB_ID_SECRET: ${BUILDKITE_PLUGIN_CRYPTIC_BASE64_SIGNED_JOB_ID_SECRET?}
+    depends_on:
+    plugins:
+      - staticfloat/forerunner:
+          # This will create one job per project
+          watch:
+            - tutorials/**/*.jmd
+            - tutorials/**/*.toml
+          path_processor: .buildkite/path_processors/project-coalescing
+          target: .buildkite/run_tutorial.yml
+          target_type: template
