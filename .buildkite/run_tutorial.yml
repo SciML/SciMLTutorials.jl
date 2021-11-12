@@ -20,8 +20,8 @@ steps:
       - JuliaCI/julia#v1:
           version: 1.6
       - staticfloat/sandbox:
-          rootfs_url: "https://github.com/JuliaCI/rootfs-images/releases/download/v4.10/aws_uploader.x86_64.tar.gz"
-          rootfs_treehash: "06ab3be520692c75f8749d610527e26d7973d6bf"
+          rootfs_url: "https://github.com/JuliaCI/rootfs-images/releases/download/v4.11/aws_uploader.x86_64.tar.gz"
+          rootfs_treehash: "ae2aea21802d6c7fa36417ff0ddac284968d74af"
           workspaces:
             # Include the julia we just downloaded
             - "/cache/julia-buildkite-plugin:/cache/julia-buildkite-plugin"
@@ -64,8 +64,8 @@ steps:
       - JuliaCI/julia#v1:
           version: 1.6
       - staticfloat/sandbox:
-          rootfs_url: "https://github.com/JuliaCI/rootfs-images/releases/download/v4.10/aws_uploader.x86_64.tar.gz"
-          rootfs_treehash: "06ab3be520692c75f8749d610527e26d7973d6bf"
+          rootfs_url: "https://github.com/JuliaCI/rootfs-images/releases/download/v4.11/aws_uploader.x86_64.tar.gz"
+          rootfs_treehash: "ae2aea21802d6c7fa36417ff0ddac284968d74af"
           workspaces:
             # Include the julia we just downloaded
             - "/cache/julia-buildkite-plugin:/cache/julia-buildkite-plugin"
