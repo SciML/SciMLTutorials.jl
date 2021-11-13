@@ -3,6 +3,8 @@
 # Ensure that our git wants to talk to github without prompting
 mkdir -p ~/.ssh
 ssh-keyscan github.com >> ~/.ssh/known_hosts
+git config --global user.email "buildkite@julialang.org"
+git config --global user.name "SciML Tutorials CI"
 
 # Clone SciMLTutorialsOutput to temporary directory
 temp_dir=$(mktemp -d)
