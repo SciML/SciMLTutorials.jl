@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Ensure that our git wants to talk to github without prompting
+mkdir -p ~/.ssh
 ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 # Clone SciMLTutorialsOutput to temporary directory

@@ -12,6 +12,7 @@ steps:
               signature_file: .buildkite/launch_tutorials.yml.signature
               inputs:
                 - .buildkite/run_tutorial.yml
+                - .buildkite/publish_tutorials_output.sh
               allow_hash_override: true
     command: "true"
 
