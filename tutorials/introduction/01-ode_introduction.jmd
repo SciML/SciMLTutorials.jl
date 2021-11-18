@@ -110,7 +110,7 @@ sol(0.45)
 
 #### Controlling the Solver
 
-DifferentialEquations.jl has a common set of solver controls among its algorithms which can be found [at the Common Solver Options](https://docs.sciml.ai/dev/basics/common_solver_opts/) page. We will detail some of the most widely used options.
+DifferentialEquations.jl has a common set of solver controls among its algorithms which can be found [at the Common Solver Options](https://diffeq.sciml.ai/stable/basics/common_solver_opts/) page. We will detail some of the most widely used options.
 
 The most useful options are the tolerances `abstol` and `reltol`. These tell the internal adaptive time stepping engine how precise of a solution you want. Generally, `reltol` is the relative accuracy while `abstol` is the accuracy when `u` is near zero. These tolerances are local tolerances and thus are not global guarantees. However, a good rule of thumb is that the total solution accuracy is 1-2 digits less than the relative tolerances. Thus for the defaults `abstol=1e-6` and `reltol=1e-3`, you can expect a global accuracy of about 1-2 digits. If we want to get around 6 digits of accuracy, we can use the commands:
 
