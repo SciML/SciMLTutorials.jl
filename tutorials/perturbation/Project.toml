@@ -7,7 +7,7 @@ SymbolicUtils = "d1185830-fcd6-423d-90d6-eec64667417b"
 Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
 
 [compat]
-DifferentialEquations = "6.17"
+DifferentialEquations = "6.17, 7"
 ModelingToolkit = "5.17, 6, 7, 8"
 Plots = "1.16"
 SciMLTutorials = "0.9, 1"
