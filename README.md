@@ -48,9 +48,8 @@ SciMLTutorials.open_notebooks()
   - [Kepler Problem Orbit](http://tutorials.sciml.ai/html/models/05-kepler_problem.html)
   - [Spiking Neural Systems](http://tutorials.sciml.ai/html/models/08-spiking_neural_systems.html)
 - Advanced ODE Features
-  - [ModelingToolkit.jl, An IR and Compiler for Scientific Models](http://tutorials.sciml.ai/html/ode_extras/01-ModelingToolkit.html)
-  - [Feagin's Order 10, 12, and 14 Methods](http://tutorials.sciml.ai/html/ode_extras/02-feagin.html)
-  - [Finding Maxima and Minima of DiffEq Solutions](http://tutorials.sciml.ai/html/ode_extras/03-ode_minmax.html)
+  - [Feagin's Order 10, 12, and 14 Methods](http://tutorials.sciml.ai/html/ode_extras/01-feagin.html)
+  - [Finding Maxima and Minima of DiffEq Solutions](http://tutorials.sciml.ai/html/ode_extras/02-ode_minmax.html)
 - Model Inference
   - [Bayesian Inference of Pendulum Parameters](http://tutorials.sciml.ai/html/model_inference/01-pendulum_bayesian_inference.html)
   - [Monte Carlo Parameter Estimation from Data](http://tutorials.sciml.ai/html/model_inference/02-monte_carlo_parameter_estim.html)
