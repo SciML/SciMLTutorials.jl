@@ -12,7 +12,7 @@ steps:
     env:
       BUILDKITE_PLUGIN_CRYPTIC_BASE64_SIGNED_JOB_ID_SECRET: ${BUILDKITE_PLUGIN_CRYPTIC_BASE64_SIGNED_JOB_ID_SECRET?}
     plugins:
-      - staticfloat/cryptic#7134d550fb10e1782e77c3d9993443e1a702b0cc:
+      - staticfloat/cryptic#v2:
           variables:
             - BUILDKITE_S3_ACCESS_KEY_ID="U2FsdGVkX1/ckce1vUF8A17rHLxcAlAou4aokaeS8YL6omsA1Vq1IDZko5cL1Z+t"
             - BUILDKITE_S3_SECRET_ACCESS_KEY="U2FsdGVkX1+SPF81nkK7KQ64DsafSl0qq2iG7BsQs1xlTYEtZV3MqQl3l/NWaiocaEywZZFbAB5zpnKPD0xHTQ=="
@@ -54,7 +54,7 @@ steps:
     env:
       BUILDKITE_PLUGIN_CRYPTIC_BASE64_SIGNED_JOB_ID_SECRET: ${BUILDKITE_PLUGIN_CRYPTIC_BASE64_SIGNED_JOB_ID_SECRET?}
     plugins:
-      - staticfloat/cryptic#7134d550fb10e1782e77c3d9993443e1a702b0cc:
+      - staticfloat/cryptic#v2:
           variables:
             - BUILDKITE_S3_ACCESS_KEY_ID="U2FsdGVkX1/ckce1vUF8A17rHLxcAlAou4aokaeS8YL6omsA1Vq1IDZko5cL1Z+t"
             - BUILDKITE_S3_SECRET_ACCESS_KEY="U2FsdGVkX1+SPF81nkK7KQ64DsafSl0qq2iG7BsQs1xlTYEtZV3MqQl3l/NWaiocaEywZZFbAB5zpnKPD0xHTQ=="
