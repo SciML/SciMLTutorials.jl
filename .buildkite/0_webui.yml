@@ -6,7 +6,7 @@ steps:
   - label: ":unlock: Launch tutorials build if hash check successful"
     branches: "!gh-pages"
     plugins:
-      - staticfloat/cryptic#7134d550fb10e1782e77c3d9993443e1a702b0cc:
+      - staticfloat/cryptic#v2:
           signed_pipelines:
             - pipeline: .buildkite/launch_tutorials.yml
               signature_file: .buildkite/launch_tutorials.yml.signature
