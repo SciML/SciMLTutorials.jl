@@ -14,6 +14,7 @@ git -C "${temp_dir}" clone git@github.com:SciML/SciMLTutorialsOutput .
 for d in html markdown notebook pdf script; do
     cp -vRa "${d}/" "${temp_dir}"
 done
+cp -va *.md *.bib "${temp_dir}"
 
 # Commit the result up to output
 set -e
