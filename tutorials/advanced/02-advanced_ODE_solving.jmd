@@ -50,7 +50,8 @@ the number of physical cores and not the number of logical cores. See
 To check the number of BLAS threads, use:
 
 ```julia
-ccall((:openblas_get_num_threads64_, Base.libblas_name), Cint, ())
+using LinearAlgebra
+BLAS.get_num_threads()
 ```
 
 If I want to set this directly to 4 threads, I would use:
