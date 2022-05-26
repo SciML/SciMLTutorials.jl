@@ -19,7 +19,7 @@ end μ
 prob = ODEProblem(van!,[0.0,2.0],(0.0,6.3),1e6)
 ```
 
-One indicating factor that should alert you to the fact that this model may be stiff is the fact that the parameter is `1e6`: large parameters generally mean stiff models. If we try to solve this with the default method:
+One indicating factor that should alert you to the fact that this model may be stiff is the fact that the parameter is `1e6`: large parameters generally mean stiff models. If we try to solve this with the `Tsit5()` method:
 
 ```julia
 sol = solve(prob,Tsit5())
