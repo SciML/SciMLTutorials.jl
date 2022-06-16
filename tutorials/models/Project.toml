@@ -21,7 +21,7 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 StochasticDiffEq = "789caeaf-c7a9-5a7d-9973-96adeb23e2a0"
 
 [compat]
-Catalyst = "5, 6.0, 7, 8, 9"
+Catalyst = "5, 6.0, 7, 8, 9, 12"
 DiffEqCallbacks = "2.13"
 DiffEqDevTools = "2.22"
 DiffEqPhysics = "3.5"
