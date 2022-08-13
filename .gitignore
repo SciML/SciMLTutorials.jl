@@ -1,12 +1,18 @@
-*.jl.cov
-*.jl.*.cov
-*.jl.mem
 .ipynb_checkpoints
+*/.ipynb_checkpoints/*
 *.tmp
 *.aux
 *.log
 *.out
 *.tex
-tutorials/**/*.html
-tutorials/**/*.pdf
+tmp*/
+gks.svg
 /*/*/jl_*/
+/Manifest.toml
+
+# We're going to store these in a separate repository now
+html/
+script/
+pdf/
+notebook/
+markdown/
