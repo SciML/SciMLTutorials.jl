@@ -35,12 +35,13 @@ steps:
             - ./*.toml
           outputs:
             - html/**/*.html
+            - markdown/**/figures/*.png
             - markdown/**/*.md
             - notebook/**/*.ipynb
             - pdf/**/*.pdf
             - script/**/*.jl
           s3_prefix: s3://julialang-buildkite-artifacts/scimltutorials
-    timeout_in_minutes: 360
+    timeout_in_minutes: 1000
     commands: |
       # Instantiate, to install the overall project dependencies
       echo "--- Instantiate"
@@ -62,7 +63,7 @@ steps:
           files:
             - .buildkite/ssh_deploy.key
       - JuliaCI/julia#v1:
-          version: 1.6
+          version: 1.7
       - staticfloat/sandbox:
           rootfs_url: "https://jc-rootfs-images.s3.amazonaws.com/aws_uploader-2021-11-12.x86_64.tar.gz"
           rootfs_treehash: "986217e5b36efd3b3b91ed90df8e36d628cf543f"
@@ -76,6 +77,7 @@ steps:
           input_from: "tutorial-{SANITIZED_PATH}"
           outputs:
             - html/**/*.html
+            - markdown/**/figures/*.png
             - markdown/**/*.md
             - notebook/**/*.ipynb
             - pdf/**/*.pdf

@@ -1,0 +1,66 @@
+# This file assumes `dir` is the directory for the package! dir = @__DIR__() * "/.."
+
+dir = @__DIR__() * "/.."
+
+cp(joinpath(dir, "markdown"), joinpath(dir, "docs", "src"), force=true)
+cp(joinpath(dir, "README.md"), joinpath(dir, "docs", "src", "index.md"), force=true)
+tutorialsdir = joinpath(dir, "docs", "src")
+
+pages = Any["SciMLTutorials.jl: Tutorials for Scientific Machine Learning (SciML), Equation Solvers, and AI for Science"=>"index.md"]
+
+for folder in readdir(tutorialsdir)
+    newpages = Any[]
+    if folder[end-2:end] != ".md" && folder != "Testing" && folder != "figures"
+        for file in filter(x -> x[end-2:end] == ".md", readdir(
+            joinpath(tutorialsdir, folder)))
+            try
+                filecontents = readlines(joinpath(tutorialsdir, folder, file))
+                title = filecontents[3][9:end-1]
+
+                # Cut out the first 5 lines from the file to remove the Weave header stuff
+                open(joinpath(tutorialsdir, folder, file), "w") do output
+                    println(output, "# $title")
+                    for line in Iterators.drop(filecontents, 4)
+                        println(output, line)
+                    end
+                end
+                push!(newpages, title => joinpath(folder, file))
+            catch e
+                @show folder, file, e
+            end
+        end
+        push!(pages, folder => newpages)
+    end
+end
+
+#=
+# The result is in alphabetical order, change to the wanted order
+
+permute!(pages,
+    [1, 8, 11, 17, 3, 4, 7, 5, 9, 12, 18, 10, 16, 6, 15, 13, 14, 2]
+)
+
+names = [
+    "SciMLBenchmarks.jl: Benchmarks for Scientific Machine Learning (SciML) and Equation Solvers",
+    "Multi-Language Wrapper Benchmarks",
+    "Non-Stiff Ordinary Differential Equations",
+    "Stiff Ordinary Differential Equations",
+    "Biological Differential Equations",
+    "Differential-Algebraic Equations (DAEs)",
+    "Method of Lines Partial Differential Equations (PDEs)",
+    "Dynamical ODEs (Hamiltonian and Second Order)",
+    "N-Body Problem Benchmarks",
+    "Non-Stiff Stochastic Differential Equations",
+    "Stiff Stochastic Differential Equations",
+    "Non-Stiff Delay Differential Equations",
+    "Stiff Delay Differential equations",
+    "Jump Process Equations (Gillespie Benchmarks)",
+    "Parameter Estimation and Inverse Problem Benchmarks",
+    "Physics-Informed Neural Network (Neural Network PDE Solver) Cost Function Benchmarks",
+    "Physics-Informed Neural Network (Neural Network PDE Solver) Optimizer Benchmarks",
+    "SDE Adaptivity Benchmarks"]
+
+for i in 1:length(pages)
+    pages[i] = names[i] => pages[i][2]
+end
+=#

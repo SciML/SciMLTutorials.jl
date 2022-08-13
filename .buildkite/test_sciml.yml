@@ -2,10 +2,10 @@ agents:
   queue: "juliaecosystem"
 
 steps:
-  - label: ":julia: Run tests on 1.6"
+  - label: ":julia: Run tests on 1.7"
     plugins:
       - JuliaCI/julia#v1:
-          version: 1.6
+          version: 1.7
       - JuliaCI/julia-test#v1:
     timeout_in_minutes: 20
     artifact_paths:
