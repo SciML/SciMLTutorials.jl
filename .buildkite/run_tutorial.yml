@@ -34,7 +34,7 @@ steps:
             # We are sensitive to our overall dependencies changing
             - ./*.toml
           outputs:
-            - html/**/*.html
+            #- html/**/*.html
             - markdown/**/figures/*.png
             - markdown/**/*.md
             - notebook/**/*.ipynb
@@ -76,7 +76,7 @@ steps:
       - staticfloat/coppermind:
           input_from: "tutorial-{SANITIZED_PATH}"
           outputs:
-            - html/**/*.html
+            #- html/**/*.html
             - markdown/**/figures/*.png
             - markdown/**/*.md
             - notebook/**/*.ipynb

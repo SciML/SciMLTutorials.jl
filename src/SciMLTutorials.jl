@@ -5,18 +5,18 @@ using Weave, Pkg, IJulia, InteractiveUtils, Markdown
 repo_directory = joinpath(@__DIR__,"..")
 cssfile = joinpath(@__DIR__, "..", "templates", "skeleton_css.css")
 latexfile = joinpath(@__DIR__, "..", "templates", "julia_tex.tpl")
-default_builds = (:script,:html,:github)
+default_builds = (:script,:github)
 
 function weave_file(folder,file,build_list=default_builds)
   target = joinpath(repo_directory, "tutorials", folder, file)
   @info("Weaving $(target)")
-  
+
   if isfile(joinpath(repo_directory, "tutorials", folder, "Project.toml"))
     @info("Instantiating", folder)
     Pkg.activate(joinpath(repo_directory,"tutorials", folder))
     Pkg.instantiate()
     Pkg.build()
-    
+
     @info("Printing out `Pkg.status()`")
     Pkg.status()
   end
@@ -134,4 +134,3 @@ function open_notebooks()
 end
 
 end
-
