@@ -33,34 +33,24 @@ for folder in readdir(tutorialsdir)
     end
 end
 
-#=
 # The result is in alphabetical order, change to the wanted order
 
 permute!(pages,
-    [1, 8, 11, 17, 3, 4, 7, 5, 9, 12, 18, 10, 16, 6, 15, 13, 14, 2]
+    [1, 7, 8, 10, 6, 5, 3, 2, 9, 4]
 )
 
 names = [
-    "SciMLBenchmarks.jl: Benchmarks for Scientific Machine Learning (SciML) and Equation Solvers",
-    "Multi-Language Wrapper Benchmarks",
-    "Non-Stiff Ordinary Differential Equations",
-    "Stiff Ordinary Differential Equations",
-    "Biological Differential Equations",
-    "Differential-Algebraic Equations (DAEs)",
-    "Method of Lines Partial Differential Equations (PDEs)",
-    "Dynamical ODEs (Hamiltonian and Second Order)",
-    "N-Body Problem Benchmarks",
-    "Non-Stiff Stochastic Differential Equations",
-    "Stiff Stochastic Differential Equations",
-    "Non-Stiff Delay Differential Equations",
-    "Stiff Delay Differential equations",
-    "Jump Process Equations (Gillespie Benchmarks)",
-    "Parameter Estimation and Inverse Problem Benchmarks",
-    "Physics-Informed Neural Network (Neural Network PDE Solver) Cost Function Benchmarks",
-    "Physics-Informed Neural Network (Neural Network PDE Solver) Optimizer Benchmarks",
-    "SDE Adaptivity Benchmarks"]
+    "SciMLTutorials.jl: Tutorials for Scientific Machine Learning (SciML) and Equation Solvers",
+    "Ordinary Differential Equation (ODE) Examples",
+    "Special Analyses of ODEs",
+    "Mixing Julia Types with Differential Equations",
+    "Inference and Parameter Estimation on ODEs",
+    "Analyzing Jump Process Equations",
+    "Advanced ODE Examples",
+    "Uncertainty Quantification on ODEs",
+    "Symbolic-Numeric Approaches",
+    "Workshop Exercises"]
 
 for i in 1:length(pages)
     pages[i] = names[i] => pages[i][2]
 end
-=#
