@@ -1,0 +1,131 @@
+---
+title: Finding Maxima and Minima of DiffEq Solutions
+author: Chris Rackauckas
+---
+
+### Setup
+
+In this tutorial we will show how to use Optim.jl to find the maxima and minima of solutions. Let's take a look at the double pendulum:
+
+```julia
+#Constants and setup
+using OrdinaryDiffEq
+initial = [0.01, 0.01, 0.01, 0.01]
+tspan = (0.,100.)
+
+#Define the problem
+function double_pendulum_hamiltonian(udot,u,p,t)
+    α  = u[1]
+    lα = u[2]
+    β  = u[3]
+    lβ = u[4]
+    udot .=
+    [2(lα-(1+cos(β))lβ)/(3-cos(2β)),
+    -2sin(α) - sin(α+β),
+    2(-(1+cos(β))lα + (3+2cos(β))lβ)/(3-cos(2β)),
+    -sin(α+β) - 2sin(β)*(((lα-lβ)lβ)/(3-cos(2β))) + 2sin(2β)*((lα^2 - 2(1+cos(β))lα*lβ + (3+2cos(β))lβ^2)/(3-cos(2β))^2)]
+end
+
+#Pass to solvers
+poincare = ODEProblem(double_pendulum_hamiltonian, initial, tspan)
+```
+
+```julia
+sol = solve(poincare, Tsit5())
+```
+
+In time, the solution looks like:
+
+```julia
+using Plots; gr()
+plot(sol, vars=[(0,3),(0,4)], leg=false, plotdensity=10000)
+```
+
+while it has the well-known phase-space plot:
+
+```julia
+plot(sol, vars=(3,4), leg=false)
+```
+
+### Local Optimization
+
+Let's fine out what some of the local maxima and minima are. Optim.jl can be used to minimize functions, and the solution type has a continuous interpolation which can be used. Let's look for the local optima for the 4th variable around `t=20`. Thus our optimization function is:
+
+```julia
+f = (t) -> sol(t,idxs=4)
+```
+
+`first(t)` is the same as `t[1]` which transforms the array of size 1 into a number. `idxs=4` is the same as `sol(first(t))[4]` but does the calculation without a temporary array and thus is faster. To find a local minima, we can simply call Optim on this function. Let's find a local minimum:
+
+```julia
+using Optim
+opt = optimize(f,18.0,22.0)
+```
+
+From this printout we see that the minimum is at `t=18.63` and the value is `-2.79e-2`. We can get these in code-form via:
+
+```julia
+println(opt.minimizer)
+println(opt.minimum)
+```
+
+To get the maximum, we just minimize the negative of the function:
+
+```julia
+f = (t) -> -sol(first(t),idxs=4)
+opt2 = optimize(f,0.0,22.0)
+```
+
+Let's add the maxima and minima to the plots:
+
+```julia
+plot(sol, vars=(0,4), plotdensity=10000)
+scatter!([opt.minimizer],[opt.minimum],label="Local Min")
+scatter!([opt2.minimizer],[-opt2.minimum],label="Local Max")
+```
+
+Brent's method will locally minimize over the full interval. If we instead want a local maxima nearest to a point, we can use `BFGS()`. In this case, we need to optimize a vector `[t]`, and thus dereference it to a number using `first(t)`.
+
+```julia
+f = (t) -> -sol(first(t),idxs=4)
+opt = optimize(f,[20.0],BFGS())
+```
+
+### Global Optimization
+
+If we instead want to find global maxima and minima, we need to look somewhere else. For this there are many choices. A pure Julia option is BlackBoxOptim.jl, but I will use NLopt.jl. Following the NLopt.jl tutorial but replacing their function with out own:
+
+```julia
+import NLopt, ForwardDiff
+
+count = 0 # keep track of # function evaluations
+
+function g(t::Vector, grad::Vector)
+  if length(grad) > 0
+    #use ForwardDiff for the gradients
+    grad[1] = ForwardDiff.derivative((t)->sol(first(t),idxs=4),t)
+  end
+  sol(first(t),idxs=4)
+end
+opt = NLopt.Opt(:GN_ORIG_DIRECT_L, 1)
+NLopt.lower_bounds!(opt, [0.0])
+NLopt.upper_bounds!(opt, [40.0])
+NLopt.xtol_rel!(opt,1e-8)
+NLopt.min_objective!(opt, g)
+(minf,minx,ret) = NLopt.optimize(opt,[20.0])
+println(minf," ",minx," ",ret)
+NLopt.max_objective!(opt, g)
+(maxf,maxx,ret) = NLopt.optimize(opt,[20.0])
+println(maxf," ",maxx," ",ret)
+```
+
+```julia
+plot(sol, vars=(0,4), plotdensity=10000)
+scatter!([minx],[minf],label="Global Min")
+scatter!([maxx],[maxf],label="Global Max")
+```
+
+```julia, echo = false, skip="notebook"
+using SciMLTutorials
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+```

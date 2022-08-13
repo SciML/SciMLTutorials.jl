@@ -1,6 +1,6 @@
 ---
-title: "Tutorial on using spatial SSAs in DiffEqJump"
-author: Vasily Ilin"
+title: Tutorial on using spatial SSAs in DiffEqJump
+author: Vasily Ilin
 ---
 
 This tutorial shows how to use spatial solvers added to [`DiffEqJump`](https://github.com/SciML/DiffEqJump.jl) in summer 2021. See [the documentation](https://diffeq.sciml.ai/latest/types/jump_types/) for a tutorial on getting started with `DiffEqJump`.
@@ -63,7 +63,7 @@ reactstoch = [[1 => 1, 2 => 1],[3 => 1]]
 majumps = MassActionJump(rates, reactstoch, netstoch)
 ```
 
-The last thing to set up is the hopping constants -- the probability per time of an individual molecule of each species hopping from one site to another site. In practice this parameter, as well as reaction rates, are obtained empirically. Suppose that molecule $$C$$ cannot diffuse, while molecules $$A$$ and $$B$$ diffuse at probability per time 1 (i.e. the time of the diffusive hop is exponentially distributed with mean 1). Entry $$(s,i)$$ of `hopping_constants` is the hopping rate of species $$s$$ at site $$i$$ to any of its neighboring sites (diagonal hops are not allowed). 
+The last thing to set up is the hopping constants -- the probability per time of an individual molecule of each species hopping from one site to another site. In practice this parameter, as well as reaction rates, are obtained empirically. Suppose that molecule $$C$$ cannot diffuse, while molecules $$A$$ and $$B$$ diffuse at probability per time 1 (i.e. the time of the diffusive hop is exponentially distributed with mean 1). Entry $$(s,i)$$ of `hopping_constants` is the hopping rate of species $$s$$ at site $$i$$ to any of its neighboring sites (diagonal hops are not allowed).
 
 ```julia
 hopping_constants = ones(num_species, num_nodes)
@@ -71,7 +71,7 @@ hopping_constants[3, :] .= 0.0
 hopping_constants
 ```
 
-We are now ready to set up the `JumpProblem` with the Next Subvolume Method. 
+We are now ready to set up the `JumpProblem` with the Next Subvolume Method.
 
 ```julia
 alg = NSM()
