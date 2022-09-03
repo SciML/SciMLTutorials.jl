@@ -5,6 +5,7 @@ author: Yingbo Ma, Chris Rackauckas
 
 ## Data
 
+
 The chosen units are: masses relative to the sun, so that the sun has mass $1$. We have taken $m_0 = 1.00000597682$ to take account of the inner planets. Distances are in astronomical units , times in earth days, and the gravitational constant is thus $G = 2.95912208286 \cdot 10^{-4}$.
 
 | planet | mass | initial position | initial velocity |
