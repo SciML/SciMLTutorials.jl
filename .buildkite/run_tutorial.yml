@@ -18,7 +18,7 @@ steps:
             - BUILDKITE_S3_SECRET_ACCESS_KEY="U2FsdGVkX1+SPF81nkK7KQ64DsafSl0qq2iG7BsQs1xlTYEtZV3MqQl3l/NWaiocaEywZZFbAB5zpnKPD0xHTQ=="
             - BUILDKITE_S3_DEFAULT_REGION="U2FsdGVkX1/cORlxhXcxhja2JkqC0f8RmaGYxvGBbEg="
       - JuliaCI/julia#v1:
-          version: 1.6
+          version: 1.7
       - staticfloat/sandbox:
           rootfs_url: "https://jc-rootfs-images.s3.amazonaws.com/aws_uploader-2021-11-12.x86_64.tar.gz"
           rootfs_treehash: "986217e5b36efd3b3b91ed90df8e36d628cf543f"
