@@ -1,5 +1,6 @@
 agents:
   queue: "juliaecosystem"
+  arch: "x86_64"
 
 steps:
   - label: ":julia: Run tests on 1.8"
