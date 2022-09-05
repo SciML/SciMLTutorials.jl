@@ -1,6 +1,7 @@
 agents:
   queue: "juliaecosystem"
   sandbox.jl: true
+  arch: "x86_64"
 
 # This is a pipeline that weaves a tutorial, then uploads the resultant
 # .PDF and other reports as (buildkite, not Julia) artifacts.  The `coppermind`
