@@ -52,6 +52,7 @@ SciMLTutorials.open_notebooks()
   - [Tutorial on using spatial SSAs in DiffEqJump](http://tutorials.sciml.ai/html/jumps/spatial.html)
   - [Kepler Problem Orbit](http://tutorials.sciml.ai/html/models/05-kepler_problem.html)
   - [Spiking Neural Systems](http://tutorials.sciml.ai/html/models/08-spiking_neural_systems.html)
+  - [Outer Solar System](http://tutorials.sciml.ai/html/models/05-outer_solar_system.html)
 - Advanced ODE Features
   - [Feagin's Order 10, 12, and 14 Methods](http://tutorials.sciml.ai/html/ode_extras/01-feagin.html)
   - [Finding Maxima and Minima of DiffEq Solutions](http://tutorials.sciml.ai/html/ode_extras/02-ode_minmax.html)

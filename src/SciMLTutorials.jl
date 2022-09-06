@@ -8,12 +8,12 @@ latexfile = joinpath(@__DIR__, "..", "templates", "julia_tex.tpl")
 default_builds = (:script,:github)
 
 function weave_file(folder,file,build_list=default_builds)
-  target = joinpath(repo_directory, "tutorials", folder, file)
+  target = joinpath(folder, file)
   @info("Weaving $(target)")
 
-  if isfile(joinpath(repo_directory, "tutorials", folder, "Project.toml"))
+  if isfile(joinpath(folder, "Project.toml"))
     @info("Instantiating", folder)
-    Pkg.activate(joinpath(repo_directory,"tutorials", folder))
+    Pkg.activate(joinpath(folder))
     Pkg.instantiate()
     Pkg.build()
 
@@ -66,7 +66,7 @@ function weave_all(build_list=default_builds)
 end
 
 function weave_folder(folder,build_list=default_builds)
-  for file in readdir(joinpath(repo_directory,"tutorials",folder))
+  for file in readdir(joinpath(folder))
     # Skip non-`.jmd` files
     if !endswith(file, ".jmd")
       continue
