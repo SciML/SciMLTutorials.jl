@@ -40,21 +40,21 @@ plot!(sol.t, t->exp(-C₁*t),lw=3,ls=:dash,label="Analytical Solution")
 
 #### Simple Harmonic Oscillator
 
-Another classical example is the harmonic oscillator, given by
-$$
-\ddot{x} + \omega^2 x = 0
-$$
+Another classical example is the harmonic oscillator, given by:
+
+$$\ddot{x} + \omega^2 x = 0$$
+
 with the known analytical solution
-$$
-\begin{align*}
+
+$$\begin{align*}
 x(t) &= A\cos(\omega t - \phi) \\
 v(t) &= -A\omega\sin(\omega t - \phi),
-\end{align*}
-$$
+\end{align*}$$
+
 where
-$$
-A = \sqrt{c_1 + c_2} \qquad\text{and}\qquad \tan \phi = \frac{c_2}{c_1}
-$$
+
+$$A = \sqrt{c_1 + c_2} \qquad\text{and}\qquad \tan \phi = \frac{c_2}{c_1}$$
+
 with $c_1, c_2$ constants determined by the initial conditions such that
 $c_1$ is the initial position and $\omega c_2$ is the initial velocity.
 
@@ -110,12 +110,10 @@ Notice that now we have a second order ODE.
 In order to use the same method as above, we nee to transform it into a system
 of first order ODEs by employing the notation $d\theta = \dot{\theta}$.
 
-$$
-\begin{align*}
+$$\begin{align*}
 &\dot{\theta} = d{\theta} \\
 &\dot{d\theta} = - \frac{g}{L}{\sin(\theta)}
-\end{align*}
-$$
+\end{align*}$$
 
 ```julia
 # Simple Pendulum Problem
@@ -277,12 +275,10 @@ plot(p, xlabel="\\beta", ylabel="l_\\beta", ylims=(0, 0.03))
 
 The Hénon-Heiles potential occurs when non-linear motion of a star around a galactic center with the motion restricted to a plane.
 
-$$
-\begin{align}
+$$\begin{align}
 \frac{d^2x}{dt^2}&=-\frac{\partial V}{\partial x}\\
 \frac{d^2y}{dt^2}&=-\frac{\partial V}{\partial y}
-\end{align}
-$$
+\end{align}$$
 
 where
 
