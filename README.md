@@ -30,28 +30,54 @@ Static outputs in pdf, markdown, and html reside in [SciMLTutorialsOutput](https
 
 ## Interactive Notebooks
 
-To run the tutorials interactively via Jupyter notebooks, install the package
-and open the tutorials like:
+To run the tutorials interactively via Jupyter notebooks and benchmark on your
+own machine
+1. Run Weave for the file (or folder) you are interested in
+2. Activate the appropriate environment
+3. Open and run the notebook.
 
+Note: Since notebooks default to looking for a Project.toml file at the same level or parent folder, you might need to move the notebook to the folder with the appropriate Project.toml.
+
+### Example (starting from the project root folder)
 ```julia
-using Pkg
-pkg"add https://github.com/SciML/SciMLTutorials.jl"
+]activate .
+]instantiate
 using SciMLTutorials
-SciMLTutorials.open_notebooks()
+SciMLTutorials.weave_file("tutorials/models", "01-classical_physics.jmd", [:notebook])
+]activate tutorials/models
 ```
+
+Then move `01-classical_physics.jmd` to "tutorials/models" and open the notebook.
 
 ## Contributing
 
-First of all, make sure that your current directory is `SciMLTutorials`. All
-of the files are generated from the Weave.jl files in the `tutorials` folder.
+All of the files are generated from the Weave.jl files in the `tutorials` folder. The generation process runs automatically,
+and thus one does not necessarily need to test the Weave process locally. Instead, simply open a PR that adds/updates a
+file in the "tutorials" folder and the PR will generate the tutorial on demand. Its artifacts can then be inspected in the
+Buildkite as described below before merging. Note that it will use the Project.toml and Manifest.toml of the subfolder, so
+any changes to dependencies requires that those are updated.
+
+### Inspecting Tutorial Results
+
+To see tutorial results before merging, click into the BuildKite, click onto
+Artifacts, and then investigate the trained results.
+
+![](https://user-images.githubusercontent.com/1814174/118359358-02ddc980-b551-11eb-8a9b-24de947cefee.PNG)
+
+### Manually Generating Files
+
 To run the generation process, do for example:
 
 ```julia
-using Pkg, SciMLTutorials
-cd(joinpath(dirname(pathof(SciMLTutorials)), ".."))
-Pkg.pkg"activate ."
-Pkg.pkg"instantiate"
-SciMLTutorials.weave_file("introduction","01-ode_introduction.jmd")
+]activate SciMLTutorials # Get all of the packages
+using SciMLTutorials
+SciMLTutorials.weave_file("models","01-classical_physics.jmd")
+```
+
+To generate all of the files in a folder, for example, run:
+
+```julia
+SciMLTutorials.weave_folder("models")
 ```
 
 To generate all of the notebooks, do:
@@ -60,6 +86,5 @@ To generate all of the notebooks, do:
 SciMLTutorials.weave_all()
 ```
 
-If you add new tutorials which require new packages, simply updating your local
-environment will change the project and manifest files. When this occurs, the
-updated environment files should be included in the PR.
+Each of the tuturials displays the computer characteristics at the bottom of
+the benchmark.
