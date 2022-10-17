@@ -82,13 +82,13 @@ To run the generation process, do for example:
 ```julia
 ]activate SciMLTutorials # Get all of the packages
 using SciMLTutorials
-SciMLTutorials.weave_file(pkgdir(SciMLTutorials),"tutorials","models","01-classical_physics.jmd")
+SciMLTutorials.weave_file(joinpath(pkgdir(SciMLTutorials),"tutorials","models"),"01-classical_physics.jmd")
 ```
 
 To generate all of the files in a folder, for example, run:
 
 ```julia
-SciMLTutorials.weave_folder(pkgdir(SciMLTutorials),"tutorials","models")
+SciMLTutorials.weave_folder(joinpath(pkgdir(SciMLTutorials),"tutorials","models"))
 ```
 
 To generate all of the notebooks, do:
