@@ -30,24 +30,31 @@ Static outputs in pdf, markdown, and html reside in [SciMLTutorialsOutput](https
 
 ## Interactive Notebooks
 
-To run the tutorials interactively via Jupyter notebooks and benchmark on your
-own machine
-1. Run Weave for the file (or folder) you are interested in
-2. Activate the appropriate environment
-3. Open and run the notebook.
+To generate the interactive notebooks, first install the SciMLTutorials, instantiate the
+environment, and then run `SciMLTutorials.open_notebooks()`. This looks as follows:
 
-Note: Since notebooks default to looking for a Project.toml file at the same level or parent folder, you might need to move the notebook to the folder with the appropriate Project.toml.
-
-### Example (starting from the project root folder)
 ```julia
-]activate .
+]add SciMLTutorials#master
+]activate SciMLTutorials
 ]instantiate
 using SciMLTutorials
-SciMLTutorials.weave_file("tutorials/models", "01-classical_physics.jmd", [:notebook])
-]activate tutorials/models
+SciMLTutorials.open_notebooks()
 ```
 
-Then move `01-classical_physics.jmd` to "tutorials/models" and open the notebook.
+The tutorials will be generated at your `pwd()` in a folder called `generated_notebooks`.
+
+Note that when running the tutorials, the packages are not automatically added. Thus you
+will need to add the packages manually or use the internal Project/Manifest tomls to
+instantiate the correct packages. This can be done by activating the folder of the tutorials.
+For example,
+
+```julia
+using Pkg
+Pkg.activate(joinpath(pkgdir(SciMLTutorials),"tutorials","models"))
+Pkg.instantiate()
+```
+
+will add all of the packages required to run any tutorial in the `models` folder.
 
 ## Contributing
 
