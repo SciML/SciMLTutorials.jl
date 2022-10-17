@@ -64,6 +64,10 @@ file in the "tutorials" folder and the PR will generate the tutorial on demand. 
 Buildkite as described below before merging. Note that it will use the Project.toml and Manifest.toml of the subfolder, so
 any changes to dependencies requires that those are updated.
 
+### Reporting Bugs and Issues
+
+Report any bugs or issues at [the SciMLTutorials repository](https://github.com/SciML/SciMLTutorials.jl/issues).
+
 ### Inspecting Tutorial Results
 
 To see tutorial results before merging, click into the BuildKite, click onto
