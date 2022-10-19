@@ -26,7 +26,7 @@ steps:
           workspaces:
             # Include the julia we just downloaded
             - "/cache/julia-buildkite-plugin:/cache/julia-buildkite-plugin"
-      - staticfloat/coppermind:
+      - staticfloat/coppermind#v1:
           inputs:
             # We are sensitive to the actual tutorial changing
             - {PATH}
@@ -74,7 +74,7 @@ steps:
       # Use coppermind to download the tutorial results that were calculated in the
       # weaving job above.  Note we still list `outputs` here, since we have the
       # option to extract only a subset of them here.
-      - staticfloat/coppermind:
+      - staticfloat/coppermind#v1:
           input_from: "tutorial-{SANITIZED_PATH}"
           outputs:
             #- html/**/*.html
