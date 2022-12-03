@@ -37,7 +37,7 @@ end
 # The result is in alphabetical order, change to the wanted order
 
 permute!(pages,
-    [1, 7, 8, 10, 6, 5, 3, 2, 9, 4]
+    [1, 7, 9, 6, 5, 3, 2, 8, 4]
 )
 
 names = [
@@ -48,7 +48,6 @@ names = [
     "Inference and Parameter Estimation on ODEs",
     "Analyzing Jump Process Equations",
     "Advanced ODE Examples",
-    "Uncertainty Quantification on ODEs",
     "Symbolic-Numeric Approaches",
     "Workshop Exercises"]
 
