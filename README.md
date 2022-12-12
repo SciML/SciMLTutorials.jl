@@ -16,6 +16,8 @@ and the [devdocs](http://devdocs.sciml.ai/latest/)
 by providing practical examples of the concepts. For more details, please
 consult the docs.
 
+#### Note: this library has been deprecated and its tutorials have been moved to the repos of the respective packages. It may be revived in the future if there is a need for longer-form tutorials!
+
 ## Results
 
 To view the SciML Tutorials, go to [tutorials.sciml.ai](https://tutorials.sciml.ai/stable/). By default, this

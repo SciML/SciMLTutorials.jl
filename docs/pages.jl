@@ -37,12 +37,12 @@ end
 # The result is in alphabetical order, change to the wanted order
 
 permute!(pages,
-    [1, 2]
+    [1]
 )
 
 names = [
-    "SciMLTutorials.jl: Tutorials for Scientific Machine Learning (SciML) and Equation Solvers",
-    "Workshop Exercises"]
+    "SciMLTutorials.jl: Tutorials for Scientific Machine Learning (SciML) and Equation Solvers"
+    ]
 
 for i in 1:length(pages)
     pages[i] = names[i] => pages[i][2]
