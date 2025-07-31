@@ -2,21 +2,22 @@
 
 dir = @__DIR__() * "/.."
 
-cp(joinpath(dir, "markdown"), joinpath(dir, "docs", "src"), force=true)
-cp(joinpath(dir, "docs", "extrasrc", "assets"), joinpath(dir, "docs", "src", "assets"), force=true)
-cp(joinpath(dir, "README.md"), joinpath(dir, "docs", "src", "index.md"), force=true)
+cp(joinpath(dir, "markdown"), joinpath(dir, "docs", "src"), force = true)
+cp(joinpath(dir, "docs", "extrasrc", "assets"), joinpath(dir, "docs", "src", "assets"), force = true)
+cp(joinpath(dir, "README.md"), joinpath(dir, "docs", "src", "index.md"), force = true)
 tutorialsdir = joinpath(dir, "docs", "src")
 
-pages = Any["SciMLTutorials.jl: Tutorials for Scientific Machine Learning (SciML), Equation Solvers, and AI for Science"=>"index.md"]
+pages = Any["SciMLTutorials.jl: Tutorials for Scientific Machine Learning (SciML), Equation Solvers, and AI for Science" => "index.md"]
 
 for folder in readdir(tutorialsdir)
     newpages = Any[]
-    if folder[end-2:end] != ".md" && folder != "Testing" && folder != "figures" && folder != "assets"
-        for file in filter(x -> x[end-2:end] == ".md", readdir(
+    if folder[(end - 2):end] != ".md" && folder != "Testing" && folder != "figures" &&
+       folder != "assets"
+        for file in filter(x -> x[(end - 2):end] == ".md", readdir(
             joinpath(tutorialsdir, folder)))
             try
                 filecontents = readlines(joinpath(tutorialsdir, folder, file))
-                title = filecontents[3][9:end-1]
+                title = filecontents[3][9:(end - 1)]
 
                 # Cut out the first 5 lines from the file to remove the Weave header stuff
                 open(joinpath(tutorialsdir, folder, file), "w") do output
@@ -42,7 +43,7 @@ permute!(pages,
 
 names = [
     "SciMLTutorials.jl: Tutorials for Scientific Machine Learning (SciML) and Equation Solvers"
-    ]
+]
 
 for i in 1:length(pages)
     pages[i] = names[i] => pages[i][2]
