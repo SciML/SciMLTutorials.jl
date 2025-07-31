@@ -5,8 +5,7 @@ author: Chris Rackauckas
 
 This is a test of the builder system.  It often gets bumped manually.
 
-
 ```julia, echo = false, skip="notebook"
 using SciMLTutorials
-SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder],WEAVE_ARGS[:file])
+SciMLTutorials.tutorial_footer(WEAVE_ARGS[:folder], WEAVE_ARGS[:file])
 ```
